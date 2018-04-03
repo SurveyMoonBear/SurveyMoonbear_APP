@@ -1,0 +1,5 @@
+config/secrets.yml
+config/client_secret.json
+*.db
+_*
+ 
