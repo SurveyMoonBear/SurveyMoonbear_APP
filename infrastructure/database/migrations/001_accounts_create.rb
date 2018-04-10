@@ -6,7 +6,7 @@ Sequel.migration do
       primary_key :id
       String      :email, unique: true
       String      :username
-      String      :access_token
+      String      :access_token_secure, text: true
     end
   end
 end

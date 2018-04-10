@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rake/testtask'
+require './lib/secure_db'
 
 task :default do
   puts `rake -T`
@@ -63,5 +64,27 @@ namespace :db do
 
     FileUtils.rm(app.config.db_filename)
     puts "Deleted #{app.config.db_filename}"
+  end
+end
+
+namespace :crypto do
+  desc 'Create sample cryptographic key for database'
+  task :db_key do
+    puts "DB_KEY: #{SecureDB.generate_key}"
+  end
+
+  task :crypto_requires do
+    require 'rbnacl/libsodium'
+    require 'base64'
+  end
+
+  desc 'Create rbnacl key'
+  task msg_key: [:crypto_requires] do
+    puts "New MSG_KEY: #{SecureMessage.generate_key}"
+  end
+
+  desc 'Create cookie secret'
+  task session_secret: [:crypto_requires] do
+    puts "New session secret (base64 encoded): #{SecureSession.generate_secret}"
   end
 end

@@ -12,6 +12,9 @@ gem 'puma'
 gem 'roda'
 gem 'slim'
 
+# Security related
+gem 'rbnacl-libsodium'
+
 # Database related
 gem 'hirb'
 gem 'sequel'

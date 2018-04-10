@@ -3,6 +3,7 @@ require 'econfig'
 require 'slim'
 require 'slim/include'
 require 'google/api_client/client_secrets'
+require './lib/secure_db'
 
 module SurveyMoonbear
   # Web API
@@ -12,14 +13,26 @@ module SurveyMoonbear
     plugin :environments
     plugin :json
     plugin :halt
+    plugin :flash
+    plugin :hooks
+
+    ONE_MONTH = 2_592_000
+
+    use Rack::Session::Cookie, expire_after: ONE_MONTH
 
     extend Econfig::Shortcut
     Econfig.env = environment.to_s
     Econfig.root = '.'
 
+    before do
+      @current_account = session[:current_account]
+    end
+
     route do |routing|
       app = App
       config = App.config
+
+      SecureDB.setup(config.DB_KEY)
 
       # GET / request
       routing.root do
@@ -48,11 +61,18 @@ module SurveyMoonbear
               routing.halt(404, error: 'Account not found')
             end
 
-            stored_account = Repository::For[account.class].find_or_create(account)
+            @current_account = Repository::For[account.class].find_or_create(account)
             response.status = 201
-            stored_account.to_h
-            puts 'login successfully!'
-            routing.redirect '/'
+            @current_account = @current_account.to_h
+            if @current_account
+              session[:current_account] = @current_account
+              puts "SESSION: #{session[:current_account]}"
+              flash[:notice] = "Hello #{@current_account['username']}!"
+              routing.redirect '/'
+            else
+              puts 'login fail!'
+              routing.redirect '/'
+            end
           end
         end
       end
