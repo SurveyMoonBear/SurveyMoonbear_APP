@@ -1,0 +1,29 @@
+div class="mb-3"
+  a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey" Create a New Survey
+  a href="/account/logout" class="btn btn-secondary" Logout
+- unless surveys.nil?
+  - surveys.each.with_index do |survey, index|
+    div class="row mb-3"
+      div class="col-sm"
+        div class="card"
+          div class="card-body"
+            h4 class="card-title" #{index+1}. #{survey.title}
+
+div class="modal" id="modal_create_survey"
+  div class="modal-dialog" role="document"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Create a New Survey
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      form action="/survey_list/create" method="post"
+        div class="modal-body"
+          div class="form-group"
+            label for="title" Survey Title
+            input type="text" class="form-control" id="title" name="title" placeholder="Enter survey title"
+        div class="modal-footer"
+          button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+          button type="submit" class="btn btn-primary" Create
+
+  
+

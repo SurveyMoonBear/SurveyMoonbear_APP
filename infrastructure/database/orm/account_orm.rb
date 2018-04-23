@@ -2,8 +2,9 @@ module SurveyMoonbear
   module Database
     # Object Relational Mapper for Repo Entities
     class AccountOrm < Sequel::Model(:accounts)
-      # many_to_one :owner,
-      #             class: :'SurveyMoonbear::Database::CollaboratorOrm'
+      one_to_many :owned_surveys,
+                  class: :'SurveyMoonbear::Database::SurveyOrm',
+                  key: :owner_id
 
       # many_to_many :contributors,
       #              class: :'CodePraise::Database::CollaboratorOrm',

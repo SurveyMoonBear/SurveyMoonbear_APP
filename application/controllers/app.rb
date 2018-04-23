@@ -3,7 +3,6 @@ require 'econfig'
 require 'slim'
 require 'slim/include'
 require 'google/api_client/client_secrets'
-require './lib/secure_db'
 
 module SurveyMoonbear
   # Web API
@@ -68,12 +67,47 @@ module SurveyMoonbear
               session[:current_account] = @current_account
               puts "SESSION: #{session[:current_account]}"
               flash[:notice] = "Hello #{@current_account['username']}!"
-              routing.redirect '/'
+              routing.redirect '/survey_list'
             else
               puts 'login fail!'
               routing.redirect '/'
             end
           end
+        end
+
+        routing.get 'logout' do
+          session[:current_account] = nil
+          routing.redirect '/'
+        end
+      end
+
+      # /survey_list branch
+      routing.on 'survey_list' do
+        # GET /survey_list
+        routing.get do
+          surveys = Repository::For[Entity::Survey]
+                    .find_owner(session[:current_account][:id])
+
+          # put 'Create a new survey.' if surveys.none?
+
+          view 'survey_list', locals: { surveys: surveys }
+        end
+
+        routing.post 'create' do
+          survey_data = CreateSurvey.new(session[:current_account])
+                                    .call(routing.params[:title])
+          GoogleSpreadsheet.new(@current_account[:access_token])
+                           .transfer_owner(survey_data[:origin_id], 'surveymoonbear01@gmail.com')
+          survey = Google::SurveyMapper.new.load(survey_data)
+          @new_survey = Repository::For[survey.class].find_or_create(survey)
+
+          if @new_survey
+            puts 'create success!'
+          else
+            puts 'create fail!'
+          end
+
+          routing.redirect '/survey_list'
         end
       end
     end

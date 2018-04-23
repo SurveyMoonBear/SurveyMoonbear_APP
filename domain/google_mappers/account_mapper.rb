@@ -5,10 +5,10 @@ module SurveyMoonbear
       def initialize; end
 
       def load(data)
-        build_entity(data)
+        AccountMapper.build_entity(data)
       end
 
-      def build_entity(data)
+      def self.build_entity(data)
         DataMapper.new(data).build_entity
       end
 
