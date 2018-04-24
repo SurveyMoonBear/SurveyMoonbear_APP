@@ -94,10 +94,8 @@ module SurveyMoonbear
         end
 
         routing.post 'create' do
-          survey_data = CreateSurvey.new(session[:current_account])
+          survey_data = CreateSurvey.new(session[:current_account], config)
                                     .call(routing.params[:title])
-          GoogleSpreadsheet.new(@current_account[:access_token])
-                           .transfer_owner(survey_data[:origin_id], 'surveymoonbear01@gmail.com')
           survey = Google::SurveyMapper.new.load(survey_data)
           @new_survey = Repository::For[survey.class].find_or_create(survey)
 

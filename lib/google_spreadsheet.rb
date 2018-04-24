@@ -1,4 +1,5 @@
 require 'http'
+require 'json'
 
 # Library for Google Spreadsheet related operation
 class GoogleSpreadsheet
@@ -9,11 +10,13 @@ class GoogleSpreadsheet
   end
 
   def create(title)
-    # HTTP.post("#{@spreadsheet_url}?access_token=#{@access_token}",
-    #           json: { properties: { title: title } }.to_json)
-    #     .parse
-    HTTP.post("#{@spreadsheet_url}?access_token=#{@access_token}")
-        .parse
+    # response = HTTP.post("#{@spreadsheet_url}?access_token=#{@access_token}",
+    #                      { properties: { title: title } }.to_json)
+    #                .parse
+    response = HTTP.post("#{@spreadsheet_url}?access_token=#{@access_token}")
+                   .parse
+    puts response
+    response
   end
 
   def copy_to(origin_spreadsheet_id, sheet_id, destination_spreadsheet_id)
@@ -54,26 +57,14 @@ class GoogleSpreadsheet
   end
 
   def add_editor(spreadsheet_id, user_email)
-    response = HTTP.post("#{@drive_url}/#{spreadsheet_id}/permissions",
+    response = HTTP.post("#{@drive_url}/#{spreadsheet_id}/permissions?access_token=#{@access_token}",
                          json: { role: 'writer',
                                  type: 'user',
-                                 emailAddress: user_email })
-                   .parse
-
-    { id: response.id,
-      name: response.name,
-      emailAddress: response.emailAddress }
-  end
-
-  def transfer_owner(spreadsheet_id, user_email)
-    response = HTTP.post("#{@drive_url}/#{spreadsheet_id}/permissions",
-                         json: { role: 'owner',
-                                 type: 'user',
-                                 emailAddress: user_email })
+                                 value: user_email })
                    .parse
     puts response
-    # { id: response.id,
-    #   name: response.name,
-    #   emailAddress: response.emailAddress }
+    { id: response['id'],
+      user_name: response['name'],
+      emailAddress: response['emailAddress'] }
   end
 end
