@@ -36,11 +36,14 @@ module SurveyMoonbear
       # GET / request
       routing.root do
         url = 'https://accounts.google.com/o/oauth2/v2/auth'
-        scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file'
+        scopes = ['https://www.googleapis.com/auth/userinfo.profile',
+                  'https://www.googleapis.com/auth/userinfo.email',
+                  'https://www.googleapis.com/auth/spreadsheets',
+                  'https://www.googleapis.com/auth/drive.file']
         params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
                   "redirect_uri=#{config.APP_URL}/account/login/google_callback",
                   'response_type=code',
-                  "scope=#{scope}"]
+                  "scope=#{scopes.join(' ')}"]
         google_sso_url = "#{url}?#{params.join('&')}"
 
         view 'home', locals: { google_sso_url: google_sso_url }
@@ -53,19 +56,17 @@ module SurveyMoonbear
           # GET /account/login/register_callback request
           routing.get 'google_callback' do
             begin
-              account_data = FindAuthenticatedGoogleAccount.new(config)
-                                                           .call(routing.params['code'])
-              account = Google::AccountMapper.new.load(account_data)
+              @current_account = FindAuthenticatedGoogleAccount.new(config)
+                                                               .call(routing.params['code'])
+
             rescue StandardError
               routing.halt(404, error: 'Account not found')
             end
 
-            @current_account = Repository::For[account.class].find_or_create(account)
             response.status = 201
             @current_account = @current_account.to_h
             if @current_account
               session[:current_account] = @current_account
-              puts "SESSION: #{session[:current_account]}"
               flash[:notice] = "Hello #{@current_account['username']}!"
               routing.redirect '/survey_list'
             else
@@ -94,10 +95,8 @@ module SurveyMoonbear
         end
 
         routing.post 'create' do
-          survey_data = CreateSurvey.new(session[:current_account], config)
+          @new_survey = CreateSurvey.new(session[:current_account], config)
                                     .call(routing.params[:title])
-          survey = Google::SurveyMapper.new.load(survey_data)
-          @new_survey = Repository::For[survey.class].find_or_create(survey)
 
           if @new_survey
             puts 'create success!'

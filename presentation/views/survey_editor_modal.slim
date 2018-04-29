@@ -1,4 +1,4 @@
-div class="modal" id="modal_survey_editor"
+div class="modal" id="modal_survey_editor" style="margin: auto;"
   div class="modal-dialog modal-lg" role="document"
     div class="modal-content"
       div class="modal-header"
@@ -6,6 +6,7 @@ div class="modal" id="modal_survey_editor"
         button type="button" class="close" data-dismiss="modal" aria-label="Close"
           span aria-hidden="true" &times;
       div class="modal-body"
+        div class="container embed-responsive embed-responsive-16by9 p-1" id="iframe-div"
         // spreadsheet iframe
       div class="modal-footer"
         button type="button" class="btn btn-secondary" data-dismiss="modal" Close
@@ -14,6 +15,6 @@ javascript:
   $('#modal_survey_editor').on('show.bs.modal', function(e) {
     var origin_id = $(e.relatedTarget).data('origin_id');
     var modal = $(this);
-    var str = '<iframe src="https://docs.google.com/spreadsheets/d/' + origin_id + '/edit?usp=sharing&amp;single=true&amp;widget=true&amp;headers=false&amp;chrome=false&amp;rm=minimal" height="500" width="700"></iframe>';
-    modal.find('.modal-body').html(str);
+    var str = '<iframe class="embed-responsive-item" src="https://docs.google.com/spreadsheets/d/' + origin_id + '/edit?usp=sharing&amp;single=true&amp;widget=true&amp;headers=false&amp;chrome=false&amp;rm=minimal" height="500" width="700"></iframe>';
+    modal.find('#iframe-div').html(str);
   });

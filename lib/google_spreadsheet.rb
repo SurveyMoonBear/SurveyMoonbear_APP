@@ -9,13 +9,12 @@ class GoogleSpreadsheet
     @drive_url = 'https://www.googleapis.com/drive/v2/files'
   end
 
-  def create(title)
+  def create
     # response = HTTP.post("#{@spreadsheet_url}?access_token=#{@access_token}",
     #                      { properties: { title: title } }.to_json)
     #                .parse
     response = HTTP.post("#{@spreadsheet_url}?access_token=#{@access_token}")
                    .parse
-    puts response
     response
   end
 
@@ -62,7 +61,7 @@ class GoogleSpreadsheet
                                  type: 'user',
                                  value: user_email })
                    .parse
-    puts response
+
     { id: response['id'],
       user_name: response['name'],
       emailAddress: response['emailAddress'] }
