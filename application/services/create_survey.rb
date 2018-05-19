@@ -28,7 +28,7 @@ module SurveyMoonbear
       response['access_token']
     end
 
-    def create_spreadsheet(title, access_token)
+    def create_spreadsheet(access_token)
       files_copy_url = "https://www.googleapis.com/drive/v3/files/#{@config.SAMPLE_FILE_ID}/copy"
       response = HTTP.post("#{files_copy_url}?access_token=#{access_token}").parse
 

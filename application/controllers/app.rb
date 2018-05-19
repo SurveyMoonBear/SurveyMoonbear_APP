@@ -107,6 +107,23 @@ module SurveyMoonbear
           routing.redirect '/survey_list'
         end
       end
+
+      routing.on 'survey' do
+        routing.post 'edit' do
+          survey = EditSurveyTitle.new(session[:current_account])
+                                  .call(routing.params)
+        end
+
+        routing.get 'preview' do
+          survey_questions = GetSurveyQuestions.new(session[:current_account])
+                                               .call(routing.params['survey_id'])
+          questions = survey_questions[:sheets].map do |question|
+            ParseSurveyQuestions.new.call(question)
+          end
+
+          view 'survey_preview', locals: { title: survey_questions[:title], questions: questions }
+        end
+      end
     end
   end
 end

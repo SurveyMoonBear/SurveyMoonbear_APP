@@ -25,19 +25,20 @@ class GoogleSpreadsheet
         .parse
   end
 
-  def sheets(spreadsheet_id, range = nil)
-    response = HTTP.get("#{@spreadsheet_url}/#{spreadsheet_id}",
-                        json: { range: range,
-                                access_token: @access_token })
-                   .parse
-    response.sheets
+  def sheets(spreadsheet_id)
+    # response = HTTP.get("#{@spreadsheet_url}/#{spreadsheet_id}",
+    #                     json: { access_token: @access_token })
+    #                .parse
+    response = HTTP.get("#{@spreadsheet_url}/#{spreadsheet_id}?access_token=#{@access_token}").parse
+    { title: response['properties']['title'], sheets: response['sheets'] }
   end
 
   def read(spreadsheet_id, range)
-    response = HTTP.get("#{@spreadsheet_url}/#{spreadsheet_id}/values/#{range}",
-                        json: { access_token: @access_token })
-                   .parse
-    response.values
+    # response = HTTP.get("#{@spreadsheet_url}/#{spreadsheet_id}/values/#{range}",
+    #                     json: { access_token: @access_token })
+    #                .parse
+    response = HTTP.get("#{@spreadsheet_url}/#{spreadsheet_id}/values/#{range}?access_token=#{@access_token}").parse
+    response['values']
   end
 
   def list_all_spreadsheet

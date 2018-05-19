@@ -1,6 +1,7 @@
 div class="mb-3"
-  a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey" Create a New Survey
-  a href="/account/logout" class="btn btn-secondary" Logout
+  div class="btn-toolbar"
+    a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey" Create a New Survey
+    a href="/account/logout" class="btn btn-secondary" Logout
 - unless surveys.nil?
   - surveys.each.with_index do |survey, index|
     div class="row mb-3"
@@ -13,6 +14,11 @@ div class="mb-3"
               data-toggle="modal" data-target="#modal_survey_editor" 
               data-origin_id="#{survey.origin_id}"
             } Edit Survey
+            a {
+              class="btn btn-success"
+              target="_blank"
+              href="/survey/preview?survey_id=#{survey.origin_id}"
+            } Preview
 
 include :create_survey_modal
 include :survey_editor_modal
