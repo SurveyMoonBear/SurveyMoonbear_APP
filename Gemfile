@@ -3,17 +3,27 @@ source 'https://rubygems.org'
 # Google client lib
 gem 'google-api-client'
 
-# Networking gems
-gem 'http'
-
 # Web app related
 gem 'econfig'
 gem 'puma'
+gem 'rack-flash3'
 gem 'roda'
 gem 'slim'
 
 # Security related
+gem 'dry-validation'
+gem 'rack-ssl-enforcer'
 gem 'rbnacl-libsodium'
+gem 'secure_headers'
+
+# Communication
+gem 'http'
+gem 'pony'
+gem 'redis'
+gem 'redis-rack'
+
+# Diagnostic
+gem 'tux'
 
 # Database related
 gem 'hirb'

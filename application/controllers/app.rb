@@ -15,17 +15,17 @@ module SurveyMoonbear
     plugin :flash
     plugin :hooks
 
-    ONE_MONTH = 2_592_000
+    # ONE_MONTH = 2_592_000
 
-    use Rack::Session::Cookie, expire_after: ONE_MONTH
+    # use Rack::Session::Cookie, expire_after: ONE_MONTH
 
     extend Econfig::Shortcut
     Econfig.env = environment.to_s
     Econfig.root = '.'
 
-    before do
-      @current_account = session[:current_account]
-    end
+    # before do
+    #   @current_account = session[:current_account]
+    # end
 
     route do |routing|
       app = App
@@ -46,6 +46,8 @@ module SurveyMoonbear
                   "scope=#{scopes.join(' ')}"]
         google_sso_url = "#{url}?#{params.join('&')}"
 
+        @current_account = SecureSession.new(session).get(:current_account)
+
         view 'home', locals: { google_sso_url: google_sso_url }
       end
 
@@ -56,18 +58,19 @@ module SurveyMoonbear
           # GET /account/login/register_callback request
           routing.get 'google_callback' do
             begin
-              @current_account = FindAuthenticatedGoogleAccount.new(config)
-                                                               .call(routing.params['code'])
+              logged_in_account = FindAuthenticatedGoogleAccount.new(config)
+                                                                .call(routing.params['code'])
 
             rescue StandardError
               routing.halt(404, error: 'Account not found')
             end
 
             response.status = 201
-            @current_account = @current_account.to_h
-            if @current_account
-              session[:current_account] = @current_account
-              flash[:notice] = "Hello #{@current_account['username']}!"
+            logged_in_account = logged_in_account.to_h
+            if logged_in_account
+              # session[:current_account] = @current_account
+              SecureSession.new(session).set(:current_account, logged_in_account)
+              flash[:notice] = "Hello #{logged_in_account['username']}!"
               routing.redirect '/survey_list'
             else
               puts 'login fail!'
@@ -77,17 +80,20 @@ module SurveyMoonbear
         end
 
         routing.get 'logout' do
-          session[:current_account] = nil
+          # session[:current_account] = nil
+          SecureSession.new(session).delete(:current_account)
           routing.redirect '/'
         end
       end
 
       # /survey_list branch
       routing.on 'survey_list' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
         # GET /survey_list
         routing.get do
           surveys = Repository::For[Entity::Survey]
-                    .find_owner(session[:current_account][:id])
+                    .find_owner(@current_account['id'])
 
           # put 'Create a new survey.' if surveys.none?
 
@@ -95,7 +101,7 @@ module SurveyMoonbear
         end
 
         routing.post 'create' do
-          @new_survey = CreateSurvey.new(session[:current_account], config)
+          @new_survey = CreateSurvey.new(@current_account, config)
                                     .call(routing.params[:title])
 
           if @new_survey

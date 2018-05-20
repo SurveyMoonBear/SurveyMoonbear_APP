@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rake/testtask'
-require './lib/secure_db'
+require './init.rb'
 
 task :default do
   puts `rake -T`
@@ -33,7 +33,7 @@ task :console do
 end
 
 namespace :db do
-  require_relative 'config/environment.rb' # load config info require 'sequel'
+  require_relative 'config/environments.rb' # load config info require 'sequel'
   require 'sequel' # TODO: remove after create orm
 
   Sequel.extension :migration

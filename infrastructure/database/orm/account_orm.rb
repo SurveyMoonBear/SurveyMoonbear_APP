@@ -13,7 +13,6 @@ module SurveyMoonbear
       # plugin :timestamps, update_on_create: true
       def access_token=(acctoken_plain)
         self.access_token_secure = SecureDB.encrypt(acctoken_plain)
-        puts 'access token is encrypted'
       end
 
       def access_token
