@@ -1,0 +1,15 @@
+input[type="range"].vas::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 5px;
+  height: 20px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0);
+}
+
+input[type="range"].slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 5px;
+  height: 20px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 1);
+}

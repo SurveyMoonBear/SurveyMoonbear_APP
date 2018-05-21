@@ -13,13 +13,13 @@ module SurveyMoonbear
     end
 
     def preadsheet_detail(survey_id)
-      GoogleSpreadsheet.new(@current_account[:access_token]).sheets(survey_id)
+      GoogleSpreadsheet.new(@current_account['access_token']).sheets(survey_id)
     end
 
     def get_value_from_each_sheet(survey_id, detail)
       sheets = detail[:sheets].map do |sheet|
         sheet_title = sheet['properties']['title']
-        GoogleSpreadsheet.new(@current_account[:access_token])
+        GoogleSpreadsheet.new(@current_account['access_token'])
                          .read(survey_id, sheet_title)
       end
 

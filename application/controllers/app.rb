@@ -15,17 +15,9 @@ module SurveyMoonbear
     plugin :flash
     plugin :hooks
 
-    # ONE_MONTH = 2_592_000
-
-    # use Rack::Session::Cookie, expire_after: ONE_MONTH
-
     extend Econfig::Shortcut
     Econfig.env = environment.to_s
     Econfig.root = '.'
-
-    # before do
-    #   @current_account = session[:current_account]
-    # end
 
     route do |routing|
       app = App
@@ -44,11 +36,11 @@ module SurveyMoonbear
                   "redirect_uri=#{config.APP_URL}/account/login/google_callback",
                   'response_type=code',
                   "scope=#{scopes.join(' ')}"]
-        google_sso_url = "#{url}?#{params.join('&')}"
+        @google_sso_url = "#{url}?#{params.join('&')}"
 
         @current_account = SecureSession.new(session).get(:current_account)
 
-        view 'home', locals: { google_sso_url: google_sso_url }
+        view 'home', locals: { google_sso_url: @google_sso_url }
       end
 
       # /account branch
@@ -68,7 +60,6 @@ module SurveyMoonbear
             response.status = 201
             logged_in_account = logged_in_account.to_h
             if logged_in_account
-              # session[:current_account] = @current_account
               SecureSession.new(session).set(:current_account, logged_in_account)
               flash[:notice] = "Hello #{logged_in_account['username']}!"
               routing.redirect '/survey_list'
@@ -80,7 +71,6 @@ module SurveyMoonbear
         end
 
         routing.get 'logout' do
-          # session[:current_account] = nil
           SecureSession.new(session).delete(:current_account)
           routing.redirect '/'
         end
@@ -94,8 +84,6 @@ module SurveyMoonbear
         routing.get do
           surveys = Repository::For[Entity::Survey]
                     .find_owner(@current_account['id'])
-
-          # put 'Create a new survey.' if surveys.none?
 
           view 'survey_list', locals: { surveys: surveys }
         end
@@ -115,13 +103,16 @@ module SurveyMoonbear
       end
 
       routing.on 'survey' do
-        routing.post 'edit' do
-          survey = EditSurveyTitle.new(session[:current_account])
-                                  .call(routing.params)
-        end
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        # routing.post 'edit' do
+        #   survey = EditSurveyTitle.new(@current_account)
+        #                           .call(routing.params)
+        # end
 
         routing.get 'preview' do
-          survey_questions = GetSurveyQuestions.new(session[:current_account])
+          puts @current_account
+          survey_questions = GetSurveyQuestions.new(@current_account)
                                                .call(routing.params['survey_id'])
           questions = survey_questions[:sheets].map do |question|
             ParseSurveyQuestions.new.call(question)

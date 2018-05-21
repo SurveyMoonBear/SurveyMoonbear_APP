@@ -151,7 +151,25 @@ module SurveyMoonbear
       questions.each do |question|
         str << '<tr>'
         str << "<td>#{question[2]}</td>"
-        str << "<td><input type='range' class='custom-range' id='#{question[1]}' min='#{min}' max='#{max}'></td>"
+        str << "<td><input type='range' class='custom-range slider' id='#{question[1]}' min='#{min}' max='#{max}'></td>"
+        str << '</tr>'
+      end
+      str << '</table>'
+      str << '</fieldset>'
+    end
+
+    def build_grid_questions_vas(questions)
+      str = '<fieldset>'
+      str << "<table class='table'>"
+
+      min_max = questions[0][4].split(',')
+      min = min_max[0]
+      max = min_max[1]
+
+      questions.each do |question|
+        str << '<tr>'
+        str << "<td>#{question[2]}</td>"
+        str << "<td><input type='range' class='custom-range vas' id='#{question[1]}' min='#{min}' max='#{max}'></td>"
         str << '</tr>'
       end
       str << '</table>'
