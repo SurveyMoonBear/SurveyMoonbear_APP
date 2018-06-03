@@ -1,6 +1,8 @@
-# frozen_string_literal: false
+# frozen_string_literal: true
 
 require 'dry-struct'
+
+require_relative 'page.rb'
 
 module SurveyMoonbear
   module Entity
@@ -10,6 +12,7 @@ module SurveyMoonbear
       attribute :owner, Account
       attribute :origin_id, Types::Strict::String
       attribute :title, Types::Strict::String
+      attribute :pages, Types::Strict::Array.member(Page)
     end
   end
 end

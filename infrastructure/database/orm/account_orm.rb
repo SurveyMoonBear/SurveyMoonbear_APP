@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SurveyMoonbear
   module Database
     # Object Relational Mapper for Repo Entities

@@ -28,15 +28,15 @@ module SurveyMoonbear
         end
 
         def email
-          @data[:email]
+          @data['email']
         end
 
         def username
-          @data[:username]
+          @data['username']
         end
 
         def access_token
-          @data[:access_token]
+          @data['access_token']
         end
       end
     end

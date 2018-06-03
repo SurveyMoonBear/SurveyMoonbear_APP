@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rake/testtask'
-require './init.rb'
 
 task :default do
   puts `rake -T`
@@ -33,6 +32,7 @@ task :console do
 end
 
 namespace :db do
+  require_relative 'lib/init.rb'
   require_relative 'config/environments.rb' # load config info require 'sequel'
   require 'sequel' # TODO: remove after create orm
 
@@ -47,8 +47,11 @@ namespace :db do
 
   desc 'Drop all tables'
   task :drop do
-    require_relative 'config/environment.rb'
+    require_relative 'config/environments.rb'
     # drop according to dependencies
+    app.DB.drop_table :items
+    app.DB.drop_table :pages
+    app.DB.drop_table :surveys
     app.DB.drop_table :accounts
   end
 

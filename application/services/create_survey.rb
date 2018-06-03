@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'http'
 
 module SurveyMoonbear
@@ -10,9 +12,9 @@ module SurveyMoonbear
 
     def call(title)
       access_token = get_access_token
-      new_survey_data = create_spreadsheet(title, access_token)
-      new_survey = add_editor(new_survey_data, access_token)
-      store_into_database(new_survey)
+      new_survey_data = create_spreadsheet(access_token)
+      add_editor(new_survey_data, access_token)
+      store_into_database(new_survey_data)
     end
 
     def get_access_token
@@ -32,23 +34,19 @@ module SurveyMoonbear
       files_copy_url = "https://www.googleapis.com/drive/v3/files/#{@config.SAMPLE_FILE_ID}/copy"
       response = HTTP.post("#{files_copy_url}?access_token=#{access_token}").parse
 
-      { owner: @current_account,
-        origin_id: response['id'],
+      { origin_id: response['id'],
         title: response['name'] }
     end
 
     def add_editor(new_survey_data, access_token)
       GoogleSpreadsheet.new(access_token)
-                       .add_editor(new_survey_data[:origin_id], @current_account[:email])
-
-      new_survey = { owner: @current_account,
-                     origin_id: new_survey_data[:origin_id],
-                     title: new_survey_data[:title] }
-
-      Google::SurveyMapper.new.load(new_survey)
+                       .add_editor(new_survey_data[:origin_id], @current_account['email'])
     end
 
-    def store_into_database(new_survey)
+    def store_into_database(new_survey_data)
+      google_api = Google::Api.new(@current_account['access_token'])
+      new_survey = Google::SurveyMapper.new(google_api)
+                                       .load(new_survey_data[:origin_id], @current_account)
       Repository::For[new_survey.class].find_or_create(new_survey)
     end
   end

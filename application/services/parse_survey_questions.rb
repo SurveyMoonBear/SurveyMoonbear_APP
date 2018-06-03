@@ -11,7 +11,7 @@ module SurveyMoonbear
     end
 
     def build_questions(questions)
-      q_arr =[]
+      q_arr = []
       grid_arr = []
       questions.each_with_index.map do |question, i|
         if question[0].include? 'grid'
@@ -150,8 +150,8 @@ module SurveyMoonbear
 
       questions.each do |question|
         str << '<tr>'
-        str << "<td>#{question[2]}</td>"
-        str << "<td><input type='range' class='custom-range slider' id='#{question[1]}' min='#{min}' max='#{max}'></td>"
+        str << "<td class='w-50'>#{question[2]}</td>"
+        str << "<td class='w-50'><input type='range' class='custom-range slider' id='#{question[1]}' min='#{min}' max='#{max}'></td>"
         str << '</tr>'
       end
       str << '</table>'
@@ -168,8 +168,8 @@ module SurveyMoonbear
 
       questions.each do |question|
         str << '<tr>'
-        str << "<td>#{question[2]}</td>"
-        str << "<td><input type='range' class='custom-range vas' id='#{question[1]}' min='#{min}' max='#{max}'></td>"
+        str << "<td class='w-50'>#{question[2]}</td>"
+        str << "<td class='w-50'><input type='range' class='custom-range vas-unclicked' id='#{question[1]}' min='#{min}' max='#{max}'></td>"
         str << '</tr>'
       end
       str << '</table>'

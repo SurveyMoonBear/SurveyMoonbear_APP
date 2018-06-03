@@ -36,17 +36,49 @@ module SurveyMoonbear
           title: entity.title
         )
 
+        entity.pages.each do |page|
+          stored_page = Pages.find_or_create(page)
+          page = Database::PageOrm.first(id: stored_page.id)
+          db_survey.add_page(page)
+        end
+
+        rebuild_entity(db_survey)
+      end
+
+      def self.update_from(entity)
+        db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
+
+        # delete old records
+        db_survey.pages.each do |page|
+          page.items_dataset.destroy
+          page.delete
+        end
+
+        db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
+
+        # add new records
+        entity.pages.each do |page|
+          stored_page = Pages.find_or_create(page)
+          page = Database::PageOrm.first(id: stored_page.id)
+          db_survey.add_page(page)
+        end
+
         rebuild_entity(db_survey)
       end
 
       def self.rebuild_entity(db_record)
         return nil unless db_record
 
+        pages = db_record.pages.map do |db_page|
+          Pages.rebuild_entity(db_page)
+        end
+
         Entity::Survey.new(
           id: db_record.id,
           owner: Accounts.rebuild_entity(db_record.owner),
           origin_id: db_record.origin_id,
-          title: db_record.title
+          title: db_record.title,
+          pages: pages
         )
       end
     end
