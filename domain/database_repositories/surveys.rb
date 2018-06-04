@@ -66,11 +66,24 @@ module SurveyMoonbear
         rebuild_entity(db_survey)
       end
 
+      def self.add_response(entity, response_entity)
+        db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
+        stored_response = Responses.find_or_create(response_entity)
+        response = Database::ResponseOrm.first(id: stored_response.id)
+        db_survey.add_response(response)
+
+        rebuild_entity(db_survey)
+      end
+
       def self.rebuild_entity(db_record)
         return nil unless db_record
-
+        puts db_record.responses.nil?
         pages = db_record.pages.map do |db_page|
           Pages.rebuild_entity(db_page)
+        end
+
+        responses = db_record.responses&.map do |db_response|
+          Responses.rebuild_entity(db_response)
         end
 
         Entity::Survey.new(
@@ -78,7 +91,8 @@ module SurveyMoonbear
           owner: Accounts.rebuild_entity(db_record.owner),
           origin_id: db_record.origin_id,
           title: db_record.title,
-          pages: pages
+          pages: pages,
+          responses: responses
         )
       end
     end

@@ -105,9 +105,8 @@ module SurveyMoonbear
         end
       end
 
-      routing.on 'survey' do
+      routing.on 'survey', String do |survey_id|
         @current_account = SecureSession.new(session).get(:current_account)
-
         # routing.post 'edit' do
         #   survey = EditSurveyTitle.new(@current_account)
         #                           .call(routing.params)
@@ -117,7 +116,7 @@ module SurveyMoonbear
         routing.on 'preview' do
           routing.get do
             survey = GetSurveyQuestions.new(@current_account)
-                                        .call(routing.params['survey_id'])
+                                       .call(survey_id)
             questions_with_pages = survey[:sheets].map do |question|
               ParseSurveyQuestions.new.call(question)
             end
@@ -129,17 +128,71 @@ module SurveyMoonbear
             view 'survey_preview',
                  layout: false,
                  locals: { title: survey[:title],
-                           origin_id: routing.params['survey_id'],
+                           origin_id: survey_id,
                            page_num: page_num,
                            questions: questions,
                            page: page }
           end
         end
 
+        # GET survey/[survey_id]/export
         routing.get 'export' do
+          survey = GetSurveyQuestions.new(@current_account)
+                                     .call(survey_id)
+
           saved_survey = ExportSurvey.new(@current_account)
-                                     .call(routing.params['survey_id'])
-          puts saved_survey
+                                     .call(survey_id)
+
+          questions = saved_survey[routing.params['page'].to_i - 1]
+          page_num = saved_survey.length
+          page = routing.params['page'].to_i
+
+          # routing.redirect "/surveymoonbear/#{survey_id}"
+          #                  params: {
+          #                    title: survey[:title],
+          #                    origin_id: survey_id,
+          #                    page_num: page_num,
+          #                    questions: questions,
+          #                    page: page
+          #                  }
+
+          view 'survey_export',
+               layout: false,
+               locals: { title: survey[:title],
+                         origin_id: survey_id,
+                         page_num: page_num,
+                         questions: questions,
+                         page: page }
+        end
+
+        # POST survey/[survey_id]/submit
+        routing.post 'submit' do
+          responses = {}
+          responses[:respondent_id] = '1'
+          responses[:responses] = routing.params
+          result = StoreResponses.new(survey_id).call(responses)
+
+          puts result
+
+          routing.redirect 'finish'
+        end
+
+        # GET survey/[survey_id]/finish
+        routing.get 'finish' do
+          view 'survey_finish',
+               locals: { survey_id: survey_id }
+        end
+      end
+
+      routing.on 'surveymoonbear', String do |survey_id|
+        routing.get do
+          view 'survey_export',
+               layout: false,
+               locals: { title: routing.params[:title],
+                         origin_id: routing.params[:origin_id],
+                         page_num: routing.params[:page_num],
+                         questions: routing.params[:questions],
+                         page: routing.params[:page] }
         end
       end
     end

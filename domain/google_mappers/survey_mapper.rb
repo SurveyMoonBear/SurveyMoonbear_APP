@@ -26,6 +26,7 @@ module SurveyMoonbear
       class DataMapper
         def initialize(survey, gateway)
           @survey = survey
+          @account_mapper = AccountMapper.new
           @page_mapper = PageMapper.new(gateway)
         end
 
@@ -35,12 +36,13 @@ module SurveyMoonbear
             owner: owner,
             origin_id: origin_id,
             title: title,
-            pages: pages
+            pages: pages,
+            responses: responses
           )
         end
 
         def owner
-          AccountMapper.build_entity(@survey[:owner])
+          @account_mapper.load(@survey[:owner])
         end
 
         def origin_id
@@ -53,6 +55,12 @@ module SurveyMoonbear
 
         def pages
           @page_mapper.load_several(origin_id, @survey[:data]['sheets'])
+        end
+
+        def responses
+          return nil unless @survey[:responses]
+
+          ResponsMapper.build_entity(@survey[:responses])
         end
       end
     end

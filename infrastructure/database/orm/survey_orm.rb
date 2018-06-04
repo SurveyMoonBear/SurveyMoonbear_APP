@@ -11,6 +11,10 @@ module SurveyMoonbear
                   class: :'SurveyMoonbear::Database::PageOrm',
                   key: :survey_id
 
+      one_to_many :responses,
+                  class: :'SurveyMoonbear::Database::ResponseOrm',
+                  key: :survey_id
+
       # many_to_many :contributors,
       #              class: :'CodePraise::Database::CollaboratorOrm',
       #              join_table: :repos_contributors,

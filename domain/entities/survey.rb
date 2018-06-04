@@ -3,6 +3,7 @@
 require 'dry-struct'
 
 require_relative 'page.rb'
+require_relative 'response.rb'
 
 module SurveyMoonbear
   module Entity
@@ -13,6 +14,7 @@ module SurveyMoonbear
       attribute :origin_id, Types::Strict::String
       attribute :title, Types::Strict::String
       attribute :pages, Types::Strict::Array.member(Page)
+      attribute :responses, Types::Strict::Array.member(Response).optional
     end
   end
 end
