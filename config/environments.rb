@@ -2,7 +2,6 @@ require 'roda'
 require 'econfig'
 require 'rack/ssl-enforcer'
 require 'rack/session/redis'
-# require './lib/secure_session.rb'
 
 module SurveyMoonbear
   # Configuration for the API
@@ -35,7 +34,8 @@ module SurveyMoonbear
     end
 
     configure :production do
-      # Use Heroku's DATABASE_URL environment variable
+      use Rack::Session::Redis,
+          expire_after: ONE_MONTH, redis_server: App.config.REDIS_URL
     end
 
     configure do

@@ -91,3 +91,13 @@ namespace :crypto do
     puts "New session secret (base64 encoded): #{SecureSession.generate_secret}"
   end
 end
+
+namespace :session do
+  desc 'Wipe all sessions stored in Redis'
+  task :wipe => :load_all do
+    require 'redis'
+    puts 'Deleting all sessions from Redis session store'
+    wiped = SessionSecure.wipe_radis_session
+    puts "#{wiped.count} sessions deleted"
+  end
+end

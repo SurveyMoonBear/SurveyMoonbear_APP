@@ -77,7 +77,7 @@ module SurveyMoonbear
 
       def self.rebuild_entity(db_record)
         return nil unless db_record
-        puts db_record.responses.nil?
+        
         pages = db_record.pages.map do |db_page|
           Pages.rebuild_entity(db_page)
         end

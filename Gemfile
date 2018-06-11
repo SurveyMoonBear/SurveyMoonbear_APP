@@ -54,3 +54,7 @@ group :development, :test do
   gem 'reek'
   gem 'rubocop'
 end
+
+group :production do
+  gem 'pg'
+end

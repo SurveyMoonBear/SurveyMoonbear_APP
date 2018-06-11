@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 module SurveyMoonbear
   # Return nil
   class StoreResponses
@@ -18,7 +20,6 @@ module SurveyMoonbear
           end
         end
       end
-      'store responses!'
     end
 
     def fetch_survey_items
@@ -27,19 +28,20 @@ module SurveyMoonbear
     end
 
     def create_response_entity(page_id, item, responses)
-      puts item.name
-      puts responses[:responses]['age_num']
+      item_json = JSON.generate(type: item.type,
+                                name: item.name,
+                                description: item.description,
+                                required: item.required,
+                                options: item.options)
+      puts item_json
+
       Entity::Response.new(
         id: nil,
         respondent_id: responses[:respondent_id],
         page_id: page_id,
         item_id: item.id,
         response: responses[:responses][item.name],
-        item_type: item.type,
-        item_name: item.name,
-        item_description: item.description,
-        item_required: item.required,
-        item_options: item. options
+        item_data: item_json
       )
     end
 

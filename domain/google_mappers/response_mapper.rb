@@ -25,11 +25,7 @@ module SurveyMoonbear
             page_id: page_id,
             item_id: item_id,
             response: response,
-            item_type: item_type,
-            item_name: item_name,
-            item_description: item_description,
-            item_required: item_required,
-            item_options: item_options
+            item_data: item_data
           )
         end
 
@@ -49,24 +45,8 @@ module SurveyMoonbear
           @data['response']
         end
 
-        def item_type
-          @data['item_type']
-        end
-
-        def item_name
-          @data['item_name']
-        end
-
-        def item_description
-          @data['item_description']
-        end
-
-        def item_required
-          @data['item_required']
-        end
-
-        def item_options
-          @data['item_options']
+        def item_data
+          @data['item_data']
         end
       end
     end

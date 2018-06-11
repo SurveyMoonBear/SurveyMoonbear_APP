@@ -21,6 +21,8 @@ module SurveyMoonbear
     Econfig.root = '.'
 
     route do |routing|
+      routing.assets
+
       app = App
       config = App.config
 
@@ -85,6 +87,8 @@ module SurveyMoonbear
         # GET /survey_list
         routing.get do
           puts @current_account
+          routing.redirect '/' unless @current_account
+
           surveys = Repository::For[Entity::Survey]
                     .find_owner(@current_account['id'])
 

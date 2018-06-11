@@ -11,11 +11,7 @@ Sequel.migration do
       String      :page_id
       String      :item_id
       String      :response, null: true
-      String      :item_type
-      String      :item_name
-      String      :item_description
-      Integer     :item_required
-      String      :item_options, null: true
+      String      :item_data
     end
   end
 end
