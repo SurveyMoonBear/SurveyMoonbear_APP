@@ -119,37 +119,23 @@ module SurveyMoonbear
         # GET /survey/preview with params: survey_id, page
         routing.on 'preview' do
           routing.get do
-            survey = GetSurveyQuestions.new(@current_account)
-                                       .call(survey_id)
-            questions_with_pages = survey[:sheets].map do |question|
-              ParseSurveyQuestions.new.call(question)
-            end
-
-            questions = questions_with_pages[routing.params['page'].to_i - 1]
-            page_num = questions_with_pages.length
-            page = routing.params['page'].to_i
+            new_survey = GetSurveyFromSpreadsheet.new(@current_account)
+                                                 .call(survey_id)
+            questions = TransfromSurveyItemsToHTML.new.call(new_survey)
 
             view 'survey_preview',
                  layout: false,
-                 locals: { title: survey[:title],
-                           origin_id: survey_id,
-                           page_num: page_num,
-                           questions: questions,
-                           page: page }
+                 locals: { title: new_survey[:title],
+                           questions: questions }
           end
         end
 
         # GET survey/[survey_id]/export
         routing.get 'export' do
-          survey = GetSurveyQuestions.new(@current_account)
-                                     .call(survey_id)
-
-          saved_survey = ExportSurvey.new(@current_account)
-                                     .call(survey_id)
-
-          questions = saved_survey[routing.params['page'].to_i - 1]
-          page_num = saved_survey.length
-          page = routing.params['page'].to_i
+          new_survey = GetSurveyFromSpreadsheet.new(@current_account)
+                                               .call(survey_id)
+          saved_survey = StoreSurveyIntoDatabase.new.call(new_survey)
+          questions = TransfromSurveyItemsToHTML.new.call(saved_survey)
 
           # routing.redirect "/surveymoonbear/#{survey_id}"
           #                  params: {
@@ -162,11 +148,9 @@ module SurveyMoonbear
 
           view 'survey_export',
                layout: false,
-               locals: { title: survey[:title],
-                         origin_id: survey_id,
-                         page_num: page_num,
-                         questions: questions,
-                         page: page }
+               locals: { title: new_survey[:title],
+                         origin_id: new_survey[:origin_id],
+                         questions: questions }
         end
 
         # POST survey/[survey_id]/submit

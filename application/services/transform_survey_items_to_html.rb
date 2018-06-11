@@ -1,23 +1,9 @@
-# frozen_string_literal: true
-
 module SurveyMoonbear
-  class ExportSurvey
-    def initialize(current_account)
-      @current_account = current_account
-    end
-
-    def call(survey_id)
-      survey = update_database_records(survey_id)
+  class TransfromSurveyItemsToHTML
+    def call(survey)
       survey.pages.map do |page|
         build_questions(page)
       end
-    end
-
-    def update_database_records(survey_id)
-      google_api = Google::Api.new(@current_account['access_token'])
-      new_survey = Google::SurveyMapper.new(google_api)
-                                       .load(survey_id, @current_account)
-      Repository::For[new_survey.class].update_from(new_survey)
     end
 
     def build_questions(page)
