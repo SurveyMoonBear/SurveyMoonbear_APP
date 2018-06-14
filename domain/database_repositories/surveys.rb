@@ -55,6 +55,7 @@ module SurveyMoonbear
         end
 
         db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
+        db_survey.update(start_flag: 1)
 
         # add new records
         entity.pages.each do |page|
@@ -75,6 +76,18 @@ module SurveyMoonbear
         rebuild_entity(db_survey)
       end
 
+      def self.update_start_flag(entity)
+        db_survey = Database::SurveyOrm.where(id: entity.id).first
+
+        if db_survey.start_flag
+          db_survey.update(start_flag: 0)
+        else
+          db_survey.update(start_flag: 1)
+        end
+
+        rebuild_entity(db_survey)
+      end
+
       def self.rebuild_entity(db_record)
         return nil unless db_record
 
@@ -91,6 +104,7 @@ module SurveyMoonbear
           owner: Accounts.rebuild_entity(db_record.owner),
           origin_id: db_record.origin_id,
           title: db_record.title,
+          start_flag: db_record.start_flag,
           pages: pages,
           responses: responses
         )

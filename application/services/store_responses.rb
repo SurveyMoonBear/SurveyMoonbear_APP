@@ -23,7 +23,7 @@ module SurveyMoonbear
     end
 
     def fetch_survey_items
-      @survey = Database::SurveyOrm.where(origin_id: @survey_id).first
+      @survey = Database::SurveyOrm.where(id: @survey_id).first
       @survey.pages
     end
 

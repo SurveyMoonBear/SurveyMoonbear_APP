@@ -7,14 +7,14 @@ module SurveyMoonbear
       @current_account = current_account
     end
 
-    def call(survey_id)
-      read_spreadsheet(survey_id)
+    def call(spreadsheet_id)
+      read_spreadsheet(spreadsheet_id)
     end
 
-    def read_spreadsheet(survey_id)
+    def read_spreadsheet(spreadsheet_id)
       google_api = Google::Api.new(@current_account['access_token'])
       Google::SurveyMapper.new(google_api)
-                          .load(survey_id, @current_account)
+                          .load(spreadsheet_id, @current_account)
     end
   end
 end

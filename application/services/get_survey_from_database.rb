@@ -8,7 +8,7 @@ module SurveyMoonbear
     end
 
     def get_survey_from_database(survey_id)
-      Repository::For[Entity::Survey].find_origin_id(survey_id)
+      Repository::For[Entity::Survey].find_id(survey_id)
     end
   end
 end

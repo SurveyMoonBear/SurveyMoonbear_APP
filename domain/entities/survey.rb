@@ -13,6 +13,7 @@ module SurveyMoonbear
       attribute :owner, Account
       attribute :origin_id, Types::Strict::String
       attribute :title, Types::Strict::String
+      attribute :start_flag, Types::Strict::Bool.optional
       attribute :pages, Types::Strict::Array.member(Page)
       attribute :responses, Types::Strict::Array.member(Response).optional
     end

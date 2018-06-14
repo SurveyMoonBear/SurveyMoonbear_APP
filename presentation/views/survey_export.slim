@@ -38,7 +38,7 @@ html
 
         h1 #{title}
         div id="div_form"
-          form id="form" action="/survey/#{origin_id}/submit" method="post"
+          form id="form" action="/onlinesurvey/#{survey_id}/submit" method="post"
 
           - if questions.length > 1
             nav aria-label="Page navigation example" id="page_nav"
@@ -53,9 +53,6 @@ html
                     span aria-hidden="true" Next &rarr;
                     span class="sr-only" Next
 
-          - else
-            button type="submit" class="btn btn-primary" id="btn-submit" Submit
-
 javascript:
    var page_str = '';
   $.each(#{{questions}}, function(i, question){
@@ -65,6 +62,11 @@ javascript:
       $('#form').append("<div id='page_" + ++i + "'></div>");
     }
     $('#page_' + i).append(question);
+
+    if (i == #{{questions}}.length) {
+      button_str = "<button type='submit' class='btn btn-primary' id='btn-submit'>Submit</button>"
+      $('#page_' + i).append(button_str);
+    } 
   });
 
   var page = 1;

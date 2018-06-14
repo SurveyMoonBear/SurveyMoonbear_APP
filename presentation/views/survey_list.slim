@@ -1,32 +1,92 @@
 div class="mb-3"
-  div class="btn-toolbar"
-    a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey" Create a New Survey
+  div class="row justify-content-center mt-3"
+    div class="col-10 col-sm-10 col-md-8"
+      a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey" Create a New Survey
     
-- unless surveys.nil?
-  - surveys.each.with_index do |survey, index|
-    div class="row mb-3"
-      div class="col-sm"
-        div class="card" 
-          div class="card-body"
-            h4 class="card-title" #{index+1}. #{survey.title}
-            a {
-              href="#" class="btn btn-primary" 
-              data-toggle="modal" data-target="#modal_survey_editor" 
-              data-origin_id="#{survey.origin_id}"
-            } Edit Survey
-            a {
-              class="btn btn-success"
-              target="_blank"
-              href="/survey/#{survey.origin_id}/preview"
-            } Preview
-            a {
-              class="btn btn-warning"
-              target="_blank"
-              href="/survey/#{survey.origin_id}/export"
-            } Export
+  - unless surveys.nil?
+    - surveys.each.with_index do |survey, index|
+      div class="row justify-content-center mt-3"
+        div class="col-10 col-sm-10 col-md-8 border"
+          h3 class="mb-3 mt-3" #{index+1}. #{survey.title}
+          div class="row"
+            div class="btn-group col-sm-auto mb-3 pl-3"
+              button {
+                  class="btn btn-danger" role="group"
+                  data-toggle="modal" data-target="#modal_survey_editor" 
+                  data-origin_id="#{survey.origin_id}"
+              } Edit Survey
+              a {
+                class="btn btn-warning" role="group"
+                target="_blank"
+                href="/survey/#{survey.id}/preview"
+              } Preview
+              
+            div class="col-sm-auto mb-3"
+              div class="input-group"
+                - if survey.start_flag
+                  div class="input-group-prepend"
+                    a {
+                      class="btn btn-outline-success"
+                      href="/survey/#{survey.id}/close"
+                      id="startbtn-#{survey.id}"
+                    } Close Survey
+                  input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/onlinesurvey/#{survey.id}"
+                  div class="input-group-append"
+                    button class="btn btn-secondary" id="btn-copy" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
+                      i class="fas fa-copy"
+                    a class="btn btn-secondary" target="_blank" href="/onlinesurvey/#{survey.id}"
+                      i class="fas fa-external-link-alt"
+                - else
+                  div class="input-group-prepend"
+                    a {
+                      class="btn btn-success"
+                      href="/survey/#{survey.id}/start"
+                      id="startbtn-#{survey.id}"
+                    } Start Survey
+
+
+/ - unless surveys.nil?
+/   - surveys.each.with_index do |survey, index|
+/     div class="row mb-3"
+/       div class="col-sm"
+/         div class="card" 
+/           div class="card-body"
+/             h4 class="card-title" #{index+1}. #{survey.title}
+/             a {
+/               href="#" class="btn btn-primary" 
+/               data-toggle="modal" data-target="#modal_survey_editor" 
+/               data-origin_id="#{survey.origin_id}"
+/             } Edit Survey
+/             a {
+/               class="btn btn-success"
+/               target="_blank"
+/               href="/survey/#{survey.id}/preview"
+/             } Preview
+/             a {
+/               class="btn btn-warning"
+/               target="_blank"
+/               href="/survey/#{survey.id}/export"
+/             } Export
 
 include :create_survey_modal
 include :survey_editor_modal
+
+javascript:
+  $("input[type='text']").on("click", function () {
+    $(this).select();
+  });
+
+  function copyURL(input) {
+    $('#' + input).select();
+    document.execCommand("copy");
+  }
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  })
+
+
+
 
   
 

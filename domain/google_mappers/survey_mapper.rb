@@ -36,6 +36,7 @@ module SurveyMoonbear
             owner: owner,
             origin_id: origin_id,
             title: title,
+            start_flag: nil,
             pages: pages,
             responses: responses
           )

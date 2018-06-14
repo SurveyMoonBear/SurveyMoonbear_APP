@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module SurveyMoonbear
-  class StoreSurveyIntoDatabase
+  class UpdateSurveyData
     def call(survey)
       store_survey_into_database(survey)
     end

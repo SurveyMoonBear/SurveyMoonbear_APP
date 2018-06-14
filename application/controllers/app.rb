@@ -92,7 +92,7 @@ module SurveyMoonbear
           surveys = Repository::For[Entity::Survey]
                     .find_owner(@current_account['id'])
 
-          view 'survey_list', locals: { surveys: surveys }
+          view 'survey_list', locals: { surveys: surveys, config: config }
         end
 
         routing.post 'create' do
@@ -119,8 +119,9 @@ module SurveyMoonbear
         # GET /survey/preview with params: survey_id, page
         routing.on 'preview' do
           routing.get do
+            saved_survey = GetSurveyFromDatabase.new.call(survey_id)
             new_survey = GetSurveyFromSpreadsheet.new(@current_account)
-                                                 .call(survey_id)
+                                                 .call(saved_survey.origin_id)
             questions = TransfromSurveyItemsToHTML.new.call(new_survey)
 
             view 'survey_preview',
@@ -131,56 +132,89 @@ module SurveyMoonbear
         end
 
         # GET survey/[survey_id]/export
-        routing.get 'export' do
+        routing.get 'start' do
+          saved_survey = GetSurveyFromDatabase.new.call(survey_id)
           new_survey = GetSurveyFromSpreadsheet.new(@current_account)
-                                               .call(survey_id)
-          saved_survey = StoreSurveyIntoDatabase.new.call(new_survey)
-          questions = TransfromSurveyItemsToHTML.new.call(saved_survey)
+                                               .call(saved_survey.origin_id)
+          UpdateSurveyData.new.call(new_survey)
 
-          # routing.redirect "/surveymoonbear/#{survey_id}"
-          #                  params: {
-          #                    title: survey[:title],
-          #                    origin_id: survey_id,
-          #                    page_num: page_num,
-          #                    questions: questions,
-          #                    page: page
-          #                  }
+          routing.redirect '/survey_list'
+        end
+
+        routing.get 'close' do
+          saved_survey = GetSurveyFromDatabase.new.call(survey_id)
+          ChangeSurveyState.new.call(saved_survey)
+
+          routing.redirect '/survey_list'
+        end
+      end
+
+      routing.on 'onlinesurvey', String do |survey_id|
+        routing.get do
+          survey = GetSurveyFromDatabase.new.call(survey_id)
+          questions = TransfromSurveyItemsToHTML.new.call(survey)
+
+          survey_url = "#{config.APP_URL}/onlinesurvey/#{survey[:id]}"
+
+          surveys_started = SecureSession.new(session).get(:surveys_started)
+          if surveys_started
+            flag = false
+            surveys_started.each do |survey_started|
+              if survey_started[:survey_id] == survey_id
+                flag = true
+                break
+              end
+            end
+
+            unless flag
+              respondent_id = SecureRandom.uuid
+              surveys_started.push(survey_id: survey_id, respondent_id: respondent_id)
+              SecureSession.new(session).set(:surveys_started, surveys_started)
+            end
+          else
+            respondent_id = SecureRandom.uuid
+            surveys_started_arr = []
+            surveys_started_arr.push(survey_id: survey_id, respondent_id: respondent_id)
+            SecureSession.new(session).set(:surveys_started, surveys_started_arr)
+          end
 
           view 'survey_export',
                layout: false,
-               locals: { title: new_survey[:title],
-                         origin_id: new_survey[:origin_id],
+               locals: { title: survey[:title],
+                         survey_id: survey[:id],
+                         survey_url: survey_url,
                          questions: questions }
         end
 
-        # POST survey/[survey_id]/submit
+        # POST onlinesurvey/[survey_id]/submit
         routing.post 'submit' do
-          responses = {}
-          responses[:respondent_id] = '1'
-          responses[:responses] = routing.params
-          result = StoreResponses.new(survey_id).call(responses)
+          surveys_started = SecureSession.new(session).get(:surveys_started)
+          respondent = surveys_started.detect do |survey_started|
+            survey_started['survey_id'] == survey_id
+          end
 
-          puts result
+          responses = {}
+          responses[:respondent_id] = respondent['respondent_id']
+          responses[:responses] = routing.params
+          StoreResponses.new(survey_id).call(responses)
 
           routing.redirect 'finish'
         end
 
         # GET survey/[survey_id]/finish
         routing.get 'finish' do
-          view 'survey_finish',
-               locals: { survey_id: survey_id }
-        end
-      end
+          surveys_started = SecureSession.new(session).get(:surveys_started)
+          surveys_started.reject do |survey_started|
+            survey_started['survey_id'] == survey_id
+          end
 
-      routing.on 'surveymoonbear', String do |survey_id|
-        routing.get do
-          view 'survey_export',
+          if surveys_started
+            SecureSession.new(session).set(:surveys_started, surveys_started)
+          end
+
+          view 'survey_finish',
                layout: false,
-               locals: { title: routing.params[:title],
-                         origin_id: routing.params[:origin_id],
-                         page_num: routing.params[:page_num],
-                         questions: routing.params[:questions],
-                         page: routing.params[:page] }
+               locals: { survey_id: survey_id }
         end
       end
     end

@@ -20,6 +20,7 @@ module SurveyMoonbear
       #              join_table: :repos_contributors,
       #              left_key: :repo_id, right_key: :collaborator_id
       # plugin :timestamps, update_on_create: true
+      plugin :uuid, field: :id
     end
   end
 end
