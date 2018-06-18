@@ -1,0 +1,21 @@
+div class="modal fade" id="modal_survey_settings"
+  div class="modal-dialog" role="document"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Settings
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      form id="form_settings" method="post"
+        div class="modal-body"
+          div class="form-group"
+            label for="title" Survey Title
+            input type="text" class="form-control" id="title" name="title" placeholder="Enter survey title"
+        div class="modal-footer"
+          button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+          button type="submit" class="btn btn-primary" Save
+
+javascript:
+  $('#modal_survey_settings').on('show.bs.modal', function(e) {
+    var survey_id = $(e.relatedTarget).data('survey_id');
+    $('#form_settings').attr('action', '/survey/' + survey_id + '/update_settings');
+  });

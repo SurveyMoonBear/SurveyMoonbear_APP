@@ -88,6 +88,13 @@ module SurveyMoonbear
         rebuild_entity(db_survey)
       end
 
+      def self.update_title(entity)
+        db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
+        db_survey.update(title: entity.title)
+
+        rebuild_entity(db_survey)
+      end
+
       def self.rebuild_entity(db_record)
         return nil unless db_record
 

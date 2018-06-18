@@ -83,10 +83,10 @@ module SurveyMoonbear
       # /survey_list branch
       routing.on 'survey_list' do
         @current_account = SecureSession.new(session).get(:current_account)
+        puts @current_account
 
         # GET /survey_list
         routing.get do
-          puts @current_account
           routing.redirect '/' unless @current_account
 
           surveys = Repository::For[Entity::Survey]
@@ -111,10 +111,14 @@ module SurveyMoonbear
 
       routing.on 'survey', String do |survey_id|
         @current_account = SecureSession.new(session).get(:current_account)
-        # routing.post 'edit' do
-        #   survey = EditSurveyTitle.new(@current_account)
-        #                           .call(routing.params)
-        # end
+
+        routing.post 'update_settings' do
+          response = EditSurveyTitle.new(@current_account)
+                                    .call(survey_id, routing.params)
+          puts response
+
+          routing.redirect '/survey_list'
+        end
 
         # GET /survey/preview with params: survey_id, page
         routing.on 'preview' do

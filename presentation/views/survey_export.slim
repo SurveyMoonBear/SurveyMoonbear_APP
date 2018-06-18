@@ -75,7 +75,6 @@ javascript:
     $('#page_' + ++page).removeClass('d-none');
     if (page >= #{{questions}}.length) {
       $('#page_next').addClass('disabled');
-      $('#form').append('<button type="submit" class="btn btn-primary" id="btn-submit">Submit</button>');
     }
     $('#page_pre').removeClass('disabled');
     location.href = '#page_' + page;
@@ -87,7 +86,6 @@ javascript:
       $('#page_pre').addClass('disabled');
     }
     $('#page_next').removeClass('disabled');
-    $('#btn-submit').remove();
     location.href = '#page_' + page;
   }
 

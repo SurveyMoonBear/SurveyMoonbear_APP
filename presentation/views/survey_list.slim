@@ -7,7 +7,14 @@ div class="mb-3"
     - surveys.each.with_index do |survey, index|
       div class="row justify-content-center mt-3"
         div class="col-10 col-sm-10 col-md-8 border"
-          h3 class="mb-3 mt-3" #{index+1}. #{survey.title}
+          div class="mb-3 mt-3"
+            h3 class="d-inline align-middle" #{index+1}. #{survey.title}
+            button {
+                class="d-inline btn btn-outline-secondary border-0 align-middle"
+                data-toggle="modal" data-target="#modal_survey_settings" 
+                data-survey_id="#{survey.id}"
+            }
+              i class="fas fa-cog" 
           div class="row"
             div class="btn-group col-sm-auto mb-3 pl-3"
               button {
@@ -68,8 +75,9 @@ div class="mb-3"
 /               href="/survey/#{survey.id}/export"
 /             } Export
 
-include :create_survey_modal
-include :survey_editor_modal
+include :modal_create_survey
+include :modal_survey_settings
+include :modal_survey_editor
 
 javascript:
   $("input[type='text']").on("click", function () {

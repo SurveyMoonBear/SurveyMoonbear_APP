@@ -1,15 +1,21 @@
-input[type="range"].vas::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 5px;
-  height: 20px;
-  border-radius: 2px;
-  background: rgba(0, 0, 0, 0);
+/* .table > thead:first-child > tr:first-child > th:first-child {
+    position: absolute;
+    display: inline-block;
+    background-color: red;
+    height: 100%;
 }
 
-input[type="range"].slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 5px;
-  height: 20px;
-  border-radius: 2px;
-  background: rgba(0, 0, 0, 1);
+.table > tbody > tr > td:first-child {
+    position: absolute;
+    display: inline-block;
+    background-color: red;
+    height: 100%;
 }
+
+.table > thead:first-child > tr:first-child > th:nth-child(2) {
+    padding-left: 40px;
+}
+
+.table > tbody > tr > td:nth-child(2) {
+    padding-left: 50px !important;
+} */

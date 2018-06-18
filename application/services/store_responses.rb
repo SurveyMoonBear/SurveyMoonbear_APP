@@ -33,7 +33,6 @@ module SurveyMoonbear
                                 description: item.description,
                                 required: item.required,
                                 options: item.options)
-      puts item_json
 
       Entity::Response.new(
         id: nil,
