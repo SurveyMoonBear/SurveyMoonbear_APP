@@ -10,6 +10,7 @@ module SurveyMoonbear
     # Domain entity object for any survey
     class Survey < Dry::Struct
       attribute :id, Types::Int.optional
+      attribute :launch_id, Types::String.optional
       attribute :owner, Account
       attribute :origin_id, Types::Strict::String
       attribute :title, Types::Strict::String

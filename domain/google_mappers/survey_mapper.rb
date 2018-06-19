@@ -33,12 +33,13 @@ module SurveyMoonbear
         def build_entity
           SurveyMoonbear::Entity::Survey.new(
             id: nil,
+            launch_id: nil,
             owner: owner,
             origin_id: origin_id,
             title: title,
             start_flag: nil,
             pages: pages,
-            responses: responses
+            responses: nil
           )
         end
 
@@ -56,12 +57,6 @@ module SurveyMoonbear
 
         def pages
           @page_mapper.load_several(origin_id, @survey[:data]['sheets'])
-        end
-
-        def responses
-          return nil unless @survey[:responses]
-
-          ResponsMapper.build_entity(@survey[:responses])
         end
       end
     end

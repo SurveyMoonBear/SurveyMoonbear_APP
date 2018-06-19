@@ -36,9 +36,9 @@ html
       section class="mt-3 mb-5"
         / include :flash_bar
 
-        h1 #{title}
+        h1 #{survey.title}
         div id="div_form"
-          form id="form" action="/onlinesurvey/#{survey_id}/submit" method="post"
+          form id="form" action="/onlinesurvey/#{survey.id}/#{survey.launch_id}/submit" method="post"
 
           - if questions.length > 1
             nav aria-label="Page navigation example" id="page_nav"
@@ -63,10 +63,7 @@ javascript:
     }
     $('#page_' + i).append(question);
 
-    if (i == #{{questions}}.length) {
-      button_str = "<button type='submit' class='btn btn-primary' id='btn-submit'>Submit</button>"
-      $('#page_' + i).append(button_str);
-    } 
+    
   });
 
   var page = 1;
@@ -88,6 +85,11 @@ javascript:
     $('#page_next').removeClass('disabled');
     location.href = '#page_' + page;
   }
+
+  if (page == #{{questions}}.length) {
+    button_str = "<button type='submit' class='btn btn-primary' id='btn-submit'>Submit</button>"
+    $('#form').append(button_str);
+  } 
 
   $('.vas-unclicked').click(function (e) {
     $(this).removeClass('vas-unclicked');

@@ -4,6 +4,7 @@ require 'slim'
 require 'slim/include'
 require 'google/api_client/client_secrets'
 require 'json'
+require 'csv'
 
 module SurveyMoonbear
   # Web API
@@ -97,7 +98,7 @@ module SurveyMoonbear
 
         routing.post 'create' do
           @new_survey = CreateSurvey.new(@current_account, config)
-                                    .call(routing.params[:title])
+                                    .call(routing.params['title'])
 
           if @new_survey
             puts 'success!'
@@ -115,7 +116,6 @@ module SurveyMoonbear
         routing.post 'update_settings' do
           response = EditSurveyTitle.new(@current_account)
                                     .call(survey_id, routing.params)
-          puts response
 
           routing.redirect '/survey_list'
         end
@@ -140,7 +140,8 @@ module SurveyMoonbear
           saved_survey = GetSurveyFromDatabase.new.call(survey_id)
           new_survey = GetSurveyFromSpreadsheet.new(@current_account)
                                                .call(saved_survey.origin_id)
-          UpdateSurveyData.new.call(new_survey)
+          launch_id = SecureRandom.uuid
+          UpdateSurveyData.new.call(new_survey, launch_id)
 
           routing.redirect '/survey_list'
         end
@@ -151,14 +152,59 @@ module SurveyMoonbear
 
           routing.redirect '/survey_list'
         end
+
+        routing.on 'responses_detail' do
+          routing.get do
+            survey = GetSurveyFromDatabase.new.call(survey_id)
+            responses_hash = {}
+            survey.responses.each do |response|
+              existed_launch_id = responses_hash.keys.detect do |key|
+                key == response.launch_id
+              end
+
+              responses_hash[response.launch_id] = [] unless existed_launch_id
+
+              response_hash = {
+                item_id: response.item_id,
+                response: response.response
+              }
+              responses_hash[response.launch_id].push(response_hash)
+            end
+
+            responses_hash.keys
+          end
+        end
+
+        routing.on 'download', String do |file_name|
+          routing.get do
+            response['Content-Type'] = 'application/csv'
+            launch_id = file_name[0...-4]
+            puts launch_id
+
+            responses_data = [['respondent_id', 'response']]
+            survey = GetSurveyFromDatabase.new.call(survey_id)
+            survey.responses.each do |r|
+              puts r.launch_id == launch_id
+              if r.launch_id == launch_id
+                responses_data.push([r.respondent_id, r.response])
+              end
+            end
+            csv_string = CSV.generate do |csv|
+              responses_data.each do |data|
+                csv << data
+              end
+            end
+            csv_string
+          end
+        end
       end
 
-      routing.on 'onlinesurvey', String do |survey_id|
+      routing.on 'onlinesurvey', String, String do |survey_id, launch_id|
         routing.get do
           survey = GetSurveyFromDatabase.new.call(survey_id)
           questions = TransfromSurveyItemsToHTML.new.call(survey)
 
-          survey_url = "#{config.APP_URL}/onlinesurvey/#{survey[:id]}"
+          survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
 
           surveys_started = SecureSession.new(session).get(:surveys_started)
           if surveys_started
@@ -184,41 +230,47 @@ module SurveyMoonbear
 
           view 'survey_export',
                layout: false,
-               locals: { title: survey[:title],
-                         survey_id: survey[:id],
+               locals: { survey: survey,
                          survey_url: survey_url,
                          questions: questions }
         end
 
-        # POST onlinesurvey/[survey_id]/submit
-        routing.post 'submit' do
-          surveys_started = SecureSession.new(session).get(:surveys_started)
-          respondent = surveys_started.detect do |survey_started|
-            survey_started['survey_id'] == survey_id
+        routing.is 'submit' do
+          # GET onlinesurvey/[survey_id]/submit
+          routing.get do
+            puts 'hello'
+            surveys_started = SecureSession.new(session).get(:surveys_started)
+            surveys_started.reject do |survey_started|
+              survey_started['survey_id'] == survey_id
+            end
+
+            if surveys_started
+              SecureSession.new(session).set(:surveys_started, surveys_started)
+            end
+
+            puts 'finish_page'
+
+            view 'survey_finish',
+                 layout: false,
+                 locals: { survey_id: survey_id }
           end
 
-          responses = {}
-          responses[:respondent_id] = respondent['respondent_id']
-          responses[:responses] = routing.params
-          StoreResponses.new(survey_id).call(responses)
+          # POST onlinesurvey/[survey_id]/submit
+          routing.post do
+            puts 'post submit'
+            surveys_started = SecureSession.new(session).get(:surveys_started)
+            respondent = surveys_started.detect do |survey_started|
+              survey_started['survey_id'] == survey_id
+            end
 
-          routing.redirect 'finish'
-        end
+            responses = {}
+            responses[:launch_id] = launch_id
+            responses[:respondent_id] = respondent['respondent_id']
+            responses[:responses] = routing.params
+            StoreResponses.new(survey_id).call(responses)
 
-        # GET survey/[survey_id]/finish
-        routing.get 'finish' do
-          surveys_started = SecureSession.new(session).get(:surveys_started)
-          surveys_started.reject do |survey_started|
-            survey_started['survey_id'] == survey_id
+            routing.redirect "/onlinesurvey/#{survey_id}/submit"
           end
-
-          if surveys_started
-            SecureSession.new(session).set(:surveys_started, surveys_started)
-          end
-
-          view 'survey_finish',
-               layout: false,
-               locals: { survey_id: survey_id }
         end
       end
     end

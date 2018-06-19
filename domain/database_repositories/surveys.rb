@@ -45,7 +45,7 @@ module SurveyMoonbear
         rebuild_entity(db_survey)
       end
 
-      def self.update_from(entity)
+      def self.update_from(entity, launch_id)
         db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
 
         # delete old records
@@ -56,6 +56,7 @@ module SurveyMoonbear
 
         db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
         db_survey.update(start_flag: 1)
+        db_survey.update(launch_id: launch_id)
 
         # add new records
         entity.pages.each do |page|
@@ -108,6 +109,7 @@ module SurveyMoonbear
 
         Entity::Survey.new(
           id: db_record.id,
+          launch_id: db_record.launch_id,
           owner: Accounts.rebuild_entity(db_record.owner),
           origin_id: db_record.origin_id,
           title: db_record.title,

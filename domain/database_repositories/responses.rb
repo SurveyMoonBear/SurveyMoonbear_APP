@@ -12,6 +12,7 @@ module SurveyMoonbear
 
       def self.create_from(entity)
         db_response = Database::ResponseOrm.create(
+          launch_id: entity.launch_id,
           respondent_id: entity.respondent_id,
           page_id: entity.page_id,
           item_id: entity.item_id,
@@ -27,6 +28,7 @@ module SurveyMoonbear
 
         Entity::Response.new(
           id: db_record.id,
+          launch_id: db_record.launch_id,
           respondent_id: db_record.respondent_id,
           page_id: db_record.page_id,
           item_id: db_record.item_id,

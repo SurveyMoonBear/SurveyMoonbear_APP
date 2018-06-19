@@ -7,6 +7,7 @@ module SurveyMoonbear
     # Domain entity object for survey items
     class Response < Dry::Struct
       attribute :id, Types::Int.optional
+      attribute :launch_id, Types::String
       attribute :respondent_id, Types::Strict::String
       attribute :page_id, Types::Int
       attribute :item_id, Types::Int

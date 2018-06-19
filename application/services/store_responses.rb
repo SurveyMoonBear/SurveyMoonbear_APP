@@ -36,6 +36,7 @@ module SurveyMoonbear
 
       Entity::Response.new(
         id: nil,
+        launch_id: responses[:launch_id],
         respondent_id: responses[:respondent_id],
         page_id: page_id,
         item_id: item.id,

@@ -12,9 +12,10 @@ module SurveyMoonbear
 
     def call(title)
       access_token = get_access_token
-      new_survey_data = create_spreadsheet(access_token)
-      add_editor(new_survey_data, access_token)
-      store_into_database(new_survey_data)
+      origin_id = create_spreadsheet(access_token)
+      add_editor(origin_id, access_token)
+      set_survey_title(origin_id, title)
+      store_into_database(origin_id)
     end
 
     def get_access_token
@@ -34,19 +35,30 @@ module SurveyMoonbear
       files_copy_url = "https://www.googleapis.com/drive/v3/files/#{@config.SAMPLE_FILE_ID}/copy"
       response = HTTP.post("#{files_copy_url}?access_token=#{access_token}").parse
 
-      { origin_id: response['id'],
-        title: response['name'] }
+      response['id']
     end
 
-    def add_editor(new_survey_data, access_token)
+    def add_editor(origin_id, access_token)
       GoogleSpreadsheet.new(access_token)
-                       .add_editor(new_survey_data[:origin_id], @current_account['email'])
+                       .add_editor(origin_id, @current_account['email'])
     end
 
-    def store_into_database(new_survey_data)
+    def set_survey_title(origin_id, title)
+      spreadsheet_update_url = 'https://sheets.googleapis.com/v4/spreadsheets/'
+      HTTP.auth("Bearer #{@current_account['access_token']}")
+          .post("#{spreadsheet_update_url}#{origin_id}:batchUpdate",
+                json: { requests: [{
+                  updateSpreadsheetProperties: {
+                    properties: { title: title },
+                    fields: 'title'
+                  }
+                }] })
+    end
+
+    def store_into_database(origin_id)
       google_api = Google::Api.new(@current_account['access_token'])
       new_survey = Google::SurveyMapper.new(google_api)
-                                       .load(new_survey_data[:origin_id], @current_account)
+                                       .load(origin_id, @current_account)
       Repository::For[new_survey.class].find_or_create(new_survey)
     end
   end
