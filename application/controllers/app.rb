@@ -16,6 +16,7 @@ module SurveyMoonbear
     plugin :halt
     plugin :flash
     plugin :hooks
+    plugin :all_verbs
 
     extend Econfig::Shortcut
     Econfig.env = environment.to_s
@@ -146,11 +147,19 @@ module SurveyMoonbear
           routing.redirect '/survey_list'
         end
 
+        # GET survey/[survey_id]/close
         routing.get 'close' do
-          saved_survey = GetSurveyFromDatabase.new.call(survey_id)
-          ChangeSurveyState.new.call(saved_survey)
+          ChangeSurveyState.new.call(survey_id)
 
           routing.redirect '/survey_list'
+        end
+
+        # DELETE survey/[survey_id]
+        routing.delete do
+          response = DeleteSurvey.new(@current_account, config).call(survey_id)
+          response.title
+
+          routing.redirect '/survey_list', 303
         end
 
         routing.on 'responses_detail' do

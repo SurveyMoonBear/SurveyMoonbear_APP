@@ -46,7 +46,7 @@ module SurveyMoonbear
     private
 
     def build_section_title(item)
-      "<h2 class='bg-light'>#{item.description}</h2>"
+      "<h2 class='bg-light py-1 pl-1 mt-5'>#{item.description}</h2>"
     end
 
     def build_description(item)

@@ -1,13 +1,14 @@
 div class="mb-3"
   div class="row justify-content-center mt-3"
     div class="col-10 col-sm-10 col-md-8"
-      a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey" Create a New Survey
+      a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey"
+        <i class="fas fa-plus"></i> &nbsp;Create a New Survey
     
   - unless surveys.nil?
     - surveys.each.with_index do |survey, index|
       div class="row justify-content-center mt-3"
         div class="col-10 col-sm-10 col-md-8 border"
-          div class="mb-3 mt-3 d-flex"
+          div class="my-3 d-flex"
             h3 class="d-inline-flex align-middle mb-auto" #{index+1}. #{survey.title}
             button {
                 class="btn btn-outline-secondary border-0 ml-2 d-inline-flex align-middle"
@@ -15,33 +16,33 @@ div class="mb-3"
                 data-survey_id="#{survey.id}"
             }
               i class="fas fa-cog"
-            a {
+            button {
               class="btn btn-outline-secondary border-0 ml-auto d-inline-flex align-middle"
-              href=""
+              onclick="confirmDeleteSurvey('#{survey.id}', '#{survey.title}')"
             }
               i class="fas fa-trash-alt"
-          div class="row"
-            div class="col-sm-auto mb-3 pl-3"
+          div class="row d-flex"
+            div class="mb-3 pl-3"
               button {
-                  class="btn btn-danger" role="group"
+                  class="btn btn-danger mr-1 mt-1" type="button"
                   data-toggle="modal" data-target="#modal_survey_editor" 
                   data-origin_id="#{survey.origin_id}"
               } 
-                <i class="fas fa-edit"></i>  Edit Survey
+                <i class="fas fa-edit"></i> &nbsp;Edit Survey
               a {
-                class="btn btn-warning" role="group"
+                class="btn btn-warning mr-1 mt-1"
                 target="_blank"
                 href="/survey/#{survey.id}/preview"
               } 
-                <i class="fas fa-eye"></i>  Preview
+                <i class="fas fa-eye"></i> &nbsp;Preview
               button {
-                class="btn btn-info" role="group"
+                class="btn btn-info mr-1 mt-1" type="button"
                 data-toggle="modal" data-target="#modal_responses_download"
                 data-origin_id="#{survey.id}"
               } 
-                <i class="fas fa-download"></i>  Download
+                <i class="fas fa-download"></i> &nbsp;Download
               
-            div class="col-sm-auto mb-3"
+            div class="mt-1 mb-3 mx-3"
               div class="input-group"
                 - if survey.start_flag
                   div class="input-group-prepend"
@@ -57,12 +58,11 @@ div class="mb-3"
                     a class="btn btn-secondary" target="_blank" href="/onlinesurvey/#{survey.id}/#{survey.launch_id}"
                       i class="fas fa-external-link-alt"
                 - else
-                  div class="input-group-prepend"
-                    a {
-                      class="btn btn-success"
-                      href="/survey/#{survey.id}/start"
-                      id="startbtn-#{survey.id}"
-                    } Start Survey
+                  a {
+                    class="btn btn-success"
+                    href="/survey/#{survey.id}/start"
+                    id="startbtn-#{survey.id}"
+                  } Start Survey
 
 
 / - unless surveys.nil?
@@ -106,6 +106,19 @@ javascript:
   $(function () {
     $('[data-toggle="tooltip"]').tooltip();
   })
+
+  function confirmDeleteSurvey(survey_id, survey_title) {
+    if (confirm('Are you sure to delete "' + survey_title + '"?')) {
+      $.ajax({
+        url: "/survey/" + survey_id,
+        type: 'DELETE',
+        success: function(result) {
+          alert('"' + survey_title + '" has been deleted!');
+          location.reload();
+        }
+      });
+    }
+  }
 
 
 

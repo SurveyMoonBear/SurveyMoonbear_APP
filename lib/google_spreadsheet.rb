@@ -53,11 +53,12 @@ class GoogleSpreadsheet
   end
 
   def delete_spreadsheet(spreadsheet_id)
-    HTTP.delete("https://www.googleapis.com/drive/v2/files/#{spreadsheet_id}")
+    HTTP.auth("Bearer #{@access_token}")
+        .delete("https://www.googleapis.com/drive/v2/files/#{spreadsheet_id}")
   end
 
   def add_editor(spreadsheet_id, user_email)
-    response = HTTP.post("#{@drive_url}/#{spreadsheet_id}/permissions?access_token=#{@access_token}",
+    response = HTTP.post("#{@drive_url}/#{spreadsheet_id}/permissions?access_token=#{@access_token}&sendNotificationEmails=false",
                          json: { role: 'writer',
                                  type: 'user',
                                  value: user_email })

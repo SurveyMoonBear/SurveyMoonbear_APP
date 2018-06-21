@@ -96,6 +96,15 @@ module SurveyMoonbear
         rebuild_entity(db_survey)
       end
 
+      def self.delete_from(id)
+        db_survey = Database::SurveyOrm.where(id: id).first
+        db_survey.pages.each do |page|
+          page.items.each(&:delete)
+          page.delete
+        end
+        db_survey.delete
+      end
+
       def self.rebuild_entity(db_record)
         return nil unless db_record
 
