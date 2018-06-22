@@ -17,7 +17,7 @@ javascript:
       var str = "<table class='table table-borderless'>";
       $.each(response, function(i, wave) {
         str += "<tr><td>";
-        str += "<p class='d-inline align-middle'>" + wave + '</p>';
+        str += "<p class='d-inline align-middle'>Wave " + ++i + '. ' + wave + '</p>';
         str += "<a href='/survey/" + survey_id + "/download/" + wave + ".csv' class='btn btn-outline-secondary d-inline ml-2 align-middle'>";
         str += "<i class='fas fa-download' /></a></td></tr>";
       });

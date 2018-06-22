@@ -9,7 +9,7 @@ div class="modal fade" id="modal_survey_settings"
         div class="modal-body"
           div class="form-group"
             label for="title" Survey Title
-            input type="text" class="form-control" id="title" name="title" placeholder="Enter survey title"
+            input type="text" class="form-control" id="input-title" name="title" placeholder="Enter survey title"
         div class="modal-footer"
           button type="button" class="btn btn-secondary" data-dismiss="modal" Close
           button type="submit" class="btn btn-primary" Save
@@ -17,5 +17,7 @@ div class="modal fade" id="modal_survey_settings"
 javascript:
   $('#modal_survey_settings').on('show.bs.modal', function(e) {
     var survey_id = $(e.relatedTarget).data('survey_id');
+    var survey_title = $(e.relatedTarget).data('survey_title');
     $('#form_settings').attr('action', '/survey/' + survey_id + '/update_settings');
+    $('#input-title').val(survey_title);
   });

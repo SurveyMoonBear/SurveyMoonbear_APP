@@ -149,7 +149,8 @@ module SurveyMoonbear
 
         # GET survey/[survey_id]/close
         routing.get 'close' do
-          ChangeSurveyState.new.call(survey_id)
+          saved_survey = GetSurveyFromDatabase.new.call(survey_id)
+          ChangeSurveyState.new.call(saved_survey)
 
           routing.redirect '/survey_list'
         end
@@ -188,29 +189,77 @@ module SurveyMoonbear
           routing.get do
             response['Content-Type'] = 'application/csv'
             launch_id = file_name[0...-4]
-            puts launch_id
 
-            responses_data = [['respondent_id', 'response']]
-            survey = GetSurveyFromDatabase.new.call(survey_id)
-            survey.responses.each do |r|
-              puts r.launch_id == launch_id
-              if r.launch_id == launch_id
-                responses_data.push([r.respondent_id, r.response])
-              end
-            end
-            csv_string = CSV.generate do |csv|
-              responses_data.each do |data|
-                csv << data
-              end
-            end
-            csv_string
+            responses_csv = TransformResponsesToCSV.new.call(survey_id, launch_id)
           end
         end
       end
 
       routing.on 'onlinesurvey', String, String do |survey_id, launch_id|
+        routing.on 'submit' do
+          routing.is do
+            # GET onlinesurvey/[survey_id]/[launch_id]/submit
+            routing.get do
+              survey = GetSurveyFromDatabase.new.call(survey_id)
+              surveys_started = SecureSession.new(session).get(:surveys_started)
+              if surveys_started.nil?
+                routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
+              else
+                surveys_started.reject! do |survey_started|
+                  survey_started['survey_id'] == survey_id
+                end
+
+                if surveys_started
+                  SecureSession.new(session).set(:surveys_started, surveys_started)
+                end
+              end
+
+              view 'survey_finish',
+                   layout: false,
+                   locals: { survey: survey }
+            end
+
+            # POST onlinesurvey/[survey_id]/[launch_id]/submit
+            routing.post do
+              puts 'post submit'
+              surveys_started = SecureSession.new(session).get(:surveys_started)
+              respondent = surveys_started.detect do |survey_started|
+                survey_started['survey_id'] == survey_id
+              end
+
+              responses = {}
+              responses[:launch_id] = launch_id
+              responses[:respondent_id] = respondent['respondent_id']
+              responses[:responses] = routing.params
+              StoreResponses.new(survey_id).call(responses)
+
+              routing.redirect
+            end
+          end
+        end
+
+        routing.on 'closed' do
+          routing.get do
+            survey = GetSurveyFromDatabase.new.call(survey_id)
+
+            if survey.start_flag
+              routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
+            end
+
+            view 'survey_closed', 
+                 layout: false,
+                 locals: { survey: survey }
+          end
+        end
+
+        # GET /onlinesurvey/[survey_id]/[launch_id]
         routing.get do
           survey = GetSurveyFromDatabase.new.call(survey_id)
+
+          if survey.start_flag == false
+            routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
+          end
+
           questions = TransfromSurveyItemsToHTML.new.call(survey)
 
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
@@ -242,44 +291,6 @@ module SurveyMoonbear
                locals: { survey: survey,
                          survey_url: survey_url,
                          questions: questions }
-        end
-
-        routing.is 'submit' do
-          # GET onlinesurvey/[survey_id]/submit
-          routing.get do
-            puts 'hello'
-            surveys_started = SecureSession.new(session).get(:surveys_started)
-            surveys_started.reject do |survey_started|
-              survey_started['survey_id'] == survey_id
-            end
-
-            if surveys_started
-              SecureSession.new(session).set(:surveys_started, surveys_started)
-            end
-
-            puts 'finish_page'
-
-            view 'survey_finish',
-                 layout: false,
-                 locals: { survey_id: survey_id }
-          end
-
-          # POST onlinesurvey/[survey_id]/submit
-          routing.post do
-            puts 'post submit'
-            surveys_started = SecureSession.new(session).get(:surveys_started)
-            respondent = surveys_started.detect do |survey_started|
-              survey_started['survey_id'] == survey_id
-            end
-
-            responses = {}
-            responses[:launch_id] = launch_id
-            responses[:respondent_id] = respondent['respondent_id']
-            responses[:responses] = routing.params
-            StoreResponses.new(survey_id).call(responses)
-
-            routing.redirect "/onlinesurvey/#{survey_id}/submit"
-          end
         end
       end
     end

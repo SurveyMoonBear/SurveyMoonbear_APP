@@ -102,6 +102,10 @@ module SurveyMoonbear
           page.items.each(&:delete)
           page.delete
         end
+
+        if db_survey.responses
+          db_survey.responses.each(&:delete)
+        end
         db_survey.delete
       end
 
