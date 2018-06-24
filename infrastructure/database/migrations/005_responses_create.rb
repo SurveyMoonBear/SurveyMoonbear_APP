@@ -6,7 +6,7 @@ Sequel.migration do
   change do
     create_table(:responses) do
       primary_key :id
-      foreign_key :survey_id, :surveys
+      uuid        :survey_id, foreign_key: true, table: :surveys
       String      :launch_id
       String      :respondent_id
       String      :page_id
