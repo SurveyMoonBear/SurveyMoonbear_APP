@@ -86,10 +86,11 @@ module SurveyMoonbear
 
       item.options.split(',').each_with_index do |option, index|
         str += "<div class='custom-control custom-checkbox'>"
-        str += "<input type='checkbox' class='custom-control-input' id='#{item.name}#{index}' name='#{item.name}' value='#{option}'>"
+        str += "<input type='checkbox' class='custom-control-input' id='#{item.name}#{index}' name='checkbox-#{item.name}' value='#{option}'>"
         str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
         str += '</div>'
       end
+      str += "<input type='hidden' name='#{item.name}'>"
       str += '</fieldset>'
     end
 

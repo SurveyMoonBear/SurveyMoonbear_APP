@@ -62,8 +62,11 @@ javascript:
       $('#form').append("<div id='page_" + ++i + "'></div>");
     }
     $('#page_' + i).append(question);
-
     
+    if(i == #{{questions}}.length) {
+      button_str = "<button type='submit' class='btn btn-primary' id='btn-submit'>Submit</button>"
+      $('#page_' + i).append(button_str);
+    }
   });
 
   var page = 1;
@@ -86,13 +89,17 @@ javascript:
     location.href = '#page_' + page;
   }
 
-  if (page == #{{questions}}.length) {
-    button_str = "<button type='submit' class='btn btn-primary' id='btn-submit'>Submit</button>"
-    $('#form').append(button_str);
-  } 
-
   $('.vas-unclicked').click(function (e) {
     $(this).removeClass('vas-unclicked');
+  });
+
+  $('input[type=checkbox]').click(function (e) {
+    var type_name = $(this).prop('name');
+    var str = $("input[name=" + type_name + "]:checked").map(function () {
+        return this.value;
+      }).get().join(', ');
+    var input_name = type_name.substr(9, type_name.length);
+    $('input[name='+input_name+']').val(str);
   });
 
 css:

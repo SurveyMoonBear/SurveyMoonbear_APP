@@ -223,7 +223,7 @@ module SurveyMoonbear
             routing.post do
               puts 'post submit'
               surveys_started = SecureSession.new(session).get(:surveys_started)
-              respondent = surveys_started.detect do |survey_started|
+              respondent = surveys_started.find do |survey_started|
                 survey_started['survey_id'] == survey_id
               end
 
@@ -246,7 +246,7 @@ module SurveyMoonbear
               routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
             end
 
-            view 'survey_closed', 
+            view 'survey_closed',
                  layout: false,
                  locals: { survey: survey }
           end
@@ -265,22 +265,20 @@ module SurveyMoonbear
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
 
           surveys_started = SecureSession.new(session).get(:surveys_started)
+          puts surveys_started
           if surveys_started
-            flag = false
-            surveys_started.each do |survey_started|
-              if survey_started[:survey_id] == survey_id
-                flag = true
-                break
-              end
+            flag = surveys_started.find do |survey_started|
+              survey_started['survey_id'] == survey_id
             end
 
-            unless flag
+            if flag.nil?
               respondent_id = SecureRandom.uuid
               surveys_started.push(survey_id: survey_id, respondent_id: respondent_id)
               SecureSession.new(session).set(:surveys_started, surveys_started)
             end
           else
             respondent_id = SecureRandom.uuid
+            puts respondent_id
             surveys_started_arr = []
             surveys_started_arr.push(survey_id: survey_id, respondent_id: respondent_id)
             SecureSession.new(session).set(:surveys_started, surveys_started_arr)
