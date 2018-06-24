@@ -1,0 +1,128 @@
+div class="mb-3"
+  div class="row justify-content-center mt-3"
+    div class="col-10 col-sm-10 col-md-8"
+      a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey"
+        <i class="fas fa-plus"></i> &nbsp;Create a New Survey
+    
+  - unless surveys.nil?
+    - surveys.each.with_index do |survey, index|
+      div class="row justify-content-center mt-3"
+        div class="col-10 col-sm-10 col-md-8 border"
+          div class="my-3 d-flex"
+            h3 class="d-inline-flex align-middle mb-auto" #{index+1}. #{survey.title}
+            button {
+                class="btn btn-outline-secondary border-0 ml-2 d-inline-flex align-middle"
+                data-toggle="modal" data-target="#modal_survey_settings" 
+                data-survey_id="#{survey.id}"
+                data-survey_title="#{survey.title}"
+            }
+              i class="fas fa-cog"
+            button {
+              class="btn btn-outline-secondary border-0 ml-auto d-inline-flex align-middle"
+              onclick="confirmDeleteSurvey('#{survey.id}', '#{survey.title}')"
+            }
+              i class="fas fa-trash-alt"
+          div class="row d-flex"
+            div class="mb-3 pl-3"
+              button {
+                  class="btn btn-danger mr-1 mt-1" type="button"
+                  data-toggle="modal" data-target="#modal_survey_editor" 
+                  data-origin_id="#{survey.origin_id}"
+              } 
+                <i class="fas fa-edit"></i> &nbsp;Edit Survey
+              a {
+                class="btn btn-warning mr-1 mt-1"
+                target="_blank"
+                href="/survey/#{survey.id}/preview"
+              } 
+                <i class="fas fa-eye"></i> &nbsp;Preview
+              button {
+                class="btn btn-info mr-1 mt-1" type="button"
+                data-toggle="modal" data-target="#modal_responses_download"
+                data-origin_id="#{survey.id}"
+              } 
+                <i class="fas fa-download"></i> &nbsp;Download
+              
+            div class="mt-1 mb-3 mx-3"
+              div class="input-group"
+                - if survey.start_flag
+                  div class="input-group-prepend"
+                    a {
+                      class="btn btn-outline-success"
+                      href="/survey/#{survey.id}/close"
+                      id="startbtn-#{survey.id}"
+                    } Close Survey
+                  input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
+                  div class="input-group-append"
+                    button class="btn btn-secondary" id="btn-copy" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
+                      i class="fas fa-copy"
+                    a class="btn btn-secondary" target="_blank" href="/onlinesurvey/#{survey.id}/#{survey.launch_id}"
+                      i class="fas fa-external-link-alt"
+                - else
+                  a {
+                    class="btn btn-success"
+                    href="/survey/#{survey.id}/start"
+                    id="startbtn-#{survey.id}"
+                  } Start Survey
+
+
+/ - unless surveys.nil?
+/   - surveys.each.with_index do |survey, index|
+/     div class="row mb-3"
+/       div class="col-sm"
+/         div class="card" 
+/           div class="card-body"
+/             h4 class="card-title" #{index+1}. #{survey.title}
+/             a {
+/               href="#" class="btn btn-primary" 
+/               data-toggle="modal" data-target="#modal_survey_editor" 
+/               data-origin_id="#{survey.origin_id}"
+/             } Edit Survey
+/             a {
+/               class="btn btn-success"
+/               target="_blank"
+/               href="/survey/#{survey.id}/preview"
+/             } Preview
+/             a {
+/               class="btn btn-warning"
+/               target="_blank"
+/               href="/survey/#{survey.id}/export"
+/             } Export
+
+include :modal_create_survey
+include :modal_survey_settings
+include :modal_survey_editor
+include :modal_responses_download
+
+javascript:
+  $("input[type='text']").on("click", function () {
+    $(this).select();
+  });
+
+  function copyURL(input) {
+    $('#' + input).select();
+    document.execCommand("copy");
+  }
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  })
+
+  function confirmDeleteSurvey(survey_id, survey_title) {
+    if (confirm('Are you sure to delete "' + survey_title + '"?')) {
+      $.ajax({
+        url: "/survey/" + survey_id,
+        type: 'DELETE',
+        success: function(result) {
+          alert('"' + survey_title + '" has been deleted!');
+          location.reload();
+        }
+      });
+    }
+  }
+
+
+
+
+  
+

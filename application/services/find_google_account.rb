@@ -9,7 +9,9 @@ module SurveyMoonbear
 
     def call(code)
       access_token = get_access_token(code)
-      get_google_account(access_token)
+
+      account = get_google_account(access_token)
+      load_from_db(account)
     end
 
     def get_access_token(code)
@@ -26,9 +28,16 @@ module SurveyMoonbear
     def get_google_account(access_token)
       google_account = HTTP.get("https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=#{access_token}")
                            .parse
-      { email: google_account['email'],
-        username: google_account['name'],
-        access_token: access_token }
+
+      account = { 'email' => google_account['email'],
+                  'username' => google_account['name'],
+                  'access_token' => access_token }
+
+      Google::AccountMapper.new.load(account)
+    end
+
+    def load_from_db(account)
+      Repository::For[account.class].find_or_create(account)
     end
   end
 end

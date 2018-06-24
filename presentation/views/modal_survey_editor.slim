@@ -1,0 +1,22 @@
+div class="modal fade" id="modal_survey_editor" 
+  div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 90% !important;"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Editor
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      div class="modal-body"
+        p class="text-danger text-center"
+          <i class="fas fa-exclamation-triangle"></i> Only you can see the changes until you restart the survey.
+        div class="container embed-responsive embed-responsive-16by9 p-1" id="iframe-div"
+        // spreadsheet iframe
+      div class="modal-footer"
+        button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+
+javascript:
+  $('#modal_survey_editor').on('show.bs.modal', function(e) {
+    var origin_id = $(e.relatedTarget).data('origin_id');
+    var modal = $(this);
+    var str = '<iframe class="embed-responsive-item" src="https://docs.google.com/spreadsheets/d/' + origin_id + '/edit?usp=sharing&amp;single=true&amp;widget=true&amp;headers=false&amp;chrome=false&amp;rm=minimal" height="500" width="700"></iframe>';
+    modal.find('#iframe-div').html(str);
+  });

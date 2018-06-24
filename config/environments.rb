@@ -1,5 +1,7 @@
 require 'roda'
 require 'econfig'
+require 'rack/ssl-enforcer'
+require 'rack/session/redis'
 
 module SurveyMoonbear
   # Configuration for the API
@@ -10,6 +12,13 @@ module SurveyMoonbear
     Econfig.env = environment.to_s
     Econfig.root = '.'
 
+    configure do
+      SecureSession.setup(config)
+      SecureMessage.setup(config)
+    end
+
+    ONE_MONTH = 30 * 24 * 60 * 60 # in seconds
+
     configure :development do
       # Allows running reload! in pry to restart entire app
       def self.reload!
@@ -19,10 +28,14 @@ module SurveyMoonbear
 
     configure :development, :test do
       ENV['DATABASE_URL'] = 'sqlite://' + config.db_filename
+
+      use Rack::Session::Pool,
+          expire_after: ONE_MONTH
     end
 
     configure :production do
-      # Use Heroku's DATABASE_URL environment variable
+      use Rack::Session::Redis,
+          expire_after: ONE_MONTH, redis_server: App.config.REDIS_URL
     end
 
     configure do

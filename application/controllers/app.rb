@@ -3,6 +3,8 @@ require 'econfig'
 require 'slim'
 require 'slim/include'
 require 'google/api_client/client_secrets'
+require 'json'
+require 'csv'
 
 module SurveyMoonbear
   # Web API
@@ -12,26 +14,39 @@ module SurveyMoonbear
     plugin :environments
     plugin :json
     plugin :halt
+    plugin :flash
+    plugin :hooks
+    plugin :all_verbs
 
     extend Econfig::Shortcut
     Econfig.env = environment.to_s
     Econfig.root = '.'
 
     route do |routing|
+      routing.assets
+
       app = App
       config = App.config
+
+      SecureDB.setup(config.DB_KEY)
 
       # GET / request
       routing.root do
         url = 'https://accounts.google.com/o/oauth2/v2/auth'
-        scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file'
+        scopes = ['https://www.googleapis.com/auth/userinfo.profile',
+                  'https://www.googleapis.com/auth/userinfo.email',
+                  'https://www.googleapis.com/auth/spreadsheets']
         params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
                   "redirect_uri=#{config.APP_URL}/account/login/google_callback",
                   'response_type=code',
-                  "scope=#{scope}"]
-        google_sso_url = "#{url}?#{params.join('&')}"
+                  "scope=#{scopes.join(' ')}"]
+        @google_sso_url = "#{url}?#{params.join('&')}"
 
-        view 'home', locals: { google_sso_url: google_sso_url }
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        routing.redirect '/survey_list' if @current_account
+
+        view 'home', locals: { google_sso_url: @google_sso_url }
       end
 
       # /account branch
@@ -41,19 +56,239 @@ module SurveyMoonbear
           # GET /account/login/register_callback request
           routing.get 'google_callback' do
             begin
-              account_data = FindAuthenticatedGoogleAccount.new(config)
-                                                           .call(routing.params['code'])
-              account = Google::AccountMapper.new.load(account_data)
+              logged_in_account = FindAuthenticatedGoogleAccount.new(config)
+                                                                .call(routing.params['code'])
+
             rescue StandardError
               routing.halt(404, error: 'Account not found')
             end
 
-            stored_account = Repository::For[account.class].find_or_create(account)
             response.status = 201
-            stored_account.to_h
-            puts 'login successfully!'
-            routing.redirect '/'
+            logged_in_account = logged_in_account.to_h
+            if logged_in_account
+              SecureSession.new(session).set(:current_account, logged_in_account)
+              flash[:notice] = "Hello #{logged_in_account['username']}!"
+              routing.redirect '/survey_list'
+            else
+              puts 'login fail!'
+              routing.redirect '/'
+            end
           end
+        end
+
+        routing.get 'logout' do
+          SecureSession.new(session).delete(:current_account)
+          routing.redirect '/'
+        end
+      end
+
+      # /survey_list branch
+      routing.on 'survey_list' do
+        @current_account = SecureSession.new(session).get(:current_account)
+        puts @current_account
+
+        # GET /survey_list
+        routing.get do
+          routing.redirect '/' unless @current_account
+
+          surveys = Repository::For[Entity::Survey]
+                    .find_owner(@current_account['id'])
+
+          view 'survey_list', locals: { surveys: surveys, config: config }
+        end
+
+        routing.post 'create' do
+          @new_survey = CreateSurvey.new(@current_account, config)
+                                    .call(routing.params['title'])
+
+          if @new_survey
+            puts 'success!'
+          else
+            puts 'create fail!'
+          end
+
+          routing.redirect '/survey_list'
+        end
+      end
+
+      routing.on 'survey', String do |survey_id|
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        routing.post 'update_settings' do
+          response = EditSurveyTitle.new(@current_account)
+                                    .call(survey_id, routing.params)
+
+          routing.redirect '/survey_list'
+        end
+
+        # GET /survey/preview with params: survey_id, page
+        routing.on 'preview' do
+          routing.get do
+            saved_survey = GetSurveyFromDatabase.new.call(survey_id)
+            new_survey = GetSurveyFromSpreadsheet.new(@current_account)
+                                                 .call(saved_survey.origin_id)
+            questions = TransfromSurveyItemsToHTML.new.call(new_survey)
+
+            view 'survey_preview',
+                 layout: false,
+                 locals: { title: new_survey[:title],
+                           questions: questions }
+          end
+        end
+
+        # GET survey/[survey_id]/export
+        routing.get 'start' do
+          saved_survey = GetSurveyFromDatabase.new.call(survey_id)
+          new_survey = GetSurveyFromSpreadsheet.new(@current_account)
+                                               .call(saved_survey.origin_id)
+          launch_id = SecureRandom.uuid
+          UpdateSurveyData.new.call(new_survey, launch_id)
+
+          routing.redirect '/survey_list'
+        end
+
+        # GET survey/[survey_id]/close
+        routing.get 'close' do
+          saved_survey = GetSurveyFromDatabase.new.call(survey_id)
+          ChangeSurveyState.new.call(saved_survey)
+
+          routing.redirect '/survey_list'
+        end
+
+        # DELETE survey/[survey_id]
+        routing.delete do
+          response = DeleteSurvey.new(@current_account, config).call(survey_id)
+          response.title
+
+          routing.redirect '/survey_list', 303
+        end
+
+        routing.on 'responses_detail' do
+          routing.get do
+            survey = GetSurveyFromDatabase.new.call(survey_id)
+            responses_hash = {}
+            survey.responses.each do |response|
+              existed_launch_id = responses_hash.keys.detect do |key|
+                key == response.launch_id
+              end
+
+              responses_hash[response.launch_id] = [] unless existed_launch_id
+
+              response_hash = {
+                item_id: response.item_id,
+                response: response.response
+              }
+              responses_hash[response.launch_id].push(response_hash)
+            end
+
+            responses_hash.keys
+          end
+        end
+
+        routing.on 'download', String do |file_name|
+          routing.get do
+            response['Content-Type'] = 'application/csv'
+            launch_id = file_name[0...-4]
+
+            responses_csv = TransformResponsesToCSV.new.call(survey_id, launch_id)
+          end
+        end
+      end
+
+      routing.on 'onlinesurvey', String, String do |survey_id, launch_id|
+        routing.on 'submit' do
+          routing.is do
+            # GET onlinesurvey/[survey_id]/[launch_id]/submit
+            routing.get do
+              survey = GetSurveyFromDatabase.new.call(survey_id)
+              surveys_started = SecureSession.new(session).get(:surveys_started)
+              if surveys_started.nil?
+                routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
+              else
+                surveys_started.reject! do |survey_started|
+                  survey_started['survey_id'] == survey_id
+                end
+
+                if surveys_started
+                  SecureSession.new(session).set(:surveys_started, surveys_started)
+                end
+              end
+
+              view 'survey_finish',
+                   layout: false,
+                   locals: { survey: survey }
+            end
+
+            # POST onlinesurvey/[survey_id]/[launch_id]/submit
+            routing.post do
+              puts 'post submit'
+              surveys_started = SecureSession.new(session).get(:surveys_started)
+              respondent = surveys_started.find do |survey_started|
+                survey_started['survey_id'] == survey_id
+              end
+
+              responses = {}
+              responses[:launch_id] = launch_id
+              responses[:respondent_id] = respondent['respondent_id']
+              responses[:responses] = routing.params
+              StoreResponses.new(survey_id).call(responses)
+
+              routing.redirect
+            end
+          end
+        end
+
+        routing.on 'closed' do
+          routing.get do
+            survey = GetSurveyFromDatabase.new.call(survey_id)
+
+            if survey.start_flag
+              routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
+            end
+
+            view 'survey_closed',
+                 layout: false,
+                 locals: { survey: survey }
+          end
+        end
+
+        # GET /onlinesurvey/[survey_id]/[launch_id]
+        routing.get do
+          survey = GetSurveyFromDatabase.new.call(survey_id)
+
+          if survey.start_flag == false
+            routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
+          end
+
+          questions = TransfromSurveyItemsToHTML.new.call(survey)
+
+          survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
+
+          surveys_started = SecureSession.new(session).get(:surveys_started)
+          puts surveys_started
+          if surveys_started
+            flag = surveys_started.find do |survey_started|
+              survey_started['survey_id'] == survey_id
+            end
+
+            if flag.nil?
+              respondent_id = SecureRandom.uuid
+              surveys_started.push(survey_id: survey_id, respondent_id: respondent_id)
+              SecureSession.new(session).set(:surveys_started, surveys_started)
+            end
+          else
+            respondent_id = SecureRandom.uuid
+            puts respondent_id
+            surveys_started_arr = []
+            surveys_started_arr.push(survey_id: survey_id, respondent_id: respondent_id)
+            SecureSession.new(session).set(:surveys_started, surveys_started_arr)
+          end
+
+          view 'survey_export',
+               layout: false,
+               locals: { survey: survey,
+                         survey_url: survey_url,
+                         questions: questions }
         end
       end
     end

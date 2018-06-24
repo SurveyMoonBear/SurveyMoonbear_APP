@@ -32,7 +32,8 @@ task :console do
 end
 
 namespace :db do
-  require_relative 'config/environment.rb' # load config info require 'sequel'
+  require_relative 'lib/init.rb'
+  require_relative 'config/environments.rb' # load config info require 'sequel'
   require 'sequel' # TODO: remove after create orm
 
   Sequel.extension :migration
@@ -46,8 +47,11 @@ namespace :db do
 
   desc 'Drop all tables'
   task :drop do
-    require_relative 'config/environment.rb'
+    require_relative 'config/environments.rb'
     # drop according to dependencies
+    app.DB.drop_table :items
+    app.DB.drop_table :pages
+    app.DB.drop_table :surveys
     app.DB.drop_table :accounts
   end
 
@@ -63,5 +67,37 @@ namespace :db do
 
     FileUtils.rm(app.config.db_filename)
     puts "Deleted #{app.config.db_filename}"
+  end
+end
+
+namespace :crypto do
+  desc 'Create sample cryptographic key for database'
+  task :db_key do
+    puts "DB_KEY: #{SecureDB.generate_key}"
+  end
+
+  task :crypto_requires do
+    require 'rbnacl/libsodium'
+    require 'base64'
+  end
+
+  desc 'Create rbnacl key'
+  task msg_key: [:crypto_requires] do
+    puts "New MSG_KEY: #{SecureMessage.generate_key}"
+  end
+
+  desc 'Create cookie secret'
+  task session_secret: [:crypto_requires] do
+    puts "New session secret (base64 encoded): #{SecureSession.generate_secret}"
+  end
+end
+
+namespace :session do
+  desc 'Wipe all sessions stored in Redis'
+  task :wipe => :load_all do
+    require 'redis'
+    puts 'Deleting all sessions from Redis session store'
+    wiped = SessionSecure.wipe_radis_session
+    puts "#{wiped.count} sessions deleted"
   end
 end

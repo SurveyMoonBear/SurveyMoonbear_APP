@@ -2,8 +2,9 @@ module SurveyMoonbear
   module Repository
     # Repository for Account Entities
     class Accounts
-      def self.find_email(email)
-        db_record = Database::AccountOrm.first(email: email)
+      def self.find_entity(entity)
+        db_record = Database::AccountOrm.first(email: entity.email)
+        db_record.update(access_token: entity.access_token) if db_record
         rebuild_entity(db_record)
       end
 
@@ -13,7 +14,7 @@ module SurveyMoonbear
       end
 
       def self.find_or_create(entity)
-        find_email(entity.email) || create_from(entity)
+        find_entity(entity) || create_from(entity)
       end
 
       def self.create_from(entity)
@@ -30,7 +31,7 @@ module SurveyMoonbear
         return nil unless db_record
 
         Entity::Account.new(
-          id: nil,
+          id: db_record.id,
           email: db_record.email,
           username: db_record.username,
           access_token: db_record.access_token

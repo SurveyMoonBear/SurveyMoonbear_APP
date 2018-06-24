@@ -1,0 +1,27 @@
+div class="modal fade" id="modal_responses_download" 
+  div class="modal-dialog modal-lg modal-dialog-centered" role="document"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Responses Download
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      div class="modal-body"
+        div class="container" id="div-content"
+        // spreadsheet iframe
+
+javascript:
+  $('#modal_responses_download').on('show.bs.modal', function(e) {
+    var survey_id = $(e.relatedTarget).data('origin_id');
+    var modal = $(this);
+    $.get("/survey/" + survey_id + "/responses_detail/", function(response, status) {
+      var str = "<table class='table table-borderless'>";
+      $.each(response, function(i, wave) {
+        str += "<tr><td>";
+        str += "<p class='d-inline align-middle'>Wave " + ++i + '. ' + wave + '</p>';
+        str += "<a href='/survey/" + survey_id + "/download/" + wave + ".csv' class='btn btn-outline-secondary d-inline ml-2 align-middle'>";
+        str += "<i class='fas fa-download' /></a></td></tr>";
+      });
+      str += "</table>";
+      modal.find('#div-content').html(str);
+    });
+  });

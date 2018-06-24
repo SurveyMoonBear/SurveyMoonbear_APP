@@ -1,0 +1,99 @@
+doctype html
+html
+  head
+    title SurveyMoonbear
+    meta charset="UTF-8"
+    meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    / Bootstrap CSS and theme (Cosmo Theme)
+    link {
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/cosmo/bootstrap.min.css" 
+      rel="stylesheet" integrity="sha384-e5ln1YQrCh2KTj0GVDWxOfDZ53Fd5Uss2u08OZUtzZNrxWfeYC4P7VBWHRDPvJUk" 
+      crossorigin="anonymous"
+    }
+
+    / Custom CSS
+    / link rel='stylesheet' href='/presentation/assets/css/style.css'
+    == assets(:css)
+  body
+    / JQuery and Bootstrap JS
+    script {
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
+      crossorigin="anonymous"
+    }
+    script {
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" 
+      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" 
+      crossorigin="anonymous"
+    }
+    script {
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" 
+      integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" 
+      crossorigin="anonymous"
+    }
+
+    .container id='html_body'
+      section class="mt-3 mb-5"
+        / include :flash_bar
+
+        h1 #{title}
+        div id='div_form'
+          form id="form"
+
+          - if questions.length > 1
+            nav aria-label="Page navigation example" id="page_nav"
+              ul class="pagination" 
+                li class="page-item disabled" id="page_pre"
+                  a class="page-link" href="javascript:void(0)" onclick="pre_page()" aria-label="Previous"
+                    span aria-hidden="true" &larr; Previous
+                    span class="sr-only" Previous
+                
+                li class="page-item" id="page_next"
+                  a class="page-link" href="javascript:void(0)" onclick="next_page()" aria-label="Next"
+                    span aria-hidden="true" Next &rarr;
+                    span class="sr-only" Next
+
+javascript:
+  var page_str = '';
+  $.each(#{{questions}}, function(i, question){
+    if (i > 0) {
+      $('#form').append("<div class='d-none' id='page_" + ++i + "'></div>");
+    } else {
+      $('#form').append("<div id='page_" + ++i + "'></div>");
+    }
+    $('#page_' + i).append(question);
+
+    if (i == #{{questions}}.length) {
+      button_str = "<button type='submit' class='btn btn-primary' id='btn-submit'>Submit</button>"
+      $('#page_' + i).append(button_str);
+    } 
+  });
+
+  var page = 1;
+  function next_page() {
+    $('#page_' + page).addClass('d-none');
+    $('#page_' + ++page).removeClass('d-none');
+    if (page >= #{{questions}}.length) {
+      $('#page_next').addClass('disabled');
+    }
+    $('#page_pre').removeClass('disabled');
+    location.href = '#page_' + page;
+  }
+  function pre_page() {
+    $('#page_' + page).addClass('d-none');
+    $('#page_' + --page).removeClass('d-none');
+    if (page === 1) {
+      $('#page_pre').addClass('disabled');
+    }
+    $('#page_next').removeClass('disabled');
+    location.href = '#page_' + page;
+  }
+
+  $('.vas-unclicked').click(function (e) {
+    $(this).removeClass('vas-unclicked');
+  });
+
+css:
+  .vas-unclicked::-webkit-slider-thumb {
+    background: rgba(0, 0, 0, 0);
+  }

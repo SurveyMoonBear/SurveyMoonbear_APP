@@ -1,5 +1,4 @@
 config/secrets.yml
-config/client_secret.json
 *.db
 _*
- 
+.bundle/
