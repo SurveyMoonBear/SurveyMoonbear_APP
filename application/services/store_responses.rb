@@ -5,8 +5,9 @@ require 'json'
 module SurveyMoonbear
   # Return nil
   class StoreResponses
-    def initialize(survey_id)
+    def initialize(survey_id, launch_id)
       @survey_id = survey_id
+      @launch_id = launch_id
     end
 
     def call(responses)
@@ -23,8 +24,8 @@ module SurveyMoonbear
     end
 
     def fetch_survey_items
-      @survey = Database::SurveyOrm.where(id: @survey_id).first
-      @survey.pages
+      survey = Database::SurveyOrm.where(id: @survey_id).first
+      survey.pages
     end
 
     def create_response_entity(page_id, item, responses)
@@ -36,7 +37,6 @@ module SurveyMoonbear
 
       Entity::Response.new(
         id: nil,
-        launch_id: responses[:launch_id],
         respondent_id: responses[:respondent_id],
         page_id: page_id,
         item_id: item.id,
@@ -46,7 +46,8 @@ module SurveyMoonbear
     end
 
     def store_into_database(new_response)
-      Repository::For[Entity::Survey].add_response(@survey, new_response)
+      launch = Database::LaunchOrm.where(id: @launch_id).first
+      Repository::For[Entity::Launch].add_response(launch, new_response)
     end
   end
 end

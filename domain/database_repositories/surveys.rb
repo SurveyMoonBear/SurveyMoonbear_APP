@@ -45,8 +45,10 @@ module SurveyMoonbear
         rebuild_entity(db_survey)
       end
 
-      def self.update_from(entity, launch_id)
+      def self.add_launch(entity)
         db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
+        new_launch = Launches.create
+        db_launch = Database::LaunchOrm.first(id: new_launch.id)
 
         # delete old records
         db_survey.pages.each do |page|
@@ -56,7 +58,7 @@ module SurveyMoonbear
 
         db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
         db_survey.update(start_flag: 1)
-        db_survey.update(launch_id: launch_id)
+        db_survey.update(launch_id: db_launch.id)
 
         # add new records
         entity.pages.each do |page|
@@ -65,14 +67,7 @@ module SurveyMoonbear
           db_survey.add_page(page)
         end
 
-        rebuild_entity(db_survey)
-      end
-
-      def self.add_response(entity, response_entity)
-        db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
-        stored_response = Responses.find_or_create(response_entity)
-        response = Database::ResponseOrm.first(id: stored_response.id)
-        db_survey.add_response(response)
+        db_survey.add_launch(db_launch)
 
         rebuild_entity(db_survey)
       end
@@ -103,9 +98,8 @@ module SurveyMoonbear
           page.delete
         end
 
-        if db_survey.responses
-          db_survey.responses.each(&:delete)
-        end
+        db_survey.launches&.each(&:delete)
+
         db_survey.delete
       end
 
@@ -116,19 +110,19 @@ module SurveyMoonbear
           Pages.rebuild_entity(db_page)
         end
 
-        responses = db_record.responses&.map do |db_response|
-          Responses.rebuild_entity(db_response)
+        launches = db_record.launches.map do |db_launch|
+          Launches.rebuild_entity(db_launch)
         end
 
         Entity::Survey.new(
           id: db_record.id,
-          launch_id: db_record.launch_id,
           owner: Accounts.rebuild_entity(db_record.owner),
+          launch_id: db_record.launch_id,
           origin_id: db_record.origin_id,
           title: db_record.title,
           start_flag: db_record.start_flag,
           pages: pages,
-          responses: responses
+          launches: launches
         )
       end
     end

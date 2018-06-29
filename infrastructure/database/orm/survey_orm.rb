@@ -11,15 +11,10 @@ module SurveyMoonbear
                   class: :'SurveyMoonbear::Database::PageOrm',
                   key: :survey_id
 
-      one_to_many :responses,
-                  class: :'SurveyMoonbear::Database::ResponseOrm',
+      one_to_many :launches,
+                  class: :'SurveyMoonbear::Database::LaunchOrm',
                   key: :survey_id
 
-      # many_to_many :contributors,
-      #              class: :'CodePraise::Database::CollaboratorOrm',
-      #              join_table: :repos_contributors,
-      #              left_key: :repo_id, right_key: :collaborator_id
-      # plugin :timestamps, update_on_create: true
       plugin :uuid, field: :id
     end
   end

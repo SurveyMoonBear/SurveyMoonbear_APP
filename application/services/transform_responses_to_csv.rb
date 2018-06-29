@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 module SurveyMoonbear
   # Return CSV format of responses
   class TransformResponsesToCSV
     def call(survey_id, launch_id)
       survey = get_survey_from_database(survey_id)
-      responses_hash = formatting_responses(survey.responses, launch_id)
+      launch = get_launch_from_database(launch_id)
+      responses_hash = formatting_responses(launch.responses)
       headers_arr = build_responses_table_header(survey)
       responses_arr = build_responses_arr(responses_hash, headers_arr)
-      puts responses_arr
       transform_to_csv(responses_arr)
     end
 
@@ -14,9 +16,12 @@ module SurveyMoonbear
       Repository::For[Entity::Survey].find_id(survey_id)
     end
 
-    def formatting_responses(responses, launch_id)
+    def get_launch_from_database(launch_id)
+      Repository::For[Entity::Launch].find_id(launch_id)
+    end
+
+    def formatting_responses(responses)
       responses_hash = {}
-      responses.select! { |r| r.launch_id == launch_id }
       responses.each do |r|
         if responses_hash[r.respondent_id.to_s].nil?
           responses_hash[r.respondent_id.to_s] = [r.response]
@@ -45,7 +50,7 @@ module SurveyMoonbear
       responses_arr = responses_hash.map do |key, value|
         [key, value].flatten
       end
-      puts responses_arr
+
       responses_arr.unshift(headers_arr)
     end
 

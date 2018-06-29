@@ -141,8 +141,8 @@ module SurveyMoonbear
           saved_survey = GetSurveyFromDatabase.new.call(survey_id)
           new_survey = GetSurveyFromSpreadsheet.new(@current_account)
                                                .call(saved_survey.origin_id)
-          launch_id = SecureRandom.uuid
-          UpdateSurveyData.new.call(new_survey, launch_id)
+
+          StartSurvey.new.call(new_survey)
 
           routing.redirect '/survey_list'
         end
@@ -150,7 +150,7 @@ module SurveyMoonbear
         # GET survey/[survey_id]/close
         routing.get 'close' do
           saved_survey = GetSurveyFromDatabase.new.call(survey_id)
-          ChangeSurveyState.new.call(saved_survey)
+          CloseSurvey.new.call(saved_survey)
 
           routing.redirect '/survey_list'
         end
@@ -166,22 +166,13 @@ module SurveyMoonbear
         routing.on 'responses_detail' do
           routing.get do
             survey = GetSurveyFromDatabase.new.call(survey_id)
-            responses_hash = {}
-            survey.responses.each do |response|
-              existed_launch_id = responses_hash.keys.detect do |key|
-                key == response.launch_id
-              end
 
-              responses_hash[response.launch_id] = [] unless existed_launch_id
-
-              response_hash = {
-                item_id: response.item_id,
-                response: response.response
-              }
-              responses_hash[response.launch_id].push(response_hash)
+            arr_launch_id = []
+            survey.launches.each do |launch|
+              arr_launch_id.push(launch.id) if launch.responses
             end
 
-            responses_hash.keys
+            arr_launch_id
           end
         end
 
@@ -190,7 +181,7 @@ module SurveyMoonbear
             response['Content-Type'] = 'application/csv'
             launch_id = file_name[0...-4]
 
-            responses_csv = TransformResponsesToCSV.new.call(survey_id, launch_id)
+            TransformResponsesToCSV.new.call(survey_id, launch_id)
           end
         end
       end
@@ -221,7 +212,6 @@ module SurveyMoonbear
 
             # POST onlinesurvey/[survey_id]/[launch_id]/submit
             routing.post do
-              puts 'post submit'
               surveys_started = SecureSession.new(session).get(:surveys_started)
               respondent = surveys_started.find do |survey_started|
                 survey_started['survey_id'] == survey_id
@@ -231,7 +221,7 @@ module SurveyMoonbear
               responses[:launch_id] = launch_id
               responses[:respondent_id] = respondent['respondent_id']
               responses[:responses] = routing.params
-              StoreResponses.new(survey_id).call(responses)
+              StoreResponses.new(survey_id, launch_id).call(responses)
 
               routing.redirect
             end
@@ -265,7 +255,6 @@ module SurveyMoonbear
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
 
           surveys_started = SecureSession.new(session).get(:surveys_started)
-          puts surveys_started
           if surveys_started
             flag = surveys_started.find do |survey_started|
               survey_started['survey_id'] == survey_id
@@ -278,7 +267,6 @@ module SurveyMoonbear
             end
           else
             respondent_id = SecureRandom.uuid
-            puts respondent_id
             surveys_started_arr = []
             surveys_started_arr.push(survey_id: survey_id, respondent_id: respondent_id)
             SecureSession.new(session).set(:surveys_started, surveys_started_arr)
