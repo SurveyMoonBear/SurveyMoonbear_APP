@@ -8,7 +8,8 @@ Sequel.migration do
       uuid        :launch_id
       String      :origin_id, unique: true
       String      :title
-      TrueClass   :start_flag, default: false
+      DateTime    :created_at
+      String      :state, default: 'design'
     end
   end
 end

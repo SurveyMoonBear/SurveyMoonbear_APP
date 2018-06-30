@@ -57,7 +57,7 @@ module SurveyMoonbear
         end
 
         db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
-        db_survey.update(start_flag: 1)
+        db_survey.update(state: 'started')
         db_survey.update(launch_id: db_launch.id)
 
         # add new records
@@ -72,14 +72,10 @@ module SurveyMoonbear
         rebuild_entity(db_survey)
       end
 
-      def self.update_start_flag(entity)
+      def self.update_state(entity)
         db_survey = Database::SurveyOrm.where(id: entity.id).first
 
-        if db_survey.start_flag
-          db_survey.update(start_flag: 0)
-        else
-          db_survey.update(start_flag: 1)
-        end
+        db_survey.update(state: 'closed')
 
         rebuild_entity(db_survey)
       end
@@ -120,7 +116,8 @@ module SurveyMoonbear
           launch_id: db_record.launch_id,
           origin_id: db_record.origin_id,
           title: db_record.title,
-          start_flag: db_record.start_flag,
+          created_at: db_record.created_at,
+          state: db_record.state,
           pages: pages,
           launches: launches
         )

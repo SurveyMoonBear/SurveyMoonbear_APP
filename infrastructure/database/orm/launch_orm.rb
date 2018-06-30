@@ -11,7 +11,7 @@ module SurveyMoonbear
                   class: :'SurveyMoonbear::Database::ResponseOrm',
                   key: :launch_id
 
-      plugin :timestamps, create: :started_at, update: :closed_at
+      plugin :timestamps, create: :started_at
       plugin :uuid, field: :id
     end
   end

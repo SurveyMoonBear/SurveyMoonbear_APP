@@ -9,11 +9,11 @@ module SurveyMoonbear
     end
 
     def change_survey_state(survey)
-      Repository::For[survey.class].update_start_flag(survey)
+      Repository::For[survey.class].update_state(survey)
     end
 
     def change_launch_state(db_survey)
-      db_launch = Repository::For[db_launch.class].find_id(db_survey.launch_id)
+      db_launch = Repository::For[Entity::Launch].find_id(db_survey.launch_id)
       Repository::For[db_launch.class].update_state(db_launch)
     end
   end

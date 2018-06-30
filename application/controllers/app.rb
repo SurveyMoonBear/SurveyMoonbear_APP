@@ -58,7 +58,6 @@ module SurveyMoonbear
             begin
               logged_in_account = FindAuthenticatedGoogleAccount.new(config)
                                                                 .call(routing.params['code'])
-
             rescue StandardError
               routing.halt(404, error: 'Account not found')
             end
@@ -167,19 +166,25 @@ module SurveyMoonbear
           routing.get do
             survey = GetSurveyFromDatabase.new.call(survey_id)
 
-            arr_launch_id = []
+            arr_responses = []
             survey.launches.each do |launch|
-              arr_launch_id.push(launch.id) if launch.responses
+              next if launch.responses.length.zero?
+              stime = launch.started_at
+              stime.to_s
+              start_time = stime.strftime '%Y-%m-%d %H:%M:%S'
+              file_name = stime.strftime '%Y%m%d%H%M%S'
+              arr_responses.push([start_time, launch.id, file_name])
             end
 
-            arr_launch_id
+            arr_responses
           end
         end
 
-        routing.on 'download', String do |file_name|
+        routing.on 'download', String, String do |launch_id, file_name|
           routing.get do
             response['Content-Type'] = 'application/csv'
-            launch_id = file_name[0...-4]
+            puts launch_id
+            puts file_name
 
             TransformResponsesToCSV.new.call(survey_id, launch_id)
           end
@@ -232,7 +237,7 @@ module SurveyMoonbear
           routing.get do
             survey = GetSurveyFromDatabase.new.call(survey_id)
 
-            if survey.start_flag
+            if survey.state == 'started'
               routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
             end
 
@@ -246,7 +251,7 @@ module SurveyMoonbear
         routing.get do
           survey = GetSurveyFromDatabase.new.call(survey_id)
 
-          if survey.start_flag == false
+          if survey.state != 'started'
             routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
           end
 

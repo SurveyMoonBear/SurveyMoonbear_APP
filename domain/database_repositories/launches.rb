@@ -18,7 +18,7 @@ module SurveyMoonbear
 
       def self.update_state(entity)
         db_launch = Database::LaunchOrm.where(id: entity.id).first
-        db_launch.update(state: 'closed')
+        db_launch.update(closed_at: Time.now, state: 'closed')
 
         rebuild_entity(db_launch)
       end

@@ -16,6 +16,7 @@ module SurveyMoonbear
                   key: :survey_id
 
       plugin :uuid, field: :id
+      plugin :timestamps
     end
   end
 end

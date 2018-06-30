@@ -11,22 +11,20 @@ module SurveyMoonbear
     end
 
     def call(title)
-      access_token = get_access_token
+      access_token = exchange_access_token
       origin_id = create_spreadsheet(access_token)
       add_editor(origin_id, access_token)
       set_survey_title(origin_id, title)
       store_into_database(origin_id)
     end
 
-    def get_access_token
-      google_oauth_url = 'https://www.googleapis.com/oauth2/v4/token'
-      # response = HTTP.post('https://www.googleapis.com/oauth2/v4/token',
-      #                      json: { grant_type: 'refresh_token',
-      #                              refresh_token: @config.REFRESH_TOKEN,
-      #                              client_id: @config.GOOGLE_CLIENT_ID,
-      #                              client_secret: @config.GOOGLE_CLIENT_SECRET })
-      #                .parse
-      response = HTTP.post("#{google_oauth_url}?refresh_token=#{@config.REFRESH_TOKEN}&client_id=#{@config.GOOGLE_CLIENT_ID}&client_secret=#{@config.GOOGLE_CLIENT_SECRET}&grant_type=refresh_token").parse
+    def exchange_access_token
+      response = HTTP.post('https://www.googleapis.com/oauth2/v4/token',
+                           params: { refresh_token: @config.REFRESH_TOKEN,
+                                     client_id: @config.GOOGLE_CLIENT_ID,
+                                     client_secret: @config.GOOGLE_CLIENT_SECRET,
+                                     grant_type: 'refresh_token' })
+                     .parse
 
       response['access_token']
     end
