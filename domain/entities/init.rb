@@ -11,6 +11,13 @@ module SurveyMoonbear
   end
 end
 
-Dir.glob("#{File.dirname(__FILE__)}/*.rb").each do |file|
-  require file
-end
+# Dir.glob("#{File.dirname(__FILE__)}/*.rb").each do |file|
+#   require file
+# end
+
+require_relative 'account.rb'
+require_relative 'survey.rb'
+require_relative 'page.rb'
+require_relative 'item.rb'
+require_relative 'launch.rb'
+require_relative 'response.rb'

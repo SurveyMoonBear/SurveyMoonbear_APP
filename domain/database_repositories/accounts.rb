@@ -4,7 +4,9 @@ module SurveyMoonbear
     class Accounts
       def self.find_entity(entity)
         db_record = Database::AccountOrm.first(email: entity.email)
-        db_record.update(access_token: entity.access_token) if db_record
+        puts db_record
+        db_record&.update(username: entity.username,
+                          access_token: entity.access_token)
         rebuild_entity(db_record)
       end
 

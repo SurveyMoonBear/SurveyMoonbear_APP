@@ -46,43 +46,67 @@ module SurveyMoonbear
     private
 
     def build_section_title(item)
-      "<h2 class='bg-light py-1 pl-1 mt-5'>#{item.description}</h2>"
+      "<h2 class='py-1 mt-5'>#{item.description}</h2>"
     end
 
     def build_description(item)
-      "<p class='lead'>#{item.description}</p>"
+      "<p>#{item.description}</p>"
     end
 
     def build_short_answer(item)
       str = "<div class='form-group'>"
-      str += "<label for='#{item.name}' class='lead'>#{item.description}</lable>"
-      str += "<input type='text' class='form-control' name='#{item.name}' id='#{item.name}'>"
+      if item.required == 1
+        str += "<label for='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></lable>"
+        str += "<input type='text' class='form-control required' name='#{item.name}' id='#{item.name}'>"
+      else
+        str += "<label for='#{item.name}' class='lead'>#{item.description}</lable>"
+        str += "<input type='text' class='form-control' name='#{item.name}' id='#{item.name}'>"
+      end
       str + '</div>'
     end
 
     def build_paragraph_answer(item)
       str = "<div class='form-group'>"
-      str += "<label for='#{item.name}' class='lead'>#{item.description}</label>"
-      str += "<textarea class='form-control' id='#{item.name}' name='#{item.name}' rows='3'></textarea>"
+      if item.required == 1
+        str += "<label for='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></label>"
+        str += "<textarea class='form-control required' id='#{item.name}' name='#{item.name}' rows='3'></textarea>"
+      else
+        str += "<label for='#{item.name}' class='lead'>#{item.description}</label>"
+        str += "<textarea class='form-control' id='#{item.name}' name='#{item.name}' rows='3'></textarea>"
+      end
       str + '</div>'
     end
 
     def build_multiple_choice_radio(item)
       str = "<fieldset class='form-group'>"
-      str += "<label id='#{item.name}' class='lead'>#{item.description}</label>"
+      if item.required == 1
+        str += "<label id='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></label>"
+      else
+        str += "<label id='#{item.name}' class='lead'>#{item.description}</label>"
+      end
 
       item.options.split(',').each_with_index do |option, index|
         str += "<div class='custom-control custom-radio'>"
-        str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}' name='#{item.name}' value='#{option}'>"
+        str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}' name='radio-#{item.name}' value='#{option}'>"
         str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
         str += '</div>'
       end
+
+      if item.required == 1
+        str += "<input type='hidden' class='required' name='#{item.name}'>"
+      else
+        str += "<input type='hidden' name='#{item.name}'>"
+      end 
       str += '</fieldset>'
     end
 
     def build_multiple_choice_checkbox(item)
       str = "<fieldset class='form-group'>"
-      str += "<label id='#{item.name}' class='lead'>#{item.description}</label>"
+      if item.required == 1
+        str += "<label id='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></label>"
+      else
+        str += "<label id='#{item.name}' class='lead'>#{item.description}</label>"
+      end
 
       item.options.split(',').each_with_index do |option, index|
         str += "<div class='custom-control custom-checkbox'>"
@@ -90,7 +114,12 @@ module SurveyMoonbear
         str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
         str += '</div>'
       end
-      str += "<input type='hidden' name='#{item.name}'>"
+
+      str += if item.required == 1
+               "<input type='hidden' class='required' name='#{item.name}'>"
+             else
+               str += "<input type='hidden' name='#{item.name}'>"
+             end
       str += '</fieldset>'
     end
 
@@ -124,15 +153,25 @@ module SurveyMoonbear
 
       items.each do |item|
         str += "<tr id='#{item.name}'>"
-        str += "<td class='lead'>#{item.description}</td>"
+        if item.required == 1
+          str += "<td class='lead'>#{item.description}<span class='text-danger'>*</span></td>"
+        else
+          str += "<td class='lead'>#{item.description}</td>"
+        end
         options.each_with_index do |_, index|
           str += "<td class='text-center align-middle'>"
           str += "<div class='form-check'>"
-          str += "<input class='form-check-input' type='radio' name='#{item.name}' id='#{item.name}#{index+1}' value='#{index+1}'>"
+          str += "<input class='form-check-input' type='radio' name='radio-#{item.name}' id='#{item.name}#{index+1}' value='#{index+1}'>"
           str += "<label class='form-check-label' for='#{item.name}#{index}'></label>"
           str += '</div>'
           str += '</td>'
         end
+
+        str += if item.required == 1
+                 "<input type='hidden' class='required' name='#{item.name}'>"
+               else
+                 "<input type='hidden' name='#{item.name}'>"
+               end
         str += '</tr>'
       end
       str += '</tbody></table>'
@@ -144,14 +183,23 @@ module SurveyMoonbear
       str = '<fieldset>'
       str += "<table class='table'>"
 
-      min_max = items[0].options.split(',')
-      min = min_max[0]
-      max = min_max[1]
+      if items[0].options.nil?
+        min = 0
+        max = 100
+      else
+        min_max = items[0].options.split(',')
+        min = min_max[0]
+        max = min_max[1]
+      end
 
       items.each do |item|
         str += "<tr id='#{item.name}'>"
-        str += "<td class='w-50 lead'>#{item.description}</td>"
-        str += "<td class='w-50'><input type='range' class='custom-range' id='#{item.name}' min='#{min}' max='#{max}'></td>"
+        if item.required == 1
+          str += "<td class='w-50 lead'>#{item.description}<span class='text-danger'>*</span></td>"
+        else
+          str += "<td class='w-50 lead'>#{item.description}</td>"
+        end
+        str += "<td class='w-50'><input type='range' class='custom-range' id='#{item.name}' name='#{item.name}' min='#{min}' max='#{max}'></td>"
         str += '</tr>'
       end
       str += '</table>'
@@ -162,14 +210,29 @@ module SurveyMoonbear
       str = '<fieldset>'
       str += "<table class='table'>"
 
-      min_max = items[0].options.split(',')
-      min = min_max[0]
-      max = min_max[1]
+      if items[0].options.nil?
+        min = 0
+        max = 100
+      else
+        min_max = items[0].options.split(',')
+        min = min_max[0]
+        max = min_max[1]
+      end
 
       items.each do |item|
         str += '<tr>'
-        str += "<td class='w-50 lead'>#{item.description}</td>"
-        str += "<td class='w-50'><input type='range' class='custom-range vas-unclicked' id='#{item.name}' min='#{min}' max='#{max}'></td>"
+        if item.required == 1
+          str += "<td class='w-50 lead'>#{item.description}<span class='text-danger'>*</span></td>"
+        else
+          str += "<td class='w-50 lead'>#{item.description}</td>"
+        end
+        str += "<td class='w-50'><input type='range' class='custom-range vas-unclicked' name='vas-#{item.name}' min='#{min}' max='#{max}'></td>"
+
+        str += if item.required == 1
+                 "<input type='hidden' class='required' name='#{item.name}'>"
+               else
+                 "<input type='hidden' name='#{item.name}'>"
+               end
         str += '</tr>'
       end
       str += '</table>'

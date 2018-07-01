@@ -33,13 +33,14 @@ module SurveyMoonbear
         def build_entity
           SurveyMoonbear::Entity::Survey.new(
             id: nil,
-            launch_id: nil,
             owner: owner,
+            launch_id: nil,
             origin_id: origin_id,
             title: title,
-            start_flag: nil,
+            created_at: nil,
+            state: nil,
             pages: pages,
-            responses: nil
+            launches: nil
           )
         end
 

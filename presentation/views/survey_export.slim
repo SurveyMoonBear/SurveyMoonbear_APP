@@ -4,10 +4,10 @@ html
     title SurveyMoonbear
     meta charset="UTF-8"
     meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    / Bootstrap CSS and theme (Cosmo Theme)
+    / Bootstrap CSS and theme (Yeti Theme)
     link {
-      href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/cosmo/bootstrap.min.css" 
-      rel="stylesheet" integrity="sha384-e5ln1YQrCh2KTj0GVDWxOfDZ53Fd5Uss2u08OZUtzZNrxWfeYC4P7VBWHRDPvJUk" 
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/yeti/bootstrap.min.css" 
+      rel="stylesheet" integrity="sha384-yAYSLJjzniZh9Kau9E1v1ma5CzvyHF8fPK/xUpaRx1XTH9r60WxzDivvHG3xm6Hn" 
       crossorigin="anonymous"
     }
 
@@ -36,25 +36,29 @@ html
       section class="mt-3 mb-5"
         / include :flash_bar
 
-        h1 #{survey.title}
-        div id="div_form"
-          form id="form" action="/onlinesurvey/#{survey.id}/#{survey.launch_id}/submit" method="post"
+        div class='row justify-content-center'
+          h1 class="col-md-10 my-4" #{survey.title}
+          == render :flash_bar
+        div class='row justify-content-center'
+          div class='bg-light col-md-10 shadow'
+            div class='container py-3' id='div_form'
+              form id="form" action="/onlinesurvey/#{survey.id}/#{survey.launch_id}/submit" method="post"
 
-          - if questions.length > 1
-            nav aria-label="Page navigation example" id="page_nav"
-              ul class="pagination" 
-                li class="page-item disabled" id="page_pre"
-                  a class="page-link" href="javascript:void(0)" onclick="pre_page()" aria-label="Previous"
-                    span aria-hidden="true" &larr; Previous
-                    span class="sr-only" Previous
-                
-                li class="page-item" id="page_next"
-                  a class="page-link" href="javascript:void(0)" onclick="next_page()" aria-label="Next"
-                    span aria-hidden="true" Next &rarr;
-                    span class="sr-only" Next
+              - if questions.length > 1
+                nav aria-label="Page navigation example" id="page_nav"
+                  ul class="pagination" 
+                    li class="page-item disabled" id="page_pre"
+                      a class="page-link" href="javascript:void(0)" onclick="pre_page()" aria-label="Previous"
+                        span aria-hidden="true" &larr; Previous
+                        span class="sr-only" Previous
+                    
+                    li class="page-item" id="page_next"
+                      a class="page-link" href="javascript:void(0)" onclick="next_page()" aria-label="Next"
+                        span aria-hidden="true" Next &rarr;
+                        span class="sr-only" Next
 
 javascript:
-   var page_str = '';
+  var page_str = '';
   $.each(#{{questions}}, function(i, question){
     if (i > 0) {
       $('#form').append("<div class='d-none' id='page_" + ++i + "'></div>");
@@ -64,7 +68,7 @@ javascript:
     $('#page_' + i).append(question);
     
     if(i == #{{questions}}.length) {
-      button_str = "<button type='submit' class='btn btn-primary' id='btn-submit'>Submit</button>"
+      button_str = "<button type='submit' class='btn btn-primary my-3' id='btn-submit'>Submit</button>"
       $('#page_' + i).append(button_str);
     }
   });
@@ -100,6 +104,32 @@ javascript:
       }).get().join(', ');
     var input_name = type_name.substr(9, type_name.length);
     $('input[name='+input_name+']').val(str);
+  });
+
+  $('input[type=radio]').click(function (e) {
+    var type_name = $(this).prop('name');
+    var input_name = type_name.substr(6, type_name.length);
+    $('input[name='+input_name+']').val(this.value);
+  });
+
+  $('input.vas-unclicked').click(function (e) {
+    var type_name = $(this).prop('name');
+    var input_name = type_name.substr(4, type_name.length);
+    $('input[name='+input_name+']').val(this.value);
+  });
+
+  $('#form').submit(function() {
+    var flag = true;
+    
+    $('input.required').each(function (e) {
+      if (this.value == '') {
+        flag = false;
+      }
+    })
+    if (flag == false) {
+      alert('There are still some questions need to answered.');
+    }
+    return flag;
   });
 
 css:

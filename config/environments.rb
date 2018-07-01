@@ -17,7 +17,7 @@ module SurveyMoonbear
       SecureMessage.setup(config)
     end
 
-    ONE_MONTH = 30 * 24 * 60 * 60 # in seconds
+    ONE_MONTH = 60 * 60 # in seconds
 
     configure :development do
       # Allows running reload! in pry to restart entire app
