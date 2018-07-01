@@ -26,6 +26,7 @@ module SurveyMoonbear
       class DataMapper
         def initialize(survey, gateway)
           @survey = survey
+          puts survey
           @account_mapper = AccountMapper.new
           @page_mapper = PageMapper.new(gateway)
         end
