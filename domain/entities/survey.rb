@@ -14,7 +14,7 @@ module SurveyMoonbear
       attribute :launch_id, Types::String.optional
       attribute :origin_id, Types::Strict::String
       attribute :title, Types::Strict::String
-      attribute :created_at, Types::DateTime.optional
+      attribute :created_at, Types::Strict::Time.optional
       attribute :state, Types::Strict::String.optional
       attribute :pages, Types::Strict::Array.member(Page)
       attribute :launches, Types::Strict::Array.member(Launch).optional

@@ -38,6 +38,7 @@ html
 
         div class='row justify-content-center'
           h1 class="col-md-10 my-4" #{survey.title}
+          == render :flash_bar
         div class='row justify-content-center'
           div class='bg-light col-md-10 shadow'
             div class='container py-3' id='div_form'
@@ -103,6 +104,32 @@ javascript:
       }).get().join(', ');
     var input_name = type_name.substr(9, type_name.length);
     $('input[name='+input_name+']').val(str);
+  });
+
+  $('input[type=radio]').click(function (e) {
+    var type_name = $(this).prop('name');
+    var input_name = type_name.substr(6, type_name.length);
+    $('input[name='+input_name+']').val(this.value);
+  });
+
+  $('input.vas-unclicked').click(function (e) {
+    var type_name = $(this).prop('name');
+    var input_name = type_name.substr(4, type_name.length);
+    $('input[name='+input_name+']').val(this.value);
+  });
+
+  $('#form').submit(function() {
+    var flag = true;
+    
+    $('input.required').each(function (e) {
+      if (this.value == '') {
+        flag = false;
+      }
+    })
+    if (flag == false) {
+      alert('There are still some questions need to answered.');
+    }
+    return flag;
   });
 
 css:

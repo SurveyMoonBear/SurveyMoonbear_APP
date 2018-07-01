@@ -66,7 +66,7 @@ module SurveyMoonbear
             logged_in_account = logged_in_account.to_h
             if logged_in_account
               SecureSession.new(session).set(:current_account, logged_in_account)
-              flash[:notice] = "Hello #{logged_in_account['username']}!"
+              # flash[:notice] = "Hello #{logged_in_account['username']}!"
               routing.redirect '/survey_list'
             else
               puts 'login fail!'
@@ -217,6 +217,12 @@ module SurveyMoonbear
 
             # POST onlinesurvey/[survey_id]/[launch_id]/submit
             routing.post do
+              # boo = CheckRequiredAnswers.new.call(survey_id, routing.params)
+              # if boo == false
+              #   flash[:error] = 'There are still some questions need to be answered.'
+              #   routing.halt
+              # end
+
               surveys_started = SecureSession.new(session).get(:surveys_started)
               respondent = surveys_started.find do |survey_started|
                 survey_started['survey_id'] == survey_id

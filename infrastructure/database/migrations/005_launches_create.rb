@@ -7,8 +7,8 @@ Sequel.migration do
     create_table(:launches) do
       uuid        :id, primary_key: true
       uuid        :survey_id, foreign_key: true, table: :surveys
-      DateTime    :started_at
-      DateTime    :closed_at
+      Time        :started_at
+      Time        :closed_at
       String      :state, default: 'started'
     end
   end
