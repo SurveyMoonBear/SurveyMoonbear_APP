@@ -53,7 +53,7 @@ namespace :db do
     # app.DB.drop_table :pages
     # app.DB.drop_table :responses
     # app.DB.drop_table :launches
-    app.DB.drop_table :surveys
+    # app.DB.drop_table :surveys
     app.DB.drop_table :accounts
   end
 
