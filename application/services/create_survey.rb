@@ -37,6 +37,7 @@ module SurveyMoonbear
     end
 
     def add_editor(origin_id, access_token)
+      sleep(3)
       GoogleSpreadsheet.new(access_token)
                        .add_editor(origin_id, @current_account['email'])
     end
