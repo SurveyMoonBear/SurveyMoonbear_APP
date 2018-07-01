@@ -94,7 +94,10 @@ module SurveyMoonbear
           page.delete
         end
 
-        db_survey.launches&.each(&:delete)
+        db_survey.launches.each do |launch|
+          launch.responses.each(&:delete)
+          launch.delete
+        end
 
         db_survey.delete
       end
