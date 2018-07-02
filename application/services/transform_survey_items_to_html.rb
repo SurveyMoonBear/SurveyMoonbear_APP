@@ -50,7 +50,7 @@ module SurveyMoonbear
     end
 
     def build_description(item)
-      "<p>#{item.description}</p>"
+      "<div>#{item.description}</div>"
     end
 
     def build_short_answer(item)
