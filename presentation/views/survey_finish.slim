@@ -36,9 +36,11 @@ html
       section class="mt-3 mb-5"
         / include :flash_bar
 
-        h1 Thanks for your responses to "#{survey.title}".
-        <br>
-        button class="btn btn-primary" onclick="closeWindow()" Close Window
+        div class='row justify-content-center'
+          h1 class="col-md-10 mt-4" Thanks for finishing "#{survey.title}".
+          h1 class="col-md-10" We have received your responses!
+          <br>
+          h3 class="col-md-10" If you want to leave, just close the window. :)
 
 javascript:
   function closeWindow() {

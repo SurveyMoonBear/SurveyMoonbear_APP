@@ -38,7 +38,7 @@ html
 
         div class='row justify-content-center'
           h1 class="col-md-10 my-4" #{survey.title}
-          == render :flash_bar
+          div id='div-alert' class="col-md-10"
         div class='row justify-content-center'
           div class='bg-light col-md-10 shadow'
             div class='container py-3' id='div_form'
@@ -127,7 +127,14 @@ javascript:
       }
     })
     if (flag == false) {
-      alert('There are still some questions need to answered.');
+      window.scrollTo(0, 0);
+      var str = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
+      str += 'Please answer all questions marked with a "<span class="text-danger">*</span>" .';
+      str += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
+      str += '<span aria-hidden="true">&times;</span>';
+      str += '</button>'
+      str += '</div>';
+      $('#div-alert').html(str);
     }
     return flag;
   });
