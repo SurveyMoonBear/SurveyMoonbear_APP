@@ -11,6 +11,12 @@ html
       crossorigin="anonymous"
     }
 
+    link {
+      rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" 
+      integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" 
+      crossorigin="anonymous"
+    }
+
     / Custom CSS
     / link rel='stylesheet' href='/presentation/assets/css/style.css'
     == assets(:css)
@@ -43,6 +49,8 @@ html
           div class='bg-light col-md-10 shadow'
             div class='container py-3' id='div_form'
               form id="form" action="/onlinesurvey/#{survey.id}/#{survey.launch_id}/submit" method="post"
+                input type="hidden" name="moonbear_start_time"
+                input type="hidden" name="moonbear_end_time"
 
               - if questions.length > 1
                 nav aria-label="Page navigation example" id="page_nav"
@@ -75,21 +83,25 @@ javascript:
 
   var page = 1;
   function next_page() {
+    window.scrollTo(0, 0);
     $('#page_' + page).addClass('d-none');
     $('#page_' + ++page).removeClass('d-none');
     if (page >= #{{questions}}.length) {
       $('#page_next').addClass('disabled');
     }
     $('#page_pre').removeClass('disabled');
+    $('html, body'),scrollTop($("#html_body").offset().top);
     location.href = '#page_' + page;
   }
   function pre_page() {
+    window.scrollTo(0, 0);
     $('#page_' + page).addClass('d-none');
     $('#page_' + --page).removeClass('d-none');
     if (page === 1) {
       $('#page_pre').addClass('disabled');
     }
     $('#page_next').removeClass('disabled');
+    $('html, body'),scrollTop($("#html_body").offset().top);
     location.href = '#page_' + page;
   }
 
@@ -119,6 +131,7 @@ javascript:
   });
 
   $('#form').submit(function() {
+    $('input[name=moonbear_end_time').val(new Date());
     var flag = true;
     
     $('input.required').each(function (e) {
@@ -137,6 +150,10 @@ javascript:
       $('#div-alert').html(str);
     }
     return flag;
+  });
+
+  $(document).ready(function() {
+    $('input[name=moonbear_start_time').val(new Date());
   });
 
 css:

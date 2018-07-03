@@ -32,6 +32,8 @@ module SurveyMoonbear
         build_description(item)
       when 'Short answer'
         build_short_answer(item)
+      when 'Divider'
+        build_divider
       when 'Paragraph Answer'
         build_paragraph_answer(item)
       when 'Multiple choice (radio button)'
@@ -50,11 +52,15 @@ module SurveyMoonbear
     end
 
     def build_description(item)
-      "<div>#{item.description}</div>"
+      "<div class='my-5'>#{item.description}</div>"
+    end
+
+    def build_divider
+      "<hr class='my-5'>"
     end
 
     def build_short_answer(item)
-      str = "<div class='form-group'>"
+      str = "<div class='form-group mt-5'>"
       if item.required == 1
         str += "<label for='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></lable>"
         str += "<input type='text' class='form-control required' name='#{item.name}' id='#{item.name}'>"
@@ -66,7 +72,7 @@ module SurveyMoonbear
     end
 
     def build_paragraph_answer(item)
-      str = "<div class='form-group'>"
+      str = "<div class='form-group mt-5'>"
       if item.required == 1
         str += "<label for='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></label>"
         str += "<textarea class='form-control required' id='#{item.name}' name='#{item.name}' rows='3'></textarea>"
@@ -78,7 +84,7 @@ module SurveyMoonbear
     end
 
     def build_multiple_choice_radio(item)
-      str = "<fieldset class='form-group'>"
+      str = "<fieldset class='form-group mt-5'>"
       if item.required == 1
         str += "<label id='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></label>"
       else
@@ -101,7 +107,7 @@ module SurveyMoonbear
     end
 
     def build_multiple_choice_checkbox(item)
-      str = "<fieldset class='form-group'>"
+      str = "<fieldset class='form-group mt-5'>"
       if item.required == 1
         str += "<label id='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></label>"
       else

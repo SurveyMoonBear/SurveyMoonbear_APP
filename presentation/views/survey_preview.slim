@@ -11,6 +11,12 @@ html
       crossorigin="anonymous"
     }
 
+    link {
+      rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" 
+      integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" 
+      crossorigin="anonymous"
+    }
+
     == assets(:css)
   body
     / JQuery and Bootstrap JS
@@ -72,21 +78,25 @@ javascript:
 
   var page = 1;
   function next_page() {
+    window.scrollTo(0, 0);
     $('#page_' + page).addClass('d-none');
     $('#page_' + ++page).removeClass('d-none');
     if (page >= #{{questions}}.length) {
       $('#page_next').addClass('disabled');
     }
     $('#page_pre').removeClass('disabled');
+    $('html, body'),scrollTop($("#html_body").offset().top);
     location.href = '#page_' + page;
   }
   function pre_page() {
+    window.scrollTo(0, 0);
     $('#page_' + page).addClass('d-none');
     $('#page_' + --page).removeClass('d-none');
     if (page === 1) {
       $('#page_pre').addClass('disabled');
     }
     $('#page_next').removeClass('disabled');
+    $('html, body'),scrollTop($("#html_body").offset().top);
     location.href = '#page_' + page;
   }
 
