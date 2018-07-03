@@ -217,16 +217,11 @@ module SurveyMoonbear
 
             # POST onlinesurvey/[survey_id]/[launch_id]/submit
             routing.post do
-              # boo = CheckRequiredAnswers.new.call(survey_id, routing.params)
-              # if boo == false
-              #   flash[:error] = 'There are still some questions need to be answered.'
-              #   routing.halt
-              # end
-
               surveys_started = SecureSession.new(session).get(:surveys_started)
               respondent = surveys_started.find do |survey_started|
                 survey_started['survey_id'] == survey_id
               end
+              puts routing.params['moonbear_end_time'].class
 
               responses = {}
               responses[:launch_id] = launch_id
