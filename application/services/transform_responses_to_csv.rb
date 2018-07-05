@@ -37,7 +37,7 @@ module SurveyMoonbear
       headers_arr = ['respondent']
       survey.pages.each do |page|
         page.items.each do |item|
-          if item.type != 'Description' && item.type != 'Section Title'
+          if item.type != 'Description' && item.type != 'Section Title' && item.type != 'Divider'
             headers_arr.push(item.name)
           end
         end

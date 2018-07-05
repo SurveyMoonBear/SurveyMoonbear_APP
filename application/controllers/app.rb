@@ -198,16 +198,9 @@ module SurveyMoonbear
             routing.get do
               survey = GetSurveyFromDatabase.new.call(survey_id)
               surveys_started = SecureSession.new(session).get(:surveys_started)
+
               if surveys_started.nil?
                 routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
-              else
-                surveys_started.reject! do |survey_started|
-                  survey_started['survey_id'] == survey_id
-                end
-
-                if surveys_started
-                  SecureSession.new(session).set(:surveys_started, surveys_started)
-                end
               end
 
               view 'survey_finish',
@@ -224,6 +217,14 @@ module SurveyMoonbear
 
               StoreResponses.new(survey_id, launch_id)
                             .call(respondent['respondent_id'], routing.params)
+
+              surveys_started.reject! do |survey_started|
+                survey_started['survey_id'] == survey_id
+              end
+
+              if surveys_started
+                SecureSession.new(session).set(:surveys_started, surveys_started)
+              end
 
               routing.redirect
             end

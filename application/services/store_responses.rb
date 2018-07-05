@@ -15,7 +15,7 @@ module SurveyMoonbear
       pages.each do |page|
         page_id = page.id
         page.items.each do |item|
-          next if item.type == 'Description' && item.type == 'Section Title' && item.type == 'Divider'
+          next if item.type == 'Description' || item.type == 'Section Title' || item.type == 'Divider'
           new_response = create_response_entity(page_id,
                                                 item,
                                                 respondent_id,
