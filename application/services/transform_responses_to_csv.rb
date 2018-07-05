@@ -42,6 +42,7 @@ module SurveyMoonbear
           end
         end
       end
+      headers_arr.push('start_time', 'end_time', 'url_params')
 
       headers_arr
     end

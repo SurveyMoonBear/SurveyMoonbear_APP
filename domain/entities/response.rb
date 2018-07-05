@@ -11,7 +11,7 @@ module SurveyMoonbear
       attribute :page_id, Types::Int
       attribute :item_id, Types::Int
       attribute :response, Types::Strict::String.optional
-      attribute :item_data, Types::Strict::String
+      attribute :item_data, Types::Strict::String.optional
     end
   end
 end

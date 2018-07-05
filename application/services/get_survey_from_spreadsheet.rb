@@ -12,7 +12,6 @@ module SurveyMoonbear
     end
 
     def read_spreadsheet(spreadsheet_id)
-      puts spreadsheet_id
       google_api = Google::Api.new(@current_account['access_token'])
       Google::SurveyMapper.new(google_api)
                           .load(spreadsheet_id, @current_account)
