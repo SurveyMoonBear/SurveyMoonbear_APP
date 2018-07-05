@@ -13,24 +13,26 @@ module SurveyMoonbear
         items_data.shift
 
         return nil unless items_data
-        items_data.map do |item_data|
-          ItemMapper.build_entity(item_data)
+        items_data.each_with_index.map do |item_data, index|
+          ItemMapper.build_entity(item_data, index+1)
         end
       end
 
-      def self.build_entity(item_data)
-        DataMapper.new(item_data).build_entity
+      def self.build_entity(item_data, order)
+        DataMapper.new(item_data, order).build_entity
       end
 
       # Extracts entity specific elements from data structure
       class DataMapper
-        def initialize(item_data)
+        def initialize(item_data, order)
           @item_data = item_data
+          @order = order
         end
 
         def build_entity
           Entity::Item.new(
             id: nil,
+            order: @order,
             type: type,
             name: name,
             description: description,

@@ -7,6 +7,7 @@ Sequel.migration do
     create_table(:items) do
       primary_key :id
       foreign_key :page_id, :pages
+      Integer     :order
       String      :type
       String      :name
       String      :description

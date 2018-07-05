@@ -9,7 +9,8 @@ module SurveyMoonbear
 
       one_to_many :items,
                   class: :'SurveyMoonbear::Database::ItemOrm',
-                  key: :page_id
+                  key: :page_id,
+                  order: :order
 
       # plugin :uuid, field: :survey_id
     end

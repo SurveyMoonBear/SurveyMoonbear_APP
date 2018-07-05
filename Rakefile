@@ -48,7 +48,7 @@ namespace :db do
   desc 'Drop all tables'
   task :drop do
     require_relative 'config/environments.rb'
-    drop according to dependencies
+    # drop according to dependencies
     app.DB.drop_table :items
     app.DB.drop_table :pages
     app.DB.drop_table :responses
