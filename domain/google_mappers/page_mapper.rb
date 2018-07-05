@@ -10,7 +10,7 @@ module SurveyMoonbear
       end
 
       def load_several(survey_id, pages_data)
-        pages_data.map do |page_data|
+        pages_data.each_with_index.map do |page_data|
           PageMapper.build_entity(survey_id, page_data, @gateway)
         end
       end
@@ -30,18 +30,20 @@ module SurveyMoonbear
         def build_entity
           Entity::Page.new(
             id: nil,
-            title: title,
             index: index,
+            title: title,
             items: items
           )
         end
 
-        def title
-          @page_data['properties']['title']
-        end
+        private
 
         def index
           @page_data['properties']['index']
+        end
+
+        def title
+          @page_data['properties']['title']
         end
 
         def items

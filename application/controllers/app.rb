@@ -91,7 +91,6 @@ module SurveyMoonbear
 
           surveys = Repository::For[Entity::Survey]
                     .find_owner(@current_account['id'])
-          puts surveys[0].created_at.localtime
 
           view 'survey_list', locals: { surveys: surveys, config: config }
         end

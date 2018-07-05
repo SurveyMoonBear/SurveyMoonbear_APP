@@ -7,16 +7,6 @@ module SurveyMoonbear
         rebuild_entity(db_record)
       end
 
-      # def self.find_owner(owner_id)
-      #   db_records = Database::SurveyOrm.where(owner_id: owner_id).all
-
-      #   return nil if db_records.nil?
-
-      #   db_records.map do |db_record|
-      #     rebuild_entity(db_record)
-      #   end
-      # end
-
       def self.find_or_create(entity)
         find_id(entity.id) || create_from(entity)
       end

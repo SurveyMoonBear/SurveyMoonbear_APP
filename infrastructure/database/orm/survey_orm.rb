@@ -9,7 +9,8 @@ module SurveyMoonbear
 
       one_to_many :pages,
                   class: :'SurveyMoonbear::Database::PageOrm',
-                  key: :survey_id
+                  key: :survey_id,
+                  order: :index
 
       one_to_many :launches,
                   class: :'SurveyMoonbear::Database::LaunchOrm',

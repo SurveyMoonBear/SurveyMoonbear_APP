@@ -13,10 +13,10 @@ module SurveyMoonbear
     def call(respondent_id, responses)
       pages = fetch_survey_items
       pages.each do |page|
-        page_id = page.id
+        page_index = page.index
         page.items.each do |item|
           next if item.type == 'Description' || item.type == 'Section Title' || item.type == 'Divider'
-          new_response = create_response_entity(page_id,
+          new_response = create_response_entity(page_index,
                                                 item,
                                                 respondent_id,
                                                 responses[item.name])
@@ -24,8 +24,9 @@ module SurveyMoonbear
           responses.delete(item.name)
         end
       end
-      store_time_params(respondent_id, responses)
-      store_url_params(respondent_id, responses)
+      page_index_for_other_data = pages.length
+      store_time_params(respondent_id, responses, page_index_for_other_data)
+      store_url_params(respondent_id, responses, page_index_for_other_data)
     end
 
     def fetch_survey_items
@@ -33,7 +34,7 @@ module SurveyMoonbear
       survey.pages
     end
 
-    def create_response_entity(page_id, item, respondent_id, response)
+    def create_response_entity(page_index, item, respondent_id, response)
       item_json = JSON.generate(type: item.type,
                                 name: item.name,
                                 description: item.description,
@@ -43,8 +44,8 @@ module SurveyMoonbear
       Entity::Response.new(
         id: nil,
         respondent_id: respondent_id,
-        page_id: page_id,
-        item_id: item.id,
+        page_index: page_index,
+        item_order: item.order,
         response: response,
         item_data: item_json
       )
@@ -54,18 +55,18 @@ module SurveyMoonbear
       Repository::For[Entity::Launch].add_response(@launch_id, new_response)
     end
 
-    def store_time_params(respondent_id, responses)
+    def store_time_params(respondent_id, responses, page_index)
       start_time = Entity::Response.new(id: nil,
                                         respondent_id: respondent_id,
-                                        page_id: 0,
-                                        item_id: 'moonbear_start_time',
+                                        page_index: page_index,
+                                        item_order: 0,
                                         response: responses['moonbear_start_time'],
                                         item_data: nil)
       store_into_database(start_time)
       end_time = Entity::Response.new(id: nil,
                                       respondent_id: respondent_id,
-                                      page_id: 0,
-                                      item_id: 'moonbear_end_time',
+                                      page_index: page_index,
+                                      item_order: 1,
                                       response: responses['moonbear_end_time'],
                                       item_data: nil)
       store_into_database(end_time)
@@ -73,7 +74,7 @@ module SurveyMoonbear
       responses.delete('moonbear_end_time')
     end
 
-    def store_url_params(respondent_id, responses)
+    def store_url_params(respondent_id, responses, page_index)
       responses.each do |key, _|
         if key.include?('radio') || key.include?('checkbox')
           responses.delete(key)
@@ -83,8 +84,8 @@ module SurveyMoonbear
       return nil if responses['moonbear_url_params'].nil?
       new_response = Entity::Response.new(id: nil,
                                           respondent_id: respondent_id,
-                                          page_id: 0,
-                                          item_id: 'url_params',
+                                          page_index: page_index,
+                                          item_order: 2,
                                           response: responses['moonbear_url_params'],
                                           item_data: nil)
       store_into_database(new_response)

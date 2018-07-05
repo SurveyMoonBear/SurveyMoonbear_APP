@@ -9,7 +9,8 @@ module SurveyMoonbear
 
       one_to_many :responses,
                   class: :'SurveyMoonbear::Database::ResponseOrm',
-                  key: :launch_id
+                  key: :launch_id,
+                  order: %i[page_index item_order]
 
       plugin :timestamps, create: :started_at
       plugin :uuid, field: :id
