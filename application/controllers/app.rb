@@ -69,7 +69,7 @@ module SurveyMoonbear
               # flash[:notice] = "Hello #{logged_in_account['username']}!"
               routing.redirect '/survey_list'
             else
-              puts 'login fail!'
+              flash[:error] = 'Login fail!'
               routing.redirect '/'
             end
           end
@@ -84,7 +84,6 @@ module SurveyMoonbear
       # /survey_list branch
       routing.on 'survey_list' do
         @current_account = SecureSession.new(session).get(:current_account)
-        puts @current_account
 
         # GET /survey_list
         routing.get do
@@ -92,6 +91,7 @@ module SurveyMoonbear
 
           surveys = Repository::For[Entity::Survey]
                     .find_owner(@current_account['id'])
+          puts surveys[0].created_at.localtime
 
           view 'survey_list', locals: { surveys: surveys, config: config }
         end
@@ -101,9 +101,9 @@ module SurveyMoonbear
                                     .call(routing.params['title'])
 
           if @new_survey
-            puts 'success!'
+            flash[:notice] = "#{@new_survey.title} is created!"
           else
-            puts 'create fail!'
+            flash[:error] = "Fail to create #{@new_survey.title}. :("
           end
 
           routing.redirect '/survey_list'
@@ -159,6 +159,8 @@ module SurveyMoonbear
           response = DeleteSurvey.new(@current_account, config).call(survey_id)
           response.title
 
+          flash[:notice] = "#{response.title} has been deleted!"
+
           routing.redirect '/survey_list', 303
         end
 
@@ -183,8 +185,6 @@ module SurveyMoonbear
         routing.on 'download', String, String do |launch_id, file_name|
           routing.get do
             response['Content-Type'] = 'application/csv'
-            puts launch_id
-            puts file_name
 
             TransformResponsesToCSV.new.call(survey_id, launch_id)
           end
@@ -221,13 +221,9 @@ module SurveyMoonbear
               respondent = surveys_started.find do |survey_started|
                 survey_started['survey_id'] == survey_id
               end
-              puts routing.params['moonbear_end_time'].class
 
-              responses = {}
-              responses[:launch_id] = launch_id
-              responses[:respondent_id] = respondent['respondent_id']
-              responses[:responses] = routing.params
-              StoreResponses.new(survey_id, launch_id).call(responses)
+              StoreResponses.new(survey_id, launch_id)
+                            .call(respondent['respondent_id'], routing.params)
 
               routing.redirect
             end
@@ -251,6 +247,7 @@ module SurveyMoonbear
         # GET /onlinesurvey/[survey_id]/[launch_id]
         routing.get do
           survey = GetSurveyFromDatabase.new.call(survey_id)
+          url_params = JSON.generate(routing.params)
 
           if survey.state != 'started'
             routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
@@ -282,7 +279,8 @@ module SurveyMoonbear
                layout: false,
                locals: { survey: survey,
                          survey_url: survey_url,
-                         questions: questions }
+                         questions: questions,
+                         url_params: url_params }
         end
       end
     end

@@ -17,7 +17,7 @@ module SurveyMoonbear
       SecureMessage.setup(config)
     end
 
-    ONE_MONTH = 60 * 60 # in seconds
+    THIRTY_MINUTES = 60 * 60 # in seconds
 
     configure :development do
       # Allows running reload! in pry to restart entire app
@@ -30,12 +30,12 @@ module SurveyMoonbear
       ENV['DATABASE_URL'] = 'sqlite://' + config.db_filename
 
       use Rack::Session::Pool,
-          expire_after: ONE_MONTH
+          expire_after: THIRTY_MINUTES
     end
 
     configure :production do
       use Rack::Session::Redis,
-          expire_after: ONE_MONTH, redis_server: App.config.REDIS_URL
+          expire_after: THIRTY_MINUTES, redis_server: App.config.REDIS_URL
     end
 
     configure do

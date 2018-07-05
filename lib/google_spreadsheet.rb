@@ -63,7 +63,6 @@ class GoogleSpreadsheet
                                  type: 'user',
                                  value: user_email })
                    .parse
-    puts response
 
     { id: response['id'],
       user_name: response['name'],

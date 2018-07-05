@@ -1,6 +1,8 @@
 div class="mb-3"
   div class="row justify-content-center mt-3"
     div class="col-10 col-sm-10 col-md-8"
+      div id="div-alert"
+        == render :flash_bar
       a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey"
         <i class="fas fa-plus"></i> &nbsp;Create a New Survey
     
@@ -21,6 +23,7 @@ div class="mb-3"
               i class="fas fa-cog"
             button {
               class="btn btn-outline-dark border-0 ml-auto d-inline-flex align-middle"
+              id="btn-delete"
               onclick="confirmDeleteSurvey('#{survey.id}', '#{survey.title}')"
             }
               i class="fas fa-trash-alt"
@@ -69,6 +72,17 @@ div class="mb-3"
                     id="startbtn-#{survey.id}"
                   } Start Survey
 
+div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="false" role="dialog"
+  div class="modal-dialog modal-dialog-centered" role="document"
+    div class="modal-content"
+      div class="modal-body"
+        h5 Processing...
+        div class="progress"
+          div {
+            class="progress-bar progress-bar-striped progress-bar-animated" 
+            role="progressbar" style="width: 100%"
+          }
+
 include :modal_create_survey
 include :modal_survey_settings
 include :modal_survey_editor
@@ -90,16 +104,27 @@ javascript:
 
   function confirmDeleteSurvey(survey_id, survey_title) {
     if (confirm('Are you sure to delete "' + survey_title + '"?')) {
+      $('#modal_waiting').modal();
       $.ajax({
         url: "/survey/" + survey_id,
         type: 'DELETE',
         success: function(result) {
-          alert('"' + survey_title + '" has been deleted!');
+          alert(survey_title + 'has been deleted!');
           location.reload();
         }
       });
     }
   }
+
+  $('#btn-create').on('click', function (e) {
+    $('#modal_create_survey').modal('hide');
+    $('#modal_waiting').modal();
+  });
+
+  $('#btn-save-settings').on('click', function (e) {
+    $('#modal_survey_settings').modal('hide');
+    $('#modal_waiting').modal();
+  });
 
 
 

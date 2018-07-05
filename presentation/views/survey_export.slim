@@ -130,15 +130,23 @@ javascript:
     $('input[name='+input_name+']').val(this.value);
   });
 
-  $('#form').submit(function() {
-    $('input[name=moonbear_end_time').val(new Date());
+  $('#form').on('submit', function() {
+    $('<input />').attr('type', 'hidden')
+                  .attr('name', "moonbear_url_params")
+                  .attr('value', JSON.stringify(#{{url_params}}))
+                  .appendTo('#form');
+
     var flag = true;
-    
+    $('input[name=moonbear_end_time]').val(new Date());
     $('input.required').each(function (e) {
       if (this.value == '') {
         flag = false;
+        return false;
+      } else {
+        flag = true;
       }
-    })
+    });
+    
     if (flag == false) {
       window.scrollTo(0, 0);
       var str = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
@@ -153,7 +161,7 @@ javascript:
   });
 
   $(document).ready(function() {
-    $('input[name=moonbear_start_time').val(new Date());
+    $('input[name=moonbear_start_time]').val(new Date());
   });
 
 css:
