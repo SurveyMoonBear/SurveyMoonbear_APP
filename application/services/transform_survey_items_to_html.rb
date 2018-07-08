@@ -40,6 +40,8 @@ module SurveyMoonbear
         build_multiple_choice_radio(item)
       when 'Multiple choice (checkbox)'
         build_multiple_choice_checkbox(item)
+      when 'Random code'
+        build_random_code(item)
       else
         puts "Sorry, there's no such question type."
       end
@@ -129,6 +131,14 @@ module SurveyMoonbear
       str += '</fieldset>'
     end
 
+    def build_random_code(item)
+      random_code = (rand*(10**15)).round
+      str = "<div class='form-group mt-5'>"
+      str += "<label for='#{item.name}' class='lead'>#{item.description}</lable>"
+      str += "<input type='text' class='form-control' name='#{item.name}' id='#{item.name}' readonly='' value='#{random_code}'>"
+      str + '</div>'
+    end
+
     def build_grid_questions(grid_arr)
       case grid_arr[0].type
       when 'Multiple choice grid (radio button)'
@@ -196,7 +206,18 @@ module SurveyMoonbear
         min_max = items[0].options.split(',')
         min = min_max[0]
         max = min_max[1]
+        if min_max[2]
+          word_min = min_max[2]
+          word_max = min_max[3]
+        end
       end
+
+      str += '<thead><tr>'
+      str += "<th scope='col' class='w-50'></th>"
+      str += "<th scope='col' class='w-50'><div class='w-100 row mx-auto'>"
+      str += "<div class='col-4 col-sm-2 text-left px-0'>#{word_min}</div>"
+      str += "<div class='col-4 offset-4 col-sm-2 offset-sm-8 text-right px-0'>#{word_max}</div>"
+      str += '</div></th></tr></thead>'
 
       items.each do |item|
         str += "<tr id='#{item.name}'>"
@@ -205,7 +226,7 @@ module SurveyMoonbear
         else
           str += "<td class='w-50 lead'>#{item.description}</td>"
         end
-        str += "<td class='w-50'><input type='range' class='custom-range' id='#{item.name}' name='#{item.name}' min='#{min}' max='#{max}'></td>"
+        str += "<td class='w-50 align-middle'><input type='range' class='custom-range' id='#{item.name}' name='#{item.name}' min='#{min}' max='#{max}'></td>"
         str += '</tr>'
       end
       str += '</table>'
@@ -223,7 +244,18 @@ module SurveyMoonbear
         min_max = items[0].options.split(',')
         min = min_max[0]
         max = min_max[1]
+        if min_max[2]
+          word_min = min_max[2]
+          word_max = min_max[3]
+        end
       end
+
+      str += '<thead><tr>'
+      str += "<th scope='col' class='w-50'></th>"
+      str += "<th scope='col' class='w-50'><div class='w-100 row mx-auto'>"
+      str += "<div class='col-4 col-sm-2 text-left px-0'>#{word_min}</div>"
+      str += "<div class='col-4 offset-4 col-sm-2 offset-sm-8 text-right px-0'>#{word_max}</div>"
+      str += '</div></th></tr></thead>'
 
       items.each do |item|
         str += '<tr>'
@@ -232,7 +264,7 @@ module SurveyMoonbear
         else
           str += "<td class='w-50 lead'>#{item.description}</td>"
         end
-        str += "<td class='w-50'><input type='range' class='custom-range vas-unclicked' name='vas-#{item.name}' min='#{min}' max='#{max}'></td>"
+        str += "<td class='w-50 align-middle'><input type='range' class='custom-range vas-unclicked' name='vas-#{item.name}' min='#{min}' max='#{max}'></td>"
 
         str += if item.required == 1
                  "<input type='hidden' class='required' name='#{item.name}'>"
