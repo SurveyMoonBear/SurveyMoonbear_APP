@@ -83,16 +83,36 @@ javascript:
 
   var page = 1;
   function next_page() {
-    window.scrollTo(0, 0);
-    $('#page_' + page).addClass('d-none');
-    $('#page_' + ++page).removeClass('d-none');
-    if (page >= #{{questions}}.length) {
-      $('#page_next').addClass('disabled');
+    var required_flag = true;
+    $('#page_' + page +' input.required').each(function (e) {
+      if (this.value == '') {
+        required_flag = false;
+        return false;
+      }
+    });
+    
+    if (required_flag == true) {
+      window.scrollTo(0, 0);
+      $('#page_' + page).addClass('d-none');
+      $('#page_' + ++page).removeClass('d-none');
+      if (page >= #{{questions}}.length) {
+        $('#page_next').addClass('disabled');
+      }
+      $('#page_pre').removeClass('disabled');
+      $('html, body').scrollTop($("#html_body").offset().top);
+      location.href = '#page_' + page;
+    } else {
+      window.scrollTo(0, 0);
+      var str = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
+      str += 'Please answer all questions marked with a "*" before going to next page .';
+      str += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
+      str += '<span aria-hidden="true">&times;</span>';
+      str += '</button>'
+      str += '</div>';
+      $('#div-alert').html(str);
     }
-    $('#page_pre').removeClass('disabled');
-    $('html, body'),scrollTop($("#html_body").offset().top);
-    location.href = '#page_' + page;
   }
+
   function pre_page() {
     window.scrollTo(0, 0);
     $('#page_' + page).addClass('d-none');
@@ -101,7 +121,7 @@ javascript:
       $('#page_pre').addClass('disabled');
     }
     $('#page_next').removeClass('disabled');
-    $('html, body'),scrollTop($("#html_body").offset().top);
+    $('html, body').scrollTop($("#html_body").offset().top);
     location.href = '#page_' + page;
   }
 
@@ -150,7 +170,7 @@ javascript:
     if (flag == false) {
       window.scrollTo(0, 0);
       var str = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
-      str += 'Please answer all questions marked with a "<span class="text-danger">*</span>" .';
+      str += 'Please answer all questions marked with a "*" before submitting.';
       str += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
       str += '<span aria-hidden="true">&times;</span>';
       str += '</button>'
