@@ -25,7 +25,8 @@ gem 'redis'
 gem 'redis-rack'
 
 # Diagnostic
-gem 'tux'
+gem 'pry'
+gem 'rack-test'
 
 # Database related
 gem 'hirb'
@@ -38,7 +39,7 @@ gem 'dry-types'
 group :test do
   gem 'minitest'
   gem 'minitest-rg'
-  gem 'rack-test'
+  
   gem 'simplecov'
   gem 'vcr'
   gem 'webmock'
@@ -46,8 +47,7 @@ end
 
 group :development, :test do
   gem 'sqlite3'
-
-  gem 'pry'
+  
   gem 'rerun'
   
   gem 'flog'
