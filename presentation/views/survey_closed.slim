@@ -35,10 +35,13 @@ html
     .container id='html_body'
       section class="mt-3 mb-5"
         / include :flash_bar
-
-        h1 Sorry, "#{survey.title}" is closed. :(
-        <br>
-        button class="btn btn-primary" onclick="closeWindow()" Close Window
+        div class='row justify-content-center'
+          - if survey
+            h1 class="col-md-10 mt-4" Sorry, "#{survey.title}" is closed.
+          - else
+            h1 class="col-md-10 mt-4" Sorry, This survey is closed.
+            <br>
+            h3 class="col-md-10 mt-4" If you want to leave, just close the window.
 
 javascript:
   function closeWindow() {
