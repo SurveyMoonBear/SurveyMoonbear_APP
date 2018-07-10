@@ -236,7 +236,7 @@ module SurveyMoonbear
           routing.get do
             survey = GetSurveyFromDatabase.new.call(survey_id)
 
-            if survey.state == 'started' || survey.launch_id == launch_id
+            if survey && survey.state == 'started' && survey.launch_id == launch_id
               routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
             end
 
@@ -251,7 +251,7 @@ module SurveyMoonbear
           survey = GetSurveyFromDatabase.new.call(survey_id)
           url_params = JSON.generate(routing.params)
 
-          if survey.launch_id != launch_id || survey.state != 'started'
+          if survey.nil? || survey.launch_id != launch_id || survey.state != 'started'
             routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
           end
 
