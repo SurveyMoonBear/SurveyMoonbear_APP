@@ -92,6 +92,7 @@ javascript:
     });
     
     if (required_flag == true) {
+      $('.alert').alert('close');
       window.scrollTo(0, 0);
       $('#page_' + page).addClass('d-none');
       $('#page_' + ++page).removeClass('d-none');
