@@ -223,6 +223,8 @@ module SurveyMoonbear
 
               if surveys_started
                 SecureSession.new(session).set(:surveys_started, surveys_started)
+              else
+                SecureSession.new(session).delete(:surveys_started)
               end
 
               routing.redirect
