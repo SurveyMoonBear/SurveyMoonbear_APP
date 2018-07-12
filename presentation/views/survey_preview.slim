@@ -68,6 +68,8 @@ javascript:
     } else {
       $('#form').append("<div id='page_" + ++i + "'></div>");
     }
+    page_str = "<div class='d-flex justify-content-end'><p>page " + i + "/" + #{{questions}}.length + "</p></div>";
+    $('#page_' + i).append(page_str);
     $('#page_' + i).append(question);
 
     if (i == #{{questions}}.length) {
@@ -78,26 +80,24 @@ javascript:
 
   var page = 1;
   function next_page() {
-    window.scrollTo(0, 0);
     $('#page_' + page).addClass('d-none');
     $('#page_' + ++page).removeClass('d-none');
     if (page >= #{{questions}}.length) {
       $('#page_next').addClass('disabled');
     }
     $('#page_pre').removeClass('disabled');
-    $('html, body'),scrollTop($("#html_body").offset().top);
     location.href = '#page_' + page;
+    window.scrollTo(0, 0);
   }
   function pre_page() {
-    window.scrollTo(0, 0);
     $('#page_' + page).addClass('d-none');
     $('#page_' + --page).removeClass('d-none');
     if (page === 1) {
       $('#page_pre').addClass('disabled');
     }
     $('#page_next').removeClass('disabled');
-    $('html, body'),scrollTop($("#html_body").offset().top);
     location.href = '#page_' + page;
+    window.scrollTo(0, 0);
   }
 
   $('.vas-unclicked').click(function (e) {
