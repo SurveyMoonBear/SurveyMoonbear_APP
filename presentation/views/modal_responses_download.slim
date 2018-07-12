@@ -19,9 +19,11 @@ javascript:
       } else {
         str += "<table class='table table-borderless'>";
         $.each(response, function(i, wave) {
+          var start_time = new Date(wave[0]);
           str += "<tr>";
           str += '<td><p>Wave '+ ++i + '. </p></td>';
-          str += "<td><p class='text-muted'>Started at: " + wave[0] + '</p></td>';
+          str += "<td><p class='text-muted'>Started at: " + start_time;
+          str += "<br>Number of Responses: " + wave[3] + "</p></td>";
           str += "<td><a href='/survey/" + survey_id + "/download/" + wave[1] + "/" + wave[2] + ".csv' class='btn btn-outline-dark align-middle'>";
           str += "<i class='fas fa-download' /></a></td></tr>";
         });

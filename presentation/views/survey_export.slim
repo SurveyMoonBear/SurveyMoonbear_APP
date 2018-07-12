@@ -73,6 +73,8 @@ javascript:
     } else {
       $('#form').append("<div id='page_" + ++i + "'></div>");
     }
+    page_str = "<div class='d-flex justify-content-end'><p>page " + i + "/" + #{{questions}}.length + "</p></div>";
+    $('#page_' + i).append(page_str);
     $('#page_' + i).append(question);
     
     if(i == #{{questions}}.length) {
@@ -93,17 +95,14 @@ javascript:
     
     if (required_flag == true) {
       $('.alert').alert('close');
-      window.scrollTo(0, 0);
       $('#page_' + page).addClass('d-none');
       $('#page_' + ++page).removeClass('d-none');
       if (page >= #{{questions}}.length) {
         $('#page_next').addClass('disabled');
       }
       $('#page_pre').removeClass('disabled');
-      $('html, body').scrollTop($("#html_body").offset().top);
       location.href = '#page_' + page;
     } else {
-      window.scrollTo(0, 0);
       var str = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
       str += 'Please answer all questions marked with a "*" before going to next page .';
       str += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
@@ -112,18 +111,18 @@ javascript:
       str += '</div>';
       $('#div-alert').html(str);
     }
+    window.scrollTo(0, 0);
   }
 
   function pre_page() {
-    window.scrollTo(0, 0);
     $('#page_' + page).addClass('d-none');
     $('#page_' + --page).removeClass('d-none');
     if (page === 1) {
       $('#page_pre').addClass('disabled');
     }
     $('#page_next').removeClass('disabled');
-    $('html, body').scrollTop($("#html_body").offset().top);
     location.href = '#page_' + page;
+    window.scrollTo(0, 0);
   }
 
   $('.vas-unclicked').click(function (e) {

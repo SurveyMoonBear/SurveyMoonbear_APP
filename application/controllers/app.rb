@@ -167,17 +167,22 @@ module SurveyMoonbear
           routing.get do
             survey = GetSurveyFromDatabase.new.call(survey_id)
 
-            arr_responses = []
+            arr_launches = []
             survey.launches.each do |launch|
               next if launch.responses.length.zero?
+              arr_responses = []
+              launch.responses.each do |response|
+                arr_responses.push(response.respondent_id)
+              end
+              arr_responses.uniq!
               stime = launch.started_at
-              stime.to_s
-              start_time = stime.strftime '%Y-%m-%d %H:%M:%S'
+              stime.utc.to_s
+              start_time = stime.strftime '%Y-%m-%dT%H:%M:%SZ'
               file_name = stime.strftime '%Y%m%d%H%M%S'
-              arr_responses.push([start_time, launch.id, file_name])
+              arr_launches.push([start_time, launch.id, file_name, arr_responses.length])
             end
 
-            arr_responses
+            arr_launches
           end
         end
 
