@@ -34,6 +34,8 @@ module SurveyMoonbear
         responses_hash = response_entities.map do |response_entity|
           response_hash = response_entity.to_h
           response_hash[:launch_id] = launch_id
+          response_hash.delete(:id)
+          puts response_hash
           response_hash
         end
         App.DB[:responses].multi_insert(responses_hash)
