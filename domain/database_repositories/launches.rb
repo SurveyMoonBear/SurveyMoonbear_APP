@@ -23,6 +23,17 @@ module SurveyMoonbear
         rebuild_entity(db_launch)
       end
 
+      def self.add_responses(launch_id, response_entities)
+        db_launch = Database::LaunchOrm.where(id: id).first
+        response_entities.each do |response_entity|
+          db_launch.add_response(response_entity)
+        end
+      end
+
+      # def self.add_response(db_launch, response_entity)
+      #   db_launch.add_response(response_entity)
+      # end
+
       def self.add_response(id, response_entity)
         db_launch = Database::LaunchOrm.where(id: id).first
         stored_response = Responses.find_or_create(response_entity)
