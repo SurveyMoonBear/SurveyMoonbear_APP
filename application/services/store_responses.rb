@@ -11,7 +11,13 @@ module SurveyMoonbear
     end
 
     def call(respondent_id, responses)
+      arr_responses = create_responses_arr(respondent_id, responses)
+      store_into_database(arr_responses)
+    end
+
+    def create_responses_arr(respondent_id, responses)
       pages = fetch_survey_items
+      arr_responses = []
       pages.each do |page|
         page_index = page.index
         page.items.each do |item|
@@ -20,13 +26,14 @@ module SurveyMoonbear
                                                 item,
                                                 respondent_id,
                                                 responses[item.name])
-          store_into_database(new_response)
+          arr_responses.push(new_response)
           responses.delete(item.name)
         end
       end
       page_index_for_other_data = pages.length
-      store_time_params(respondent_id, responses, page_index_for_other_data)
-      store_url_params(respondent_id, responses, page_index_for_other_data)
+      time_records = store_time_params(respondent_id, responses, page_index_for_other_data)
+      time_records.each { |record| arr_responses.push(record) }
+      arr_responses.push(store_url_params(respondent_id, responses, page_index_for_other_data))
     end
 
     def fetch_survey_items
@@ -51,10 +58,6 @@ module SurveyMoonbear
       )
     end
 
-    def store_into_database(new_response)
-      Repository::For[Entity::Launch].add_response(@launch_id, new_response)
-    end
-
     def store_time_params(respondent_id, responses, page_index)
       start_time = Entity::Response.new(id: nil,
                                         respondent_id: respondent_id,
@@ -62,33 +65,29 @@ module SurveyMoonbear
                                         item_order: 0,
                                         response: responses['moonbear_start_time'],
                                         item_data: nil)
-      store_into_database(start_time)
       end_time = Entity::Response.new(id: nil,
                                       respondent_id: respondent_id,
                                       page_index: page_index,
                                       item_order: 1,
                                       response: responses['moonbear_end_time'],
                                       item_data: nil)
-      store_into_database(end_time)
       responses.delete('moonbear_start_time')
       responses.delete('moonbear_end_time')
+      [start_time, end_time]
     end
 
     def store_url_params(respondent_id, responses, page_index)
-      responses.each do |key, _|
-        if key.include?('radio') || key.include?('checkbox')
-          responses.delete(key)
-        end
-      end
-
       return nil if responses['moonbear_url_params'].nil?
-      new_response = Entity::Response.new(id: nil,
-                                          respondent_id: respondent_id,
-                                          page_index: page_index,
-                                          item_order: 2,
-                                          response: responses['moonbear_url_params'],
-                                          item_data: nil)
-      store_into_database(new_response)
+      Entity::Response.new(id: nil,
+                           respondent_id: respondent_id,
+                           page_index: page_index,
+                           item_order: 2,
+                           response: responses['moonbear_url_params'],
+                           item_data: nil)
+    end
+
+    def store_into_database(new_responses)
+      Repository::For[Entity::Launch].add_responses(@launch_id, new_responses)
     end
   end
 end

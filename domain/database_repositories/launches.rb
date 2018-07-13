@@ -24,15 +24,11 @@ module SurveyMoonbear
       end
 
       def self.add_responses(launch_id, response_entities)
-        db_launch = Database::LaunchOrm.where(id: id).first
+        db_launch = Database::LaunchOrm.where(id: launch_id).first
         response_entities.each do |response_entity|
-          db_launch.add_response(response_entity)
+          db_launch.add_response(response_entity.to_h)
         end
       end
-
-      # def self.add_response(db_launch, response_entity)
-      #   db_launch.add_response(response_entity)
-      # end
 
       def self.add_response(id, response_entity)
         db_launch = Database::LaunchOrm.where(id: id).first
