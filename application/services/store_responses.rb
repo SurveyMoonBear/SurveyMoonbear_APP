@@ -87,7 +87,7 @@ module SurveyMoonbear
     end
 
     def store_into_database(new_responses)
-      Repository::For[Entity::Launch].add_responses(@launch_id, new_responses)
+      Repository::For[Entity::Launch].add_multi_responses(@launch_id, new_responses)
     end
   end
 end
