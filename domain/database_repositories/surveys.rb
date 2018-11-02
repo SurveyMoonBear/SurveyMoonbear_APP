@@ -73,7 +73,7 @@ module SurveyMoonbear
       end
 
       def self.update_state(entity)
-        db_survey = Database::SurveyOrm.where(id: entity.id).first
+        db_survey = Database::SurveyOrm.find(id: entity.id)
 
         db_survey.update(state: 'closed')
 

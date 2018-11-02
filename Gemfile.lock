@@ -16,6 +16,7 @@ GEM
     concurrent-ruby (1.0.5)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
+    database_cleaner (1.5.3)
     declarative (0.0.10)
     declarative-option (0.1.0)
     descendants_tracker (0.0.4)
@@ -31,15 +32,29 @@ GEM
     dry-core (0.4.5)
       concurrent-ruby (~> 1.0)
     dry-equalizer (0.2.0)
+    dry-events (0.1.0)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 0.4)
+      dry-equalizer (~> 0.2)
     dry-logic (0.4.2)
       dry-container (~> 0.2, >= 0.2.6)
       dry-core (~> 0.2)
       dry-equalizer (~> 0.2)
+    dry-matcher (0.7.0)
+    dry-monads (1.1.0)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 0.4, >= 0.4.4)
+      dry-equalizer
     dry-struct (0.4.0)
       dry-core (~> 0.4, >= 0.4.1)
       dry-equalizer (~> 0.2)
       dry-types (~> 0.12, >= 0.12.2)
       ice_nine (~> 0.11)
+    dry-transaction (0.13.0)
+      dry-container (>= 0.2.8)
+      dry-events (>= 0.1.0)
+      dry-matcher (>= 0.7.0)
+      dry-monads (>= 0.4.0)
     dry-types (0.12.2)
       concurrent-ruby (~> 1.0)
       dry-configurable (~> 0.1)
@@ -112,6 +127,8 @@ GEM
     mime-types-data (3.2016.0521)
     mini_mime (1.0.0)
     minitest (5.11.3)
+    minitest-hooks (1.5.0)
+      minitest (> 5.3)
     minitest-rg (5.2.0)
       minitest (~> 5.0)
     multi_json (1.13.1)
@@ -216,7 +233,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  database_cleaner
   dry-struct
+  dry-transaction
   dry-types
   dry-validation
   econfig
@@ -225,6 +244,7 @@ DEPENDENCIES
   hirb
   http
   minitest
+  minitest-hooks
   minitest-rg
   pg
   pony
@@ -253,4 +273,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.2
+   1.16.5

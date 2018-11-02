@@ -12,6 +12,9 @@ gem 'roda'
 gem 'slim'
 gem 'rake'
 
+# Services
+gem 'dry-transaction'
+
 # Security related
 gem 'dry-validation'
 gem 'rack-ssl-enforcer'
@@ -39,6 +42,8 @@ gem 'dry-types'
 group :test do
   gem 'minitest'
   gem 'minitest-rg'
+  gem 'minitest-hooks'
+  gem 'database_cleaner'
   
   gem 'simplecov'
   gem 'vcr'

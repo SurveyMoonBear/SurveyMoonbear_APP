@@ -13,6 +13,7 @@ module SurveyMoonbear
     Econfig.root = '.'
 
     configure do
+      SecureDB.setup(config.DB_KEY)
       SecureSession.setup(config)
       SecureMessage.setup(config)
     end

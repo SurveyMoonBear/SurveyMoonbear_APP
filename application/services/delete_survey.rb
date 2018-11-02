@@ -6,15 +6,15 @@ module SurveyMoonbear
       @config = config
     end
 
-    def call(survey)
-      survey = delete_record_in_database(survey)
+    def call(survey_id)
+      survey = delete_record_in_database(survey_id)
       access_token = exchange_access_token
       delete_spreadsheet(access_token, survey.origin_id)
       survey
     end
 
-    def delete_record_in_database(survey)
-      Repository::For[Entity::Survey].delete_from(survey)
+    def delete_record_in_database(survey_id)
+      Repository::For[Entity::Survey].delete_from(survey_id)
     end
 
     def exchange_access_token

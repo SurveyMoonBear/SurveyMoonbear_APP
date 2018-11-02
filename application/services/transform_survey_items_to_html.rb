@@ -93,11 +93,15 @@ module SurveyMoonbear
         str += "<label id='#{item.name}' class='lead'>#{item.description}</label>"
       end
 
-      item.options.split(',').each_with_index do |option, index|
-        str += "<div class='custom-control custom-radio'>"
-        str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}' name='radio-#{item.name}' value='#{option}'>"
-        str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
-        str += '</div>'
+      if item.options
+        item.options.split(',').each_with_index do |option, index|
+          str += "<div class='custom-control custom-radio'>"
+          str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}' name='radio-#{item.name}' value='#{option}'>"
+          str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
+          str += '</div>'
+        end
+      else
+        str += "<p>No options were provided.</p>"
       end
 
       if item.required == 1
@@ -116,11 +120,15 @@ module SurveyMoonbear
         str += "<label id='#{item.name}' class='lead'>#{item.description}</label>"
       end
 
-      item.options.split(',').each_with_index do |option, index|
-        str += "<div class='custom-control custom-checkbox'>"
-        str += "<input type='checkbox' class='custom-control-input' id='#{item.name}#{index}' name='checkbox-#{item.name}' value='#{option}'>"
-        str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
-        str += '</div>'
+      if item.options
+        item.options.split(',').each_with_index do |option, index|
+          str += "<div class='custom-control custom-checkbox'>"
+          str += "<input type='checkbox' class='custom-control-input' id='#{item.name}#{index}' name='checkbox-#{item.name}' value='#{option}'>"
+          str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
+          str += '</div>'
+        end
+      else
+        str += "<p>No options were provided.</p>"
       end
 
       str += if item.required == 1

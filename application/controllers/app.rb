@@ -53,7 +53,7 @@ module SurveyMoonbear
       routing.on 'account' do
         # /account/login branch
         routing.on 'login' do
-          # GET /account/login/register_callback request
+          # GET /account/login/google_callback request
           routing.get 'google_callback' do
             begin
               logged_in_account = FindAuthenticatedGoogleAccount.new(config)
@@ -64,6 +64,7 @@ module SurveyMoonbear
 
             response.status = 201
             logged_in_account = logged_in_account.to_h
+            puts logged_in_account
             if logged_in_account
               SecureSession.new(session).set(:current_account, logged_in_account)
               # flash[:notice] = "Hello #{logged_in_account['username']}!"
@@ -122,34 +123,35 @@ module SurveyMoonbear
         # GET /survey/preview with params: survey_id, page
         routing.on 'preview' do
           routing.get do
-            saved_survey = GetSurveyFromDatabase.new.call(survey_id)
-            new_survey = GetSurveyFromSpreadsheet.new(@current_account)
-                                                 .call(saved_survey.origin_id)
-            questions = TransfromSurveyItemsToHTML.new.call(new_survey)
+            response = PreviewSurveyInHTML.new.with_step_args(get_survey_from_spreadsheet: [@current_account])
+                                              .call(survey_id)
 
-            view 'survey_preview',
-                 layout: false,
-                 locals: { title: new_survey[:title],
-                           questions: questions }
+            if response.failure?
+              flash[:error] = response.failure + ' Please try again.'
+              routing.redirect '/'
+            else
+              preview_survey = response.value!
+              view 'survey_preview',
+                   layout: false,
+                   locals: { title: preview_survey[:title], questions: preview_survey[:questions] }
+            end
           end
         end
 
-        # GET survey/[survey_id]/export
+        # GET survey/[survey_id]/start
         routing.get 'start' do
-          saved_survey = GetSurveyFromDatabase.new.call(survey_id)
-          new_survey = GetSurveyFromSpreadsheet.new(@current_account)
-                                               .call(saved_survey.origin_id)
+          response = GetSurveyToStart.new.with_step_args(get_survey_from_spreadsheet: [@current_account])
+                                         .call(survey_id)
 
-          StartSurvey.new.call(new_survey)
-
+          flash[:error] = response.failure + ' Please try again.' if response.failure?
           routing.redirect '/survey_list'
         end
 
         # GET survey/[survey_id]/close
         routing.get 'close' do
-          saved_survey = GetSurveyFromDatabase.new.call(survey_id)
-          CloseSurvey.new.call(saved_survey)
+          response = GetSurveyAndClose.new.call(survey_id)
 
+          flash[:error] = response.failure + ' Please try again.' if response.failure?
           routing.redirect '/survey_list'
         end
 
