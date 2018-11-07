@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GoogleAuthHelper
   def self.exchange_access_token(config)
     response = HTTP.post('https://www.googleapis.com/oauth2/v4/token',

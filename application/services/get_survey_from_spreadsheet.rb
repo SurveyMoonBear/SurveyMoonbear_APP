@@ -1,20 +1,23 @@
 # frozen_string_literal: true
 
+require 'dry/transaction'
+
 module SurveyMoonbear
   # Return a survey entity from spreadsheet
+  # Usage: GetSurveyFromSpreadsheet.new.call(spreadsheet_id: "...", current_account: {...})
   class GetSurveyFromSpreadsheet
-    def initialize(current_account)
-      @current_account = current_account
-    end
+    include Dry::Transaction
+    include Dry::Monads
 
-    def call(spreadsheet_id)
-      read_spreadsheet(spreadsheet_id)
-    end
+    step :read_spreadsheet
 
-    def read_spreadsheet(spreadsheet_id)
-      google_api = Google::Api.new(@current_account['access_token'])
-      Google::SurveyMapper.new(google_api)
-                          .load(spreadsheet_id, @current_account)
+    def read_spreadsheet(spreadsheet_id:, current_account:)
+      google_api = Google::Api.new(current_account['access_token'])
+      spreadsheet = Google::SurveyMapper.new(google_api)
+                                        .load(spreadsheet_id, current_account)
+      Success(spreadsheet)
+    rescue
+      Failure('Failed to read spreadsheet survey.')
     end
   end
 end

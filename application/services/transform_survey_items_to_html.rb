@@ -1,12 +1,26 @@
+# frozen_string_literal: true
+
+require 'dry/transaction'
+
 module SurveyMoonbear
+  # Return an array of question HTML strings
+  # Usage: TransfromSurveyItemsToHTML.new.call(survey: <survey_entity>)
   class TransfromSurveyItemsToHTML
-    def call(survey)
-      survey.pages.map do |page|
-        build_questions(page)
+    include Dry::Transaction
+    include Dry::Monads
+
+    step :build_questions_arr_of_all_pages
+
+    def build_questions_arr_of_all_pages(survey:)
+      questions_array = survey.pages.map do |page|
+        build_questions_arr(page)
       end
+      Success(questions_array)
+    rescue
+      Failure('Failed to build questions array of all pages')
     end
 
-    def build_questions(page)
+    def build_questions_arr(page)
       q_arr = []
       grid_arr = []
       items = page.items

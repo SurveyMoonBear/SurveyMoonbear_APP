@@ -2,3 +2,5 @@ config/secrets.yml
 *.db
 _*
 .bundle/
+coverage
+spec/fixtures/cassettes

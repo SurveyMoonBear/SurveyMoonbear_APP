@@ -56,15 +56,13 @@ module SurveyMoonbear
           # GET /account/login/google_callback request
           routing.get 'google_callback' do
             begin
-              logged_in_account = FindAuthenticatedGoogleAccount.new(config)
-                                                                .call(routing.params['code'])
+              logged_in_account = FindAuthenticatedGoogleAccount.new.call(config: config, code: routing.params['code']).value!
             rescue StandardError
               routing.halt(404, error: 'Account not found')
             end
 
             response.status = 201
             logged_in_account = logged_in_account.to_h
-            puts logged_in_account
             if logged_in_account
               SecureSession.new(session).set(:current_account, logged_in_account)
               # flash[:notice] = "Hello #{logged_in_account['username']}!"
@@ -97,14 +95,11 @@ module SurveyMoonbear
         end
 
         routing.post 'create' do
-          @new_survey = CreateSurvey.new(@current_account, config)
-                                    .call(routing.params['title'])
+          new_survey = CreateSurvey.new.call(config: config, current_account: @current_account, 
+                                              title: routing.params['title'])
 
-          if @new_survey
-            flash[:notice] = "#{@new_survey.title} is created!"
-          else
-            flash[:error] = "Fail to create #{@new_survey.title}. :("
-          end
+          new_survey.success? ? flash[:notice] = "#{new_survey.value!.title} is created!" :
+                                 flash[:error] = "Fail to create #{new_survey.title}. :("
 
           routing.redirect '/survey_list'
         end
@@ -114,8 +109,8 @@ module SurveyMoonbear
         @current_account = SecureSession.new(session).get(:current_account)
 
         routing.post 'update_settings' do
-          response = EditSurveyTitle.new(@current_account)
-                                    .call(survey_id, routing.params)
+          response = EditSurveyTitle.new.call(current_account: @current_account, 
+                                              survey_id: survey_id, new_title: routing.params['title'])
 
           routing.redirect '/survey_list'
         end
@@ -123,8 +118,8 @@ module SurveyMoonbear
         # GET /survey/preview with params: survey_id, page
         routing.on 'preview' do
           routing.get do
-            response = PreviewSurveyInHTML.new.with_step_args(get_survey_from_spreadsheet: [@current_account])
-                                              .call(survey_id)
+            response = PreviewSurveyInHTML.new.call(survey_id: 'invalid_survey_id', 
+                                                    current_account: CURRENT_ACCOUNT)
 
             if response.failure?
               flash[:error] = response.failure + ' Please try again.'
@@ -140,8 +135,7 @@ module SurveyMoonbear
 
         # GET survey/[survey_id]/start
         routing.get 'start' do
-          response = GetSurveyToStart.new.with_step_args(get_survey_from_spreadsheet: [@current_account])
-                                         .call(survey_id)
+          response = GetSurveyToStart.new.call(survey_id: survey_id, current_account: @current_account)
 
           flash[:error] = response.failure + ' Please try again.' if response.failure?
           routing.redirect '/survey_list'
@@ -149,7 +143,7 @@ module SurveyMoonbear
 
         # GET survey/[survey_id]/close
         routing.get 'close' do
-          response = GetSurveyAndClose.new.call(survey_id)
+          response = GetSurveyAndClose.new.call(survey_id: survey_id)
 
           flash[:error] = response.failure + ' Please try again.' if response.failure?
           routing.redirect '/survey_list'
@@ -157,7 +151,7 @@ module SurveyMoonbear
 
         # DELETE survey/[survey_id]
         routing.delete do
-          response = DeleteSurvey.new(@current_account, config).call(survey_id)
+          response = DeleteSurvey.new.call(config: config, survey_id: survey_id)
           response.title
 
           flash[:notice] = "#{response.title} has been deleted!"
@@ -167,7 +161,7 @@ module SurveyMoonbear
 
         routing.on 'responses_detail' do
           routing.get do
-            survey = GetSurveyFromDatabase.new.call(survey_id)
+            survey = GetSurveyFromDatabase.new.call(survey_id: survey_id).value!
 
             arr_launches = []
             survey.launches.each do |launch|
@@ -192,7 +186,7 @@ module SurveyMoonbear
           routing.get do
             response['Content-Type'] = 'application/csv'
 
-            TransformResponsesToCSV.new.call(survey_id, launch_id)
+            TransformResponsesToCSV.new.call(survey_id: survey_id, launch_id: launch_id).value!
           end
         end
       end
@@ -202,7 +196,7 @@ module SurveyMoonbear
           routing.is do
             # GET onlinesurvey/[survey_id]/[launch_id]/submit
             routing.get do
-              survey = GetSurveyFromDatabase.new.call(survey_id)
+              survey = GetSurveyFromDatabase.new.call(survey_id: survey_id).value!
               surveys_started = SecureSession.new(session).get(:surveys_started)
 
               if surveys_started.nil?
@@ -221,8 +215,8 @@ module SurveyMoonbear
                 survey_started['survey_id'] == survey_id
               end
 
-              StoreResponses.new(survey_id, launch_id)
-                            .call(respondent['respondent_id'], routing.params)
+              StoreResponses.new.call(survey_id: survey_id, launch_id: launch_id, 
+                                      respondent_id: respondent['respondent_id'], responses: routing.params)
 
               surveys_started.reject! do |survey_started|
                 survey_started['survey_id'] == survey_id
@@ -241,7 +235,7 @@ module SurveyMoonbear
 
         routing.on 'closed' do
           routing.get do
-            survey = GetSurveyFromDatabase.new.call(survey_id)
+            survey = GetSurveyFromDatabase.new.call(survey_id: survey_id).value!
 
             if survey && survey.state == 'started' && survey.launch_id == launch_id
               routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
@@ -255,14 +249,14 @@ module SurveyMoonbear
 
         # GET /onlinesurvey/[survey_id]/[launch_id]
         routing.get do
-          survey = GetSurveyFromDatabase.new.call(survey_id)
+          survey = GetSurveyFromDatabase.new.call(survey_id: survey_id).value!
           url_params = JSON.generate(routing.params)
 
           if survey.nil? || survey.launch_id != launch_id || survey.state != 'started'
             routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
           end
 
-          questions = TransfromSurveyItemsToHTML.new.call(survey)
+          questions_arr = TransfromSurveyItemsToHTML.new.call(survey: survey).value!
 
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
 
@@ -288,7 +282,7 @@ module SurveyMoonbear
                layout: false,
                locals: { survey: survey,
                          survey_url: survey_url,
-                         questions: questions,
+                         questions: questions_arr,
                          url_params: url_params }
         end
       end

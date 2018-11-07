@@ -1,26 +1,36 @@
 # frozen_string_literal: true
 
+require 'dry/transaction'
+
 module SurveyMoonbear
   # Return CSV format of responses
+  # Usage: TransformResponsesToCSV.new.call(survey_id: "...", launch_id: "...")
   class TransformResponsesToCSV
-    def call(survey_id, launch_id)
-      survey = get_survey_from_database(survey_id)
-      launch = get_launch_from_database(launch_id)
-      responses_hash = formatting_responses(launch.responses)
-      headers_arr = build_responses_table_header(survey)
-      responses_arr = build_responses_arr(responses_hash, headers_arr)
-      transform_to_csv(responses_arr)
+    include Dry::Transaction
+    include Dry::Monads
+
+    step :get_survey_from_database
+    step :get_launch_from_database
+    step :formatting_responses
+    step :build_responses_table_headers
+    step :build_responses_arr
+    step :transform_to_csv
+
+    def get_survey_from_database(survey_id:, launch_id:)
+      survey = Repository::For[Entity::Survey].find_id(survey_id)
+      Success(survey: survey, launch_id: launch_id)
+    rescue
+      Failure('Failed to get survey from database')
     end
 
-    def get_survey_from_database(survey_id)
-      Repository::For[Entity::Survey].find_id(survey_id)
+    def get_launch_from_database(survey:, launch_id:)
+      launch = Repository::For[Entity::Launch].find_id(launch_id)
+      Success(responses: launch.responses, survey: survey)
+    rescue
+      Failure('Failed to get launch from database')
     end
 
-    def get_launch_from_database(launch_id)
-      Repository::For[Entity::Launch].find_id(launch_id)
-    end
-
-    def formatting_responses(responses)
+    def formatting_responses(responses:, survey:)
       responses_hash = {}
       responses.each do |r|
         if responses_hash[r.respondent_id.to_s].nil?
@@ -29,11 +39,12 @@ module SurveyMoonbear
           responses_hash[r.respondent_id.to_s].push(r.response)
         end
       end
-
-      responses_hash
+      Success(responses_hash: responses_hash, survey: survey)
+    rescue
+      Failure('Failed to formatting responses')
     end
 
-    def build_responses_table_header(survey)
+    def build_responses_table_headers(responses_hash:, survey:)
       headers_arr = ['respondent']
       survey.pages.each do |page|
         page.items.each do |item|
@@ -43,16 +54,19 @@ module SurveyMoonbear
         end
       end
       headers_arr.push('start_time', 'end_time', 'url_params')
-
-      headers_arr
+      Success(headers_arr: headers_arr, responses_hash: responses_hash)
+    rescue
+      Failure('Failed to build responses table headers')
     end
 
-    def build_responses_arr(responses_hash, headers_arr)
+    def build_responses_arr(headers_arr:, responses_hash:)
       responses_arr = responses_hash.map do |key, value|
         [key, value].flatten
       end
-
       responses_arr.unshift(headers_arr)
+      Success(responses_arr: responses_arr)
+    rescue
+      Failure('Failed to build responses array for csv transformation')
     end
 
     def transform_to_csv(responses_arr)
@@ -61,8 +75,9 @@ module SurveyMoonbear
           csv << data
         end
       end
-
-      csv_string
+      Success(csv_string)
+    rescue
+      Failure('Failed to transform responses array to csv')
     end
   end
 end

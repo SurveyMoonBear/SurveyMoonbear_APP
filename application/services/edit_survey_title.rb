@@ -1,41 +1,50 @@
 # frozen_string_literal: true
 
+require 'dry/transaction'
 require 'http'
 
 module SurveyMoonbear
+  # Return editted survey entity of new title
+  # Usage: EditSurveyTitle.new.call(current_account: {...}, survey_id: "...", new_title: "...")
   class EditSurveyTitle
-    def initialize(current_account)
-      @current_account = current_account
-    end
+    include Dry::Transaction
+    include Dry::Monads
 
-    def call(survey_id, params)
-      origin_id = get_survey_origin_id(survey_id)
-      update_spreadsheet_title(origin_id, params['title'])
-      update_survey_title(origin_id)
-    end
+    step :get_survey_origin_id
+    step :update_spreadsheet_title
+    step :update_survey_title
 
-    def get_survey_origin_id(survey_id)
+    def get_survey_origin_id(current_account:, survey_id:, new_title:)
       survey = Repository::For[Entity::Survey].find_id(survey_id)
-      survey.origin_id
+      Success(current_account: current_account, 
+              origin_id: survey.origin_id, new_title: new_title)
+    rescue
+      Failure('Failed to get survey origin id.')
     end
 
-    def update_spreadsheet_title(origin_id, new_title)
+    def update_spreadsheet_title(current_account:, origin_id:, new_title:)
       spreadsheet_update_url = 'https://sheets.googleapis.com/v4/spreadsheets/'
-      HTTP.auth("Bearer #{@current_account['access_token']}")
+      HTTP.auth("Bearer #{current_account['access_token']}")
           .post("#{spreadsheet_update_url}#{origin_id}:batchUpdate",
                 json: { requests: [{
-                  updateSpreadsheetProperties: {
-                    properties: { title: new_title },
-                    fields: 'title'
-                  }
-                }] })
+                        updateSpreadsheetProperties: {
+                          properties: { title: new_title },
+                          fields: 'title'
+                        }
+                      }] })
+      Success(current_account: current_account, origin_id: origin_id)
+    rescue
+      Failure('Failed to update spreadsheet title.')
     end
 
-    def update_survey_title(origin_id)
-      google_api = Google::Api.new(@current_account['access_token'])
+    def update_survey_title(current_account:, origin_id:)
+      google_api = Google::Api.new(current_account['access_token'])
       survey = Google::SurveyMapper.new(google_api)
-                                   .load(origin_id, @current_account)
-      Repository::For[survey.class].update_title(survey)
+                                   .load(origin_id, current_account)
+      updated_survey = Repository::For[survey.class].update_title(survey)
+      Success(updated_survey)
+    rescue
+      Failure('Failed to update survey title in database')
     end
   end
 end
