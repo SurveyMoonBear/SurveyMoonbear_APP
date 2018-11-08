@@ -2,6 +2,7 @@
 
 require 'vcr'
 require 'webmock'
+require 'json'
 
 # Setting up VCR
 class VcrHelper
@@ -23,6 +24,12 @@ class VcrHelper
       c.filter_sensitive_data('<SAMPLE_FILE_ID>') { SAMPLE_FILE_ID }
       c.filter_sensitive_data('<CURRENT_ACCOUNT>') { CURRENT_ACCOUNT }
       c.filter_sensitive_data('<ACCESS_TOKEN>') { ACCESS_TOKEN }
+
+      # Filter some omitted credentials from http requests & responses
+      # c.filter_sensitive_data('<ACCESS_TOKEN>') do |interaction|
+      #   interaction.request.headers['Authorization'][0] unless interaction.request.headers.empty? || interaction.request.headers['Authorization'].nil?
+      #   JSON.parse(interaction.response.body)['access_token'] unless interaction.response.body.empty? || JSON.parse(interaction.response.body)['access_token'].nil?
+      # end
     end
 
     VCR.insert_cassette(

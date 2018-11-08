@@ -31,45 +31,49 @@ task :console do
   sh 'pry -r ./spec/test_load_all'
 end
 
+namespace :vcr do
+  desc 'Delete cassette fixtures'
+  task :delete do
+    sh 'rm spec/fixtures/cassettes/*.yml' do |ok, _|
+      puts (ok ? 'Cassettes deleted' : 'No cassettes found')
+    end
+  end
+end
+
 namespace :db do
   require_relative 'lib/init.rb'
   require_relative 'config/environments.rb' # load config info require 'sequel'
   require 'sequel' # TODO: remove after create orm
-
-  Sequel.extension :migration
   app = SurveyMoonbear::App
 
   desc 'Run migrations'
   task :migrate do
+    Sequel.extension :migration
     puts "Migrating #{app.environment} database to latest"
     Sequel::Migrator.run(app.DB, 'infrastructure/database/migrations')
   end
 
-  desc 'Drop all tables'
-  task :drop do
-    require_relative 'config/environments.rb'
-    # drop according to dependencies
-    app.DB.drop_table :items
-    app.DB.drop_table :pages
-    app.DB.drop_table :responses
-    app.DB.drop_table :launches
-    app.DB.drop_table :surveys
-    app.DB.drop_table :accounts
+  desc 'Wipe records from all tables'
+  task :wipe do
+    require_relative 'spec/helpers/database_helper.rb'
+    DatabaseHelper.setup_database_cleaner
+    DatabaseHelper.wipe_database
+    puts "Wiped all records from tables in #{app.environment} database"
   end
 
-  desc 'Reset all database tables'
-  task reset: [:drop, :migrate]
-
   desc 'Delete dev or test database file'
-  task :wipe do
+  task :drop do
     if app.environment == :production
-      puts 'Cannot wipe production database!'
+      puts 'Cannot remove production database!'
       return
     end
 
     FileUtils.rm(app.config.db_filename)
     puts "Deleted #{app.config.db_filename}"
   end
+
+  # desc 'Reset all database tables'
+  # task reset: [:drop, :migrate]
 end
 
 namespace :crypto do

@@ -4,6 +4,8 @@
 require './init.rb'
 require 'rack/test'
 
+require_relative './helpers/init.rb'
+
 include Rack::Test::Methods
 
 def app

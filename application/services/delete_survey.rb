@@ -9,17 +9,13 @@ module SurveyMoonbear
     include Dry::Transaction
     include Dry::Monads
 
-    step :exchange_access_token
+    step :refresh_access_token
     step :delete_record_in_database
     step :delete_spreadsheet
 
-    def exchange_access_token(config:, survey_id:)
-      response = HTTP.post('https://www.googleapis.com/oauth2/v4/token',
-                            params: { grant_type: 'refresh_token',
-                                      refresh_token: config.REFRESH_TOKEN,
-                                      client_id: config.GOOGLE_CLIENT_ID,
-                                      client_secret: config.GOOGLE_CLIENT_SECRET }).parse
-      Success(access_token: response['access_token'], survey_id: survey_id)
+    def refresh_access_token(config:, survey_id:)
+      access_token = Google::Auth.new(config).refresh_access_token
+      Success(access_token: access_token, survey_id: survey_id)
     rescue
       Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
     end

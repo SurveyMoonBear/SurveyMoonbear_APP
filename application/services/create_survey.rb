@@ -10,20 +10,16 @@ module SurveyMoonbear
     include Dry::Transaction
     include Dry::Monads
 
-    step :exchange_access_token
+    step :refresh_access_token
     step :create_spreadsheet
     step :add_editor
     step :set_survey_title
     step :store_into_database
 
-    def exchange_access_token(config:, current_account:, title:)
-      response = HTTP.post('https://www.googleapis.com/oauth2/v4/token',
-                           params: { refresh_token: config.REFRESH_TOKEN,
-                                     client_id: config.GOOGLE_CLIENT_ID,
-                                     client_secret: config.GOOGLE_CLIENT_SECRET,
-                                     grant_type: 'refresh_token' }).parse
-      current_account['access_token'] = response['access_token']
-      Success(access_token: response['access_token'], 
+    def refresh_access_token(config:, current_account:, title:)
+      current_account['access_token'] = Google::Auth.new(config).refresh_access_token
+
+      Success(access_token: current_account['access_token'], 
               config: config, current_account: current_account, title: title)
     rescue
       Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
