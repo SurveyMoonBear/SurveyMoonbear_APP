@@ -118,8 +118,7 @@ module SurveyMoonbear
         # GET /survey/preview with params: survey_id, page
         routing.on 'preview' do
           routing.get do
-            response = PreviewSurveyInHTML.new.call(survey_id: 'invalid_survey_id', 
-                                                    current_account: CURRENT_ACCOUNT)
+            response = TransformSurveyItemsToHTML.new.call(survey_id: survey_id)
 
             if response.failure?
               flash[:error] = response.failure + ' Please try again.'
@@ -135,7 +134,7 @@ module SurveyMoonbear
 
         # GET survey/[survey_id]/start
         routing.get 'start' do
-          response = GetSurveyToStart.new.call(survey_id: survey_id, current_account: @current_account)
+          response = StartSurvey.new.call(survey_id: survey_id, current_account: @current_account)
 
           flash[:error] = response.failure + ' Please try again.' if response.failure?
           routing.redirect '/survey_list'
@@ -143,7 +142,7 @@ module SurveyMoonbear
 
         # GET survey/[survey_id]/close
         routing.get 'close' do
-          response = GetSurveyAndClose.new.call(survey_id: survey_id)
+          response = CloseSurvey.new.call(survey_id: survey_id)
 
           flash[:error] = response.failure + ' Please try again.' if response.failure?
           routing.redirect '/survey_list'
@@ -250,15 +249,15 @@ module SurveyMoonbear
         # GET /onlinesurvey/[survey_id]/[launch_id]
         routing.get do
           survey = GetSurveyFromDatabase.new.call(survey_id: survey_id).value!
-          url_params = JSON.generate(routing.params)
 
           if survey.nil? || survey.launch_id != launch_id || survey.state != 'started'
             routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
           end
 
-          questions_arr = TransfromSurveyItemsToHTML.new.call(survey: survey).value!
+          questions_arr = TransformSurveyItemsToHTML.new.call(survey_id: survey_id).value![:questions]
 
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
+          url_params = JSON.generate(routing.params)
 
           surveys_started = SecureSession.new(session).get(:surveys_started)
           if surveys_started

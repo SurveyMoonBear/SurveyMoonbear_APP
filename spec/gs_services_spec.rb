@@ -2,7 +2,7 @@
 
 require_relative './spec_helper.rb'
 
-describe 'Tests of Services Related to GoogleSpreadsheetAPI & Database' do
+describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
   # Execute before/after each 'describe'
   before(:all) do
     VcrHelper.setup_vcr
@@ -16,6 +16,10 @@ describe 'Tests of Services Related to GoogleSpreadsheetAPI & Database' do
   end
 
   describe 'Create survey' do
+    before do
+      VcrHelper.build_cassette('happy_create_gs_api')
+    end
+
     after do
       SurveyMoonbear::DeleteSurvey.new.call(config: CONFIG, survey_id: @new_survey_res.value!.id)
     end
@@ -32,6 +36,7 @@ describe 'Tests of Services Related to GoogleSpreadsheetAPI & Database' do
 
   describe 'Delete survey' do
     before do
+      VcrHelper.build_cassette('happy_delete_gs_api')
       @survey = SurveyMoonbear::CreateSurvey.new.call(config: CONFIG, current_account: CURRENT_ACCOUNT, 
                                                       title: 'Survey for Testing Delete Services').value!
     end
@@ -45,6 +50,7 @@ describe 'Tests of Services Related to GoogleSpreadsheetAPI & Database' do
 
   describe 'After survey created: retrieve surveys and make changes' do
     before(:all) do
+      VcrHelper.build_cassette('happy_change_gs_api')
       @survey = SurveyMoonbear::CreateSurvey.new.call(config: CONFIG, current_account: CURRENT_ACCOUNT, 
                                                       title: 'Survey for Testing Changes Services').value!
     end
@@ -69,12 +75,6 @@ describe 'Tests of Services Related to GoogleSpreadsheetAPI & Database' do
       _(get_gs_survey_res.value!.pages[0].items).wont_be :empty?
     end
 
-    it 'SAD: should raise exception on invalid spreadsheet_id when getting survey from spreadsheet' do
-      get_gs_survey_res = SurveyMoonbear::GetSurveyFromSpreadsheet.new.call(spreadsheet_id: 'invalid_spreadsheet_id', 
-                                                                            current_account: CURRENT_ACCOUNT)
-      _(get_gs_survey_res.failure?).must_equal true
-    end
-
     it 'HAPPY: should be able to edit survey title' do
       editted_survey_res = SurveyMoonbear::EditSurveyTitle.new.call(current_account: CURRENT_ACCOUNT, 
                                                                     survey_id: @survey.id, 
@@ -83,31 +83,35 @@ describe 'Tests of Services Related to GoogleSpreadsheetAPI & Database' do
     end
 
     it 'HAPPY: should start/close survey' do
-      started_survey_res = SurveyMoonbear::StartSurvey.new.call(survey: @survey)
+      started_survey_res = SurveyMoonbear::StartSurvey.new.call(survey_id: @survey.id, 
+                                                                current_account: CURRENT_ACCOUNT)
       _(started_survey_res.success?).must_equal true
       _(started_survey_res.value!.state).must_equal 'started'
       _(started_survey_res.value!.launch_id).wont_be_nil
 
-      closed_launch_res = SurveyMoonbear::CloseSurvey.new.call(survey: started_survey_res.value!)
+      closed_launch_res = SurveyMoonbear::CloseSurvey.new.call(survey_id: started_survey_res.value!.id)
       _(closed_launch_res.success?).must_equal true
       _(closed_launch_res.value!.state).must_equal 'closed'
     end
   end
 
-  describe 'After survey started: preview and handle responses' do
+  describe 'After survey started: output surveys and handle responses' do
     before(:all) do
+      VcrHelper.build_cassette('happy_output_responses')
       survey = SurveyMoonbear::CreateSurvey.new.call(config: CONFIG, current_account: CURRENT_ACCOUNT, title: 'Survey for Testing').value!
-      @started_survey = SurveyMoonbear::StartSurvey.new.call(survey: survey).value!
+      @started_survey = SurveyMoonbear::StartSurvey.new.call(survey_id: survey.id, 
+                                                             current_account: CURRENT_ACCOUNT).value!
     end
 
     after(:all) do
       SurveyMoonbear::DeleteSurvey.new.call(config: CONFIG, survey_id: @started_survey.id)
     end
 
-    it 'HAPPY: should be able to transform survey items to html for preview' do
-      transform_html_res = SurveyMoonbear::TransfromSurveyItemsToHTML.new.call(survey: @started_survey)
-      _(transform_html_res.success?).must_equal true
-      _(transform_html_res.value!).must_be_instance_of Array
+    it 'HAPPY: should be able to view survey items in html' do
+      trans_html_res = SurveyMoonbear::TransformSurveyItemsToHTML.new.call(survey_id: @started_survey.id)
+
+      _(trans_html_res.success?).must_equal true
+      _(trans_html_res.value![:questions][0]).wont_be :empty?
     end
 
     it 'HAPPY: should be able to store responses and transform into csv' do

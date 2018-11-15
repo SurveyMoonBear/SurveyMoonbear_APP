@@ -3,19 +3,27 @@
 require 'dry/transaction'
 
 module SurveyMoonbear
-  # Return an array of question HTML strings
-  # Usage: TransfromSurveyItemsToHTML.new.call(survey: <survey_entity>)
-  class TransfromSurveyItemsToHTML
+  # Return survey title & an array of question HTML strings
+  # Usage: TransformSurveyItemsToHTML.new.call(survey_id: "...")
+  class TransformSurveyItemsToHTML
     include Dry::Transaction
     include Dry::Monads
 
+    step :get_survey_from_database
     step :build_questions_arr_of_all_pages
 
-    def build_questions_arr_of_all_pages(survey:)
-      questions_array = survey.pages.map do |page|
+    def get_survey_from_database(survey_id:)
+      saved_survey = GetSurveyFromDatabase.new.call(survey_id: survey_id)
+      Success(saved_survey: saved_survey.value!)
+    rescue
+      Failure('Failed to get survey from database.')
+    end
+
+    def build_questions_arr_of_all_pages(saved_survey:)
+      questions_array = saved_survey.pages.map do |page|
         build_questions_arr(page)
       end
-      Success(questions_array)
+      Success(title: saved_survey[:title], questions: questions_array)
     rescue
       Failure('Failed to build questions array of all pages')
     end
