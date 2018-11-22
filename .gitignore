@@ -3,4 +3,3 @@ config/secrets.yml
 _*
 .bundle/
 coverage
-spec/fixtures/cassettes/*.yml
