@@ -32,16 +32,17 @@ class VcrHelper
         access_token_in_uri = URI.decode_www_form(uri_query_str).to_h['access_token'] unless uri_query_str.nil?
       end
 
+      # Filter access_token from request headers ('Authorization' => ["Bearer <ACCESS_TOKEN>"])
+      c.filter_sensitive_data('<ACCESS_TOKEN>') do |interaction|
+        interaction.request.headers['Authorization'].first.split(' ')[1] if interaction.request.headers['Authorization']
+      end
+
       # Filter access_token from response body string
       c.filter_sensitive_data('<ACCESS_TOKEN>') do |interaction|
         body_str = interaction.response.body
         body_containing_access_token = !body_str.empty? && JSON.parse(body_str).keys.include?('access_token')
 
         JSON.parse(body_str)['access_token'] if body_containing_access_token
-      end
-
-      c.before_record do |interaction|
-        interaction.request.headers.delete('Authorization')
       end
     end
   end
@@ -50,7 +51,8 @@ class VcrHelper
     VCR.insert_cassette(
       cassette_name.freeze,
       record: :new_episodes,
-      match_requests_on: %i[method uri headers]
+      match_requests_on: %i[method uri headers],
+      allow_playback_repeats: true
     )
   end
 
