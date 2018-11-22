@@ -99,7 +99,7 @@ module SurveyMoonbear
                                               title: routing.params['title'])
 
           new_survey.success? ? flash[:notice] = "#{new_survey.value!.title} is created!" :
-                                 flash[:error] = "Fail to create #{new_survey.title}. :("
+                                flash[:error] = "Failed to create survey, please try again :("
 
           routing.redirect '/survey_list'
         end
@@ -118,8 +118,8 @@ module SurveyMoonbear
         # GET /survey/preview with params: survey_id, page
         routing.on 'preview' do
           routing.get do
-            response = TransformSurveyItemsToHTML.new.call(survey_id: survey_id)
-
+            response = TransformSurveyItemsToHTML.new.call(survey_id: survey_id, 
+                                                           current_account: @current_account)
             if response.failure?
               flash[:error] = response.failure + ' Please try again.'
               routing.redirect '/'
@@ -151,10 +151,9 @@ module SurveyMoonbear
         # DELETE survey/[survey_id]
         routing.delete do
           response = DeleteSurvey.new.call(config: config, survey_id: survey_id)
-          response.title
-
-          flash[:notice] = "#{response.title} has been deleted!"
-
+          
+          flash[:error] = "Failed to delete the survey. Please try again :(" if response.failure?
+          
           routing.redirect '/survey_list', 303
         end
 
@@ -191,6 +190,8 @@ module SurveyMoonbear
       end
 
       routing.on 'onlinesurvey', String, String do |survey_id, launch_id|
+        @current_account = SecureSession.new(session).get(:current_account)
+
         routing.on 'submit' do
           routing.is do
             # GET onlinesurvey/[survey_id]/[launch_id]/submit
@@ -254,7 +255,8 @@ module SurveyMoonbear
             routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
           end
 
-          questions_arr = TransformSurveyItemsToHTML.new.call(survey_id: survey_id).value![:questions]
+          questions_arr = TransformSurveyItemsToHTML.new.call(survey_id: survey_id, current_account: @current_account)
+                                                        .value![:questions]
 
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
           url_params = JSON.generate(routing.params)

@@ -4,26 +4,35 @@ require 'dry/transaction'
 
 module SurveyMoonbear
   # Return survey title & an array of question HTML strings
-  # Usage: TransformSurveyItemsToHTML.new.call(survey_id: "...")
+  # Usage: TransformSurveyItemsToHTML.new.call(survey_id: "...", current_account: {...})
   class TransformSurveyItemsToHTML
     include Dry::Transaction
     include Dry::Monads
 
     step :get_survey_from_database
+    step :get_survey_from_spreadsheet
     step :build_questions_arr_of_all_pages
 
-    def get_survey_from_database(survey_id:)
+    def get_survey_from_database(survey_id:, current_account:)
       saved_survey = GetSurveyFromDatabase.new.call(survey_id: survey_id)
-      Success(saved_survey: saved_survey.value!)
+      Success(spreadsheet_id: saved_survey.value!.origin_id, current_account: current_account)
     rescue
       Failure('Failed to get survey from database.')
     end
 
-    def build_questions_arr_of_all_pages(saved_survey:)
-      questions_array = saved_survey.pages.map do |page|
+    def get_survey_from_spreadsheet(spreadsheet_id:, current_account:)
+      gs_survey = GetSurveyFromSpreadsheet.new.call(spreadsheet_id: spreadsheet_id, 
+                                                    current_account: current_account)
+      Success(gs_survey: gs_survey.value!)
+    rescue
+      Failure('Failed to get survey from spreadsheet.')
+    end
+
+    def build_questions_arr_of_all_pages(gs_survey:)
+      questions_array = gs_survey.pages.map do |page|
         build_questions_arr(page)
       end
-      Success(title: saved_survey[:title], questions: questions_array)
+      Success(title: gs_survey[:title], questions: questions_array)
     rescue
       Failure('Failed to build questions array of all pages')
     end

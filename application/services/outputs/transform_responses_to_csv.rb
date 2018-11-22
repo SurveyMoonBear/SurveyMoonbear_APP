@@ -69,7 +69,7 @@ module SurveyMoonbear
       Failure('Failed to build responses array for csv transformation')
     end
 
-    def transform_to_csv(responses_arr)
+    def transform_to_csv(responses_arr:)
       csv_string = CSV.generate do |csv|
         responses_arr.each do |data|
           csv << data
