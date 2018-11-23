@@ -57,7 +57,8 @@ module SurveyMoonbear
           routing.get 'google_callback' do
             begin
               logged_in_account = FindAuthenticatedGoogleAccount.new.call(config: config, code: routing.params['code']).value!
-            rescue StandardError
+            rescue StandardError=>e
+              puts e
               routing.halt(404, error: 'Account not found')
             end
 

@@ -16,23 +16,16 @@ module SurveyMoonbear
     step :load_from_db
 
     def get_access_token(config:, code:)
-      access_token = HTTP.headers(accept: 'application/json')
-                         .post('https://www.googleapis.com/oauth2/v4/token',
-                               form: { client_id: config.GOOGLE_CLIENT_ID,
-                                       client_secret: config.GOOGLE_CLIENT_SECRET,
-                                       grant_type: 'authorization_code',
-                                       redirect_uri: "#{config.APP_URL}/account/login/google_callback",
-                                       code: code })
-                         .parse['access_token']
-      Success(access_token: access_token)
+      access_token = Google::Auth.new(config)
+                                 .get_access_token(code)
+      Success(config: config, access_token: access_token)
     rescue
       Failure('Failed to get access token')
     end
 
-    def get_google_account(access_token:)
-      google_account = HTTP.auth("Bearer #{access_token}")
-                           .get('https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
-                           .parse
+    def get_google_account(config:, access_token:)
+      google_account = Google::Auth.new(config)
+                                   .get_google_account(access_token)
       Success(google_account: google_account, access_token: access_token)
     rescue
       Failure('Failed to get google account')

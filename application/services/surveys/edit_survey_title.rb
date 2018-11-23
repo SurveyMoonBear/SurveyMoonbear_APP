@@ -23,18 +23,12 @@ module SurveyMoonbear
     end
 
     def update_spreadsheet_title(current_account:, origin_id:, new_title:)
-      spreadsheet_update_url = 'https://sheets.googleapis.com/v4/spreadsheets/'
-      HTTP.auth("Bearer #{current_account['access_token']}")
-          .post("#{spreadsheet_update_url}#{origin_id}:batchUpdate",
-                json: { requests: [{
-                        updateSpreadsheetProperties: {
-                          properties: { title: new_title },
-                          fields: 'title'
-                        }
-                      }] })
+      update_res = Google::Api.new(current_account['access_token'])
+                              .update_gs_title(origin_id, new_title)
+
       Success(current_account: current_account, origin_id: origin_id)
     rescue
-      Failure('Failed to update spreadsheet title.')
+      Failure("Failed to update spreadsheet title. #{update_res}")
     end
 
     def update_survey_title(current_account:, origin_id:)

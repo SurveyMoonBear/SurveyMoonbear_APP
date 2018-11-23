@@ -572,4 +572,1048 @@ http_interactions:
       string: ''
     http_version: 
   recorded_at: Thu, 22 Nov 2018 11:56:00 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Thu, 22 Nov 2018 19:21:11 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3600,
+          "scope": "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive",
+          "token_type": "Bearer"
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:21:10 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/drive/v3/files/<SAMPLE_FILE_ID>/copy?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Thu, 22 Nov 2018 19:21:13 GMT
+      Vary:
+      - Origin,Accept-Encoding
+      - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      Server:
+      - GSE
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "kind": "drive#file",
+         "id": "1upnhyyZyWPFdxTD0UG1FBPbWQnIQyK3Nfq1iuqk5Qnk",
+         "name": "Copy of Sample Survey",
+         "mimeType": "application/vnd.google-apps.spreadsheet"
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:21:13 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/drive/v2/files/1upnhyyZyWPFdxTD0UG1FBPbWQnIQyK3Nfq1iuqk5Qnk/permissions?access_token=<ACCESS_TOKEN>&sendNotificationEmails=false
+    body:
+      encoding: UTF-8
+      string: '{"role":"writer","type":"user","value":"moonbear.survey.test@gmail.com"}'
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Thu, 22 Nov 2018 19:21:19 GMT
+      Vary:
+      - Origin,Accept-Encoding
+      - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      Server:
+      - GSE
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "kind": "drive#permission",
+         "etag": "\"8xUCra6FbWx8e1S7QPWn-stRIsE/TUuXdiFM8CEqJOyEM9m-qwRzc3Y\"",
+         "id": "02675581687761162384",
+         "selfLink": "https://www.googleapis.com/drive/v2/files/1upnhyyZyWPFdxTD0UG1FBPbWQnIQyK3Nfq1iuqk5Qnk/permissions/02675581687761162384",
+         "name": "SurveyMoonbear Test",
+         "emailAddress": "moonbear.survey.test@gmail.com",
+         "domain": "gmail.com",
+         "role": "writer",
+         "type": "user",
+         "deleted": false
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:21:19 GMT
+- request:
+    method: post
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1upnhyyZyWPFdxTD0UG1FBPbWQnIQyK3Nfq1iuqk5Qnk:batchUpdate
+    body:
+      encoding: UTF-8
+      string: '{"requests":[{"updateSpreadsheetProperties":{"properties":{"title":"Survey
+        for Testing Delete Services"},"fields":"title"}}]}'
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Thu, 22 Nov 2018 19:21:20 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "spreadsheetId": "1upnhyyZyWPFdxTD0UG1FBPbWQnIQyK3Nfq1iuqk5Qnk",
+          "replies": [
+            {}
+          ]
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:21:20 GMT
+- request:
+    method: get
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1upnhyyZyWPFdxTD0UG1FBPbWQnIQyK3Nfq1iuqk5Qnk?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Thu, 22 Nov 2018 19:21:20 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "spreadsheetId": "1upnhyyZyWPFdxTD0UG1FBPbWQnIQyK3Nfq1iuqk5Qnk",
+          "properties": {
+            "title": "Survey for Testing Delete Services",
+            "locale": "zh_TW",
+            "autoRecalc": "ON_CHANGE",
+            "timeZone": "Asia/Shanghai",
+            "defaultFormat": {
+              "backgroundColor": {
+                "red": 1,
+                "green": 1,
+                "blue": 1
+              },
+              "padding": {
+                "top": 2,
+                "right": 3,
+                "bottom": 2,
+                "left": 3
+              },
+              "verticalAlignment": "BOTTOM",
+              "wrapStrategy": "OVERFLOW_CELL",
+              "textFormat": {
+                "foregroundColor": {},
+                "fontFamily": "arial,sans,sans-serif",
+                "fontSize": 10,
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          "sheets": [
+            {
+              "properties": {
+                "sheetId": 0,
+                "title": "sheet1",
+                "index": 0,
+                "sheetType": "GRID",
+                "gridProperties": {
+                  "rowCount": 998,
+                  "columnCount": 26
+                }
+              },
+              "conditionalFormats": [
+                {
+                  "ranges": [
+                    {
+                      "startRowIndex": 1,
+                      "endRowIndex": 11,
+                      "startColumnIndex": 1,
+                      "endColumnIndex": 2
+                    },
+                    {
+                      "startRowIndex": 11,
+                      "endRowIndex": 15,
+                      "startColumnIndex": 1,
+                      "endColumnIndex": 2
+                    }
+                  ],
+                  "booleanRule": {
+                    "condition": {
+                      "type": "CUSTOM_FORMULA",
+                      "values": [
+                        {
+                          "userEnteredValue": "=REGEXMATCH(B2, \"\\W\")"
+                        }
+                      ]
+                    },
+                    "format": {
+                      "backgroundColor": {
+                        "red": 0.95686275,
+                        "green": 0.78039217,
+                        "blue": 0.7647059
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1upnhyyZyWPFdxTD0UG1FBPbWQnIQyK3Nfq1iuqk5Qnk/edit"
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:21:20 GMT
+- request:
+    method: get
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1upnhyyZyWPFdxTD0UG1FBPbWQnIQyK3Nfq1iuqk5Qnk/values/sheet1?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Thu, 22 Nov 2018 19:21:21 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "range": "sheet1!A1:Z998",
+          "majorDimension": "ROWS",
+          "values": [
+            [
+              "Type",
+              "Name",
+              "Description",
+              "Required?",
+              "Options"
+            ],
+            [
+              "Description",
+              "survey_description",
+              "Hi, everyone. This is a survey for testing."
+            ],
+            [
+              "Section Title",
+              "title1",
+              "Personal Information"
+            ],
+            [
+              "Short answer",
+              "name",
+              "What's your name?",
+              "0"
+            ],
+            [
+              "Multiple choice (radio button)",
+              "age_num",
+              "How old are you?",
+              "1",
+              "10~20,21~25,26~30,31~35,36~40"
+            ],
+            [
+              "Paragraph Answer",
+              "self_intro",
+              "Self Introduction",
+              "0"
+            ],
+            [
+              "Multiple choice (checkbox)",
+              "social_website",
+              "Which social media you have used?",
+              "1",
+              "Facebook,Instagram,Twitter,LINE,plurk,Google+,Snapchat"
+            ],
+            [
+              "Section Title",
+              "title2",
+              "Rating Scale"
+            ],
+            [
+              "Multiple choice grid (radio button)",
+              "frequency",
+              "I usually use social media.",
+              "1",
+              "strongly disagree,disagree,neutral,agree,strongly agree"
+            ],
+            [
+              "Multiple choice grid (radio button)",
+              "safisfaction",
+              "I'm satisfied with using social media.",
+              "1"
+            ],
+            [
+              "Multiple choice (radio button)",
+              "needs",
+              "I can't live without social media.",
+              "1"
+            ]
+          ]
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:21:21 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Thu, 22 Nov 2018 19:21:22 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3600,
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer"
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:21:22 GMT
+- request:
+    method: delete
+    uri: https://www.googleapis.com/drive/v2/files/1upnhyyZyWPFdxTD0UG1FBPbWQnIQyK3Nfq1iuqk5Qnk
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Thu, 22 Nov 2018 19:21:23 GMT
+      Etag:
+      - '"8xUCra6FbWx8e1S7QPWn-stRIsE/vyGp6PvFo4RvsFtPoIWeCReyIC8"'
+      Vary:
+      - Origin
+      - X-Origin
+      Server:
+      - GSE
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:21:23 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/drive/v3/files/<SAMPLE_FILE_ID>/copy?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Thu, 22 Nov 2018 19:33:26 GMT
+      Vary:
+      - Origin,Accept-Encoding
+      - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      Server:
+      - GSE
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "kind": "drive#file",
+         "id": "1wIqRx8GlU1L6RFyJBo5lddKqoe45Er5XmNmovqvQxWo",
+         "name": "Copy of Sample Survey",
+         "mimeType": "application/vnd.google-apps.spreadsheet"
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:33:26 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/drive/v2/files/1wIqRx8GlU1L6RFyJBo5lddKqoe45Er5XmNmovqvQxWo/permissions?access_token=<ACCESS_TOKEN>&sendNotificationEmails=false
+    body:
+      encoding: UTF-8
+      string: '{"role":"writer","type":"user","value":"moonbear.survey.test@gmail.com"}'
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Thu, 22 Nov 2018 19:33:30 GMT
+      Vary:
+      - Origin,Accept-Encoding
+      - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      Server:
+      - GSE
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "kind": "drive#permission",
+         "etag": "\"8xUCra6FbWx8e1S7QPWn-stRIsE/cK0lU-V7_yN2WZywruI-mY--G-8\"",
+         "id": "02675581687761162384",
+         "selfLink": "https://www.googleapis.com/drive/v2/files/1wIqRx8GlU1L6RFyJBo5lddKqoe45Er5XmNmovqvQxWo/permissions/02675581687761162384",
+         "name": "SurveyMoonbear Test",
+         "emailAddress": "moonbear.survey.test@gmail.com",
+         "domain": "gmail.com",
+         "role": "writer",
+         "type": "user",
+         "deleted": false
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:33:30 GMT
+- request:
+    method: post
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1wIqRx8GlU1L6RFyJBo5lddKqoe45Er5XmNmovqvQxWo:batchUpdate
+    body:
+      encoding: UTF-8
+      string: '{"requests":[{"updateSpreadsheetProperties":{"properties":{"title":"Survey
+        for Testing Delete Services"},"fields":"title"}}]}'
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Thu, 22 Nov 2018 19:33:31 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "spreadsheetId": "1wIqRx8GlU1L6RFyJBo5lddKqoe45Er5XmNmovqvQxWo",
+          "replies": [
+            {}
+          ]
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:33:31 GMT
+- request:
+    method: get
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1wIqRx8GlU1L6RFyJBo5lddKqoe45Er5XmNmovqvQxWo?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Thu, 22 Nov 2018 19:33:32 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "spreadsheetId": "1wIqRx8GlU1L6RFyJBo5lddKqoe45Er5XmNmovqvQxWo",
+          "properties": {
+            "title": "Survey for Testing Delete Services",
+            "locale": "zh_TW",
+            "autoRecalc": "ON_CHANGE",
+            "timeZone": "Asia/Shanghai",
+            "defaultFormat": {
+              "backgroundColor": {
+                "red": 1,
+                "green": 1,
+                "blue": 1
+              },
+              "padding": {
+                "top": 2,
+                "right": 3,
+                "bottom": 2,
+                "left": 3
+              },
+              "verticalAlignment": "BOTTOM",
+              "wrapStrategy": "OVERFLOW_CELL",
+              "textFormat": {
+                "foregroundColor": {},
+                "fontFamily": "arial,sans,sans-serif",
+                "fontSize": 10,
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          "sheets": [
+            {
+              "properties": {
+                "sheetId": 0,
+                "title": "sheet1",
+                "index": 0,
+                "sheetType": "GRID",
+                "gridProperties": {
+                  "rowCount": 998,
+                  "columnCount": 26
+                }
+              },
+              "conditionalFormats": [
+                {
+                  "ranges": [
+                    {
+                      "startRowIndex": 1,
+                      "endRowIndex": 11,
+                      "startColumnIndex": 1,
+                      "endColumnIndex": 2
+                    },
+                    {
+                      "startRowIndex": 11,
+                      "endRowIndex": 15,
+                      "startColumnIndex": 1,
+                      "endColumnIndex": 2
+                    }
+                  ],
+                  "booleanRule": {
+                    "condition": {
+                      "type": "CUSTOM_FORMULA",
+                      "values": [
+                        {
+                          "userEnteredValue": "=REGEXMATCH(B2, \"\\W\")"
+                        }
+                      ]
+                    },
+                    "format": {
+                      "backgroundColor": {
+                        "red": 0.95686275,
+                        "green": 0.78039217,
+                        "blue": 0.7647059
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1wIqRx8GlU1L6RFyJBo5lddKqoe45Er5XmNmovqvQxWo/edit"
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:33:32 GMT
+- request:
+    method: get
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1wIqRx8GlU1L6RFyJBo5lddKqoe45Er5XmNmovqvQxWo/values/sheet1?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Thu, 22 Nov 2018 19:33:32 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "range": "sheet1!A1:Z998",
+          "majorDimension": "ROWS",
+          "values": [
+            [
+              "Type",
+              "Name",
+              "Description",
+              "Required?",
+              "Options"
+            ],
+            [
+              "Description",
+              "survey_description",
+              "Hi, everyone. This is a survey for testing."
+            ],
+            [
+              "Section Title",
+              "title1",
+              "Personal Information"
+            ],
+            [
+              "Short answer",
+              "name",
+              "What's your name?",
+              "0"
+            ],
+            [
+              "Multiple choice (radio button)",
+              "age_num",
+              "How old are you?",
+              "1",
+              "10~20,21~25,26~30,31~35,36~40"
+            ],
+            [
+              "Paragraph Answer",
+              "self_intro",
+              "Self Introduction",
+              "0"
+            ],
+            [
+              "Multiple choice (checkbox)",
+              "social_website",
+              "Which social media you have used?",
+              "1",
+              "Facebook,Instagram,Twitter,LINE,plurk,Google+,Snapchat"
+            ],
+            [
+              "Section Title",
+              "title2",
+              "Rating Scale"
+            ],
+            [
+              "Multiple choice grid (radio button)",
+              "frequency",
+              "I usually use social media.",
+              "1",
+              "strongly disagree,disagree,neutral,agree,strongly agree"
+            ],
+            [
+              "Multiple choice grid (radio button)",
+              "safisfaction",
+              "I'm satisfied with using social media.",
+              "1"
+            ],
+            [
+              "Multiple choice (radio button)",
+              "needs",
+              "I can't live without social media.",
+              "1"
+            ]
+          ]
+        }
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:33:32 GMT
+- request:
+    method: delete
+    uri: https://www.googleapis.com/drive/v2/files/1wIqRx8GlU1L6RFyJBo5lddKqoe45Er5XmNmovqvQxWo
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/3.3.0
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Thu, 22 Nov 2018 19:33:34 GMT
+      Etag:
+      - '"8xUCra6FbWx8e1S7QPWn-stRIsE/vyGp6PvFo4RvsFtPoIWeCReyIC8"'
+      Vary:
+      - Origin
+      - X-Origin
+      Server:
+      - GSE
+      Alt-Svc:
+      - quic=":443"; ma=2592000; v="44,43,39,35"
+      Connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    http_version: 
+  recorded_at: Thu, 22 Nov 2018 19:33:34 GMT
 recorded_with: VCR 4.0.0

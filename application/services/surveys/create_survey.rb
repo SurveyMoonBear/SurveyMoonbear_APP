@@ -26,8 +26,8 @@ module SurveyMoonbear
     end
 
     def create_spreadsheet(access_token:, config:, current_account:, title:)
-      files_copy_url = "https://www.googleapis.com/drive/v3/files/#{config.SAMPLE_FILE_ID}/copy"
-      response = HTTP.post("#{files_copy_url}?access_token=#{access_token}").parse
+      response = Google::Api.new(access_token)
+                            .copy_drive_file(config.SAMPLE_FILE_ID)
 
       Success(origin_id: response['id'], access_token: access_token, 
               current_account: current_account, title: title)
@@ -45,15 +45,9 @@ module SurveyMoonbear
     end
 
     def set_survey_title(origin_id:, current_account:, title:)
-      spreadsheet_update_url = 'https://sheets.googleapis.com/v4/spreadsheets/'
-      HTTP.auth("Bearer #{current_account['access_token']}")
-          .post("#{spreadsheet_update_url}#{origin_id}:batchUpdate",
-                json: { requests: [{
-                  updateSpreadsheetProperties: {
-                    properties: { title: title },
-                    fields: 'title'
-                  }
-                }] })
+      Google::Api.new(current_account['access_token'])
+                 .update_gs_title(origin_id, title)
+
       Success(origin_id: origin_id, current_account: current_account)
     rescue
       Failure('Failed to set survey title.')

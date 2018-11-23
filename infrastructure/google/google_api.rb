@@ -47,14 +47,47 @@ module SurveyMoonbear
         call_gs_url(items_req_url).parse
       end
 
+      def update_gs_title(spreadsheet_id, new_title)
+        update_req_url = Api.spreadsheet_path("#{spreadsheet_id}:batchUpdate")
+        data = {
+          json: {
+            requests: [{
+              updateSpreadsheetProperties: {
+                properties: { title: new_title },
+                fields: 'title'
+              }
+            }]
+          }
+        }
+        
+        updated_res = post_google_url(update_req_url, data).parse
+      end
+
+      def copy_drive_file(file_id)
+        file_copy_url = Api.google_drive_v3_path("#{file_id}/copy?access_token=#{@gs_token}")
+        
+        copied_res = post_google_url(file_copy_url).parse
+      end
+
       def self.spreadsheet_path(path)
         'https://sheets.googleapis.com/v4/spreadsheets/' + path
+      end
+
+      def self.google_drive_v3_path(path)
+        'https://www.googleapis.com/drive/v3/files/' + path
       end
 
       private
 
       def call_gs_url(url)
         response = HTTP.get(url, params: { access_token: "#{@gs_token}" })
+
+        Response.new(response).response_or_error
+      end
+
+      def post_google_url(url, data={})
+        response = HTTP.auth("Bearer #{@gs_token}")
+                       .post(url, data)
 
         Response.new(response).response_or_error
       end
