@@ -23,8 +23,8 @@ module SurveyMoonbear
     end
 
     def update_spreadsheet_title(current_account:, origin_id:, new_title:)
-      update_res = Google::Api.new(current_account['access_token'])
-                              .update_gs_title(origin_id, new_title)
+      update_res = Google::Api::Sheets.new(current_account['access_token'])
+                                      .update_gs_title(origin_id, new_title)
 
       Success(current_account: current_account, origin_id: origin_id)
     rescue
@@ -32,8 +32,8 @@ module SurveyMoonbear
     end
 
     def update_survey_title(current_account:, origin_id:)
-      google_api = Google::Api.new(current_account['access_token'])
-      survey = Google::SurveyMapper.new(google_api)
+      sheets_api = Google::Api::Sheets.new(current_account['access_token'])
+      survey = Google::SurveyMapper.new(sheets_api)
                                    .load(origin_id, current_account)
       updated_survey = Repository::For[survey.class].update_title(survey)
       Success(updated_survey)
