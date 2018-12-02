@@ -5,6 +5,7 @@ module SurveyMoonbear
     # Gateway class to get access token for Spreadsheet API
     class Auth
       module Errors
+        # Server cannot understand the request
         BadRequest = Class.new(StandardError)
         # Not allowed to access resource
         Unauthorized = Class.new(StandardError)
@@ -35,13 +36,13 @@ module SurveyMoonbear
       end
 
       def get_google_account(access_token)
-        account_req_url = Auth.google_auth_v1_path('userinfo?alt=json')
+        account_req_url = google_oauth_v1_path('userinfo?alt=json')
 
         call_gs_url(account_req_url, access_token).parse
       end
 
       def get_access_token(code)
-        access_req_url = Auth.google_oauth_v4_path('token')
+        access_req_url = google_oauth_v4_path('token')
         data = {
           form: {
             client_id: @config.GOOGLE_CLIENT_ID,
@@ -57,7 +58,7 @@ module SurveyMoonbear
       end
 
       def refresh_access_token
-        refresh_req_url = Auth.google_oauth_v4_path('token')
+        refresh_req_url = google_oauth_v4_path('token')
         data = { 
           params: {
             refresh_token: @config.REFRESH_TOKEN,
@@ -71,15 +72,15 @@ module SurveyMoonbear
         response['access_token']
       end
 
-      def self.google_auth_v1_path(path)
+      private
+
+      def google_oauth_v1_path(path)
         'https://www.googleapis.com/oauth2/v1/' + path
       end
 
-      def self.google_oauth_v4_path(path)
+      def google_oauth_v4_path(path)
         'https://www.googleapis.com/oauth2/v4/' + path
       end
-
-      private
 
       def call_gs_url(url, access_token)
         response = HTTP.auth("Bearer #{access_token}")

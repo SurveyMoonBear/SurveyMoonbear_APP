@@ -2,11 +2,13 @@
 http_interactions:
 - request:
     method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/invalid_spreadsheet_id?access_token=<ACCESS_TOKEN>
+    uri: https://sheets.googleapis.com/v4/spreadsheets/invalid_spreadsheet_id
     body:
       encoding: UTF-8
       string: ''
     headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
       Connection:
       - close
       Host:
@@ -25,7 +27,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Thu, 22 Nov 2018 11:56:10 GMT
+      - Sat, 01 Dec 2018 15:34:31 GMT
       Server:
       - ESF
       Cache-Control:
@@ -51,57 +53,5 @@ http_interactions:
           }
         }
     http_version: 
-  recorded_at: Thu, 22 Nov 2018 11:56:10 GMT
-- request:
-    method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/invalid_spreadsheet_id?access_token=<ACCESS_TOKEN>
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Connection:
-      - close
-      Host:
-      - sheets.googleapis.com
-      User-Agent:
-      - http.rb/3.3.0
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Content-Type:
-      - application/json; charset=UTF-8
-      Date:
-      - Thu, 22 Nov 2018 19:21:52 GMT
-      Server:
-      - ESF
-      Cache-Control:
-      - private
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Frame-Options:
-      - SAMEORIGIN
-      Alt-Svc:
-      - quic=":443"; ma=2592000; v="44,43,39,35"
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-    body:
-      encoding: UTF-8
-      string: |
-        {
-          "error": {
-            "code": 404,
-            "message": "Requested entity was not found.",
-            "status": "NOT_FOUND"
-          }
-        }
-    http_version: 
-  recorded_at: Thu, 22 Nov 2018 19:21:52 GMT
+  recorded_at: Sat, 01 Dec 2018 15:34:30 GMT
 recorded_with: VCR 4.0.0

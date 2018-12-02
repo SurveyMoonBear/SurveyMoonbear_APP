@@ -4,63 +4,72 @@ require 'dry/transaction'
 require 'http'
 
 module SurveyMoonbear
-  # Returns a new survey, or nil
-  # Usage: CreateSurvey.new.call(config: <config>, current_account: {...}, title: "...")
-  class CreateSurvey
-    include Dry::Transaction
-    include Dry::Monads
+  module Service
+    # Returns a new survey, or nil
+    # Usage: Service::CreateSurvey.new.call(config: <config>, current_account: {...}, title: "...")
+    class CreateSurvey
+      include Dry::Transaction
+      include Dry::Monads
 
-    step :refresh_access_token
-    step :create_spreadsheet
-    step :add_editor
-    step :set_survey_title
-    step :store_into_database
+      step :refresh_access_token
+      step :create_spreadsheet
+      step :add_editor
+      step :set_survey_title
+      step :store_into_database
 
-    def refresh_access_token(config:, current_account:, title:)
-      current_account['access_token'] = Google::Auth.new(config).refresh_access_token
+      private
 
-      Success(access_token: current_account['access_token'], 
-              config: config, current_account: current_account, title: title)
-    rescue
-      Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
-    end
+      # input {config:, current_account:, title:}
+      def refresh_access_token(input)
+        input[:current_account]['access_token'] = Google::Auth.new(input[:config]).refresh_access_token
 
-    def create_spreadsheet(access_token:, config:, current_account:, title:)
-      response = Google::Api::Drive.new(access_token)
-                                   .copy_drive_file(config.SAMPLE_FILE_ID)
+        Success(input)
+      rescue
+        Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
+      end
 
-      Success(origin_id: response['id'], access_token: access_token, 
-              current_account: current_account, title: title)
-    rescue
-      Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
-    end
+      # input {config:, current_account:, title:}
+      def create_spreadsheet(input)
+        response = Google::Api::Drive.new(input[:current_account]['access_token'])
+                                     .copy_drive_file(input[:config].SAMPLE_FILE_ID)
+        input[:origin_id] = response['id']
 
-    def add_editor(origin_id:, access_token:, current_account:, title:)
-      sleep(3)
-      GoogleSpreadsheet.new(access_token)
-                       .add_editor(origin_id, current_account['email'])
-      Success(origin_id: origin_id, current_account: current_account, title: title)
-    rescue
-      Failure('Failed to add editor.')
-    end
+        Success(input)
+      rescue
+        Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
+      end
 
-    def set_survey_title(origin_id:, current_account:, title:)
-      Google::Api::Sheets.new(current_account['access_token'])
-                         .update_gs_title(origin_id, title)
+      # input {config:, current_account:, title:, origin_id}
+      def add_editor(input)
+        sleep(3)
+        GoogleSpreadsheet.new(input[:current_account]['access_token'])
+                         .add_editor(input[:origin_id], input[:current_account]['email'])
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to add editor.')
+      end
 
-      Success(origin_id: origin_id, current_account: current_account)
-    rescue
-      Failure('Failed to set survey title.')
-    end
+      # input {config:, current_account:, title:, origin_id}
+      def set_survey_title(input)
+        Google::Api::Sheets.new(input[:current_account]['access_token'])
+                           .update_gs_title(input[:origin_id], input[:title])
 
-    def store_into_database(origin_id:, current_account:)
-      sheets_api = Google::Api::Sheets.new(current_account['access_token'])
-      new_survey = Google::SurveyMapper.new(sheets_api)
-                                       .load(origin_id, current_account)
-      survey = Repository::For[new_survey.class].find_or_create(new_survey)
-      Success(survey)
-    rescue
-      Failure('Failed to store the new survey into database.')
+        Success(input)
+      rescue
+        Failure('Failed to set survey title.')
+      end
+
+      # input {config:, current_account:, title:, origin_id}
+      def store_into_database(input)
+        sheets_api = Google::Api::Sheets.new(input[:current_account]['access_token'])
+        new_survey = Google::SurveyMapper.new(sheets_api)
+                                         .load(input[:origin_id], input[:current_account])
+        survey = Repository::For[new_survey.class].find_or_create(new_survey)
+        Success(survey)
+      rescue
+        Failure('Failed to store the new survey into database.')
+      end
     end
   end
 end

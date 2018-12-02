@@ -3,81 +3,105 @@
 require 'dry/transaction'
 
 module SurveyMoonbear
-  # Return CSV format of responses
-  # Usage: TransformResponsesToCSV.new.call(survey_id: "...", launch_id: "...")
-  class TransformResponsesToCSV
-    include Dry::Transaction
-    include Dry::Monads
+  module Service
+    # Return CSV format of responses
+    # Usage: Service::TransformResponsesToCSV.new.call(survey_id: "...", launch_id: "...")
+    class TransformResponsesToCSV
+      include Dry::Transaction
+      include Dry::Monads
 
-    step :get_survey_from_database
-    step :get_launch_from_database
-    step :formatting_responses
-    step :build_responses_table_headers
-    step :build_responses_arr
-    step :transform_to_csv
+      step :get_survey_from_database
+      step :get_launch_from_database
+      step :formatting_responses
+      step :build_responses_table_headers
+      step :build_responses_arr
+      step :transform_to_csv
 
-    def get_survey_from_database(survey_id:, launch_id:)
-      survey = Repository::For[Entity::Survey].find_id(survey_id)
-      Success(survey: survey, launch_id: launch_id)
-    rescue
-      Failure('Failed to get survey from database')
-    end
+      private
 
-    def get_launch_from_database(survey:, launch_id:)
-      launch = Repository::For[Entity::Launch].find_id(launch_id)
-      Success(responses: launch.responses, survey: survey)
-    rescue
-      Failure('Failed to get launch from database')
-    end
-
-    def formatting_responses(responses:, survey:)
-      responses_hash = {}
-      responses.each do |r|
-        if responses_hash[r.respondent_id.to_s].nil?
-          responses_hash[r.respondent_id.to_s] = [r.response]
-        else
-          responses_hash[r.respondent_id.to_s].push(r.response)
-        end
+      # input {survey_id:, launch_id:}
+      def get_survey_from_database(input)
+        input[:survey] = Repository::For[Entity::Survey].find_id(input[:survey_id])
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to get survey from database')
       end
-      Success(responses_hash: responses_hash, survey: survey)
-    rescue
-      Failure('Failed to formatting responses')
-    end
 
-    def build_responses_table_headers(responses_hash:, survey:)
-      headers_arr = ['respondent']
-      survey.pages.each do |page|
-        page.items.each do |item|
-          if item.type != 'Description' && item.type != 'Section Title' && item.type != 'Divider'
-            headers_arr.push(item.name)
+      # input {survey_id:, launch_id:, survey:}
+      def get_launch_from_database(input)
+        launch = Repository::For[Entity::Launch].find_id(input[:launch_id])
+
+        input[:responses] = launch.responses
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to get launch from database')
+      end
+
+      # input {survey_id:, launch_id:, survey:, responses:}
+      def formatting_responses(input)
+        responses_hash = {}
+        input[:responses].each do |r|
+          if responses_hash[r.respondent_id.to_s].nil?
+            responses_hash[r.respondent_id.to_s] = [r.response]
+          else
+            responses_hash[r.respondent_id.to_s].push(r.response)
           end
         end
-      end
-      headers_arr.push('start_time', 'end_time', 'url_params')
-      Success(headers_arr: headers_arr, responses_hash: responses_hash)
-    rescue
-      Failure('Failed to build responses table headers')
-    end
 
-    def build_responses_arr(headers_arr:, responses_hash:)
-      responses_arr = responses_hash.map do |key, value|
-        [key, value].flatten
+        input[:responses_hash] = responses_hash
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to formatting responses')
       end
-      responses_arr.unshift(headers_arr)
-      Success(responses_arr: responses_arr)
-    rescue
-      Failure('Failed to build responses array for csv transformation')
-    end
 
-    def transform_to_csv(responses_arr:)
-      csv_string = CSV.generate do |csv|
-        responses_arr.each do |data|
-          csv << data
+      # input {survey_id:, launch_id:, survey:, responses:, responses_hash:}
+      def build_responses_table_headers(input)
+        headers_arr = ['respondent']
+        input[:survey].pages.each do |page|
+          page.items.each do |item|
+            if item.type != 'Description' && item.type != 'Section Title' && item.type != 'Divider'
+              headers_arr.push(item.name)
+            end
+          end
         end
+        headers_arr.push('start_time', 'end_time', 'url_params')
+
+        input[:headers_arr] = headers_arr
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to build responses table headers')
       end
-      Success(csv_string)
-    rescue
-      Failure('Failed to transform responses array to csv')
+
+      # input {survey_id:, launch_id:, survey:, responses:, responses_hash:, headers_arr:}
+      def build_responses_arr(input)
+        input[:responses_arr] = input[:responses_hash].map do |key, value|
+          [key, value].flatten
+        end
+        
+        input[:responses_arr].unshift(input[:headers_arr])
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to build responses array for csv transformation')
+      end
+
+      # input {survey_id:, launch_id:, survey:, responses:, responses_hash:, headers_arr:, responses_arr:}
+      def transform_to_csv(input)
+        csv_string = CSV.generate do |csv|
+          input[:responses_arr].each do |data|
+            csv << data
+          end
+        end
+
+        Success(csv_string)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to transform responses array to csv')
+      end
     end
   end
 end

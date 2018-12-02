@@ -34,18 +34,18 @@ module SurveyMoonbear
       
       # Gateway class to talk to Spreadsheet API
       class Sheets
-        def initialize(gs_token)
-          @gs_token = gs_token
+        def initialize(access_token)
+          @access_token = access_token
         end
 
         def survey_data(spreadsheet_id)
           survey_req_url = spreadsheet_path(spreadsheet_id)
-          Api.call_gs_url(survey_req_url, @gs_token).parse
+          Api.get_google_url(survey_req_url, @access_token).parse
         end
   
         def items_data(spreadsheet_id, title)
           items_req_url = spreadsheet_path([spreadsheet_id, title].join('/values/'))
-          Api.call_gs_url(items_req_url, @gs_token).parse
+          Api.get_google_url(items_req_url, @access_token).parse
         end
   
         def update_gs_title(spreadsheet_id, new_title)
@@ -61,7 +61,7 @@ module SurveyMoonbear
             }
           }
           
-          updated_res = Api.post_google_url(update_req_url, data, @gs_token).parse
+          updated_res = Api.post_google_url(update_req_url, data, @access_token).parse
         end
 
         private
@@ -72,14 +72,14 @@ module SurveyMoonbear
       end
 
       class Drive
-        def initialize(token)
-          @gs_token = token
+        def initialize(access_token)
+          @access_token = access_token
         end
 
         def copy_drive_file(file_id)
-          file_copy_url = gdrive_v3_path("#{file_id}/copy?access_token=#{@gs_token}")
+          file_copy_url = gdrive_v3_path("#{file_id}/copy?access_token=#{@access_token}")
           
-          copied_res = Api.post_google_url(file_copy_url, @gs_token).parse
+          copied_res = Api.post_google_url(file_copy_url, @access_token).parse
         end
 
         private
@@ -91,14 +91,15 @@ module SurveyMoonbear
 
       private
 
-      def self.call_gs_url(url, gs_token)
-        response = HTTP.get(url, params: { access_token: "#{gs_token}" })
-
+      def self.get_google_url(url, access_token)
+        response = HTTP.auth("Bearer #{access_token}")
+                       .get(url)
+        
         Response.new(response).response_or_error
       end
 
-      def self.post_google_url(url, data={}, gs_token)
-        response = HTTP.auth("Bearer #{gs_token}")
+      def self.post_google_url(url, data={}, access_token)
+        response = HTTP.auth("Bearer #{access_token}")
                        .post(url, data)
 
         Response.new(response).response_or_error
