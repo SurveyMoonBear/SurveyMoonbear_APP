@@ -49,6 +49,12 @@ module SurveyMoonbear
         view 'home', locals: { google_sso_url: @google_sso_url }
       end
 
+      routing.on 'privacy_policy' do
+        routing.get do
+          view 'privacy_policy'
+        end
+      end
+
       # /account branch
       routing.on 'account' do
         # /account/login branch
