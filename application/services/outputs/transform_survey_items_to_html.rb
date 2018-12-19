@@ -11,7 +11,7 @@ module SurveyMoonbear
       include Dry::Monads
 
       step :get_survey_from_database
-      step :get_survey_from_spreadsheet
+      # step :get_survey_from_spreadsheet
       step :build_questions_arr_of_all_pages
 
       private
@@ -20,25 +20,29 @@ module SurveyMoonbear
       def get_survey_from_database(input)
         saved_survey = GetSurveyFromDatabase.new.call(survey_id: input[:survey_id])
 
+        ###### TEMPORARY_SOLUTION: not to check the latest spreadsheet for other users to fill out
+        ###### so far, any changes to spreadsheet need to restart survey and use the new link
         if saved_survey.success?
-          input[:spreadsheet_id] = saved_survey.value!.origin_id
+          input[:gs_survey] = saved_survey.value!
           Success(input)
+          # input[:spreadsheet_id] = saved_survey.value!.origin_id
+          # Success(input)
         else
           Failure(saved_survey.failure)
         end
       end
 
-      # input {survey_id:, current_account:, spreadsheet_id:}
-      def get_survey_from_spreadsheet(input)
-        gs_survey = GetSurveyFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id], 
-                                                      current_account: input[:current_account])
-        if gs_survey.success?
-          input[:gs_survey] = gs_survey.value!
-          Success(input)
-        else
-          Failure(gs_survey.failure)
-        end
-      end
+      # # input {survey_id:, current_account:, spreadsheet_id:}
+      # def get_survey_from_spreadsheet(input)
+      #   gs_survey = GetSurveyFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id], 
+      #                                                 current_account: input[:current_account])
+      #   if gs_survey.success?
+      #     input[:gs_survey] = gs_survey.value!
+      #     Success(input)
+      #   else
+      #     Failure(gs_survey.failure)
+      #   end
+      # end
 
       # input {survey_id:, current_account:, spreadsheet_id:, gs_survey:}
       def build_questions_arr_of_all_pages(input)
