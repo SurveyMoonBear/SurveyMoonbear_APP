@@ -111,8 +111,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
     end
 
     it 'HAPPY: should be able to view survey items in html' do
-      trans_html_res = SurveyMoonbear::Service::TransformSurveyItemsToHTML.new.call(survey_id: @started_survey.id, 
-                                                                                    current_account: CURRENT_ACCOUNT)
+      trans_html_res = SurveyMoonbear::Service::TransformSurveyItemsToHTML.new.call(survey_id: @started_survey.id)
       _(trans_html_res.success?).must_equal true
       _(trans_html_res.value![:questions][0]).wont_be :empty?
     end
