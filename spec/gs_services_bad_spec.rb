@@ -24,8 +24,7 @@ describe 'BAD: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
     end
 
     it 'BAD: should get failure on invalid survey id when trying to view survey HTML' do
-      result = SurveyMoonbear::Service::TransformSurveyItemsToHTML.new.call(survey_id: 'invalid_survey_id', 
-                                                                            current_account: CURRENT_ACCOUNT)
+      result = SurveyMoonbear::Service::TransformSurveyItemsToHTML.new.call(survey_id: 'invalid_survey_id')
       _(result.failure?).must_equal true
     end
   end

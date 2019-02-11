@@ -5,52 +5,35 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Return survey title & an array of question HTML strings
-    # Usage: Service::TransformSurveyItemsToHTML.new.call(survey_id: "...", current_account: {...})
+    # Usage: Service::TransformSurveyItemsToHTML.new.call(survey_id: "...")
     class TransformSurveyItemsToHTML
       include Dry::Transaction
       include Dry::Monads
 
       step :get_survey_from_database
-      # step :get_survey_from_spreadsheet
       step :build_questions_arr_of_all_pages
 
       private
 
-      # input {survey_id:, current_account:}
+      # input {survey_id:}
       def get_survey_from_database(input)
-        saved_survey = GetSurveyFromDatabase.new.call(survey_id: input[:survey_id])
+        db_survey = GetSurveyFromDatabase.new.call(survey_id: input[:survey_id])
 
-        ###### TEMPORARY_SOLUTION: not to check the latest spreadsheet for other users to fill out
-        ###### so far, any changes to spreadsheet need to restart survey and use the new link
-        if saved_survey.success?
-          input[:gs_survey] = saved_survey.value!
+        if db_survey.success?
+          input[:db_survey] = db_survey.value!
           Success(input)
-          # input[:spreadsheet_id] = saved_survey.value!.origin_id
-          # Success(input)
         else
-          Failure(saved_survey.failure)
+          Failure(db_survey.failure)
         end
       end
 
-      # # input {survey_id:, current_account:, spreadsheet_id:}
-      # def get_survey_from_spreadsheet(input)
-      #   gs_survey = GetSurveyFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id], 
-      #                                                 current_account: input[:current_account])
-      #   if gs_survey.success?
-      #     input[:gs_survey] = gs_survey.value!
-      #     Success(input)
-      #   else
-      #     Failure(gs_survey.failure)
-      #   end
-      # end
-
-      # input {survey_id:, current_account:, spreadsheet_id:, gs_survey:}
+      # input {survey_id:, db_survey:}
       def build_questions_arr_of_all_pages(input)
-        questions_array = input[:gs_survey].pages.map do |page|
+        questions_array = input[:db_survey].pages.map do |page|
           build_questions_arr(page)
         end
 
-        Success(title: input[:gs_survey][:title], questions: questions_array)
+        Success(title: input[:db_survey][:title], questions: questions_array)
       rescue StandardError => e
         puts e
         Failure('Failed to build questions array of all pages')

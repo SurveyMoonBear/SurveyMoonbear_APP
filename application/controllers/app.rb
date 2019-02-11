@@ -123,8 +123,7 @@ module SurveyMoonbear
         # GET /survey/preview with params: survey_id, page
         routing.on 'preview' do
           routing.get do
-            response = Service::TransformSurveyItemsToHTML.new.call(survey_id: survey_id, 
-                                                                    current_account: @current_account)
+            response = Service::TransformSurveyItemsToHTML.new.call(survey_id: survey_id)
             if response.failure?
               flash[:error] = response.failure + ' Please try again.'
               routing.redirect '/survey_list'
@@ -289,8 +288,7 @@ module SurveyMoonbear
             routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
           end
 
-          html_transform_res = Service::TransformSurveyItemsToHTML.new.call(survey_id: survey_id, 
-                                                                            current_account: @current_account)
+          html_transform_res = Service::TransformSurveyItemsToHTML.new.call(survey_id: survey_id)
           if html_transform_res.failure?
             flash[:error] = "#{html_transform_res.failure}. Please try again :("
             routing.redirect '/survey_list'
