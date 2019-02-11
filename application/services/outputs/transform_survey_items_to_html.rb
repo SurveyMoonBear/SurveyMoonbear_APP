@@ -127,7 +127,7 @@ module SurveyMoonbear
         end
 
         if item.options
-          item.options.split(',').each_with_index do |option, index|
+          item.options.split(',').map(&:strip).each_with_index do |option, index|
             str += "<div class='custom-control custom-radio'>"
             str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}' name='radio-#{item.name}' value='#{option}'>"
             str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
@@ -154,7 +154,7 @@ module SurveyMoonbear
         end
 
         if item.options
-          item.options.split(',').each_with_index do |option, index|
+          item.options.split(',').map(&:strip).each_with_index do |option, index|
             str += "<div class='custom-control custom-checkbox'>"
             str += "<input type='checkbox' class='custom-control-input' id='#{item.name}#{index}' name='checkbox-#{item.name}' value='#{option}'>"
             str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
@@ -202,7 +202,7 @@ module SurveyMoonbear
         str += '<thead><tr>'
         str += "<th scope='col' class='col-5'></th>"
 
-        options = items[0].options.split(',')
+        options = items[0].options.split(',').map(&:strip)
         options.each do |option|
           str += "<th scope='col' class='col-1 text-center'>#{option}</th>"
         end
@@ -244,7 +244,7 @@ module SurveyMoonbear
           min = 0
           max = 100
         else
-          min_max = items[0].options.split(',')
+          min_max = items[0].options.split(',').map(&:strip)
           min = min_max[0]
           max = min_max[1]
           if min_max[2]
@@ -282,7 +282,7 @@ module SurveyMoonbear
           min = 0
           max = 100
         else
-          min_max = items[0].options.split(',')
+          min_max = items[0].options.split(',').map(&:strip)
           min = min_max[0]
           max = min_max[1]
           if min_max[2]

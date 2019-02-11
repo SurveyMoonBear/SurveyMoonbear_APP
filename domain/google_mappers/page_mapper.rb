@@ -10,6 +10,7 @@ module SurveyMoonbear
       end
 
       def load_several(survey_id, pages_data)
+        puts pages_data
         pages_data.each_with_index.map do |page_data|
           PageMapper.build_entity(survey_id, page_data, @gateway)
         end
