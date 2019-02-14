@@ -11,16 +11,12 @@ module SurveyMoonbear
   class App < Roda
     plugin :render, engine: 'slim', views: 'presentation/views'
     plugin :assets, css: 'style.css', path: 'presentation/assets'
-    plugin :environments
     plugin :json
     plugin :halt
     plugin :flash
     plugin :hooks
     plugin :all_verbs
-
-    extend Econfig::Shortcut
-    Econfig.env = environment.to_s
-    Econfig.root = '.'
+    
 
     route do |routing|
       routing.assets
@@ -234,7 +230,8 @@ module SurveyMoonbear
               Service::StoreResponses.new.call(survey_id: survey_id, 
                                                launch_id: launch_id, 
                                                respondent_id: respondent['respondent_id'], 
-                                               responses: routing.params)
+                                               responses: routing.params,
+                                               config: config)
 
               surveys_started.reject! do |survey_started|
                 survey_started['survey_id'] == survey_id

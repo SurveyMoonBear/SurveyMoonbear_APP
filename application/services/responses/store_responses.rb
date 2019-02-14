@@ -6,7 +6,7 @@ require 'json'
 module SurveyMoonbear
   module Service
     # Return nil
-    # Usage: Service::StoreResponses.new.call(survey_id: "...", launch_id: "...", respondent_id: "...", responses: <params>)
+    # Usage: Service::StoreResponses.new.call(survey_id: "...", launch_id: "...", respondent_id: "...", responses: <params>, config:)
     class StoreResponses
       include Dry::Transaction
       include Dry::Monads
@@ -15,11 +15,11 @@ module SurveyMoonbear
       step :create_items_arr
       step :add_time_records_into_arr
       step :add_url_params_into_arr
-      step :store_into_database
+      step :add_to_responses_storing_queues
 
       private
 
-      # input {survey_id:, launch_id:, respondent_id:, responses:}
+      # input {survey_id:, launch_id:, respondent_id:, responses:, , config:}
       def fetch_survey_items(input)
         survey = Repository::For[Entity::Survey].find_id(input[:survey_id])
 
@@ -30,7 +30,7 @@ module SurveyMoonbear
         Failure('Failed to fetch survey items with survey id.')
       end
 
-      # input {survey_id:, launch_id:, respondent_id:, responses:, pages:}
+      # input {survey_id:, launch_id:, respondent_id:, responses:, config:, pages:}
       def create_items_arr(input)
         input[:responses_arr] = []
         
@@ -71,7 +71,7 @@ module SurveyMoonbear
         )
       end
 
-      # input {survey_id:, launch_id:, respondent_id:, responses:, pages:, responses_arr:, page_index_for_other_data:}
+      # input {survey_id:, launch_id:, respondent_id:, responses:, config:, pages:, responses_arr:, page_index_for_other_data:}
       def add_time_records_into_arr(input)
         start_time = Entity::Response.new(id: nil,
                                           respondent_id: input[:respondent_id],
@@ -96,7 +96,7 @@ module SurveyMoonbear
         Failure('Failed to add time records into items array.')
       end
 
-      # input {survey_id:, launch_id:, respondent_id:, responses:, pages:, responses_arr:, page_index_for_other_data:}
+      # input {survey_id:, launch_id:, respondent_id:, responses:, config:, pages:, responses_arr:, page_index_for_other_data:}
       def add_url_params_into_arr(input)
         unless input[:responses]['moonbear_url_params'].nil?
           url_param_item = Entity::Response.new(id: nil,
@@ -114,13 +114,20 @@ module SurveyMoonbear
         Failure('Failed to add url params into items array.')
       end
 
-      # input {survey_id:, launch_id:, respondent_id:, responses:, pages:, responses_arr:, page_index_for_other_data:}
-      def store_into_database(input)
-        Repository::For[Entity::Launch].add_multi_responses(input[:launch_id], input[:responses_arr])
+      # input {survey_id:, launch_id:, respondent_id:, responses:, config:, pages:, responses_arr:, page_index_for_other_data:}
+      def add_to_responses_storing_queues(input)
+        responses_hash = input[:responses_arr].map do |response_entity|
+          response_hash = response_entity.to_h
+          response_hash[:launch_id] = input[:launch_id]
+          response_hash.delete(:id)
+          response_hash
+        end
+        Messaging::Queue.new(input[:config].RES_QUEUE_URL, input[:config])
+                        .send(responses_hash.to_json)
         Success(nil)
       rescue StandardError => e
         puts e
-        Failure('Failed to store new responses into database.')
+        Failure('Failed to add new responses to queues.')
       end
     end
   end
