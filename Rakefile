@@ -75,7 +75,7 @@ namespace :worker do
 end
 
 task :console do
-  sh 'pry -r ./spec/test_load_all'
+  sh 'pry -r ./init.rb'
 end
 
 namespace :vcr do

@@ -118,7 +118,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
 
     it 'HAPPY: should be able to store responses and transform into csv' do
       respondent_id = SecureRandom.uuid
-      response_params = {"moonbear_start_time"=>"Wed Nov 07 2018 09:53:06 GMT+0800 (台北標準時間)", "moonbear_end_time"=>"Wed Nov 07 2018 09:54:16 GMT+0800 (台北標準時間)", "name"=>"Respondent1", "radio-age_num"=>"10~20", "age_num"=>"10~20", "self_intro"=>"Hi, I'm Respondent1.", "checkbox-social_website"=>"Google+", "social_website"=>"Facebook, Instagram, Google+", "radio-frequency"=>"4", "frequency"=>"4", "radio-safisfaction"=>"5", "safisfaction"=>"5", "radio-needs"=>"2", "needs"=>"2", "moonbear_url_params"=>"{}"}
+      response_params = {"moonbear_start_time"=>"Wed Feb 27 2019 09:59:58 GMT+0800 (台北標準時間)", "moonbear_end_time"=>"Wed Feb 27 2019 10:00:23 GMT+0800 (台北標準時間)", "name"=>"myName", "radio-age_num"=>"21~25", "age_num"=>"21~25", "self_intro"=>"my introduction here~~", "checkbox-social_website"=>"Twitter", "social_website"=>"Instagram, Twitter", "radio-frequency"=>"2", "frequency"=>"2", "radio-safisfaction"=>"3", "safisfaction"=>"3", "radio-needs"=>"4", "needs"=>"4", "moonbear_url_params"=>"{}"}
       stored_responses_res = SurveyMoonbear::Service::StoreResponses.new.call(survey_id: @started_survey.id, 
                                                                               launch_id: @started_survey.launch_id, 
                                                                               respondent_id: respondent_id, 

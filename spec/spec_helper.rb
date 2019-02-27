@@ -12,7 +12,15 @@ require 'database_cleaner'
 require 'yaml'
 require 'pry' # for debugging
 
-require_relative './test_load_all.rb'
+require 'rack/test'
+require './init.rb'
+require_relative './helpers/init.rb'
+
+include Rack::Test::Methods
+
+def app
+  SurveyMoonbear::App
+end
 
 CONFIG = app.config
 GOOGLE_CLIENT_ID = CONFIG.GOOGLE_CLIENT_ID
