@@ -19,12 +19,10 @@ end
 
 namespace :run do
   task :dev do
-    # sh 'rerun -c "rackup -p 9090"'
     sh 'rerun -c "heroku local -f Procfile.dev -p 9090"'
   end
 
   task :test do
-    # sh 'RACK_ENV=test rerun -c "rackup -p 9000"'
     sh 'RACK_ENV=test rerun -c "heroku local -f Procfile.test -p 9090"'
   end
 end
@@ -56,20 +54,21 @@ namespace :queues do
   end
 end
 
+# Make sure the queue of current env has been created before run the worker
 namespace :worker do
   namespace :run do
     desc 'Run the background response-store worker in development mode'
-    task :dev => :config do
+    task :dev do
       sh 'RACK_ENV=development bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken_dev.yml'
     end
 
     desc 'Run the background response-store worker in test mode'
-    task :test => :config do
+    task :test do
       sh 'RACK_ENV=test bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken_test.yml'
     end
 
     desc 'Run the background response-store worker in production mode'
-    task :production => :config do
+    task :production do
       sh 'RACK_ENV=production bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken.yml'
     end
   end
