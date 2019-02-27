@@ -122,7 +122,8 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       stored_responses_res = SurveyMoonbear::Service::StoreResponses.new.call(survey_id: @started_survey.id, 
                                                                               launch_id: @started_survey.launch_id, 
                                                                               respondent_id: respondent_id, 
-                                                                              responses: response_params)
+                                                                              responses: response_params,
+                                                                              config: CONFIG)
       _(stored_responses_res.success?).must_equal true
       _(stored_responses_res.value!).must_be_nil
 

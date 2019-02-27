@@ -19,11 +19,58 @@ end
 
 namespace :run do
   task :dev do
-    sh 'rerun -c "rackup -p 9090"'
+    sh 'rerun -c "heroku local -f Procfile.dev -p 9090"'
   end
 
   task :test do
-    sh 'RACK_ENV=test rerun -c "rackup -p 9000"'
+    sh 'RACK_ENV=test rerun -c "heroku local -f Procfile.test -p 9090"'
+  end
+end
+
+namespace :queues do
+  task :config do
+    require 'aws-sdk-sqs'
+    require_relative 'config/environments.rb'
+    @app = SurveyMoonbear::App
+
+    @sqs = Aws::SQS::Client.new(
+      access_key_id: @app.config.AWS_ACCESS_KEY_ID,
+      secret_access_key: @app.config.AWS_SECRET_ACCESS_KEY,
+      region: @app.config.AWS_REGION
+    )
+  end
+
+  desc 'Create SQS queue for Shoryuken'
+  task :create => :config do
+    puts "Environment: #{@app.environment}"
+    @sqs.create_queue(queue_name: @app.config.RES_QUEUE_NAME)
+
+    puts 'Queue created:'
+    puts "  Name: #{@app.config.RES_QUEUE_NAME}"
+    puts "  Region: #{@app.config.AWS_REGION}"
+    puts "  URL: #{@app.config.RES_QUEUE_URL}"
+  rescue StandardError => error
+    puts "Error creating queue: #{error}"
+  end
+end
+
+# Make sure the queue of current env has been created before run the worker
+namespace :worker do
+  namespace :run do
+    desc 'Run the background response-store worker in development mode'
+    task :dev do
+      sh 'RACK_ENV=development bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken_dev.yml'
+    end
+
+    desc 'Run the background response-store worker in test mode'
+    task :test do
+      sh 'RACK_ENV=test bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken_test.yml'
+    end
+
+    desc 'Run the background response-store worker in production mode'
+    task :production do
+      sh 'RACK_ENV=production bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken.yml'
+    end
   end
 end
 

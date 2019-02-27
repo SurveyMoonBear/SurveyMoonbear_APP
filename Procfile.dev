@@ -1,0 +1,1 @@
+web: rake queues:create & rake worker:run:dev & bundle exec puma -t 5:5 -p ${PORT:-9090} -e ${RACK_ENV:-development}

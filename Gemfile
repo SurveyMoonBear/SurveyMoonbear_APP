@@ -35,6 +35,12 @@ gem 'rack-test'
 gem 'hirb'
 gem 'sequel'
 
+# Queues
+gem 'aws-sdk-sqs', '~> 1'
+
+# WORKERS
+gem 'shoryuken', '~> 4'
+
 # Data gems
 gem 'dry-struct'
 gem 'dry-types'

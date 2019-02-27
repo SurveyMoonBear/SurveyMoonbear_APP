@@ -41,8 +41,8 @@ class VcrHelper
       c.filter_sensitive_data('<ACCESS_TOKEN>') do |interaction|
         body_str = interaction.response.body
         body_containing_access_token = !body_str.empty? && JSON.parse(body_str).keys.include?('access_token')
-
         JSON.parse(body_str)['access_token'] if body_containing_access_token
+      rescue JSON::ParserError  # avoid invalid-json body_str causing error
       end
     end
   end
