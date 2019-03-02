@@ -16,7 +16,7 @@ module SurveyMoonbear
 
       private
 
-      # input {config:, survey_id:}
+      # input { config:, survey_id: }
       def refresh_access_token(input)
         input[:access_token] = Google::Auth.new(input[:config]).refresh_access_token
         Success(input)
@@ -24,7 +24,7 @@ module SurveyMoonbear
         Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
       end
 
-      # input {config:, survey_id:, access_token}
+      # input { ..., access_token }
       def delete_record_in_database(input)
         input[:deleted_survey] = Repository::For[Entity::Survey].delete_from(input[:survey_id])
         Success(input)
@@ -33,7 +33,7 @@ module SurveyMoonbear
         Failure('Failed to delete record in database.')
       end
 
-      # input {config:, survey_id:, access_token:, deleted_survey:}
+      # input { ..., deleted_survey: }
       def delete_spreadsheet(input)
         GoogleSpreadsheet.new(input[:access_token])
                          .delete_spreadsheet(input[:deleted_survey].origin_id)

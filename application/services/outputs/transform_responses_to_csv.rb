@@ -19,7 +19,7 @@ module SurveyMoonbear
 
       private
 
-      # input {survey_id:, launch_id:}
+      # input { survey_id:, launch_id: }
       def get_survey_from_database(input)
         input[:survey] = Repository::For[Entity::Survey].find_id(input[:survey_id])
         Success(input)
@@ -28,7 +28,7 @@ module SurveyMoonbear
         Failure('Failed to get survey from database')
       end
 
-      # input {survey_id:, launch_id:, survey:}
+      # input { ..., survey: }
       def get_launch_from_database(input)
         launch = Repository::For[Entity::Launch].find_id(input[:launch_id])
 
@@ -39,7 +39,7 @@ module SurveyMoonbear
         Failure('Failed to get launch from database')
       end
 
-      # input {survey_id:, launch_id:, survey:, responses:}
+      # input { ..., responses: }
       def formatting_responses(input)
         responses_hash = {}
         input[:responses].each do |r|
@@ -57,7 +57,7 @@ module SurveyMoonbear
         Failure('Failed to formatting responses')
       end
 
-      # input {survey_id:, launch_id:, survey:, responses:, responses_hash:}
+      # input { ..., responses_hash: }
       def build_responses_table_headers(input)
         headers_arr = ['respondent']
         input[:survey].pages.each do |page|
@@ -76,7 +76,7 @@ module SurveyMoonbear
         Failure('Failed to build responses table headers')
       end
 
-      # input {survey_id:, launch_id:, survey:, responses:, responses_hash:, headers_arr:}
+      # input { ..., headers_arr: }
       def build_responses_arr(input)
         input[:responses_arr] = input[:responses_hash].map do |key, value|
           [key, value].flatten
@@ -89,7 +89,7 @@ module SurveyMoonbear
         Failure('Failed to build responses array for csv transformation')
       end
 
-      # input {survey_id:, launch_id:, survey:, responses:, responses_hash:, headers_arr:, responses_arr:}
+      # input { ..., responses_arr: }
       def transform_to_csv(input)
         csv_string = CSV.generate do |csv|
           input[:responses_arr].each do |data|

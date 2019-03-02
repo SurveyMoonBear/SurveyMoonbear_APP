@@ -2,7 +2,7 @@
 
 require_relative '../domain/entities/init.rb'
 require_relative '../domain/database_repositories/init.rb'
-
+require 'pry'
 require 'econfig'
 require 'shoryuken'
 require 'sequel'
@@ -12,6 +12,8 @@ module ResponsesStore
     extend Econfig::Shortcut
     Econfig.env = ENV['RACK_ENV'] || 'development'
     Econfig.root = File.expand_path('..', File.dirname(__FILE__))
+
+    DB = Sequel.connect(ENV['DATABASE_URL'])
 
     Shoryuken.sqs_client = Aws::SQS::Client.new(
       access_key_id: config.AWS_ACCESS_KEY_ID,
@@ -24,14 +26,14 @@ module ResponsesStore
     shoryuken_options queue: config.RES_QUEUE_URL, auto_delete: true
 
     def perform(sqs_msg, msg_body)
-      store_responses(JSON.parse(msg_body))
+      response_hashes = JSON.parse(msg_body)
+      store_responses(response_hashes)
     end
 
     private
 
     def store_responses(response_hashes)
-      db = Sequel.connect(ENV['DATABASE_URL'])
-      db[:responses].multi_insert(response_hashes)
+      DB[:responses].multi_insert(response_hashes)
     end
   end
 end

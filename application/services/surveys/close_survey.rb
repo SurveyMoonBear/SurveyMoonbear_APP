@@ -16,7 +16,7 @@ module SurveyMoonbear
 
       private
 
-      # input {survey_id:}
+      # input { survey_id: }
       def get_survey_from_database(input)
         db_survey = GetSurveyFromDatabase.new.call(survey_id: input[:survey_id])
 
@@ -28,7 +28,7 @@ module SurveyMoonbear
         end
       end
 
-      # input {survey_id:, db_survey:}
+      # input { ..., db_survey: }
       def change_survey_state(input)
         Repository::For[ input[:db_survey].class ].update_state(input[:db_survey])
         Success(input)
@@ -37,7 +37,7 @@ module SurveyMoonbear
         Failure('Failed to change survey state to closed.')
       end
 
-      # input {survey_id:, db_survey:}
+      # input { ... }
       def change_launch_state(input)
         db_launch = Repository::For[Entity::Launch].find_id(input[:db_survey].launch_id)
         updated_launch = Repository::For[db_launch.class].update_state(db_launch)

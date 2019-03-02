@@ -18,7 +18,7 @@ module SurveyMoonbear
 
       private
 
-      # input {config:, code:}
+      # input { config:, code: }
       def get_access_token(input)
         input[:access_token] = Google::Auth.new(input[:config])
                                            .get_access_token(input[:code])
@@ -27,7 +27,7 @@ module SurveyMoonbear
         Failure('Failed to get access token')
       end
 
-      # input {config:, code:, access_token:}
+      # input { ..., access_token: }
       def get_google_account(input)
         input[:google_account] = Google::Auth.new(input[:config])
                                              .get_google_account(input[:access_token])
@@ -36,7 +36,7 @@ module SurveyMoonbear
         Failure('Failed to get google account')
       end
 
-      # input {config:, code:, access_token:, google_account:}
+      # input { ..., google_account: }
       def build_account_entity(input)
         input[:account_entity] = Entity::Account.new(id: nil,
                                                     email: input[:google_account]['email'],
@@ -48,7 +48,7 @@ module SurveyMoonbear
         Failure('Failed to build google account entity')
       end
 
-      # input {config:, code:, access_token:, google_account:, account_entity:}
+      # input { ..., account_entity: }
       def load_from_db(input)
         account = Repository::For[ input[:account_entity].class ].find_or_create(input[:account_entity])
         Success(account)

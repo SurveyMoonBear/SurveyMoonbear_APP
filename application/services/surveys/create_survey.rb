@@ -19,7 +19,7 @@ module SurveyMoonbear
 
       private
 
-      # input {config:, current_account:, title:}
+      # input { config:, current_account:, title: }
       def refresh_access_token(input)
         input[:current_account]['access_token'] = Google::Auth.new(input[:config]).refresh_access_token
 
@@ -28,7 +28,7 @@ module SurveyMoonbear
         Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
       end
 
-      # input {config:, current_account:, title:}
+      # input { ... }
       def create_spreadsheet(input)
         response = Google::Api::Drive.new(input[:current_account]['access_token'])
                                      .copy_drive_file(input[:config].SAMPLE_FILE_ID)
@@ -39,7 +39,7 @@ module SurveyMoonbear
         Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
       end
 
-      # input {config:, current_account:, title:, origin_id}
+      # input { ..., origin_id }
       def add_editor(input)
         sleep(3)
         GoogleSpreadsheet.new(input[:current_account]['access_token'])
@@ -50,7 +50,7 @@ module SurveyMoonbear
         Failure('Failed to add editor.')
       end
 
-      # input {config:, current_account:, title:, origin_id}
+      # input { ... }
       def set_survey_title(input)
         Google::Api::Sheets.new(input[:current_account]['access_token'])
                            .update_gs_title(input[:origin_id], input[:title])
@@ -60,7 +60,7 @@ module SurveyMoonbear
         Failure('Failed to set survey title.')
       end
 
-      # input {config:, current_account:, title:, origin_id}
+      # input { ... }
       def store_into_database(input)
         sheets_api = Google::Api::Sheets.new(input[:current_account]['access_token'])
         new_survey = Google::SurveyMapper.new(sheets_api)

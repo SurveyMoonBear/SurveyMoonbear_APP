@@ -52,7 +52,7 @@ html
                 input type="hidden" name="moonbear_start_time"
                 input type="hidden" name="moonbear_end_time"
 
-              - if questions.length > 1
+              - if pages.length > 1
                 nav aria-label="Page navigation example" id="page_nav"
                   ul class="pagination" 
                     li class="page-item disabled" id="page_pre"
@@ -66,23 +66,29 @@ html
                         span class="sr-only" Next
 
 javascript:
-  var page_str = '';
-  $.each(#{{questions}}, function(i, question){
+  /* Build the whole survey html with created page htmls */
+  var current_page_str = '';
+  $.each(#{{pages}}, function(i, page){
+    // Create page-div for the page (only 1st page visible)
     if (i > 0) {
       $('#form').append("<div class='d-none' id='page_" + ++i + "'></div>");
     } else {
       $('#form').append("<div id='page_" + ++i + "'></div>");
     }
-    page_str = "<div class='d-flex justify-content-end'><p>page " + i + "/" + #{{questions}}.length + "</p></div>";
-    $('#page_' + i).append(page_str);
-    $('#page_' + i).append(question);
+
+    // Append page-html to page-div
+    current_page_str = "<div class='d-flex justify-content-end'><p>page " + i + "/" + #{{pages}}.length + "</p></div>";
+    $('#page_' + i).append(current_page_str);
+    $('#page_' + i).append(page);
     
-    if(i == #{{questions}}.length) {
+    // Append submit btn to last page
+    if(i == #{{pages}}.length) {
       button_str = "<button type='submit' class='btn btn-primary my-3' id='btn-submit'>Submit</button>"
       $('#page_' + i).append(button_str);
     }
   });
 
+  /* Handle pages prev/next (pages show & hidden) */
   var page = 1;
   function next_page() {
     var required_flag = true;
@@ -97,7 +103,7 @@ javascript:
       $('.alert').alert('close');
       $('#page_' + page).addClass('d-none');
       $('#page_' + ++page).removeClass('d-none');
-      if (page >= #{{questions}}.length) {
+      if (page >= #{{pages}}.length) {
         $('#page_next').addClass('disabled');
       }
       $('#page_pre').removeClass('disabled');
@@ -125,6 +131,7 @@ javascript:
     window.scrollTo(0, 0);
   }
 
+  /* Response event listeners */
   $('.vas-unclicked').click(function (e) {
     $(this).removeClass('vas-unclicked');
   });
@@ -180,6 +187,7 @@ javascript:
     return flag;
   });
 
+  /* Survey document init with start time */
   $(document).ready(function() {
     $('input[name=moonbear_start_time]').val(new Date());
   });
