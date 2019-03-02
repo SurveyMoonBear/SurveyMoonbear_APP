@@ -17,7 +17,7 @@ module SurveyMoonbear
 
       private
 
-      # input {current_account:, survey_id:, new_title:}
+      # input { current_account:, survey_id:, new_title: }
       def get_survey_origin_id(input)
         survey = Repository::For[Entity::Survey].find_id(input[:survey_id])
 
@@ -28,7 +28,7 @@ module SurveyMoonbear
         Failure('Failed to get survey origin id.')
       end
 
-      # input {current_account:, survey_id:, new_title:, origin_id:}
+      # input { ..., origin_id: }
       def update_spreadsheet_title(input)
         Google::Api::Sheets.new(input[:current_account]['access_token'])
                            .update_gs_title(input[:origin_id], input[:new_title])
@@ -37,7 +37,7 @@ module SurveyMoonbear
         Failure("Failed to update spreadsheet title.")
       end
 
-      # input {current_account:, survey_id:, new_title:, origin_id:}
+      # input { ... }
       def update_survey_title(input)
         sheets_api = Google::Api::Sheets.new(input[:current_account]['access_token'])
         survey = Google::SurveyMapper.new(sheets_api)

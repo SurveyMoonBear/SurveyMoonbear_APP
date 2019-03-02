@@ -9,7 +9,7 @@ module SurveyMoonbear
 
       def load_several(survey_id, title)
         items_data = @gateway.items_data(survey_id, title)
-        items_data = items_data['values'].reject(&:empty?)
+        items_data = items_data['values'].reject(&:empty?)  # Remove empty rows
         items_data.shift  # Remove the first row of spreadsheet (titles for users)
 
         return nil unless items_data

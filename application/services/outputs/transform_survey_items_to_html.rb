@@ -11,11 +11,11 @@ module SurveyMoonbear
       include Dry::Monads
 
       step :get_survey_from_database
-      step :build_questions_arr_of_all_pages
+      step :build_pages_html_with_question_items
 
       private
 
-      # input {survey_id:}
+      # input { survey_id: }
       def get_survey_from_database(input)
         db_survey = GetSurveyFromDatabase.new.call(survey_id: input[:survey_id])
 
@@ -27,19 +27,19 @@ module SurveyMoonbear
         end
       end
 
-      # input {survey_id:, db_survey:}
-      def build_questions_arr_of_all_pages(input)
-        questions_array = input[:db_survey].pages.map do |page|
-          build_questions_arr(page)
+      # input { ..., db_survey: }
+      def build_pages_html_with_question_items(input)
+        pages_html_arr = input[:db_survey].pages.map do |page|
+          build_pages_html_arr(page)
         end
 
-        Success(title: input[:db_survey][:title], questions: questions_array)
+        Success(title: input[:db_survey][:title], pages: pages_html_arr)
       rescue StandardError => e
         puts e
-        Failure('Failed to build questions array of all pages')
+        Failure('Failed to transform survey items to html')
       end
 
-      def build_questions_arr(page)
+      def build_pages_html_arr(page)
         q_arr = []
         grid_arr = []
         items = page.items
@@ -167,7 +167,7 @@ module SurveyMoonbear
         str += if item.required == 1
                 "<input type='hidden' class='required' name='#{item.name}'>"
               else
-                str += "<input type='hidden' name='#{item.name}'>"
+                "<input type='hidden' name='#{item.name}'>"
               end
         str += '</fieldset>'
       end

@@ -47,7 +47,7 @@ html
             div class='container py-3' id='div_form'
               form id="form"
 
-              - if questions.length > 1
+              - if pages.length > 1
                 nav aria-label="Page navigation example" id="page_nav"
                   ul class="pagination" 
                     li class="page-item disabled" id="page_pre"
@@ -62,17 +62,17 @@ html
 
 javascript:
   var page_str = '';
-  $.each(#{{questions}}, function(i, question){
+  $.each(#{{pages}}, function(i, question){
     if (i > 0) {
       $('#form').append("<div class='d-none' id='page_" + ++i + "'></div>");
     } else {
       $('#form').append("<div id='page_" + ++i + "'></div>");
     }
-    page_str = "<div class='d-flex justify-content-end'><p>page " + i + "/" + #{{questions}}.length + "</p></div>";
+    page_str = "<div class='d-flex justify-content-end'><p>page " + i + "/" + #{{pages}}.length + "</p></div>";
     $('#page_' + i).append(page_str);
     $('#page_' + i).append(question);
 
-    if (i == #{{questions}}.length) {
+    if (i == #{{pages}}.length) {
       button_str = "<button type='button' class='btn btn-primary mb-3' id='btn-submit'>Submit</button>"
       $('#page_' + i).append(button_str);
     } 
@@ -82,7 +82,7 @@ javascript:
   function next_page() {
     $('#page_' + page).addClass('d-none');
     $('#page_' + ++page).removeClass('d-none');
-    if (page >= #{{questions}}.length) {
+    if (page >= #{{pages}}.length) {
       $('#page_next').addClass('disabled');
     }
     $('#page_pre').removeClass('disabled');

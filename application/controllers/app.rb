@@ -128,7 +128,7 @@ module SurveyMoonbear
             preview_survey = response.value!
             view 'survey_preview',
                   layout: false,
-                  locals: { title: preview_survey[:title], questions: preview_survey[:questions] }
+                  locals: { title: preview_survey[:title], pages: preview_survey[:pages] }
           end
         end
 
@@ -227,6 +227,22 @@ module SurveyMoonbear
                 survey_started['survey_id'] == survey_id
               end
 
+              ## puts respondent
+              # {"survey_id"=>"51a8a7f5-b8f0-482d-856c-c509fb591e86", 
+              # "respondent_id"=>"497b217a-54ac-492f-9f30-7756fa4371b6"}
+
+              ## puts routing.params
+              # {"moonbear_start_time"=>"Sat Mar 02 2019 13:38:55 GMT+0800 (台北標準時間)", 
+              # "moonbear_end_time"=>"Sat Mar 02 2019 13:39:06 GMT+0800 (台北標準時間)", 
+              # "name"=>"dsfadf", 
+              # "radio-age_num"=>"31~35", "age_num"=>"31~35", 
+              # "self_intro"=>"asdfasdf", 
+              # "checkbox-social_website"=>"Twitter", "social_website"=>"Twitter", 
+              # "radio-frequency"=>"1", "frequency"=>"1", 
+              # "radio-safisfaction"=>"3", "safisfaction"=>"3", 
+              # "radio-needs"=>"4", "needs"=>"4", 
+              # "moonbear_url_params"=>"{}"}
+
               Service::StoreResponses.new.call(survey_id: survey_id, 
                                                launch_id: launch_id, 
                                                respondent_id: respondent['respondent_id'], 
@@ -291,7 +307,7 @@ module SurveyMoonbear
             routing.redirect '/survey_list'
           end
 
-          questions_arr = html_transform_res.value![:questions]
+          html_of_pages_arr = html_transform_res.value![:pages]
 
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
           url_params = JSON.generate(routing.params)
@@ -319,7 +335,7 @@ module SurveyMoonbear
                layout: false,
                locals: { survey: survey,
                          survey_url: survey_url,
-                         questions: questions_arr,
+                         pages: html_of_pages_arr,
                          url_params: url_params }
         end
       end

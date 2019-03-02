@@ -16,7 +16,7 @@ module SurveyMoonbear
 
       private
 
-      # input {survey_id:, current_account:}
+      # input { survey_id:, current_account: }
       def get_survey_from_database(input)
         db_survey_res = GetSurveyFromDatabase.new.call(survey_id: input[:survey_id])
 
@@ -28,7 +28,7 @@ module SurveyMoonbear
         end
       end
 
-      # input {survey_id:, current_account:, spreadsheet_id:}
+      # input { ..., spreadsheet_id: }
       def get_survey_from_spreadsheet(input)
         new_survey_res = GetSurveyFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id], 
                                                           current_account: input[:current_account])
@@ -40,7 +40,7 @@ module SurveyMoonbear
         end
       end
 
-      # input {survey_id:, current_account:, spreadsheet_id:, new_survey:}
+      # input { ..., new_survey: }
       def store_survey_into_database_and_launch(input)
         started_survey = Repository::For[ input[:new_survey].class ].add_launch(input[:new_survey])
         Success(started_survey)

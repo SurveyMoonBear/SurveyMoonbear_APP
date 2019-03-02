@@ -11,15 +11,20 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
+      START_TIME_INDEX = 0
+      END_TIME_INDEX = 1
+      URL_PARAMS_INDEX = 2
+
       step :fetch_survey_items
-      step :create_items_arr
+      step :create_response_entities_arr
       step :add_time_records_into_arr
       step :add_url_params_into_arr
-      step :add_to_responses_storing_queues
+      step :add_data_to_all_entities_for_storing
+      step :send_to_responses_storing_queues
 
       private
 
-      # input {survey_id:, launch_id:, respondent_id:, responses:, , config:}
+      # input { survey_id:, launch_id:, respondent_id:, responses:, config: }
       def fetch_survey_items(input)
         survey = Repository::For[Entity::Survey].find_id(input[:survey_id])
 
@@ -30,9 +35,9 @@ module SurveyMoonbear
         Failure('Failed to fetch survey items with survey id.')
       end
 
-      # input {survey_id:, launch_id:, respondent_id:, responses:, config:, pages:}
-      def create_items_arr(input)
-        input[:responses_arr] = []
+      # input { ..., pages: }
+      def create_response_entities_arr(input)
+        input[:response_entities_arr] = []
         
         input[:pages].each do |page|
           page_index = page.index
@@ -42,8 +47,7 @@ module SurveyMoonbear
                                                   item,
                                                   input[:respondent_id],
                                                   input[:responses][item.name])
-            input[:responses_arr].push(new_response)
-            input[:responses].delete(item.name)
+            input[:response_entities_arr].push(new_response)
           end
         end
 
@@ -71,24 +75,22 @@ module SurveyMoonbear
         )
       end
 
-      # input {survey_id:, launch_id:, respondent_id:, responses:, config:, pages:, responses_arr:, page_index_for_other_data:}
+      # input { ..., response_entities_arr:, page_index_for_other_data: }
       def add_time_records_into_arr(input)
         start_time = Entity::Response.new(id: nil,
                                           respondent_id: input[:respondent_id],
                                           page_index: input[:page_index_for_other_data],
-                                          item_order: 0,
+                                          item_order: START_TIME_INDEX,
                                           response: input[:responses]['moonbear_start_time'],
                                           item_data: nil)
         end_time = Entity::Response.new(id: nil,
                                         respondent_id: input[:respondent_id],
                                         page_index: input[:page_index_for_other_data],
-                                        item_order: 1,
+                                        item_order: END_TIME_INDEX,
                                         response: input[:responses]['moonbear_end_time'],
                                         item_data: nil)
-        input[:responses].delete('moonbear_start_time')
-        input[:responses].delete('moonbear_end_time')
         time_records = [start_time, end_time]
-        time_records.each { |record| input[:responses_arr].push(record) }
+        time_records.each { |record| input[:response_entities_arr].push(record) }
 
         Success(input)
       rescue StandardError => e
@@ -96,16 +98,16 @@ module SurveyMoonbear
         Failure('Failed to add time records into items array.')
       end
 
-      # input {survey_id:, launch_id:, respondent_id:, responses:, config:, pages:, responses_arr:, page_index_for_other_data:}
+      # input { ... }
       def add_url_params_into_arr(input)
         unless input[:responses]['moonbear_url_params'].nil?
           url_param_item = Entity::Response.new(id: nil,
                                                 respondent_id: input[:respondent_id],
                                                 page_index: input[:page_index_for_other_data],
-                                                item_order: 2,
+                                                item_order: URL_PARAMS_INDEX,
                                                 response: input[:responses]['moonbear_url_params'],
                                                 item_data: nil)
-          input[:responses_arr].push(url_param_item)
+          input[:response_entities_arr].push(url_param_item)
         end
 
         Success(input)
@@ -114,16 +116,27 @@ module SurveyMoonbear
         Failure('Failed to add url params into items array.')
       end
 
-      # input {survey_id:, launch_id:, respondent_id:, responses:, config:, pages:, responses_arr:, page_index_for_other_data:}
-      def add_to_responses_storing_queues(input)
-        responses_hash = input[:responses_arr].map do |response_entity|
-          response_hash = response_entity.to_h
-          response_hash[:launch_id] = input[:launch_id]
-          response_hash.delete(:id)
-          response_hash
+      # input { ... }
+      def add_data_to_all_entities_for_storing(input)
+        responses_hash = input[:response_entities_arr].map do |response_entity|
+          res_hash = response_entity.to_h
+          res_hash[:survey_id] = input[:survey_id]
+          res_hash[:launch_id] = input[:launch_id]
+          res_hash.delete(:id)  # id was used for creating entities
+          res_hash
         end
+
+        input[:responses_hash] = responses_hash
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to handle responses for storing.')
+      end
+
+      # input { ..., responses_hash }
+      def send_to_responses_storing_queues(input)
         Messaging::Queue.new(input[:config].RES_QUEUE_URL, input[:config])
-                        .send(responses_hash.to_json)
+                        .send(input[:responses_hash].to_json)
         Success(nil)
       rescue StandardError => e
         puts e

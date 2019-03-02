@@ -14,7 +14,7 @@ module SurveyMoonbear
 
       private
 
-      # input :survey_id
+      # input { :survey_id }
       def get_survey_from_database(input)
         survey = Repository::For[Entity::Survey].find_id(input[:survey_id])
         raise unless survey
