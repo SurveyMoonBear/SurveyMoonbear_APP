@@ -4,39 +4,26 @@ require 'dry/transaction'
 
 module SurveyMoonbear
   module Service
-    # Return survey title & an array of question HTML strings
-    # Usage: Service::TransformSurveyItemsToHTML.new.call(survey_id: "...")
+    # Return survey title & an array of page HTML strings
+    # Usage: Service::TransformSurveyItemsToHTML.new.call(survey: <survey_entity>)
     class TransformSurveyItemsToHTML
       include Dry::Transaction
       include Dry::Monads
 
-      step :get_survey_from_database
       step :build_pages_html_with_question_items
 
       private
 
-      # input { survey_id: }
-      def get_survey_from_database(input)
-        db_survey = GetSurveyFromDatabase.new.call(survey_id: input[:survey_id])
-
-        if db_survey.success?
-          input[:db_survey] = db_survey.value!
-          Success(input)
-        else
-          Failure(db_survey.failure)
-        end
-      end
-
-      # input { ..., db_survey: }
+      # input { survey: }
       def build_pages_html_with_question_items(input)
-        pages_html_arr = input[:db_survey].pages.map do |page|
+        pages_html_arr = input[:survey].pages.map do |page|
           build_pages_html_arr(page)
         end
 
-        Success(title: input[:db_survey][:title], pages: pages_html_arr)
+        Success(title: input[:survey][:title], pages: pages_html_arr)
       rescue StandardError => e
         puts e
-        Failure('Failed to transform survey items to html')
+        Failure('Failed to transform survey items to html.')
       end
 
       def build_pages_html_arr(page)

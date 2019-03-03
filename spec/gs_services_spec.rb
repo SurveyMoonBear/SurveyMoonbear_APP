@@ -110,8 +110,15 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @started_survey.id)
     end
 
-    it 'HAPPY: should be able to view survey items in html' do
-      trans_html_res = SurveyMoonbear::Service::TransformSurveyItemsToHTML.new.call(survey_id: @started_survey.id)
+    it 'HAPPY: should be able to transform DB survey items to html' do
+      trans_html_res = SurveyMoonbear::Service::TransformDBSurveyToHTML.new.call(survey_id: @started_survey.id)
+      _(trans_html_res.success?).must_equal true
+      _(trans_html_res.value![:pages][0]).wont_be :empty?
+    end
+
+    it 'HAPPY: should be able to transform spreadsheet survey items to html' do
+      trans_html_res = SurveyMoonbear::Service::TransformSheetsSurveyToHTML.new.call(spreadsheet_id: @started_survey.origin_id,
+                                                                                     current_account: CURRENT_ACCOUNT)
       _(trans_html_res.success?).must_equal true
       _(trans_html_res.value![:pages][0]).wont_be :empty?
     end

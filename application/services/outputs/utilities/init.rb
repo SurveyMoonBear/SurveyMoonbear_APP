@@ -3,5 +3,3 @@
 Dir.glob("#{File.dirname(__FILE__)}/*.rb").each do |file|
   require file
 end
-
-require_relative 'utilities/init.rb'

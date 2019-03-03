@@ -116,10 +116,11 @@ module SurveyMoonbear
           routing.redirect '/survey_list'
         end
 
-        # GET /survey/preview with params: survey_id, page
-        routing.on 'preview' do
+        # GET /survey/[survey_id]/preview/[spreadsheet_id]
+        routing.on 'preview', String do |spreadsheet_id|
           routing.get do
-            response = Service::TransformSurveyItemsToHTML.new.call(survey_id: survey_id)
+            response = Service::TransformSheetsSurveyToHTML.new.call(spreadsheet_id: spreadsheet_id,
+                                                                     current_account: @current_account)
             if response.failure?
               flash[:error] = response.failure + ' Please try again.'
               routing.redirect '/survey_list'
@@ -227,22 +228,6 @@ module SurveyMoonbear
                 survey_started['survey_id'] == survey_id
               end
 
-              ## puts respondent
-              # {"survey_id"=>"51a8a7f5-b8f0-482d-856c-c509fb591e86", 
-              # "respondent_id"=>"497b217a-54ac-492f-9f30-7756fa4371b6"}
-
-              ## puts routing.params
-              # {"moonbear_start_time"=>"Sat Mar 02 2019 13:38:55 GMT+0800 (台北標準時間)", 
-              # "moonbear_end_time"=>"Sat Mar 02 2019 13:39:06 GMT+0800 (台北標準時間)", 
-              # "name"=>"dsfadf", 
-              # "radio-age_num"=>"31~35", "age_num"=>"31~35", 
-              # "self_intro"=>"asdfasdf", 
-              # "checkbox-social_website"=>"Twitter", "social_website"=>"Twitter", 
-              # "radio-frequency"=>"1", "frequency"=>"1", 
-              # "radio-safisfaction"=>"3", "safisfaction"=>"3", 
-              # "radio-needs"=>"4", "needs"=>"4", 
-              # "moonbear_url_params"=>"{}"}
-
               Service::StoreResponses.new.call(survey_id: survey_id, 
                                                launch_id: launch_id, 
                                                respondent_id: respondent['respondent_id'], 
@@ -301,9 +286,9 @@ module SurveyMoonbear
             routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
           end
 
-          html_transform_res = Service::TransformSurveyItemsToHTML.new.call(survey_id: survey_id)
+          html_transform_res = Service::TransformDBSurveyToHTML.new.call(survey_id: survey_id)
           if html_transform_res.failure?
-            flash[:error] = "#{html_transform_res.failure}. Please try again :("
+            flash[:error] = "#{html_transform_res.failure} Please try again :("
             routing.redirect '/survey_list'
           end
 
