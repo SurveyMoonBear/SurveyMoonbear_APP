@@ -44,6 +44,21 @@ module SurveyMoonbear
         q_arr
       end
 
+      def build_grid_questions(grid_arr)
+        case grid_arr[0].type
+        when 'Multiple choice grid (radio button)'
+          build_grid_questions_radio(grid_arr)
+        when 'Multiple choice grid (slider)'
+          build_grid_questions_slider(grid_arr)
+        when 'Multiple choice grid (VAS)'
+          build_grid_questions_vas(grid_arr)
+        when 'Multiple choice grid (VAS-slider)'
+          build_grid_question_vas_slider(grid_arr)
+        else
+          puts "Sorry, there's no such question type."
+        end
+      end
+
       def build_individual_question(item)
         case item.type
         when 'Section Title'
@@ -58,16 +73,18 @@ module SurveyMoonbear
           build_paragraph_answer(item)
         when 'Multiple choice (radio button)'
           build_multiple_choice_radio(item)
+        when "Multiple choice with 'other' (radio button)"
+          build_multiple_choice_radio(item, other=true)
         when 'Multiple choice (checkbox)'
           build_multiple_choice_checkbox(item)
+        when "Multiple choice with 'other' (checkbox)"
+          build_multiple_choice_checkbox(item, other=true)
         when 'Random code'
           build_random_code(item)
         else
           puts "Sorry, there's no such question type."
         end
       end
-
-      private
 
       def build_section_title(item)
         "<h2 class='py-1 mt-5'>#{item.description}</h2>"
@@ -105,7 +122,7 @@ module SurveyMoonbear
         str + '</div>'
       end
 
-      def build_multiple_choice_radio(item)
+      def build_multiple_choice_radio(item, other=false)
         str = "<fieldset class='form-group mt-5'>"
         if item.required == 1
           str += "<label id='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></label>"
@@ -124,6 +141,14 @@ module SurveyMoonbear
           str += "<p>No options were provided.</p>"
         end
 
+        if other
+          str += "<div class='custom-control custom-radio'>"
+          str += "<input type='radio' class='custom-control-input other-option' id='#{item.name}_other' name='radio-#{item.name}' value=''>"
+          str += "<label class='custom-control-label' for='#{item.name}_other'>other:</label>"
+          str += "<input type='text' class='other-text align-middle border-0 ml-2'>"
+          str += '</div>'
+        end
+
         if item.required == 1
           str += "<input type='hidden' class='required' name='#{item.name}'>"
         else
@@ -132,7 +157,7 @@ module SurveyMoonbear
         str += '</fieldset>'
       end
 
-      def build_multiple_choice_checkbox(item)
+      def build_multiple_choice_checkbox(item, other=false)
         str = "<fieldset class='form-group mt-5'>"
         if item.required == 1
           str += "<label id='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></label>"
@@ -151,6 +176,15 @@ module SurveyMoonbear
           str += "<p>No options were provided.</p>"
         end
 
+        if other
+          str += "<div class='custom-control custom-checkbox'>"
+          str += "<input type='checkbox' class='custom-control-input other-option' id='#{item.name}_other' name='checkbox-#{item.name}' value=''>"
+          str += "<label class='custom-control-label' for='#{item.name}_other'>other:</label>"
+          str += "<input type='text' class='other-text align-middle border-0 ml-2'>"
+          str += '</div>'
+        end
+
+        # Hidden input is for storing the str of joint multiple-checked-answers, and also for keeping update with changes
         str += if item.required == 1
                 "<input type='hidden' class='required' name='#{item.name}'>"
               else
@@ -165,21 +199,6 @@ module SurveyMoonbear
         str += "<label for='#{item.name}' class='lead'>#{item.description}</lable>"
         str += "<input type='text' class='form-control' name='#{item.name}' id='#{item.name}' readonly='' value='#{random_code}'>"
         str + '</div>'
-      end
-
-      def build_grid_questions(grid_arr)
-        case grid_arr[0].type
-        when 'Multiple choice grid (radio button)'
-          build_grid_questions_radio(grid_arr)
-        when 'Multiple choice grid (slider)'
-          build_grid_questions_slider(grid_arr)
-        when 'Multiple choice grid (VAS)'
-          build_grid_questions_vas(grid_arr)
-        when 'Multiple choice grid (VAS-slider)'
-          build_grid_question_vas_slider(grid_arr)
-        else
-          puts "Sorry, there's no such question type."
-        end
       end
 
       def build_grid_questions_radio(items)

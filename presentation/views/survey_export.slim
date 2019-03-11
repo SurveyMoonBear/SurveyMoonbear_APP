@@ -138,23 +138,52 @@ javascript:
 
   $('input[type=checkbox]').click(function (e) {
     var type_name = $(this).prop('name');
-    var str = $("input[name=" + type_name + "]:checked").map(function () {
-        return this.value;
-      }).get().join(', ');
-    var input_name = type_name.substr(9, type_name.length);
-    $('input[name='+input_name+']').val(str);
+    updateCheckboxHiddenInput(type_name);
   });
+
+  function updateCheckboxHiddenInput(type_name) {
+    var checkbox_answers_str = joinCheckboxAnswersWithComma(type_name);
+
+    var input_name = type_name.substr(9, type_name.length);
+    $('input[name='+input_name+']').val(checkbox_answers_str);
+  }
+
+  function joinCheckboxAnswersWithComma(type_name) {
+    var checkbox_answers_str = $("input[name=" + type_name + "]:checked").map(function () {
+      return this.value;
+    }).get().join(', ');
+
+    return checkbox_answers_str;
+  }
 
   $('input[type=radio]').click(function (e) {
     var type_name = $(this).prop('name');
-    var input_name = type_name.substr(6, type_name.length);
-    $('input[name='+input_name+']').val(this.value);
+    updateRadioHiddenInput(type_name, this.value);
   });
+
+  function updateRadioHiddenInput(type_name, value) {
+    var input_name = type_name.substr(6, type_name.length);
+    $('input[name='+input_name+']').val(value);
+  }
 
   $('input.vas-unclicked').click(function (e) {
     var type_name = $(this).prop('name');
     var input_name = type_name.substr(4, type_name.length);
     $('input[name='+input_name+']').val(this.value);
+  });
+
+  $('.other-text').on('keyup', function(e) { 
+    var other_text = this.value;
+    var other_option = $(this).siblings('.other-option');
+    $(other_option).val(other_text);
+
+    var type_name = $(other_option).prop('name');
+    if ($(other_option).is(':checked') && type_name.includes('checkbox')) {
+      updateCheckboxHiddenInput(type_name);
+    }
+    if ($(other_option).is(':checked') && type_name.includes('radio')) {
+      updateRadioHiddenInput(type_name, other_text);
+    }
   });
 
   $('#form').on('submit', function() {
