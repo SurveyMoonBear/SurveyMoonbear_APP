@@ -11,64 +11,21 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
-      step :refresh_access_token
-      step :create_spreadsheet
-      step :add_editor
-      step :set_survey_title
-      step :store_into_database
+      step :copy_sample_spreadsheet
 
       private
 
       # input { config:, current_account:, title: }
-      def refresh_access_token(input)
-        input[:current_account]['access_token'] = Google::Auth.new(input[:config]).refresh_access_token
-
-        Success(input)
-      rescue
-        Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
-      end
-
-      # input { ... }
-      def create_spreadsheet(input)
-        response = Google::Api::Drive.new(input[:current_account]['access_token'])
-                                     .copy_drive_file(input[:config].SAMPLE_FILE_ID)
-        input[:origin_id] = response['id']
-
-        Success(input)
-      rescue
-        Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
-      end
-
-      # input { ..., origin_id }
-      def add_editor(input)
-        sleep(3)
-        GoogleSpreadsheet.new(input[:current_account]['access_token'])
-                         .add_editor(input[:origin_id], input[:current_account]['email'])
-        Success(input)
-      rescue StandardError => e
-        puts e
-        Failure('Failed to add editor.')
-      end
-
-      # input { ... }
-      def set_survey_title(input)
-        Google::Api::Sheets.new(input[:current_account]['access_token'])
-                           .update_gs_title(input[:origin_id], input[:title])
-
-        Success(input)
-      rescue
-        Failure('Failed to set survey title.')
-      end
-
-      # input { ... }
-      def store_into_database(input)
-        sheets_api = Google::Api::Sheets.new(input[:current_account]['access_token'])
-        new_survey = Google::SurveyMapper.new(sheets_api)
-                                         .load(input[:origin_id], input[:current_account])
-        survey = Repository::For[new_survey.class].find_or_create(new_survey)
-        Success(survey)
-      rescue
-        Failure('Failed to store the new survey into database.')
+      def copy_sample_spreadsheet(input)
+        new_survey = CopySurvey.new.call(config: input[:config], 
+                                         current_account: input[:current_account], 
+                                         spreadsheet_id: input[:config].SAMPLE_FILE_ID, 
+                                         title: input[:title])
+        if new_survey.success?
+          Success(new_survey.value!)
+        else
+          Failure(new_survey.failure)
+        end
       end
     end
   end

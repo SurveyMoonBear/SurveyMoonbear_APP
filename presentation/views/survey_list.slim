@@ -23,10 +23,12 @@ div class="mb-3"
               i class="fas fa-cog"
             button {
               class="btn btn-outline-dark border-0 ml-auto d-inline-flex align-middle"
-              id="btn-delete"
-              onclick="confirmDeleteSurvey('#{survey.id}', '#{survey.title}')"
+              data-toggle="dropdown"
             }
-              i class="fas fa-trash-alt"
+              i class="fas fa-chevron-down"
+            div class="dropdown-menu"
+              a href="#" class="dropdown-item" onclick="confirmDeleteSurvey('#{survey.id}', '#{survey.title}')" Delete
+              a href="#" class="dropdown-item" data-origin_id="#{survey.origin_id}" data-toggle="modal" data-target="#modal_copy_survey" Copy
           p class="text-muted" 
             small Created at: #{survey.created_at}
           div class="row d-flex"
@@ -61,7 +63,7 @@ div class="mb-3"
                     } Close Survey
                   input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
                   div class="input-group-append"
-                    button class="btn btn-secondary" id="btn-copy" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
+                    button class="btn btn-secondary" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
                       i class="fas fa-copy"
                     a class="btn btn-secondary" target="_blank" href="/onlinesurvey/#{survey.id}/#{survey.launch_id}"
                       i class="fas fa-external-link-alt"
@@ -84,6 +86,7 @@ div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="
           }
 
 include :modal_create_survey
+include :modal_copy_survey
 include :modal_survey_settings
 include :modal_survey_editor
 include :modal_responses_download
@@ -114,6 +117,30 @@ javascript:
         }
       });
     }
+  }
+
+  $('#modal_copy_survey').on('show.bs.modal', function(e) {
+    var origin_id = $(e.relatedTarget).data('origin_id');
+    
+    $('#survey_copy_form').on('submit', function(e) {
+      e.preventDefault();
+      $('#modal_copy_survey').modal('hide');
+      
+      var title = $(e.currentTarget).find('input[name="title"]').val();
+      copySurvey(origin_id, title);
+    });
+  });
+
+  function copySurvey(origin_id, title) {
+    $('#modal_waiting').modal();
+    $.ajax({
+      url: "/survey_list/copy/" + origin_id,
+      type: 'POST',
+      data: { title: title },
+      success: function(result) {
+        location.reload();
+      }
+    });
   }
 
   $('#btn-create').on('click', function (e) {

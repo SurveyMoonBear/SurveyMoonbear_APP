@@ -103,6 +103,18 @@ module SurveyMoonbear
 
           routing.redirect '/survey_list'
         end
+
+        # POST /survey_list/copy/[spreadsheet_id]
+        routing.post 'copy', String do |spreadsheet_id|
+          new_survey = Service::CopySurvey.new.call(config: config,
+                                                    current_account: @current_account, 
+                                                    spreadsheet_id: spreadsheet_id,
+                                                    title: routing.params['title'])
+
+          flash[:error] = "Copy failed: '#{new_survey.failure}' Please try again :(" if new_survey.failure?
+
+          routing.redirect '/survey_list'
+        end
       end
 
       routing.on 'survey', String do |survey_id|

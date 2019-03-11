@@ -15,7 +15,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
     VcrHelper.eject_vcr
   end
 
-  describe 'Create survey' do
+  describe 'Copy & Create survey' do
     before do
       VcrHelper.build_cassette('happy_create_gs_api')
     end
@@ -24,7 +24,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @new_survey_res.value!.id)
     end
 
-    it 'HAPPY: should create survey with provided title' do
+    it 'HAPPY: should copy sample and create survey with provided title' do
       @new_survey_res = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG, 
                                                                        current_account: CURRENT_ACCOUNT, 
                                                                        title: 'Survey for Testing Create Services')
