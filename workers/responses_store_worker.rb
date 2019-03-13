@@ -28,6 +28,11 @@ module ResponsesStore
     def perform(sqs_msg, msg_body)
       response_hashes = JSON.parse(msg_body)
       store_responses(response_hashes)
+      puts 'SQS MessageId: ' + sqs_msg.message_id + ' is completed'
+    rescue StandardError => e
+      puts 'Errors on SQS MessageId: ' + sqs_msg.message_id
+      puts e
+      raise
     end
 
     private
