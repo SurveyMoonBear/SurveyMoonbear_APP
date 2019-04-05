@@ -1,6 +1,7 @@
 # frozen_string_literal: false
 
 require_relative './spec_helper.rb'
+require_relative './../workers/responses_store_worker.rb'
 
 describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
   # Execute before/after each 'describe'
@@ -123,21 +124,32 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       _(trans_html_res.value![:pages][0]).wont_be :empty?
     end
 
-    # it 'HAPPY: should be able to store responses and transform into csv' do
-    #   respondent_id = SecureRandom.uuid
-    #   response_params = {"moonbear_start_time"=>"Wed Feb 27 2019 09:59:58 GMT+0800 (台北標準時間)", "moonbear_end_time"=>"Wed Feb 27 2019 10:00:23 GMT+0800 (台北標準時間)", "name"=>"myName", "radio-age_num"=>"21~25", "age_num"=>"21~25", "self_intro"=>"my introduction here~~", "checkbox-social_website"=>"Twitter", "social_website"=>"Instagram, Twitter", "radio-frequency"=>"2", "frequency"=>"2", "radio-safisfaction"=>"3", "safisfaction"=>"3", "radio-needs"=>"4", "needs"=>"4", "moonbear_url_params"=>"{}"}
-    #   stored_responses_res = SurveyMoonbear::Service::StoreResponses.new.call(survey_id: @started_survey.id, 
-    #                                                                           launch_id: @started_survey.launch_id, 
-    #                                                                           respondent_id: respondent_id, 
-    #                                                                           responses: response_params,
-    #                                                                           config: CONFIG)
-    #   _(stored_responses_res.success?).must_equal true
-    #   _(stored_responses_res.value!).must_be_nil
-
-    #   transform_csv_res = SurveyMoonbear::Service::TransformResponsesToCSV.new.call(survey_id: @started_survey.id, 
-    #                                                                                 launch_id: @started_survey.launch_id)
-    #   _(transform_csv_res.success?).must_equal true
-    #   _(transform_csv_res.value!).must_be_instance_of String
-    # end
+    describe 'HAPPY: should be able to store responses and transform to csv' do
+      i_suck_and_my_tests_are_order_dependent!
+  
+      it 'HAPPY: should be able to store responses (worker)' do
+        respondent_id = SecureRandom.uuid
+        response_hashes =  [{:respondent_id=>respondent_id, :page_index=>0, :item_order=>4, :response=>"myName", :item_data=>"{\"type\":\"Short answer\",\"name\":\"name\",\"description\":\"What's your name?\",\"required\":0,\"options\":null}", :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
+                            {:respondent_id=>respondent_id, :page_index=>0, :item_order=>6, :response=>"This is my self introduction", :item_data=>"{\"type\":\"Paragraph Answer\",\"name\":\"self_intro\",\"description\":\"Self Introduction\",\"required\":0,\"options\":null}", :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
+                            {:respondent_id=>respondent_id, :page_index=>0, :item_order=>7, :response=>"Facebook, Instagram, LINE", :item_data=>"{\"type\":\"Multiple choice with 'other' (checkbox)\",\"name\":\"social_website\",\"description\":\"Which social media you have used?\",\"required\":1,\"options\":\"Facebook,Instagram,Twitter,LINE,plurk,Google+,Snapchat\"}", :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
+                            {:respondent_id=>respondent_id, :page_index=>2, :item_order=>0, :response=>"Wed Mar 27 2019 09:38:06 GMT+0800 (台北標準時間)", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
+                            {:respondent_id=>respondent_id, :page_index=>2, :item_order=>1, :response=>"Wed Mar 27 2019 09:38:52 GMT+0800 (台北標準時間)", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
+                            {:respondent_id=>respondent_id, :page_index=>2, :item_order=>2, :response=>"{}", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}]
+        worker = ResponsesStore::Worker.new()
+        sqs_msg = OpenStruct.new({ message_id: 'testtest-fake-msgg-idid-somethingggg',
+                                   body: response_hashes.to_json,
+                                   delete: nil })
+        success_msg = 'SQS MessageId: ' + sqs_msg.message_id + ' is completed'
+  
+        assert_output(/#{success_msg}/) { worker.perform(sqs_msg, sqs_msg.body) }
+      end
+  
+      it 'HAPPY: should be able to transform responses to csv correctly' do
+        transform_csv_res = SurveyMoonbear::Service::TransformResponsesToCSV.new.call(launch_id: @started_survey.launch_id)
+        
+        _(transform_csv_res.success?).must_equal true
+        _(transform_csv_res.value!).must_be_instance_of String
+      end
+    end
   end
 end

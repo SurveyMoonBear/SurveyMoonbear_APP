@@ -38,7 +38,9 @@ module ResponsesStore
     private
 
     def store_responses(response_hashes)
+      DB.run('PRAGMA foreign_keys = OFF')
       DB[:responses].multi_insert(response_hashes)
+      DB.run('PRAGMA foreign_keys = ON')
     end
   end
 end

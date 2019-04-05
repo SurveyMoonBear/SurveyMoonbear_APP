@@ -6,9 +6,21 @@ task :default do
   puts `rake -T`
 end
 
-desc 'run tests'
+desc 'run all tests'
 Rake::TestTask.new(:spec) do |t|
   t.pattern = 'spec/*_spec.rb'
+  t.warning = false
+end
+
+desc 'run tests exclude no-cassettes ones'
+Rake::TestTask.new("spec:vcr") do |t|
+  t.test_files = FileList['spec/*_spec.rb'].exclude('spec/no_cassettes_spec.rb')
+  t.warning = false
+end
+
+desc 'run no-cassetttes tests'
+Rake::TestTask.new("spec:novcr") do |t|
+  t.pattern = 'spec/no_cassettes_spec.rb'
   t.warning = false
 end
 

@@ -59,4 +59,16 @@ class VcrHelper
   def self.eject_vcr
     VCR.eject_cassette
   end
+
+  def self.block_vcr_alert
+    VCR.configure do |c|
+      c.allow_http_connections_when_no_cassette = true
+    end
+  end
+
+  def self.unblock_vcr_alert
+    VCR.configure do |c|
+      c.allow_http_connections_when_no_cassette = false
+    end
+  end
 end

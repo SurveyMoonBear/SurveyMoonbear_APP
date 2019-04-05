@@ -5,6 +5,7 @@ require 'database_cleaner'
 # To clean database during test runs
 class DatabaseHelper
   def self.setup_database_cleaner
+    DatabaseCleaner[:sequel].db = SurveyMoonbear::App.DB
     DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
   end

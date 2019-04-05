@@ -5,95 +5,122 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Return CSV format of responses
-    # Usage: Service::TransformResponsesToCSV.new.call(survey_id: "...", launch_id: "...")
+    # Usage: Service::TransformResponsesToCSV.new.call(launch_id: "...")
     class TransformResponsesToCSV
       include Dry::Transaction
       include Dry::Monads
 
-      step :get_survey_from_database
+      # Item orders of additional data in the last page
+      START_TIME_ITEM_ORDER = 0
+      END_TIME_ITEM_ORDER = 1
+      URL_PARAMS_ITEM_ORDER = 2
+
       step :get_launch_from_database
-      step :formatting_responses
-      step :build_responses_table_headers
-      step :build_responses_arr
+      step :organize_responses_to_hash_array_of_respondent_responses_pairs
+      step :sort_responses_by_item_name
+      step :build_response_table_headers
+      step :build_response_rows_arr
       step :transform_to_csv
 
       private
 
-      # input { survey_id:, launch_id: }
-      def get_survey_from_database(input)
-        input[:survey] = Repository::For[Entity::Survey].find_id(input[:survey_id])
-        Success(input)
-      rescue StandardError => e
-        puts e
-        Failure('Failed to get survey from database')
-      end
-
-      # input { ..., survey: }
+      # input { launch_id: }
       def get_launch_from_database(input)
         launch = Repository::For[Entity::Launch].find_id(input[:launch_id])
 
-        input[:responses] = launch.responses
+        input[:response_objs] = launch.responses
         Success(input)
       rescue StandardError => e
         puts e
         Failure('Failed to get launch from database')
       end
 
-      # input { ..., responses: }
-      def formatting_responses(input)
-        responses_hash = {}
-        input[:responses].each do |r|
-          if responses_hash[r.respondent_id.to_s].nil?
-            responses_hash[r.respondent_id.to_s] = [r.response]
-          else
-            responses_hash[r.respondent_id.to_s].push(r.response)
-          end
-        end
+      # input { ..., response_objs: }
+      def organize_responses_to_hash_array_of_respondent_responses_pairs(input)
+        response_hashes = {}
 
-        input[:responses_hash] = responses_hash
-        Success(input)
-      rescue StandardError => e
-        puts e
-        Failure('Failed to formatting responses')
-      end
+        input[:response_objs].each do |res_obj|
+          respondent_id = res_obj.respondent_id
+          response_hashes[respondent_id] = {} if response_hashes[respondent_id].nil?
 
-      # input { ..., responses_hash: }
-      def build_responses_table_headers(input)
-        headers_arr = ['respondent']
-        input[:survey].pages.each do |page|
-          page.items.each do |item|
-            if item.type != 'Description' && item.type != 'Section Title' && item.type != 'Divider'
-              headers_arr.push(item.name)
+          # Use item_data of responses to build hash-array: [{ respondent_id => {item_name=>response, ...} }, ... ]
+          if !res_obj.item_data.nil?
+            item_name = JSON.parse(res_obj.item_data)['name']
+            response_hashes[respondent_id][item_name] = res_obj.response
+          else  # Additional data's item_data column is nil
+            case res_obj.item_order
+            when START_TIME_ITEM_ORDER
+              response_hashes[respondent_id]['start_time'] = res_obj.response
+            when END_TIME_ITEM_ORDER
+              response_hashes[respondent_id]['end_time'] = res_obj.response
+            when URL_PARAMS_ITEM_ORDER
+              response_hashes[respondent_id]['url_params'] = res_obj.response
             end
           end
         end
-        headers_arr.push('start_time', 'end_time', 'url_params')
 
-        input[:headers_arr] = headers_arr
+        input[:response_hashes] = response_hashes
         Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to build responses table headers')
+        Failure('Failed to organize responses to hash array of respondent-responses.')
       end
 
-      # input { ..., headers_arr: }
-      def build_responses_arr(input)
-        input[:responses_arr] = input[:responses_hash].map do |key, value|
-          [key, value].flatten
+      # input { ..., response_hashes: }
+      def sort_responses_by_item_name(input)
+        input[:sorted_response_hashes] = input[:response_hashes].map do |respondent, item_name|
+          sorted_res_hash = { respondent => item_name.sort().to_h }
+
+          # Move additional data to the last elements of the hash
+          sorted_res_hash[respondent]['start_time'] = sorted_res_hash[respondent].delete('start_time')
+          sorted_res_hash[respondent]['end_time'] = sorted_res_hash[respondent].delete('end_time')
+          sorted_res_hash[respondent]['url_params'] = sorted_res_hash[respondent].delete('url_params')
+
+          sorted_res_hash
         end
-        
-        input[:responses_arr].unshift(input[:headers_arr])
+
         Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to build responses array for csv transformation')
+        Failure('Failed to sort responses by item name.')
       end
 
-      # input { ..., responses_arr: }
+      # input { ..., sorted_response_hashes: }
+      def build_response_table_headers(input)
+        response_table_headers = input[:sorted_response_hashes][0].values[0].keys
+
+        input[:headers_arr] = response_table_headers
+        input[:headers_arr].unshift('respondent')
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to build responses table headers.')
+      end
+    
+      # input { ..., headers_arr: }
+      def build_response_rows_arr(input)
+        input[:rows_arr] = input[:sorted_response_hashes].map do |hash|
+          res_row = []
+          hash.each do |respondent_id, responses_hash|
+            res_row = responses_hash.values
+            res_row.unshift(respondent_id)
+          end
+          res_row
+        end
+
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to build response rows array.')
+      end
+
+      # input { ..., rows_arr: }
       def transform_to_csv(input)
         csv_string = CSV.generate do |csv|
-          input[:responses_arr].each do |data|
-            csv << data
+          csv << input[:headers_arr]
+
+          input[:rows_arr].each do |row|
+            csv << row
           end
         end
 
