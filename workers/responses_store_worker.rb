@@ -38,9 +38,13 @@ module ResponsesStore
     private
 
     def store_responses(response_hashes)
-      DB.run('PRAGMA foreign_keys = OFF')
-      DB[:responses].multi_insert(response_hashes)
-      DB.run('PRAGMA foreign_keys = ON')
+      if ENV['RACK_ENV'] == 'production'
+        DB[:responses].multi_insert(response_hashes)
+      else # For SQLite
+        DB.run('PRAGMA foreign_keys = OFF')
+        DB[:responses].multi_insert(response_hashes)
+        DB.run('PRAGMA foreign_keys = ON')
+      end
     end
   end
 end
