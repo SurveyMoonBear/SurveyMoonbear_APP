@@ -5,6 +5,11 @@ div class="mb-3"
         == render :flash_bar
       a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey"
         <i class="fas fa-plus"></i> &nbsp;Create a New Survey
+      a { 
+        target="_blank" rel="Question Types"
+        href="https://paper.dropbox.com/doc/SurveyMoonbear-Question-Types--AbR4mDkzZ3rtLqvvIgZXTOK_AQ-aRR36FzeVcCGGZQgcsMZB"
+      } 
+        abbr class="text-muted font-weight-light mx-3" title="Question Types Demo" style="font-size:.8rem" HELP
     
   - unless surveys.nil?
     - surveys.reverse!
