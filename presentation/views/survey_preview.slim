@@ -99,10 +99,31 @@ javascript:
     location.href = '#page_' + page;
     window.scrollTo(0, 0);
   }
+  function reload_to_url_page() {
+    url_page_div_id = window.location.hash;
+
+    url_page_num = parseInt(url_page_div_id.split("#page_")[1]);
+    if (url_page_num > 1) {
+      $("#page_1").addClass('d-none');
+      $(url_page_div_id).removeClass('d-none');
+
+      page = url_page_num - 1;
+      if (++page >= #{{pages}}.length) {
+        $('#page_next').addClass('disabled');
+      }
+      $('#page_pre').removeClass('disabled');
+    }
+  }
 
   $('.vas-unclicked').click(function (e) {
     $(this).removeClass('vas-unclicked');
   });
+
+  $(document).ready(function() {
+    if (window.location.hash.includes("#page_")) {
+      reload_to_url_page()
+    }
+  })
 
 css:
   .vas-unclicked::-webkit-slider-thumb {

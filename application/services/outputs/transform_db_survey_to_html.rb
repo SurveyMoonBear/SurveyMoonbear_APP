@@ -5,7 +5,7 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Return survey title & an array of page HTML strings
-    # Usage: Service::TransformDBSurveyToHTML.new.call(survey_id: "...")
+    # Usage: Service::TransformDBSurveyToHTML.new.call(survey_id: "...", random_seed: "...")
     class TransformDBSurveyToHTML
       include Dry::Transaction
       include Dry::Monads
@@ -29,11 +29,17 @@ module SurveyMoonbear
 
       # input { ..., db_survey: }
       def transform_survey_items_to_html(input)
-        transform_result = TransformSurveyItemsToHTML.new.call(survey: input[:db_survey])
+        random_option = JSON.parse(input[:db_survey].options)['random']
+        puts input[:db_survey].options
+
+        transform_result = TransformSurveyItemsToHTML.new.call(survey: input[:db_survey],
+                                                               random_option: random_option,
+                                                               random_seed: input[:random_seed])
 
         if transform_result.success?
           Success(title: transform_result.value![:title], 
-                  pages: transform_result.value![:pages])
+                  pages: transform_result.value![:pages],
+                  random_seed: transform_result.value![:random_seed])
         else
           Failure(transform_result.failure)
         end
