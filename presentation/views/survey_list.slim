@@ -31,29 +31,24 @@ div class="mb-3"
               a href="#" class="dropdown-item" data-origin_id="#{survey.origin_id}" data-toggle="modal" data-target="#modal_copy_survey" Copy
           p class="text-muted" 
             small Created at: #{survey.created_at}
-          div class="btn-group"
-            div class="dropdown"
-              button { 
-                class="btn btn-light dropdown-toggle"
-                data-toggle="dropdown"
-              }
-                - case JSON.parse(survey.options)['random']
-                - when 'none'
-                  | No Random
-                - when 'items_across_pages', 'all_items'
-                  | Random Items Across Pages
-                - when 'items_within_pages'
-                  | Random Items Within Pages
-                - else
-                  | Randomization
-              div class="dropdown-menu"
-                a class="dropdown-item" onclick="updateOptions('#{survey.id}', 'random', 'none')" No Random
-                a class="dropdown-item" onclick="updateOptions('#{survey.id}', 'random', 'items_across_pages')" Random Items Across Pages
-                a class="dropdown-item" onclick="updateOptions('#{survey.id}', 'random', 'items_within_pages')" Random Items Within Pages
-            / form class="form-inline"
-            /   div class="form-group mx-2"
-            /     label for="random-seed-input" Random Seed:
-            /     input id="random-seed-input" type="number" min="0" step="1" class="form-control form-control-sm"
+          div class="dropdown mb-2"
+            button { 
+              class="btn btn-sm btn-outline-secondary text-muted dropdown-toggle"
+              data-toggle="dropdown"
+            }
+              - case JSON.parse(survey.options)['random']
+              - when 'none'
+                | No Random
+              - when 'items_across_pages', 'all_items'
+                | Random Items Across Pages
+              - when 'items_within_pages'
+                | Random Items Within Pages
+              - else
+                | Randomization
+            div class="dropdown-menu"
+              a href="#" class="dropdown-item" onclick="updateOptions('#{survey.id}', 'random', 'none')" No Random
+              a href="#" class="dropdown-item" onclick="updateOptions('#{survey.id}', 'random', 'items_across_pages')" Random Items Across Pages
+              a href="#" class="dropdown-item" onclick="updateOptions('#{survey.id}', 'random', 'items_within_pages')" Random Items Within Pages
 
           div class="row d-flex"
             div class="mb-3 pl-3"
@@ -62,21 +57,21 @@ div class="mb-3"
                   data-toggle="modal" data-target="#modal_survey_editor" 
                   data-origin_id="#{survey.origin_id}"
               } 
-                <i class="fas fa-edit"></i> &nbsp;Edit Survey
+                <i class="fas fa-edit"></i> &nbsp;Edit
               a {
-                class="btn btn-secondary mr-1 mt-1"
+                class="btn btn-outline-dark mr-1 mt-1"
                 target="_blank"
                 href="https://docs.google.com/spreadsheets/d/#{survey.origin_id}/edit"
               } 
-                <i class="fas fa-edit"></i> &nbsp;Edit in Google Sheets
+                <i class="fas fa-external-link-alt"></i> &nbsp;Edit in Google Sheets
               a {
-                class="btn btn-warning mr-1 mt-1"
+                class="btn btn-outline-info mr-1 mt-1"
                 target="_blank"
                 href="/survey/#{survey.id}/preview/#{survey.origin_id}"
               } 
                 <i class="fas fa-eye"></i> &nbsp;Preview
               button {
-                class="btn btn-info mr-1 mt-1" type="button"
+                class="btn btn-outline-info mr-1 mt-1" type="button"
                 data-toggle="modal" data-target="#modal_responses_download"
                 data-origin_id="#{survey.id}"
               } 
@@ -90,7 +85,8 @@ div class="mb-3"
                       class="btn btn-outline-primary"
                       href="/survey/#{survey.id}/close"
                       id="startbtn-#{survey.id}"
-                    } Close Survey
+                    }
+                      <i class="far fa-stop-circle"></i> &nbsp;Close Survey
                   input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
                   div class="input-group-append"
                     button class="btn btn-secondary" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
@@ -102,7 +98,8 @@ div class="mb-3"
                     class="btn btn-primary"
                     href="/survey/#{survey.id}/start"
                     id="startbtn-#{survey.id}"
-                  } Start Survey
+                  }
+                    <i class="fas fa-play-circle"></i> &nbsp;Start Survey
 
 div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="false" role="dialog"
   div class="modal-dialog modal-dialog-centered" role="document"
