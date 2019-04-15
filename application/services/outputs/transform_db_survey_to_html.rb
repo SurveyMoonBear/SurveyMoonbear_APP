@@ -30,7 +30,6 @@ module SurveyMoonbear
       # input { ..., db_survey: }
       def transform_survey_items_to_html(input)
         random_option = JSON.parse(input[:db_survey].options)['random']
-        puts input[:db_survey].options
 
         transform_result = TransformSurveyItemsToHTML.new.call(survey: input[:db_survey],
                                                                random_option: random_option,

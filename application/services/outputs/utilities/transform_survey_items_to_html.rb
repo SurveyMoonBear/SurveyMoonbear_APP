@@ -60,7 +60,7 @@ module SurveyMoonbear
           input[:items_of_pages].each do |page_items|
             page_items.each_with_index do |item, i|
               random_items_within_grid_group(item, input[:random_seed]) if item.class == Array
-              page_items.delete_at(i) if ignored_types.include? item.type
+              page_items.delete_at(i) if item.class != Array && ignored_types.include?(item.type)
             end
 
             random_items_within_page(page_items, input[:random_seed])
