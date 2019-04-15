@@ -16,6 +16,7 @@ module SurveyMoonbear
       attribute :title, Types::Strict::String
       attribute :created_at, Types::Strict::Time.optional
       attribute :state, Types::Strict::String.optional
+      attribute :options, Types::Strict::String.optional
       attribute :pages, Types::Strict::Array.member(Page)
       attribute :launches, Types::Strict::Array.member(Launch).optional
     end

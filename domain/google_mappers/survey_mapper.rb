@@ -39,6 +39,7 @@ module SurveyMoonbear
             title: title,
             created_at: nil,
             state: nil,
+            options: nil,
             pages: pages,
             launches: nil
           )

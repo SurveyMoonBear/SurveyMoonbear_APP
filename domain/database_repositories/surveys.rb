@@ -80,6 +80,16 @@ module SurveyMoonbear
         rebuild_entity(db_survey)
       end
 
+      def self.update_options(entity, option_name, new_option_value)
+        db_survey = Database::SurveyOrm.find(id: entity.id)
+        options = JSON.parse(db_survey.options)
+        options[option_name] = new_option_value
+
+        db_survey.update(options: options.to_json)
+
+        rebuild_entity(db_survey)
+      end
+
       def self.update_title(entity)
         db_survey = Database::SurveyOrm.where(origin_id: entity.origin_id).first
         db_survey.update(title: entity.title)
@@ -121,6 +131,7 @@ module SurveyMoonbear
           title: db_record.title,
           created_at: db_record.created_at,
           state: db_record.state,
+          options: db_record.options,
           pages: pages,
           launches: launches
         )

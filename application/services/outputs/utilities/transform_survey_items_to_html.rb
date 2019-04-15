@@ -5,57 +5,135 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Return survey title & an array of page HTML strings
-    # Usage: Service::TransformSurveyItemsToHTML.new.call(survey: <survey_entity>)
+    # Usage: Service::TransformSurveyItemsToHTML.new.call(survey: <survey_entity>, random_option: "...", random_seed: "...")
     class TransformSurveyItemsToHTML
       include Dry::Transaction
       include Dry::Monads
 
-      step :build_pages_html_with_question_items
+      step :group_grid_items
+      step :randomize_items_if_needed
+      step :build_pages_html_with_items
 
       private
 
-      # input { survey: }
-      def build_pages_html_with_question_items(input)
-        pages_html_arr = input[:survey].pages.map do |page|
-          build_pages_html_arr(page)
+      # input { survey:, random_option: }
+      def group_grid_items(input)
+        input[:items_of_pages] = []
+
+        input[:survey].pages.each do |page|
+          input[:items_of_pages] << grids_grouping(page.items)
         end
 
-        Success(title: input[:survey][:title], pages: pages_html_arr)
+        Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to transform survey items to html.')
+        Failure('Failed to group grid items')
       end
 
-      def build_pages_html_arr(page)
-        q_arr = []
-        grid_arr = []
-        items = page.items
-        items.each_with_index.map do |item, i|
+      def grids_grouping(items)
+        items_with_grids_grouped = []
+        same_grids_group = []
+
+        items.each_with_index do |item, i|
           if item.type.include? 'grid'
-            grid_arr.push(item)
-            if i + 1 >= items.length || items[i + 1].type != item.type
-              q_arr.push(build_grid_questions(grid_arr))
-              grid_arr.clear
+            same_grids_group << item
+
+            is_last_item_or_next_item_not_same_grid_type = (i + 1 >= items.length || items[i + 1].type != item.type)
+            if is_last_item_or_next_item_not_same_grid_type
+              items_with_grids_grouped << same_grids_group.clone
+              same_grids_group.clear
             end
           else
-            q_arr.push(build_individual_question(item))
+            items_with_grids_grouped << item
           end
         end
-        q_arr
+
+        items_with_grids_grouped
       end
 
-      def build_grid_questions(grid_arr)
-        case grid_arr[0].type
+      # input { ..., items_of_pages: }
+      def randomize_items_if_needed(input)
+        if !input[:random_option].nil? && input[:random_option] != 'none'
+          input[:random_seed] = input[:random_seed] ? input[:random_seed].to_i : rand(1000)
+          ignored_types = ['Description', 'Section Title', 'Divider']
+          
+          input[:items_of_pages].each do |page_items|
+            page_items.each_with_index do |item, i|
+              random_items_within_grid_group(item, input[:random_seed]) if item.class == Array
+              page_items.delete_at(i) if ignored_types.include? item.type
+            end
+
+            random_items_within_page(page_items, input[:random_seed])
+          end
+
+          if input[:random_option] == 'items_across_pages' && input[:items_of_pages].count > 1
+            input[:items_of_pages] = random_items_across_pages(input[:items_of_pages], input[:random_seed])
+          end
+        end
+
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to randomize items')
+      end
+
+      def random_items_within_grid_group(grid_items, seed)
+        grid_items.shuffle!(random: Random.new(seed))
+      end
+
+      def random_items_within_page(page_items, seed)
+        page_items.shuffle!(random: Random.new(seed))
+      end
+
+      def random_items_across_pages(items_of_pages, seed)
+        all_items_shuffled = items_of_pages.flatten(1).shuffle(random: Random.new(seed))
+
+        all_items_count = all_items_shuffled.count
+        pages_count = items_of_pages.count
+        items_num_per_page = all_items_count % pages_count == 0 ? all_items_count / pages_count :
+                                                                  all_items_count / pages_count + 1
+
+        paged_items = all_items_shuffled.each_slice(items_num_per_page)
+        paged_items.to_a
+      end
+
+      def build_pages_html_with_items(input)
+        pages_html_arr = input[:items_of_pages].map do |page_items|
+          build_items_html_arr(page_items)
+        end
+
+        Success(title: input[:survey][:title], 
+                pages: pages_html_arr, 
+                random_seed: input[:random_seed])
+      rescue StandardError => e
+        puts e
+        Failure('Failed to transform survey items to html')
+      end
+      
+      def build_items_html_arr(items)
+        items_html_arr = items.map do |item|
+          if item.class == Array
+            build_grid_questions(item)
+          else
+            build_individual_question(item)
+          end
+        end
+
+        items_html_arr
+      end
+
+      def build_grid_questions(grids_group_arr)
+        case grids_group_arr[0].type
         when 'Multiple choice grid (radio button)'
-          build_grid_questions_radio(grid_arr)
+          build_grid_questions_radio(grids_group_arr)
         when 'Multiple choice grid (slider)'
-          build_grid_questions_slider(grid_arr)
+          build_grid_questions_slider(grids_group_arr)
         when 'Multiple choice grid (VAS)'
-          build_grid_questions_vas(grid_arr)
+          build_grid_questions_vas(grids_group_arr)
         when 'Multiple choice grid (VAS-slider)'
-          build_grid_question_vas_slider(grid_arr)
+          build_grid_question_vas_slider(grids_group_arr)
         else
-          puts "Sorry, there's no such question type."
+          puts "Sorry, there's no such grid question type: " + grids_group_arr[0].type
         end
       end
 
@@ -82,7 +160,7 @@ module SurveyMoonbear
         when 'Random code'
           build_random_code(item)
         else
-          puts "Sorry, there's no such question type."
+          puts "Sorry, there's no such individual question type: " + item.type
         end
       end
 
@@ -208,7 +286,14 @@ module SurveyMoonbear
         str += '<thead><tr>'
         str += "<th scope='col' class='col-5'></th>"
 
-        options = items[0].options.split(',').map(&:strip)
+        options = []
+        items.each do |item|
+          if options.empty? && !item.options.nil?
+            options = item.options.split(',').map(&:strip)
+            break
+          end
+        end
+
         options.each do |option|
           str += "<th scope='col' class='col-1 text-center'>#{option}</th>"
         end
@@ -246,16 +331,16 @@ module SurveyMoonbear
         str = '<fieldset>'
         str += "<table class='table'>"
 
-        if items[0].options.nil?
-          min = 0
-          max = 100
-        else
-          min_max = items[0].options.split(',').map(&:strip)
-          min = min_max[0]
-          max = min_max[1]
-          if min_max[2]
-            word_min = min_max[2]
-            word_max = min_max[3]
+        min = 0, max = 100
+        word_min = '', word_max = ''
+        items.each do |item|
+          if !item.options.nil?
+            values = item.options.split(',').map(&:strip)
+            min = values[0]
+            max = values[1]
+            word_min = values[2] if values[2]
+            word_max = values[3] if values[3]
+            break
           end
         end
 
@@ -284,16 +369,15 @@ module SurveyMoonbear
         str = '<fieldset>'
         str += "<table class='table'>"
 
-        if items[0].options.nil?
-          min = 0
-          max = 100
-        else
-          min_max = items[0].options.split(',').map(&:strip)
-          min = min_max[0]
-          max = min_max[1]
-          if min_max[2]
-            word_min = min_max[2]
-            word_max = min_max[3]
+        min = 0, max = 100
+        word_min = '', word_max = ''
+        items.each do |item|
+          if !item.options.nil?
+            values = item.options.split(',').map(&:strip)
+            min = values[0]
+            max = values[1]
+            word_min = values[2] if values[2]
+            word_max = values[3] if values[3]
           end
         end
 

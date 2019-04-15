@@ -128,11 +128,26 @@ module SurveyMoonbear
           routing.redirect '/survey_list'
         end
 
+        # POST /survey/[survey_id]/update_options
+        routing.post 'update_options' do
+          response = Service::UpdateSurveyOptions.new.call(survey_id: survey_id, 
+                                                           option: routing.params['option'], 
+                                                           option_value: routing.params['option_value'])
+
+          if response.failure?
+            flash[:error] = response.failure + ' Please try again.'
+          end
+
+          routing.redirect '/survey_list'
+        end
+
         # GET /survey/[survey_id]/preview/[spreadsheet_id]
         routing.on 'preview', String do |spreadsheet_id|
           routing.get do
-            response = Service::TransformSheetsSurveyToHTML.new.call(spreadsheet_id: spreadsheet_id,
-                                                                     current_account: @current_account)
+            response = Service::TransformSheetsSurveyToHTML.new.call(survey_id: survey_id,
+                                                                     spreadsheet_id: spreadsheet_id,
+                                                                     current_account: @current_account,
+                                                                     random_seed: routing.params['seed'])
             if response.failure?
               flash[:error] = response.failure + ' Please try again.'
               routing.redirect '/survey_list'
@@ -298,13 +313,15 @@ module SurveyMoonbear
             routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
           end
 
-          html_transform_res = Service::TransformDBSurveyToHTML.new.call(survey_id: survey_id)
+          html_transform_res = Service::TransformDBSurveyToHTML.new.call(survey_id: survey_id,
+                                                                         random_seed: routing.params['seed'])
           if html_transform_res.failure?
             flash[:error] = "#{html_transform_res.failure} Please try again :("
             routing.redirect '/survey_list'
           end
 
           html_of_pages_arr = html_transform_res.value![:pages]
+          routing.params['seed'] = html_transform_res.value![:random_seed] unless html_transform_res.value![:random_seed].nil?
 
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
           url_params = JSON.generate(routing.params)

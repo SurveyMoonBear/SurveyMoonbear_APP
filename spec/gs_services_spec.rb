@@ -111,20 +111,48 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @started_survey.id)
     end
 
-    it 'HAPPY: should be able to transform DB survey items to html' do
-      trans_html_res = SurveyMoonbear::Service::TransformDBSurveyToHTML.new.call(survey_id: @started_survey.id)
-      _(trans_html_res.success?).must_equal true
-      _(trans_html_res.value![:pages][0]).wont_be :empty?
+    describe 'Tranform DB/Sheets Survey to Html' do
+      it 'HAPPY: should be able to transform DB survey to html' do
+        trans_html_res = SurveyMoonbear::Service::TransformDBSurveyToHTML.new.call(survey_id: @started_survey.id,
+                                                                                   random_seed: nil)
+        _(trans_html_res.success?).must_equal true
+        _(trans_html_res.value![:pages][0]).wont_be :empty?
+      end
+
+      it 'HAPPY: should be able to transform DB survey to html in random order' do
+        SurveyMoonbear::Service::UpdateSurveyOptions.new.call(survey_id: @started_survey.id, 
+                                                              option: 'random', 
+                                                              option_value: 'items_across_pages')
+        trans_html_res = SurveyMoonbear::Service::TransformDBSurveyToHTML.new.call(survey_id: @started_survey.id,
+                                                                                   random_seed: '234')
+
+        _(trans_html_res.success?).must_equal true
+        _(trans_html_res.value![:pages][0]).wont_be :empty?
+      end
+
+      it 'HAPPY: should be able to transform spreadsheet items to html' do
+        trans_html_res = SurveyMoonbear::Service::TransformSheetsSurveyToHTML.new.call(survey_id: @started_survey.id, 
+                                                                                       spreadsheet_id: @started_survey.origin_id,
+                                                                                       current_account: CURRENT_ACCOUNT,
+                                                                                       random_seed: nil)
+        _(trans_html_res.success?).must_equal true
+        _(trans_html_res.value![:pages][0]).wont_be :empty?
+      end
+
+      it 'HAPPY: should be able to transform spreadsheet items to html in random order' do
+        SurveyMoonbear::Service::UpdateSurveyOptions.new.call(survey_id: @started_survey.id, 
+                                                              option: 'random', 
+                                                              option_value: 'items_within_pages')
+        trans_html_res = SurveyMoonbear::Service::TransformSheetsSurveyToHTML.new.call(survey_id: @started_survey.id, 
+                                                                                       spreadsheet_id: @started_survey.origin_id,
+                                                                                       current_account: CURRENT_ACCOUNT,
+                                                                                       random_seed: nil)
+        _(trans_html_res.success?).must_equal true
+        _(trans_html_res.value![:pages][0]).wont_be :empty?
+      end
     end
 
-    it 'HAPPY: should be able to transform spreadsheet survey items to html' do
-      trans_html_res = SurveyMoonbear::Service::TransformSheetsSurveyToHTML.new.call(spreadsheet_id: @started_survey.origin_id,
-                                                                                     current_account: CURRENT_ACCOUNT)
-      _(trans_html_res.success?).must_equal true
-      _(trans_html_res.value![:pages][0]).wont_be :empty?
-    end
-
-    describe 'HAPPY: should be able to store responses and transform to csv' do
+    describe 'Store Responses (Worker) and Transform Responses to CSV' do
       i_suck_and_my_tests_are_order_dependent!
   
       it 'HAPPY: should be able to store responses (worker)' do
