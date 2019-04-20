@@ -186,7 +186,8 @@ javascript:
     }
   });
 
-  $('#form').on('submit', function() {
+  $('#form').on('submit', function(e) {
+    $('#btn-submit').prop('disabled', true);
     $('<input />').attr('type', 'hidden')
                   .attr('name', "moonbear_url_params")
                   .attr('value', JSON.stringify(#{{url_params}}))
