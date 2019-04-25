@@ -19,7 +19,8 @@ describe 'BAD: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
   describe 'Retrieve surveys and make changes' do
     it 'BAD: should raise exception on invalid spreadsheet_id when getting survey from spreadsheet' do
       get_gs_survey_res = SurveyMoonbear::Service::GetSurveyFromSpreadsheet.new.call(spreadsheet_id: 'invalid_spreadsheet_id', 
-                                                                                     current_account: CURRENT_ACCOUNT)
+                                                                                     access_token: ACCESS_TOKEN,
+                                                                                     owner: CURRENT_ACCOUNT)
       _(get_gs_survey_res.failure?).must_equal true
     end
 

@@ -40,28 +40,26 @@ module SurveyMoonbear
 
         def survey_data(spreadsheet_id)
           survey_req_url = spreadsheet_path(spreadsheet_id)
-          Api.get_google_url(survey_req_url, @access_token).parse
+          Api.get_with_google_auth(survey_req_url, @access_token).parse
         end
   
         def items_data(spreadsheet_id, title)
           items_req_url = spreadsheet_path([spreadsheet_id, title].join('/values/'))
-          Api.get_google_url(items_req_url, @access_token).parse
+          Api.get_with_google_auth(items_req_url, @access_token).parse
         end
   
         def update_gs_title(spreadsheet_id, new_title)
           update_req_url = spreadsheet_path("#{spreadsheet_id}:batchUpdate")
           data = {
-            json: {
-              requests: [{
-                updateSpreadsheetProperties: {
-                  properties: { title: new_title },
-                  fields: 'title'
-                }
-              }]
-            }
+            requests: [{
+              updateSpreadsheetProperties: {
+                properties: { title: new_title },
+                fields: 'title'
+              }
+            }]
           }
           
-          updated_res = Api.post_google_url(update_req_url, data, @access_token).parse
+          updated_res = Api.post_with_google_auth(update_req_url, @access_token, data).parse
         end
 
         private
@@ -79,7 +77,14 @@ module SurveyMoonbear
         def copy_drive_file(file_id)
           file_copy_url = gdrive_v3_path("#{file_id}/copy?access_token=#{@access_token}")
           
-          copied_res = Api.post_google_url(file_copy_url, @access_token).parse
+          copied_res = Api.post_with_google_auth(file_copy_url, @access_token).parse
+        end
+
+        def create_permission(file_id, role, type)
+          permission_req_url = gdrive_v3_path("#{file_id}/permissions")
+          res = Api.post_with_google_auth(permission_req_url, 
+                                          @access_token,
+                                          data={role: role, type: type})
         end
 
         private
@@ -91,16 +96,16 @@ module SurveyMoonbear
 
       private
 
-      def self.get_google_url(url, access_token)
+      def self.get_with_google_auth(url, access_token)
         response = HTTP.auth("Bearer #{access_token}")
                        .get(url)
         
         Response.new(response).response_or_error
       end
 
-      def self.post_google_url(url, data={}, access_token)
+      def self.post_with_google_auth(url, access_token, data={})
         response = HTTP.auth("Bearer #{access_token}")
-                       .post(url, data)
+                       .post(url, json: data)
 
         Response.new(response).response_or_error
       end

@@ -72,7 +72,8 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
 
     it 'HAPPY: should get survey from spreadsheet' do
       get_gs_survey_res = SurveyMoonbear::Service::GetSurveyFromSpreadsheet.new.call(spreadsheet_id: @survey.origin_id, 
-                                                                                     current_account: CURRENT_ACCOUNT)
+                                                                                     access_token: ACCESS_TOKEN,
+                                                                                     owner: CURRENT_ACCOUNT)
       _(get_gs_survey_res.success?).must_equal true
       _(get_gs_survey_res.value!.owner.username).must_equal 'SurveyMoonbear Test'
       _(get_gs_survey_res.value!.pages).wont_be :empty?
@@ -133,19 +134,19 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       it 'HAPPY: should be able to transform spreadsheet items to html' do
         trans_html_res = SurveyMoonbear::Service::TransformSheetsSurveyToHTML.new.call(survey_id: @started_survey.id, 
                                                                                        spreadsheet_id: @started_survey.origin_id,
-                                                                                       current_account: CURRENT_ACCOUNT,
+                                                                                       access_token: CURRENT_ACCOUNT['access_token'],
                                                                                        random_seed: nil)
         _(trans_html_res.success?).must_equal true
         _(trans_html_res.value![:pages][0]).wont_be :empty?
       end
 
-      it 'HAPPY: should be able to transform spreadsheet items to html in random order' do
+      it 'HAPPY: should be able to transform spreadsheet items to html in random order with auto-assigned seed' do
         SurveyMoonbear::Service::UpdateSurveyOptions.new.call(survey_id: @started_survey.id, 
                                                               option: 'random', 
                                                               option_value: 'items_within_pages')
         trans_html_res = SurveyMoonbear::Service::TransformSheetsSurveyToHTML.new.call(survey_id: @started_survey.id, 
                                                                                        spreadsheet_id: @started_survey.origin_id,
-                                                                                       current_account: CURRENT_ACCOUNT,
+                                                                                       access_token: CURRENT_ACCOUNT['access_token'],
                                                                                        random_seed: nil)
         _(trans_html_res.success?).must_equal true
         _(trans_html_res.value![:pages][0]).wont_be :empty?

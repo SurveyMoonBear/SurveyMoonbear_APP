@@ -14,6 +14,7 @@ module SurveyMoonbear
       step :refresh_access_token
       step :create_spreadsheet
       step :add_editor
+      step :create_permission_reader_anyone
       step :set_survey_title
       step :store_into_database
 
@@ -49,6 +50,16 @@ module SurveyMoonbear
       rescue StandardError => e
         puts e
         Failure('Failed to add editor.')
+      end
+
+      # input { ... }
+      def create_permission_reader_anyone(input)
+        Google::Api::Drive.new(input[:current_account]['access_token'])
+                          .create_permission(input[:new_spreadsheet_id], 'reader', 'anyone')
+        Success(input)
+      rescue StandardError => e
+        put e
+        Failure('Failed to create reader-anyone permission.')
       end
 
       # input { ... }

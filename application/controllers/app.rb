@@ -144,9 +144,10 @@ module SurveyMoonbear
         # GET /survey/[survey_id]/preview/[spreadsheet_id]
         routing.on 'preview', String do |spreadsheet_id|
           routing.get do
+            access_token = Google::Auth.new(config).refresh_access_token
             response = Service::TransformSheetsSurveyToHTML.new.call(survey_id: survey_id,
                                                                      spreadsheet_id: spreadsheet_id,
-                                                                     current_account: @current_account,
+                                                                     access_token: access_token,
                                                                      random_seed: routing.params['seed'])
             if response.failure?
               flash[:error] = response.failure + ' Please try again.'

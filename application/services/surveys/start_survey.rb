@@ -31,7 +31,8 @@ module SurveyMoonbear
       # input { ..., spreadsheet_id: }
       def get_survey_from_spreadsheet(input)
         new_survey_res = GetSurveyFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id], 
-                                                          current_account: input[:current_account])
+                                                           access_token: input[:current_account]['access_token'],
+                                                           owner: input[:current_account])
         if new_survey_res.success?
           input[:new_survey] = new_survey_res.value!
           Success(input)
