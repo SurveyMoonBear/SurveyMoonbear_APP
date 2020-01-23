@@ -205,7 +205,7 @@ GEM
     ruby_parser (3.11.0)
       sexp_processor (~> 4.9)
     safe_yaml (1.0.4)
-    secure_headers (6.0.0)
+    secure_headers (6.3.0)
     sequel (5.6.0)
     sexp_processor (4.10.1)
     shoryuken (4.0.3)
