@@ -1,6 +1,6 @@
 # Survey MoonBear
 
- Survey MoonBear provides a new way of survey services. Survey MoonBear launches a survey from excel and outputs the responses to excel csv file.
+ Survey MoonBear provides a new way of survey services.
 
 ## Link
 - Github: https://github.com/SurveyMoonBear/SurveyMoonbear_APP
