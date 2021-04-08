@@ -18,15 +18,15 @@
 4. Retrieve Surveys
     - `GetSurveyFromDatabase`: return an entity of survey from database
     - `GetSurveyFromSpreadsheet`: return an entity of survey from spreadsheet
-5. Surveys
-    - `CreateSurvey`: create a new template survey
+5. Ｍanage Surveys
     - `StartSurvey`: get update survey in spreadsheet then store in db and return the updated survey
+    - `CloseSurvey`: close the survey and launch, return launch entity with close state
+6. Modify Surveys
+    - `CreateSurvey`: create a new template survey
+    - `CopySurvey`: copy the survey to a new one
+    - `DeleteSurvey`: delete survey in db and spreadsheet, return delete_survey
     - `UpdateSurveyOptions`: return updated survey entity with new option, only db is updated
     - `EditSurveyTitle`: return updated survey entity with new title, both spreadsheet and db are updated
-    - `CopySurvey`: copy the survey to a new one
-    - `CloseSurvey`: close the survey and launch, return launch entity with close state
-    - `DeleteSurvey`: delete survey in db and spreadsheet, return delete_survey
-
 ### Client-side browser application
 *which view file corresponds to which page?*
 1. `/` > (view::home)
@@ -55,10 +55,11 @@
 ### Infrastructure
 
 1. File store service (Google Drive)
-    - Stores spreadsheets??
+    - Stores spreadsheets
+    - Each launch store the survey in database. Delete the old one.
 
 2. Spreadsheet service (Google Sheets)
-    - Fixed spreadsheet that is a Template for all new surveys
+    - Stated spreadsheet that is a Template for all new surveys
         - (gets copied to a new spreadsheet when user ‘creates’ a new survey)
     - Each ‘survey’ is represented by a single spreadsheet
 
@@ -71,9 +72,9 @@
         - `Page`: different pages in a survey
         - `Item`: item is the question in different page in different survey
         - `Response`: each response is replied for each question(item) 
-    - TODO: Each deployed/previewed survey is stored in database??
+    - Database will only store the latest lauch of survey, not every version. 
     - We store not only the responses to each question, we also store a copy of the survey structure for each respondent
-    - Prototype Design Pattern -- get video of it (Soumya)
+    - TODO: Prototype Design Pattern -- see video in team resources: 
 
 4. Queuing (AWS SQS)
     - situation: browser javascript POSTs submission to App; App writes to database
