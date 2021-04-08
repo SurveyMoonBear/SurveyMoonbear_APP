@@ -29,28 +29,28 @@
 
 ### Client-side browser application
 *which view file corresponds to which page?*
-1. `/`: (view::home)
-2. `/account`:
-    - `/login` -> `google_callback` -> FindAuthenticatedGoogleAccount -> `/survey_list`
-    - `logout` to `/`
-3. `/survey_list`: (view::survey list)
-    - when no current account -> `/`
-    - `create` -> CreateSurvey -> `/survey_list`
-    - `copy` -> CopySurvey -> `/survey_list`
-4. `/survey`: 
-    - `update_settings` -> EditSurveyTitle -> `/survey_list`
-    - `update_options` -> UpdateSurveyOptions -> `/survey_list`
-    - `/preview` -> TransformSheetsSurveyToHTML -> view::survey_preview
-    - `start` -> StartSurvey -> `/survey_list`
-    - `close` -> CloseSurvey -> `/survey_list`
-    - `delete` -> DeleteSurvey -> `/survey_list`
-    - `/response_detail` -> GetSurveyFromDatabase 
-    - `/download` -> TransformResponsesToCSV
-5. `/onlinesurvey`:
-    - `/submit` (view::survey_finish) -> StoreResponses
-    - `/close` (view::survey_closed)
+1. `/` > (view::home)
+2. `/account`
+    - `/login` > `google_callback` > FindAuthenticatedGoogleAccount > `/survey_list`
+    - `logout` > `/`
+3. `/survey_list` > (view::survey list)
+    - when no current account > `/`
+    - `create` > CreateSurvey > `/survey_list`
+    - `copy` > CopySurvey > `/survey_list`
+4. `/survey` 
+    - `update_settings` > EditSurveyTitle > `/survey_list`
+    - `update_options` > UpdateSurveyOptions > `/survey_list`
+    - `/preview` > TransformSheetsSurveyToHTML > (view::survey_preview)
+    - `start` > StartSurvey > `/survey_list`
+    - `close` > CloseSurvey > `/survey_list`
+    - `delete` > DeleteSurvey > `/survey_list`
+    - `/response_detail` > GetSurveyFromDatabase 
+    - `/download` > TransformResponsesToCSV
+5. `/onlinesurvey`
+    - `/submit` > (view::survey_finish) > StoreResponses
+    - `/close` > (view::survey_closed)
     - (view::survey_export)
-6. `/privacy_policy`: (view::privacy_policy)
+6. `/privacy_policy` > (view::privacy_policy)
 
 ### Infrastructure
 
@@ -64,7 +64,7 @@
 
 3. Database (Postgres on Heroku)
     - How is the survey stored on database tables?
-        *DETAILS: https://app.quickdatabasediagrams.com/#/d/ksihWW*
+        - *DETAILS: https://app.quickdatabasediagrams.com/#/d/ksihWW*
         - `Account`: Login with google account
         - `Survey`: a Account could create many survey
         - `Launch`: if owner want to edit the survey, close the survey first and launch again after edited. 
