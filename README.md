@@ -5,6 +5,8 @@
 ## Link
 - Github: https://github.com/SurveyMoonBear/SurveyMoonbear_APP
 - Heroku: https://moonbear.herokuapp.com/
+- ARCHITECTURE.md: https://github.com/SurveyMoonBear/SurveyMoonbear_APP/blob/architecture_explanation/ARCHITECTURE.md
+- Data Schema: https://app.quickdatabasediagrams.com/#/d/ksihWW
 
 ## Getting Started
 
