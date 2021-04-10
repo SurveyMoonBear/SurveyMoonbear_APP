@@ -2,7 +2,7 @@
 
  Survey MoonBear provides a new way of survey services.
 
-## Link
+## Resources
 - Github: https://github.com/SurveyMoonBear/SurveyMoonbear_APP
 - Heroku: https://moonbear.herokuapp.com/
 - ARCHITECTURE.md: https://github.com/SurveyMoonBear/SurveyMoonbear_APP/blob/architecture_explanation/ARCHITECTURE.md
