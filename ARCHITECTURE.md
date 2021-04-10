@@ -74,7 +74,7 @@
         - `Response`: each response is replied for each question(item) 
     - Database will only store the latest lauch of survey, not every version. 
     - We store not only the responses to each question, we also store a copy of the survey structure for each respondent
-    - TODO: Prototype Design Pattern -- see video in team resources: 
+    - Prototype Design Pattern: https://drive.google.com/file/d/1VCzd8p9vSyhY-vFI_tyg-KJhg5Oxs9kH/view?usp=sharing
 
 4. Queuing (AWS SQS)
     - situation: browser javascript POSTs submission to App; App writes to database
