@@ -2,3 +2,4 @@ config/secrets.yml
 *.db
 _*
 .bundle/
+coverage

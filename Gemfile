@@ -12,6 +12,9 @@ gem 'roda'
 gem 'slim'
 gem 'rake'
 
+# Services
+gem 'dry-transaction'
+
 # Security related
 gem 'dry-validation'
 gem 'rack-ssl-enforcer'
@@ -32,6 +35,12 @@ gem 'rack-test'
 gem 'hirb'
 gem 'sequel'
 
+# Queues
+gem 'aws-sdk-sqs', '~> 1'
+
+# WORKERS
+gem 'shoryuken', '~> 4'
+
 # Data gems
 gem 'dry-struct'
 gem 'dry-types'
@@ -39,6 +48,8 @@ gem 'dry-types'
 group :test do
   gem 'minitest'
   gem 'minitest-rg'
+  gem 'minitest-hooks'
+  gem 'database_cleaner'
   
   gem 'simplecov'
   gem 'vcr'

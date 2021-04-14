@@ -11,16 +11,12 @@ module SurveyMoonbear
   class App < Roda
     plugin :render, engine: 'slim', views: 'presentation/views'
     plugin :assets, css: 'style.css', path: 'presentation/assets'
-    plugin :environments
     plugin :json
     plugin :halt
     plugin :flash
     plugin :hooks
     plugin :all_verbs
-
-    extend Econfig::Shortcut
-    Econfig.env = environment.to_s
-    Econfig.root = '.'
+    
 
     route do |routing|
       routing.assets
@@ -49,28 +45,30 @@ module SurveyMoonbear
         view 'home', locals: { google_sso_url: @google_sso_url }
       end
 
+      routing.on 'privacy_policy' do
+        routing.get do
+          view 'privacy_policy'
+        end
+      end
+
       # /account branch
       routing.on 'account' do
         # /account/login branch
         routing.on 'login' do
-          # GET /account/login/register_callback request
+          # GET /account/login/google_callback request
           routing.get 'google_callback' do
-            begin
-              logged_in_account = FindAuthenticatedGoogleAccount.new(config)
-                                                                .call(routing.params['code'])
-            rescue StandardError
-              routing.halt(404, error: 'Account not found')
-            end
+            logged_in_account_res = Service::FindAuthenticatedGoogleAccount.new.call(config: config, 
+                                                                                     code: routing.params['code'])
+            if logged_in_account_res.failure?
+              puts logged_in_account_res.failure
 
-            response.status = 201
-            logged_in_account = logged_in_account.to_h
-            if logged_in_account
-              SecureSession.new(session).set(:current_account, logged_in_account)
-              # flash[:notice] = "Hello #{logged_in_account['username']}!"
-              routing.redirect '/survey_list'
-            else
-              flash[:error] = 'Login fail!'
+              flash[:error] = 'Login failed. Please try again :('
               routing.redirect '/'
+            else
+              logged_in_account = logged_in_account_res.value!.to_h
+
+              SecureSession.new(session).set(:current_account, logged_in_account)
+              routing.redirect '/survey_list'
             end
           end
         end
@@ -96,14 +94,24 @@ module SurveyMoonbear
         end
 
         routing.post 'create' do
-          @new_survey = CreateSurvey.new(@current_account, config)
-                                    .call(routing.params['title'])
+          new_survey = Service::CreateSurvey.new.call(config: config, 
+                                                      current_account: @current_account, 
+                                                      title: routing.params['title'])
 
-          if @new_survey
-            flash[:notice] = "#{@new_survey.title} is created!"
-          else
-            flash[:error] = "Fail to create #{@new_survey.title}. :("
-          end
+          new_survey.success? ? flash[:notice] = "#{new_survey.value!.title} is created!" :
+                                flash[:error] = "Failed to create survey, please try again :("
+
+          routing.redirect '/survey_list'
+        end
+
+        # POST /survey_list/copy/[spreadsheet_id]
+        routing.post 'copy', String do |spreadsheet_id|
+          new_survey = Service::CopySurvey.new.call(config: config,
+                                                    current_account: @current_account, 
+                                                    spreadsheet_id: spreadsheet_id,
+                                                    title: routing.params['title'])
+
+          flash[:error] = "Copy failed: '#{new_survey.failure}' Please try again :(" if new_survey.failure?
 
           routing.redirect '/survey_list'
         end
@@ -113,76 +121,101 @@ module SurveyMoonbear
         @current_account = SecureSession.new(session).get(:current_account)
 
         routing.post 'update_settings' do
-          response = EditSurveyTitle.new(@current_account)
-                                    .call(survey_id, routing.params)
+          Service::EditSurveyTitle.new.call(current_account: @current_account, 
+                                            survey_id: survey_id, 
+                                            new_title: routing.params['title'])
 
           routing.redirect '/survey_list'
         end
 
-        # GET /survey/preview with params: survey_id, page
-        routing.on 'preview' do
-          routing.get do
-            saved_survey = GetSurveyFromDatabase.new.call(survey_id)
-            new_survey = GetSurveyFromSpreadsheet.new(@current_account)
-                                                 .call(saved_survey.origin_id)
-            questions = TransfromSurveyItemsToHTML.new.call(new_survey)
+        # POST /survey/[survey_id]/update_options
+        routing.post 'update_options' do
+          response = Service::UpdateSurveyOptions.new.call(survey_id: survey_id, 
+                                                           option: routing.params['option'], 
+                                                           option_value: routing.params['option_value'])
 
+          if response.failure?
+            flash[:error] = response.failure + ' Please try again.'
+          end
+
+          routing.redirect '/survey_list'
+        end
+
+        # GET /survey/[survey_id]/preview/[spreadsheet_id]
+        routing.on 'preview', String do |spreadsheet_id|
+          routing.get do
+            access_token = Google::Auth.new(config).refresh_access_token
+            response = Service::TransformSheetsSurveyToHTML.new.call(survey_id: survey_id,
+                                                                     spreadsheet_id: spreadsheet_id,
+                                                                     access_token: access_token,
+                                                                     random_seed: routing.params['seed'])
+            if response.failure?
+              flash[:error] = response.failure + ' Please try again.'
+              routing.redirect '/survey_list'
+            end
+
+            preview_survey = response.value!
             view 'survey_preview',
-                 layout: false,
-                 locals: { title: new_survey[:title],
-                           questions: questions }
+                  layout: false,
+                  locals: { title: preview_survey[:title], pages: preview_survey[:pages] }
           end
         end
 
-        # GET survey/[survey_id]/export
+        # GET survey/[survey_id]/start
         routing.get 'start' do
-          saved_survey = GetSurveyFromDatabase.new.call(survey_id)
-          new_survey = GetSurveyFromSpreadsheet.new(@current_account)
-                                               .call(saved_survey.origin_id)
+          response = Service::StartSurvey.new.call(survey_id: survey_id, 
+                                                   current_account: @current_account)
 
-          StartSurvey.new.call(new_survey)
+          flash[:error] = response.failure + ' Please try again.' if response.failure?
 
           routing.redirect '/survey_list'
         end
 
         # GET survey/[survey_id]/close
         routing.get 'close' do
-          saved_survey = GetSurveyFromDatabase.new.call(survey_id)
-          CloseSurvey.new.call(saved_survey)
+          response = Service::CloseSurvey.new.call(survey_id: survey_id)
+
+          flash[:error] = response.failure + ' Please try again.' if response.failure?
 
           routing.redirect '/survey_list'
         end
 
         # DELETE survey/[survey_id]
         routing.delete do
-          response = DeleteSurvey.new(@current_account, config).call(survey_id)
-          response.title
+          response = Service::DeleteSurvey.new.call(config: config, 
+                                                    survey_id: survey_id)
 
-          flash[:notice] = "#{response.title} has been deleted!"
-
+          flash[:error] = "Failed to delete the survey. Please try again :(" if response.failure?
+          
           routing.redirect '/survey_list', 303
         end
 
         routing.on 'responses_detail' do
           routing.get do
-            survey = GetSurveyFromDatabase.new.call(survey_id)
+            response = Service::GetSurveyFromDatabase.new.call(survey_id: survey_id)
 
-            arr_launches = []
-            survey.launches.each do |launch|
-              next if launch.responses.length.zero?
-              arr_responses = []
-              launch.responses.each do |response|
-                arr_responses.push(response.respondent_id)
+            if response.failure?
+              puts response.failure
+              arr_launches = []
+            else
+              survey = response.value!
+              arr_launches = []
+              survey.launches.each do |launch|
+                next if launch.responses.length.zero?
+                arr_responses = []
+                launch.responses.each do |response|
+                  arr_responses.push(response.respondent_id)
+                end
+                arr_responses.uniq!
+                stime = launch.started_at
+                stime.utc.to_s
+                start_time = stime.strftime '%Y-%m-%dT%H:%M:%SZ'
+                file_name = stime.strftime '%Y%m%d%H%M%S'
+                arr_launches.push([start_time, launch.id, file_name, arr_responses.length])
               end
-              arr_responses.uniq!
-              stime = launch.started_at
-              stime.utc.to_s
-              start_time = stime.strftime '%Y-%m-%dT%H:%M:%SZ'
-              file_name = stime.strftime '%Y%m%d%H%M%S'
-              arr_launches.push([start_time, launch.id, file_name, arr_responses.length])
-            end
 
-            arr_launches
+              arr_launches
+            end
           end
         end
 
@@ -190,26 +223,30 @@ module SurveyMoonbear
           routing.get do
             response['Content-Type'] = 'application/csv'
 
-            TransformResponsesToCSV.new.call(survey_id, launch_id)
+            response = Service::TransformResponsesToCSV.new.call(survey_id: survey_id, launch_id: launch_id)
+            response.success? ? response.value! : 
+                                response.failure
           end
         end
       end
 
       routing.on 'onlinesurvey', String, String do |survey_id, launch_id|
+        @current_account = SecureSession.new(session).get(:current_account)
+
         routing.on 'submit' do
           routing.is do
             # GET onlinesurvey/[survey_id]/[launch_id]/submit
             routing.get do
-              survey = GetSurveyFromDatabase.new.call(survey_id)
+              response = Service::GetSurveyFromDatabase.new.call(survey_id: survey_id)
               surveys_started = SecureSession.new(session).get(:surveys_started)
 
-              if surveys_started.nil?
+              if response.failure? || surveys_started.nil?
                 routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
               end
 
               view 'survey_finish',
                    layout: false,
-                   locals: { survey: survey }
+                   locals: { survey: response.value! }
             end
 
             # POST onlinesurvey/[survey_id]/[launch_id]/submit
@@ -219,8 +256,11 @@ module SurveyMoonbear
                 survey_started['survey_id'] == survey_id
               end
 
-              StoreResponses.new(survey_id, launch_id)
-                            .call(respondent['respondent_id'], routing.params)
+              Service::StoreResponses.new.call(survey_id: survey_id, 
+                                               launch_id: launch_id, 
+                                               respondent_id: respondent['respondent_id'], 
+                                               responses: routing.params,
+                                               config: config)
 
               surveys_started.reject! do |survey_started|
                 survey_started['survey_id'] == survey_id
@@ -237,33 +277,57 @@ module SurveyMoonbear
           end
         end
 
+        # GET /onlinesurvey/[survey_id]/[launch_id]/closed
         routing.on 'closed' do
           routing.get do
-            survey = GetSurveyFromDatabase.new.call(survey_id)
+            response = Service::GetSurveyFromDatabase.new.call(survey_id: survey_id)
+            
+            if response.failure?
+              view 'survey_closed', layout: false
+            end
 
+            survey = response.value!
+
+            # Redirect to the survey export page if the survey isn't nil && hasn't been closed
             if survey && survey.state == 'started' && survey.launch_id == launch_id
               routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
             end
 
             view 'survey_closed',
-                 layout: false,
-                 locals: { survey: survey }
+                  layout: false,
+                  locals: { survey: survey }
           end
         end
 
         # GET /onlinesurvey/[survey_id]/[launch_id]
         routing.get do
-          survey = GetSurveyFromDatabase.new.call(survey_id)
-          url_params = JSON.generate(routing.params)
+          get_db_survey_res = Service::GetSurveyFromDatabase.new.call(survey_id: survey_id)
+          if get_db_survey_res.failure?
+            flash[:error] = "#{get_db_survey_res.failure}. Please try again :("
+            routing.redirect '/survey_list'
+          end
 
+          survey = get_db_survey_res.value!
+
+          # Redirect to the survey closed page if the survey is nil || not started
           if survey.nil? || survey.launch_id != launch_id || survey.state != 'started'
             routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}/closed"
           end
 
-          questions = TransfromSurveyItemsToHTML.new.call(survey)
+          html_transform_res = Service::TransformDBSurveyToHTML.new.call(survey_id: survey_id,
+                                                                         random_seed: routing.params['seed'])
+          if html_transform_res.failure?
+            flash[:error] = "#{html_transform_res.failure} Please try again :("
+            routing.redirect '/survey_list'
+          end
+
+          html_of_pages_arr = html_transform_res.value![:pages]
+          routing.params['seed'] = html_transform_res.value![:random_seed] unless html_transform_res.value![:random_seed].nil?
 
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
+          url_params = JSON.generate(routing.params)
 
+          # Session setting
           surveys_started = SecureSession.new(session).get(:surveys_started)
           if surveys_started
             flag = surveys_started.find do |survey_started|
@@ -286,7 +350,7 @@ module SurveyMoonbear
                layout: false,
                locals: { survey: survey,
                          survey_url: survey_url,
-                         questions: questions,
+                         pages: html_of_pages_arr,
                          url_params: url_params }
         end
       end

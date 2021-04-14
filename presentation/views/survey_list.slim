@@ -5,6 +5,11 @@ div class="mb-3"
         == render :flash_bar
       a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey"
         <i class="fas fa-plus"></i> &nbsp;Create a New Survey
+      a { 
+        target="_blank" rel="Question Types"
+        href="https://paper.dropbox.com/doc/SurveyMoonbear-Question-Types--AbR4mDkzZ3rtLqvvIgZXTOK_AQ-aRR36FzeVcCGGZQgcsMZB"
+      } 
+        abbr class="text-muted font-weight-light mx-3" title="Question Types Demo" style="font-size:.8rem" HELP
     
   - unless surveys.nil?
     - surveys.reverse!
@@ -23,12 +28,33 @@ div class="mb-3"
               i class="fas fa-cog"
             button {
               class="btn btn-outline-dark border-0 ml-auto d-inline-flex align-middle"
-              id="btn-delete"
-              onclick="confirmDeleteSurvey('#{survey.id}', '#{survey.title}')"
+              data-toggle="dropdown"
             }
-              i class="fas fa-trash-alt"
+              i class="fas fa-chevron-down"
+            div class="dropdown-menu"
+              a href="#" class="dropdown-item" onclick="confirmDeleteSurvey('#{survey.id}', '#{survey.title}')" Delete
+              a href="#" class="dropdown-item" data-origin_id="#{survey.origin_id}" data-toggle="modal" data-target="#modal_copy_survey" Copy
           p class="text-muted" 
             small Created at: #{survey.created_at}
+          div class="dropdown mb-2"
+            button { 
+              class="btn btn-sm btn-outline-secondary text-muted dropdown-toggle"
+              data-toggle="dropdown"
+            }
+              - case JSON.parse(survey.options)['random']
+              - when 'none'
+                | No Random
+              - when 'items_across_pages', 'all_items'
+                | Random Items Across Pages
+              - when 'items_within_pages'
+                | Random Items Within Pages
+              - else
+                | Randomization
+            div class="dropdown-menu"
+              a href="#" class="dropdown-item" onclick="updateOptions('#{survey.id}', 'random', 'none')" No Random
+              a href="#" class="dropdown-item" onclick="updateOptions('#{survey.id}', 'random', 'items_across_pages')" Random Items Across Pages
+              a href="#" class="dropdown-item" onclick="updateOptions('#{survey.id}', 'random', 'items_within_pages')" Random Items Within Pages
+
           div class="row d-flex"
             div class="mb-3 pl-3"
               button {
@@ -36,15 +62,21 @@ div class="mb-3"
                   data-toggle="modal" data-target="#modal_survey_editor" 
                   data-origin_id="#{survey.origin_id}"
               } 
-                <i class="fas fa-edit"></i> &nbsp;Edit Survey
+                <i class="fas fa-edit"></i> &nbsp;Edit
               a {
-                class="btn btn-warning mr-1 mt-1"
+                class="btn btn-outline-dark mr-1 mt-1"
                 target="_blank"
-                href="/survey/#{survey.id}/preview"
+                href="https://docs.google.com/spreadsheets/d/#{survey.origin_id}/edit"
+              } 
+                <i class="fas fa-external-link-alt"></i> &nbsp;Edit in Google Sheets
+              a {
+                class="btn btn-outline-info mr-1 mt-1"
+                target="_blank"
+                href="/survey/#{survey.id}/preview/#{survey.origin_id}"
               } 
                 <i class="fas fa-eye"></i> &nbsp;Preview
               button {
-                class="btn btn-info mr-1 mt-1" type="button"
+                class="btn btn-outline-info mr-1 mt-1" type="button"
                 data-toggle="modal" data-target="#modal_responses_download"
                 data-origin_id="#{survey.id}"
               } 
@@ -55,22 +87,24 @@ div class="mb-3"
                 - if survey.state == 'started'
                   div class="input-group-prepend"
                     a {
-                      class="btn btn-outline-success"
+                      class="btn btn-outline-primary"
                       href="/survey/#{survey.id}/close"
                       id="startbtn-#{survey.id}"
-                    } Close Survey
+                    }
+                      <i class="far fa-stop-circle"></i> &nbsp;Close Survey
                   input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
                   div class="input-group-append"
-                    button class="btn btn-secondary" id="btn-copy" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
+                    button class="btn btn-secondary" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
                       i class="fas fa-copy"
                     a class="btn btn-secondary" target="_blank" href="/onlinesurvey/#{survey.id}/#{survey.launch_id}"
                       i class="fas fa-external-link-alt"
                 - else
                   a {
-                    class="btn btn-success"
+                    class="btn btn-primary"
                     href="/survey/#{survey.id}/start"
                     id="startbtn-#{survey.id}"
-                  } Start Survey
+                  }
+                    <i class="fas fa-play-circle"></i> &nbsp;Start Survey
 
 div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="false" role="dialog"
   div class="modal-dialog modal-dialog-centered" role="document"
@@ -84,6 +118,7 @@ div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="
           }
 
 include :modal_create_survey
+include :modal_copy_survey
 include :modal_survey_settings
 include :modal_survey_editor
 include :modal_responses_download
@@ -109,11 +144,35 @@ javascript:
         url: "/survey/" + survey_id,
         type: 'DELETE',
         success: function(result) {
-          alert(survey_title + 'has been deleted!');
+          alert(survey_title + ' has been deleted!');
           location.reload();
         }
       });
     }
+  }
+
+  $('#modal_copy_survey').on('show.bs.modal', function(e) {
+    var origin_id = $(e.relatedTarget).data('origin_id');
+    
+    $('#survey_copy_form').on('submit', function(e) {
+      e.preventDefault();
+      $('#modal_copy_survey').modal('hide');
+      
+      var title = $(e.currentTarget).find('input[name="title"]').val();
+      copySurvey(origin_id, title);
+    });
+  });
+
+  function copySurvey(origin_id, title) {
+    $('#modal_waiting').modal();
+    $.ajax({
+      url: "/survey_list/copy/" + origin_id,
+      type: 'POST',
+      data: { title: title },
+      success: function(result) {
+        location.reload();
+      }
+    });
   }
 
   $('#btn-create').on('click', function (e) {
@@ -126,8 +185,20 @@ javascript:
     $('#modal_waiting').modal();
   });
 
+  $('.dropdown-menu a').on('click', function(e) {
+    var chosed_text = e.currentTarget.innerText
+    $(this).parents('.dropdown').find('.dropdown-toggle').text(chosed_text)
+  });
 
-
-
-  
+  function updateOptions(survey_id, option, option_value) {
+    $.ajax({
+      url: "/survey/" + survey_id + "/update_options",
+      type: 'POST',
+      data: { option: option,
+              option_value: option_value },
+      success: function(result) {
+        location.reload();
+      }
+    });
+  }
 

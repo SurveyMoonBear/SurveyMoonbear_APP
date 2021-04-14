@@ -4,8 +4,7 @@ require 'http'
 
 module SurveyMoonbear
   module Google
-    # Gateway class to talk to Spreadsheet API
-    class Api
+    module Api
       module Errors
         # Not allowed to access resource
         Unauthorized = Class.new(StandardError)
@@ -32,29 +31,81 @@ module SurveyMoonbear
           successful? ? @response : raise(HTTP_ERROR[@response.code])
         end
       end
+      
+      # Gateway class to talk to Spreadsheet API
+      class Sheets
+        def initialize(access_token)
+          @access_token = access_token
+        end
 
-      def initialize(token)
-        @gs_token = token
+        def survey_data(spreadsheet_id)
+          survey_req_url = spreadsheet_path(spreadsheet_id)
+          Api.get_with_google_auth(survey_req_url, @access_token).parse
+        end
+  
+        def items_data(spreadsheet_id, title)
+          items_req_url = spreadsheet_path([spreadsheet_id, title].join('/values/'))
+          Api.get_with_google_auth(items_req_url, @access_token).parse
+        end
+  
+        def update_gs_title(spreadsheet_id, new_title)
+          update_req_url = spreadsheet_path("#{spreadsheet_id}:batchUpdate")
+          data = {
+            requests: [{
+              updateSpreadsheetProperties: {
+                properties: { title: new_title },
+                fields: 'title'
+              }
+            }]
+          }
+          
+          updated_res = Api.post_with_google_auth(update_req_url, @access_token, data).parse
+        end
+
+        private
+  
+        def spreadsheet_path(path)
+          'https://sheets.googleapis.com/v4/spreadsheets/' + path
+        end
       end
 
-      def survey_data(sp_id)
-        survey_req_url = Api.spreadsheet_path(sp_id)
-        call_gs_url(survey_req_url).parse
-      end
+      class Drive
+        def initialize(access_token)
+          @access_token = access_token
+        end
 
-      def items_data(sp_id, title)
-        items_req_url = Api.spreadsheet_path([sp_id, title].join('/values/'))
-        call_gs_url(items_req_url).parse
-      end
+        def copy_drive_file(file_id)
+          file_copy_url = gdrive_v3_path("#{file_id}/copy?access_token=#{@access_token}")
+          
+          copied_res = Api.post_with_google_auth(file_copy_url, @access_token).parse
+        end
 
-      def self.spreadsheet_path(path)
-        'https://sheets.googleapis.com/v4/spreadsheets/' + path
+        def create_permission(file_id, role, type)
+          permission_req_url = gdrive_v3_path("#{file_id}/permissions")
+          res = Api.post_with_google_auth(permission_req_url, 
+                                          @access_token,
+                                          data={role: role, type: type})
+        end
+
+        private
+
+        def gdrive_v3_path(path)
+          'https://www.googleapis.com/drive/v3/files/' + path
+        end
       end
 
       private
 
-      def call_gs_url(url)
-        response = HTTP.get(url, params: { access_token: "#{@gs_token}" })
+      def self.get_with_google_auth(url, access_token)
+        response = HTTP.auth("Bearer #{access_token}")
+                       .get(url)
+        
+        Response.new(response).response_or_error
+      end
+
+      def self.post_with_google_auth(url, access_token, data={})
+        response = HTTP.auth("Bearer #{access_token}")
+                       .post(url, json: data)
 
         Response.new(response).response_or_error
       end

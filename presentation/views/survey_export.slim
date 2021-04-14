@@ -52,37 +52,43 @@ html
                 input type="hidden" name="moonbear_start_time"
                 input type="hidden" name="moonbear_end_time"
 
-              - if questions.length > 1
+              - if pages.length > 1
                 nav aria-label="Page navigation example" id="page_nav"
-                  ul class="pagination" 
+                  ul class="pagination d-flex justify-content-between" 
                     li class="page-item disabled" id="page_pre"
                       a class="page-link" href="javascript:void(0)" onclick="pre_page()" aria-label="Previous"
                         span aria-hidden="true" &larr; Previous
                         span class="sr-only" Previous
                     
-                    li class="page-item" id="page_next"
+                    li class="page-item active" id="page_next"
                       a class="page-link" href="javascript:void(0)" onclick="next_page()" aria-label="Next"
                         span aria-hidden="true" Next &rarr;
                         span class="sr-only" Next
 
 javascript:
-  var page_str = '';
-  $.each(#{{questions}}, function(i, question){
+  /* Build the whole survey html with created page htmls */
+  var current_page_str = '';
+  $.each(#{{pages}}, function(i, page){
+    // Create page-div for the page (only 1st page visible)
     if (i > 0) {
       $('#form').append("<div class='d-none' id='page_" + ++i + "'></div>");
     } else {
       $('#form').append("<div id='page_" + ++i + "'></div>");
     }
-    page_str = "<div class='d-flex justify-content-end'><p>page " + i + "/" + #{{questions}}.length + "</p></div>";
-    $('#page_' + i).append(page_str);
-    $('#page_' + i).append(question);
+
+    // Append page-html to page-div
+    current_page_str = "<div class='d-flex justify-content-end'><p>page " + i + "/" + #{{pages}}.length + "</p></div>";
+    $('#page_' + i).append(current_page_str);
+    $('#page_' + i).append(page);
     
-    if(i == #{{questions}}.length) {
-      button_str = "<button type='submit' class='btn btn-primary my-3' id='btn-submit'>Submit</button>"
+    // Append submit btn to last page
+    if(i == #{{pages}}.length) {
+      button_str = "<button type='submit' class='btn btn-primary float-right' id='btn-submit'>Submit</button>"
       $('#page_' + i).append(button_str);
     }
   });
 
+  /* Handle pages prev/next (pages show & hidden) */
   var page = 1;
   function next_page() {
     var required_flag = true;
@@ -97,7 +103,7 @@ javascript:
       $('.alert').alert('close');
       $('#page_' + page).addClass('d-none');
       $('#page_' + ++page).removeClass('d-none');
-      if (page >= #{{questions}}.length) {
+      if (page >= #{{pages}}.length) {
         $('#page_next').addClass('disabled');
       }
       $('#page_pre').removeClass('disabled');
@@ -125,24 +131,40 @@ javascript:
     window.scrollTo(0, 0);
   }
 
+  /* Response event listeners */
   $('.vas-unclicked').click(function (e) {
     $(this).removeClass('vas-unclicked');
   });
 
   $('input[type=checkbox]').click(function (e) {
     var type_name = $(this).prop('name');
-    var str = $("input[name=" + type_name + "]:checked").map(function () {
-        return this.value;
-      }).get().join(', ');
-    var input_name = type_name.substr(9, type_name.length);
-    $('input[name='+input_name+']').val(str);
+    updateCheckboxHiddenInput(type_name);
   });
+
+  function updateCheckboxHiddenInput(type_name) {
+    var checkbox_answers_str = joinCheckboxAnswersWithComma(type_name);
+
+    var input_name = type_name.substr(9, type_name.length);
+    $('input[name='+input_name+']').val(checkbox_answers_str);
+  }
+
+  function joinCheckboxAnswersWithComma(type_name) {
+    var checkbox_answers_str = $("input[name=" + type_name + "]:checked").map(function () {
+      return this.value;
+    }).get().join(', ');
+
+    return checkbox_answers_str;
+  }
 
   $('input[type=radio]').click(function (e) {
     var type_name = $(this).prop('name');
-    var input_name = type_name.substr(6, type_name.length);
-    $('input[name='+input_name+']').val(this.value);
+    updateRadioHiddenInput(type_name, this.value);
   });
+
+  function updateRadioHiddenInput(type_name, value) {
+    var input_name = type_name.substr(6, type_name.length);
+    $('input[name='+input_name+']').val(value);
+  }
 
   $('input.vas-unclicked').click(function (e) {
     var type_name = $(this).prop('name');
@@ -150,7 +172,22 @@ javascript:
     $('input[name='+input_name+']').val(this.value);
   });
 
-  $('#form').on('submit', function() {
+  $('.other-text').on('keyup', function(e) { 
+    var other_text = this.value;
+    var other_option = $(this).siblings('.other-option');
+    $(other_option).val(other_text);
+
+    var type_name = $(other_option).prop('name');
+    if ($(other_option).is(':checked') && type_name.includes('checkbox')) {
+      updateCheckboxHiddenInput(type_name);
+    }
+    if ($(other_option).is(':checked') && type_name.includes('radio')) {
+      updateRadioHiddenInput(type_name, other_text);
+    }
+  });
+
+  $('#form').on('submit', function(e) {
+    $('#btn-submit').prop('disabled', true);
     $('<input />').attr('type', 'hidden')
                   .attr('name', "moonbear_url_params")
                   .attr('value', JSON.stringify(#{{url_params}}))
@@ -180,6 +217,7 @@ javascript:
     return flag;
   });
 
+  /* Survey document init with start time */
   $(document).ready(function() {
     $('input[name=moonbear_start_time]').val(new Date());
   });
