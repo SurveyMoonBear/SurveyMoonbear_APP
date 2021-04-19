@@ -1,5 +1,5 @@
 require 'base64'
-require 'rbnacl/libsodium'
+require 'rbnacl'
 
 # Cryptographic library for messages to API
 class SecureMessage
