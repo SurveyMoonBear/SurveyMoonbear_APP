@@ -94,8 +94,8 @@ module SurveyMoonbear
         end
 
         routing.post 'create' do
-          new_survey = Service::CreateSurvey.new.call(config: config, 
-                                                      current_account: @current_account, 
+          new_survey = Service::CreateSurvey.new.call(config: config,
+                                                      current_account: @current_account,
                                                       title: routing.params['title'])
 
           new_survey.success? ? flash[:notice] = "#{new_survey.value!.title} is created!" :
