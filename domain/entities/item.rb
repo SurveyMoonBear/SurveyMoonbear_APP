@@ -8,8 +8,8 @@ module SurveyMoonbear
       attribute :id, Integer.optional
       attribute :order, Integer
       attribute :type, Strict::String
-      attribute :name, String
-      attribute :description, String
+      attribute :name, String.optional
+      attribute :description, String.optional
       attribute :required, Strict::Integer
       attribute :options, Strict::String.optional
     end
