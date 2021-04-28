@@ -148,6 +148,7 @@ module SurveyMoonbear
             response = Service::TransformSheetsSurveyToHTML.new.call(survey_id: survey_id,
                                                                      spreadsheet_id: spreadsheet_id,
                                                                      access_token: access_token,
+                                                                     current_account: @current_account,
                                                                      random_seed: routing.params['seed'])
             if response.failure?
               flash[:error] = response.failure + ' Please try again.'
