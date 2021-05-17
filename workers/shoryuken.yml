@@ -1,2 +1,2 @@
 queues:
-  - https://sqs.ap-northeast-1.amazonaws.com/992209532282/moonbear_responses_store
+  - https://sqs.us-east-1.amazonaws.com/503315808870/moonbear_responses_store

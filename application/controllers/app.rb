@@ -94,8 +94,8 @@ module SurveyMoonbear
         end
 
         routing.post 'create' do
-          new_survey = Service::CreateSurvey.new.call(config: config, 
-                                                      current_account: @current_account, 
+          new_survey = Service::CreateSurvey.new.call(config: config,
+                                                      current_account: @current_account,
                                                       title: routing.params['title'])
 
           new_survey.success? ? flash[:notice] = "#{new_survey.value!.title} is created!" :
@@ -148,6 +148,7 @@ module SurveyMoonbear
             response = Service::TransformSheetsSurveyToHTML.new.call(survey_id: survey_id,
                                                                      spreadsheet_id: spreadsheet_id,
                                                                      access_token: access_token,
+                                                                     current_account: @current_account,
                                                                      random_seed: routing.params['seed'])
             if response.failure?
               flash[:error] = response.failure + ' Please try again.'
