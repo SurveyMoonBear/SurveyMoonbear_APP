@@ -16,7 +16,7 @@ module SurveyMoonbear
 
       private
 
-      # input { survey_id:, spreadsheet_id:, access_token: }
+      # input { survey_id:, spreadsheet_id:, access_token:, current_account: }
       def get_survey_settings_from_database(input)
         db_survey = GetSurveyFromDatabase.new.call(survey_id: input[:survey_id])
         if db_survey.success?
@@ -36,7 +36,7 @@ module SurveyMoonbear
       def get_items_from_spreadsheet(input)
         sheets_survey = GetSurveyFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                           access_token: input[:access_token],
-                                                          owner: input[:db_survey].owner)
+                                                          owner: input[:current_account])
         if sheets_survey.success?
           input[:sheets_survey] = sheets_survey.value!
           Success(input)
@@ -47,12 +47,12 @@ module SurveyMoonbear
 
       # input { ..., sheets_survey: }
       def transform_survey_items_to_html(input)
-        transform_result = TransformSurveyItemsToHTML.new.call(survey: input[:sheets_survey], 
+        transform_result = TransformSurveyItemsToHTML.new.call(survey: input[:sheets_survey],
                                                                random_option: input[:random_option],
                                                                random_seed: input[:random_seed])
 
         if transform_result.success?
-          Success(title: transform_result.value![:title], 
+          Success(title: transform_result.value![:title],
                   pages: transform_result.value![:pages])
         else
           Failure(transform_result.failure)

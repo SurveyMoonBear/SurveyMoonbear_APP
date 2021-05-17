@@ -17,9 +17,9 @@ module SurveyMoonbear
 
       # input { config:, current_account:, title: }
       def copy_sample_spreadsheet(input)
-        new_survey = CopySurvey.new.call(config: input[:config], 
-                                         current_account: input[:current_account], 
-                                         spreadsheet_id: input[:config].SAMPLE_FILE_ID, 
+        new_survey = CopySurvey.new.call(config: input[:config],
+                                         current_account: input[:current_account],
+                                         spreadsheet_id: input[:config].SAMPLE_FILE_ID,
                                          title: input[:title])
         if new_survey.success?
           Success(new_survey.value!)

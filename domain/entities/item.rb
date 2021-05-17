@@ -1,18 +1,17 @@
 # frozen_string_literal: true
 
-require 'dry-struct'
-
 module SurveyMoonbear
   module Entity
     # Domain entity object for survey items
     class Item < Dry::Struct
-      attribute :id, Types::Int.optional
-      attribute :order, Types::Int
-      attribute :type, Types::Strict::String
-      attribute :name, Types::String
-      attribute :description, Types::String
-      attribute :required, Types::Strict::Int
-      attribute :options, Types::Strict::String.optional
+      include Dry.Types
+      attribute :id, Integer.optional
+      attribute :order, Integer
+      attribute :type, Strict::String
+      attribute :name, String.optional
+      attribute :description, String.optional
+      attribute :required, Strict::Integer
+      attribute :options, Strict::String.optional
     end
   end
 end

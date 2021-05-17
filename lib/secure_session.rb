@@ -1,5 +1,5 @@
 require 'base64'
-require 'rbnacl/libsodium'
+require 'rbnacl'
 require 'redis'
 require_relative 'secure_message'
 

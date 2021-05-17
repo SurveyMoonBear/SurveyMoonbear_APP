@@ -31,7 +31,9 @@ end
 
 namespace :run do
   task :dev do
-    sh 'rerun -c "heroku local -f Procfile.dev -p 9090"'
+    # sh 'rerun -c "heroku local -f Procfile.dev -p 9090"'
+    # sh 'rerun -c "rackup -p 9090"'
+    sh 'rackup -p 9090'
   end
 
   task :test do
@@ -142,7 +144,7 @@ namespace :crypto do
   end
 
   task :crypto_requires do
-    require 'rbnacl/libsodium'
+    require 'rbnacl'
     require 'base64'
   end
 

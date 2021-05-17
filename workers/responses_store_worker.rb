@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../domain/entities/init.rb'
-require_relative '../domain/database_repositories/init.rb'
+require_relative '../init'
 require 'pry'
 require 'econfig'
 require 'shoryuken'

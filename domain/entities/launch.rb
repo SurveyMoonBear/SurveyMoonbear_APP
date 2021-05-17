@@ -1,18 +1,17 @@
 # frozen_string_literal: true
 
-require 'dry-struct'
-
-require_relative 'response.rb'
+require_relative 'response'
 
 module SurveyMoonbear
   module Entity
     # Domain entity object for any survey
     class Launch < Dry::Struct
-      attribute :id, Types::String.optional
-      attribute :started_at, Types::Strict::Time
-      attribute :closed_at, Types::Strict::Time.optional
-      attribute :state, Types::Strict::String
-      attribute :responses, Types::Strict::Array.member(Response).optional
+      include Dry.Types
+      attribute :id, String.optional
+      attribute :started_at, Strict::Time
+      attribute :closed_at, Strict::Time.optional
+      attribute :state, Strict::String
+      attribute :responses, Strict::Array.of(Response).optional
     end
   end
 end
