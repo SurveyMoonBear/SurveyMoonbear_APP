@@ -4,7 +4,7 @@
 - [Question Type](user_guide/question_type.md)
 
 ## Welcome developer
-- [Getting Start](getting_start).md)
+- [Getting Start](getting_start.md)
 
 ### Architecture
 

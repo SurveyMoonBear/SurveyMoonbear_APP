@@ -9,7 +9,7 @@
 - [Github](https://github.com/SurveyMoonBear/SurveyMoonbear_APP)
 - [Heroku](https://moonbear.herokuapp.com/)
 - [HackMD Doc](https://hackmd.io/@WVFBeK-KRt-CDsNCu4hqdQ/r1u3-zSSt)
-- [GitHub Doc](doc/SUMMARY.md)
+- [GitHub Doc](doc/README.md)
 
 ## Getting Started
 
