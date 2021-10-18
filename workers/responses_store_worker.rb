@@ -2,15 +2,15 @@
 
 require_relative '../init'
 require 'pry'
-require 'econfig'
+require 'figaro'
 require 'shoryuken'
 require 'sequel'
 
 module ResponsesStore
   class Worker
-    extend Econfig::Shortcut
-    Econfig.env = ENV['RACK_ENV'] || 'development'
-    Econfig.root = File.expand_path('..', File.dirname(__FILE__))
+
+    Figaro.load
+    def self.config() = Figaro.env
 
     DB = Sequel.connect(ENV['DATABASE_URL'])
 

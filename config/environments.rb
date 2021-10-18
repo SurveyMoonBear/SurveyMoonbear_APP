@@ -1,5 +1,6 @@
 require 'roda'
-require 'econfig'
+require 'figaro'
+require 'sequel'
 require 'rack/ssl-enforcer'
 require 'rack/session/redis'
 
@@ -8,9 +9,13 @@ module SurveyMoonbear
   class App < Roda
     plugin :environments
 
-    extend Econfig::Shortcut
-    Econfig.env = environment.to_s
-    Econfig.root = '.'
+    # Environment variables setup
+    Figaro.application = Figaro::Application.new(
+      environment: environment,
+      path: File.expand_path('config/secrets.yml')
+    )
+    Figaro.load
+    def self.config() = Figaro.env
 
     configure do
       SecureDB.setup(config.DB_KEY)
@@ -28,7 +33,7 @@ module SurveyMoonbear
     end
 
     configure :development, :test do
-      ENV['DATABASE_URL'] = 'sqlite://' + config.db_filename
+      ENV['DATABASE_URL'] = 'sqlite://' + config.DB_FILENAME
 
       use Rack::Session::Pool,
           expire_after: A_DAY
@@ -40,7 +45,6 @@ module SurveyMoonbear
     end
 
     configure do
-      require 'sequel'
       DB = Sequel.connect(ENV['DATABASE_URL'])
 
       def self.DB
