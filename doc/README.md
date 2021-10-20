@@ -1,5 +1,7 @@
 # SurveyMoonbear Guide
-SurveyMoonbear provides a new way of survey services. Login with your Google account and make your own survey from Google Sheets!
+SurveyMoonbear provides a new way of survey services. 
+
+Login with your Google account and make your own survey from Google Sheets!
 
 ## Table of contents
 ```
