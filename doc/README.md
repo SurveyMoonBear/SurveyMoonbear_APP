@@ -15,6 +15,7 @@ SurveyMoonbear provides a new way of survey services. Login with your Google acc
 ```
 ## User Guide
 Users could follow the guide to make you own questionaire
+- [Why you should use SurveyMoonbear](user_guide/competitive_products.md)
 - [Question Type](user_guide/question_type.md)
 - [How to Insert an Image](user_guide/insert_image.md)
 - [How to Insert a Video](user_guide/insert_video.md)
