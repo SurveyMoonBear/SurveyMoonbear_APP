@@ -10,6 +10,8 @@ SurveyMoonbear provides a new way of survey services. Login with your Google acc
   - Google
   - AWS
   - Heroku
+  - Docker
+  - Brainstorming
 ```
 ## User Guide
 Users could follow the guide to make you own questionaire
