@@ -7,7 +7,7 @@
 
 ### Credentials
 - Dev & Test:
-  - Create config/secrets.yml on local
+  - Create config/secrets.yml on local [secrets_example.yml](../config/secrets_example.yml)
   - Use your personal Google account and [apply for Google Drive API Token](google/google-drive-api.md)
   - Use your personal AWS account and [apply for AWS SQS Token](aws/sqs.md)
 - Production: 
