@@ -8,7 +8,7 @@ Login with your Google account and make your own survey from Google Sheets!
 ## Resources
 - [Web Link](https://moonbear.herokuapp.com/)
 - [Github](https://github.com/SurveyMoonBear/SurveyMoonbear_APP)
-- [GitHub Doc](doc/README.md)
+- [Document](doc/README.md)
 
 ## Guide
 - [User Guide](doc/README.md#user-guide)
