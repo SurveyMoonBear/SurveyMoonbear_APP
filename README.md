@@ -14,6 +14,6 @@ Login with your Google account and make your own survey from Google Sheets!
 - [HackMD Doc](https://hackmd.io/@WVFBeK-KRt-CDsNCu4hqdQ/r1u3-zSSt)
 - [GitHub Doc](doc/README.md)
 
-## [User Guide](https://github.com/SurveyMoonBear/SurveyMoonbear_APP/blob/doc/doc/README.md#developer-guide)
-
-## [Developer Guide](https://github.com/SurveyMoonBear/SurveyMoonbear_APP/blob/doc/doc/README.md#developer-guide)
+## Guide
+- [User Guide](https://github.com/SurveyMoonBear/SurveyMoonbear_APP/blob/doc/doc/README.md#developer-guide)
+- [Developer Guide](https://github.com/SurveyMoonBear/SurveyMoonbear_APP/blob/doc/doc/README.md#developer-guide)
