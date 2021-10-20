@@ -34,7 +34,7 @@ Developer could folow the guide to develop SurveyMoonbear.
   - After testing all things, make a PR merge `branch: develop` to `branch: master`
   - Ask Soumya to do code review
   - Get remote access and update on Heroku 
-    ([How to update Heroku with updating GitHub code](heroku/update_github.md))
+    ([How to update Heroku with updating GitHub code](heroku/update_from_github.md))
   
 - If you would like to **update document or guide**, please follow these rules
   - Contribute document or guide on the `branch: doc` and merge to `branch: master`
@@ -60,7 +60,7 @@ Developer could folow the guide to develop SurveyMoonbear.
 * [How to get a SQS Token](aws/sqs.md)
 
 ### Heroku
-* [How to update Heroku with updating GitHub code](heroku/update_github.md)
+* [How to update Heroku with updating GitHub code](heroku/update_from_github.md)
 * [How to test on Heroku new stack](heroku/test-on-heroku-new-stack.md)
 * [pgAdmin Remote Connection](heroku/pgAdmin-remote-connection.md)
 
