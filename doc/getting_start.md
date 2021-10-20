@@ -6,8 +6,12 @@
 - Collaborator of Heroku moonbear app
 
 ### Credentials
-- config/secrets.yml
-- Moonbear Google Drive account & password
+- Dev & Test:
+  - Create config/secrets.yml on local
+  - Use your personal Google account and [apply for Google Drive API Token](google/google-drive-api.md)
+  - Use your personal AWS account and [apply for AWS SQS Token](aws/sqs.md)
+- Production: 
+  - Survey Moonbear's Google Drive account & password
 
 ## SETUP
 ### Run on local
@@ -21,6 +25,10 @@ $ git clone git@github.com:SurveyMoonBear/SurveyMoonbear_APP.git
 ```
 $ bundle install --without production
 ```
+
+> if it bumps into this problem 
+> `Could not open library 'sodium' cannot load such file -- rbnacl`,
+> please [install libsodium](https://github.com/RubyCrypto/rbnacl/wiki/Installing-libsodium) first
 
 3. Add config/secret.yml file
 
