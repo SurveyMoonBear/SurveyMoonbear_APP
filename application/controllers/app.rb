@@ -1,5 +1,5 @@
 require 'roda'
-require 'econfig'
+require 'figaro'
 require 'slim'
 require 'slim/include'
 require 'google/api_client/client_secrets'

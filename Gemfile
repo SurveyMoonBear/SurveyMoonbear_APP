@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
-ruby '2.7.3'
+ruby File.read('.ruby-version').strip
 
 # Google client lib
 gem 'google-api-client'
 
 # Web app related
-gem 'econfig'
+gem 'figaro'
 gem 'puma'
 gem 'rack-flash3'
 gem 'roda'
