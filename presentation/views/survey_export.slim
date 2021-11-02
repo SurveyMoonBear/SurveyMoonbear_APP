@@ -107,6 +107,11 @@ javascript:
         $('#page_next').addClass('disabled');
       }
       $('#page_pre').removeClass('disabled');
+      
+      $.each(#{{show_variables}}, function(i, variable){
+        set_var = "#" + variable + "_set"
+        document.getElementById(variable).innerHTML = $(set_var).val();
+      });
       location.href = '#page_' + page;
     } else {
       var str = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';

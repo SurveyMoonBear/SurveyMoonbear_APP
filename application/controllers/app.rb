@@ -16,12 +16,10 @@ module SurveyMoonbear
     plugin :flash
     plugin :hooks
     plugin :all_verbs
-    
 
     route do |routing|
       routing.assets
 
-      app = App
       config = App.config
 
       SecureDB.setup(config.DB_KEY)
@@ -204,8 +202,8 @@ module SurveyMoonbear
               survey.launches.each do |launch|
                 next if launch.responses.length.zero?
                 arr_responses = []
-                launch.responses.each do |response|
-                  arr_responses.push(response.respondent_id)
+                launch.responses.each do |res|
+                  arr_responses.push(res.respondent_id)
                 end
                 arr_responses.uniq!
                 stime = launch.started_at
@@ -225,8 +223,7 @@ module SurveyMoonbear
             response['Content-Type'] = 'application/csv'
 
             response = Service::TransformResponsesToCSV.new.call(survey_id: survey_id, launch_id: launch_id)
-            response.success? ? response.value! : 
-                                response.failure
+            response.success? ? response.value! : response.failure
           end
         end
       end
@@ -352,7 +349,9 @@ module SurveyMoonbear
                locals: { survey: survey,
                          survey_url: survey_url,
                          pages: html_of_pages_arr,
-                         url_params: url_params }
+                        #  url_params: url_params }
+                         url_params: url_params,
+                         show_variables: ['name'] }
         end
       end
     end

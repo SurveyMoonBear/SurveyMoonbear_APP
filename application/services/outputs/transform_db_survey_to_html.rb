@@ -34,11 +34,12 @@ module SurveyMoonbear
         transform_result = TransformSurveyItemsToHTML.new.call(survey: input[:db_survey],
                                                                random_option: random_option,
                                                                random_seed: input[:random_seed])
-
         if transform_result.success?
-          Success(title: transform_result.value![:title], 
+          Success(title: transform_result.value![:title],
                   pages: transform_result.value![:pages],
                   random_seed: transform_result.value![:random_seed])
+                  # random_seed: transform_result.value![:random_seed],
+                  # show_variables: transform_result.value![:show_variables])
         else
           Failure(transform_result.failure)
         end
