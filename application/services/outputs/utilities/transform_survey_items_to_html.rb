@@ -19,7 +19,6 @@ module SurveyMoonbear
       # input { survey:, random_option: }
       def group_grid_items(input)
         input[:items_of_pages] = []
-        # input[:show_variables] = []
 
         input[:survey].pages.each do |page|
           input[:items_of_pages] << grids_grouping(page.items)
@@ -57,7 +56,6 @@ module SurveyMoonbear
         if !input[:random_option].nil? && input[:random_option] != 'none'
           input[:random_seed] = input[:random_seed] ? input[:random_seed].to_i : rand(1000)
           ignored_types = ['Description', 'Section Title', 'Divider']
-
           input[:items_of_pages].each do |page_items|
             page_items.each_with_index do |item, i|
               random_items_within_grid_group(item, input[:random_seed]) if item.class == Array
@@ -139,6 +137,7 @@ module SurveyMoonbear
       end
 
       def build_individual_question(item)
+        build_var(item)
         case item.type
         when 'Section Title'
           build_section_title(item)
@@ -165,6 +164,18 @@ module SurveyMoonbear
         end
       end
 
+      def build_var(item)
+        if (!item.description.nil?) && (item.description.include? '{{') && (item.description.include? '}}')
+          var_name = item.description.split('{{')[1].split('}}')[0]
+          replace_str = "{{#{var_name}}}"
+          var_str = "<span id='#{var_name}_get'></span>"
+          item.description.gsub!(replace_str, var_str)
+          build_var(item)
+        else
+          item
+        end
+      end
+
       def build_section_title(item)
         "<h2 class='py-1 mt-5'>#{item.description}</h2>"
       end
@@ -177,27 +188,13 @@ module SurveyMoonbear
         "<hr class='my-5'>"
       end
 
-      def show_variable(desc)
-        if (desc.include? '{{') && (desc.include? '}}')
-          var_name = desc.split('{{')[1].split('}}')[0]
-          replace_str = "{{#{var_name}}}"
-          var_str = "<span id='#{var_name}_get'></span>"
-          desc = desc.gsub(replace_str, var_str)
-          show_variable(desc)
-        else
-          var_or_not =  (desc.include? '</span>') ? true : false
-          { var_or_not: var_or_not, desc: desc }
-        end
-      end
-
       def build_short_answer(item)
-        item_description = show_variable(item.description)
         str = "<div class='form-group mt-5'>"
         if item.required == 1
-          str += "<label for='#{item.name}' class='lead'>#{item_description[:desc]}<span class='text-danger'>*</span></lable>"
+          str += "<label for='#{item.name}' class='lead'>#{item.description}<span class='text-danger'>*</span></lable>"
           str += "<input type='text' class='form-control required' name='#{item.name}' id='#{item.name}'>"
         else
-          str += "<label for='#{item.name}' class='lead'>#{item_description[:desc]}</lable>"
+          str += "<label for='#{item.name}' class='lead'>#{item.description}</lable>"
           str += "<input type='text' class='form-control' name='#{item.name}' id='#{item.name}'>"
         end
         str + '</div>'
@@ -215,6 +212,7 @@ module SurveyMoonbear
         str + '</div>'
       end
 
+      # TODO: cannot catch the value
       def build_multiple_choice_radio(item, other=false)
         str = "<fieldset class='form-group mt-5'>"
         if item.required == 1
@@ -250,6 +248,7 @@ module SurveyMoonbear
         str += '</fieldset>'
       end
 
+      # TODO: cannot catch the value
       def build_multiple_choice_checkbox(item, other=false)
         str = "<fieldset class='form-group mt-5'>"
         if item.required == 1
@@ -294,6 +293,7 @@ module SurveyMoonbear
         str + '</div>'
       end
 
+      # TODO: cannot catch Grid's interact var
       def build_grid_questions_radio(items)
         str = '<fieldset>'
         str += "<div class='table-responsive'>"
@@ -342,6 +342,7 @@ module SurveyMoonbear
         str += '</fieldset>'
       end
 
+      # TODO: cannot catch Grid's interact var
       def build_grid_questions_slider(items)
         str = '<fieldset>'
         str += "<table class='table'>"
@@ -380,6 +381,7 @@ module SurveyMoonbear
         str += '</fieldset>'
       end
 
+      # TODO: cannot catch Grid's interact var
       def build_grid_questions_vas(items)
         str = '<fieldset>'
         str += "<table class='table'>"
