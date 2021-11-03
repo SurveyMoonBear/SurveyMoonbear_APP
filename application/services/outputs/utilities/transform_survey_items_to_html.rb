@@ -103,15 +103,9 @@ module SurveyMoonbear
           build_items_html_arr(page_items)
         end
 
-        # show_variables_arr = input[:show_variables].map do |page_items|
-        #   build_items_html_arr(page_items)
-        # end
-
         Success(title: input[:survey][:title],
                 pages: pages_html_arr,
                 random_seed: input[:random_seed])
-                # random_seed: input[:random_seed],
-                # show_variables: show_variables_arr)
       rescue StandardError => e
         puts e
         Failure('Failed to transform survey items to html')
@@ -173,35 +167,21 @@ module SurveyMoonbear
 
       def build_section_title(item)
         "<h2 class='py-1 mt-5'>#{item.description}</h2>"
-        # str = "<h2 class='py-1 mt-5'>#{item.description}</h2>"
-        # { str: str, show_variables: "" }
       end
 
       def build_description(item)
         "<div class='my-5'>#{item.description}</div>"
-        # str = "<div class='my-5'>#{item.description}</div>"
-        # { str: str, show_variables: "" }
       end
 
       def build_divider
         "<hr class='my-5'>"
-        # str = "<hr class='my-5'>"
-        # { str: str, show_variables: "" }
-      end
-
-      def build_variable(name)
-        if (name.include? '{{') && (name.include? '}}')
-          { var_or_not: true, name: name.delete('{{}}') }
-        else
-          { var_or_not: false, name: name }
-        end
       end
 
       def show_variable(desc)
         if (desc.include? '{{') && (desc.include? '}}')
           var_name = desc.split('{{')[1].split('}}')[0]
           replace_str = "{{#{var_name}}}"
-          var_str = "<span id='#{var_name}'></span>"
+          var_str = "<span id='#{var_name}_get'></span>"
           desc = desc.gsub(replace_str, var_str)
           show_variable(desc)
         else
@@ -211,19 +191,16 @@ module SurveyMoonbear
       end
 
       def build_short_answer(item)
-        item_name = build_variable(item.name)
         item_description = show_variable(item.description)
         str = "<div class='form-group mt-5'>"
         if item.required == 1
-          str += "<label for='#{item_name[:name]}' class='lead'>#{item_description[:desc]}<span class='text-danger'>*</span></lable>"
-          str += "<input type='text' class='form-control required' name='#{item_name[:name]}' id='#{item_name[:name]}_set'>"
+          str += "<label for='#{item.name}' class='lead'>#{item_description[:desc]}<span class='text-danger'>*</span></lable>"
+          str += "<input type='text' class='form-control required' name='#{item.name}' id='#{item.name}'>"
         else
-          str += "<label for='#{item_name[:name]}' class='lead'>#{item_description[:desc]}</lable>"
-          str += "<input type='text' class='form-control' name='#{item_name[:name]}' id='#{item_name[:name]}_set'>"
+          str += "<label for='#{item.name}' class='lead'>#{item_description[:desc]}</lable>"
+          str += "<input type='text' class='form-control' name='#{item.name}' id='#{item.name}'>"
         end
         str + '</div>'
-        # show_variable = item_name[:var_or_not] ? item_name[:name] : ''
-        # { str: str, show_variables: show_variable }
       end
 
       def build_paragraph_answer(item)
@@ -236,8 +213,6 @@ module SurveyMoonbear
           str += "<textarea class='form-control' id='#{item.name}' name='#{item.name}' rows='3'></textarea>"
         end
         str + '</div>'
-        # show_variable = item_name[:var_or_not] ? item_name[:name] : ''
-        # { str: str, show_variables: show_variable }
       end
 
       def build_multiple_choice_radio(item, other=false)
@@ -273,9 +248,6 @@ module SurveyMoonbear
           str += "<input type='hidden' name='#{item.name}'>"
         end
         str += '</fieldset>'
-
-        # show_variable = item_name[:var_or_not] ? item_name[:name] : ''
-        # { str: str, show_variables: show_variable }
       end
 
       def build_multiple_choice_checkbox(item, other=false)
@@ -312,9 +284,6 @@ module SurveyMoonbear
                 "<input type='hidden' name='#{item.name}'>"
               end
         str += '</fieldset>'
-
-        # show_variable = item_name[:var_or_not] ? item_name[:name] : ''
-        # { str: str, show_variables: show_variable }
       end
 
       def build_random_code(item)
@@ -323,9 +292,6 @@ module SurveyMoonbear
         str += "<label for='#{item.name}' class='lead'>#{item.description}</lable>"
         str += "<input type='text' class='form-control' name='#{item.name}' id='#{item.name}' readonly='' value='#{random_code}'>"
         str + '</div>'
-
-        # show_variable = item_name[:var_or_not] ? item_name[:name] : ''
-        # { str: str, show_variables: show_variable }
       end
 
       def build_grid_questions_radio(items)
@@ -447,10 +413,10 @@ module SurveyMoonbear
           str += "<td class='w-50 align-middle'><input type='range' class='custom-range vas-unclicked' name='vas-#{item.name}' min='#{min}' max='#{max}'></td>"
 
           str += if item.required == 1
-                  "<input type='hidden' class='required' name='#{item.name}'>"
-                else
-                  "<input type='hidden' name='#{item.name}'>"
-                end
+                   "<input type='hidden' class='required' name='#{item.name}'>"
+                 else
+                   "<input type='hidden' name='#{item.name}'>"
+                 end
           str += '</tr>'
         end
         str += '</table>'

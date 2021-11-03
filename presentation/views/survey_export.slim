@@ -108,9 +108,12 @@ javascript:
       }
       $('#page_pre').removeClass('disabled');
       
-      $.each(#{{show_variables}}, function(i, variable){
-        set_var = "#" + variable + "_set"
-        document.getElementById(variable).innerHTML = $(set_var).val();
+      $.each(#{{show_var}}, function(i, variable){
+        set_var = "#" + variable;
+        get_var = variable + "_get";
+        if(document.getElementById(get_var)){
+          document.getElementById(get_var).innerHTML = $(set_var).val();
+          };
       });
       location.href = '#page_' + page;
     } else {

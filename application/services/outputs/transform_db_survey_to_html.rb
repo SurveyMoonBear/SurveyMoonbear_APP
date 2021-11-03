@@ -30,16 +30,20 @@ module SurveyMoonbear
       # input { ..., db_survey: }
       def transform_survey_items_to_html(input)
         random_option = JSON.parse(input[:db_survey].options)['random']
-
         transform_result = TransformSurveyItemsToHTML.new.call(survey: input[:db_survey],
                                                                random_option: random_option,
                                                                random_seed: input[:random_seed])
+
+        input[:show_var] = []
+        input[:db_survey].pages.each do |page|
+          page.items.each { |item| input[:show_var] << item.name unless item.name.nil? }
+        end
+
         if transform_result.success?
           Success(title: transform_result.value![:title],
                   pages: transform_result.value![:pages],
-                  random_seed: transform_result.value![:random_seed])
-                  # random_seed: transform_result.value![:random_seed],
-                  # show_variables: transform_result.value![:show_variables])
+                  random_seed: transform_result.value![:random_seed],
+                  show_var: input[:show_var])
         else
           Failure(transform_result.failure)
         end
