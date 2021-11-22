@@ -319,8 +319,6 @@ module SurveyMoonbear
             routing.redirect '/survey_list'
           end
 
-          show_var = html_transform_res.value![:show_var]
-
           html_of_pages_arr = html_transform_res.value![:pages]
           routing.params['seed'] = html_transform_res.value![:random_seed] unless html_transform_res.value![:random_seed].nil?
 
@@ -351,9 +349,7 @@ module SurveyMoonbear
                locals: { survey: survey,
                          survey_url: survey_url,
                          pages: html_of_pages_arr,
-                        #  url_params: url_params }
-                         url_params: url_params,
-                         show_var: show_var }
+                         url_params: url_params }
         end
       end
     end

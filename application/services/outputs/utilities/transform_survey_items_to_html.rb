@@ -137,7 +137,7 @@ module SurveyMoonbear
       end
 
       def build_individual_question(item)
-        build_var(item)
+        build_interact_var(item)
         case item.type
         when 'Section Title'
           build_section_title(item)
@@ -164,13 +164,13 @@ module SurveyMoonbear
         end
       end
 
-      def build_var(item)
+      def build_interact_var(item)
         if (!item.description.nil?) && (item.description.include? '{{') && (item.description.include? '}}')
           var_name = item.description.split('{{')[1].split('}}')[0]
           replace_str = "{{#{var_name}}}"
-          var_str = "<span id='#{var_name}_get'></span>"
+          var_str = "<span class='#{var_name}_get' id='#{var_name}_get'></span>"
           item.description.gsub!(replace_str, var_str)
-          build_var(item)
+          build_interact_var(item)
         else
           item
         end
