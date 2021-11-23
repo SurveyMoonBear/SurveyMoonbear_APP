@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'roda'
 require 'figaro'
 require 'slim'
@@ -254,9 +256,9 @@ module SurveyMoonbear
                 survey_started['survey_id'] == survey_id
               end
 
-              Service::StoreResponses.new.call(survey_id: survey_id, 
-                                               launch_id: launch_id, 
-                                               respondent_id: respondent['respondent_id'], 
+              Service::StoreResponses.new.call(survey_id: survey_id,
+                                               launch_id: launch_id,
+                                               respondent_id: respondent['respondent_id'],
                                                responses: routing.params,
                                                config: config)
 
