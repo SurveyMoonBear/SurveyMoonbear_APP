@@ -168,7 +168,7 @@ module SurveyMoonbear
         if (!item.description.nil?) && (item.description.include? '{{') && (item.description.include? '}}')
           var_name = item.description.split('{{')[1].split('}}')[0]
           replace_str = "{{#{var_name}}}"
-          var_str = "<span class='#{var_name}__get' id='#{var_name}__get'></span>"
+          var_str = "<span class='#{var_name}__get' id='#{var_name}__get'>#{var_name}</span>"
           item.description.gsub!(replace_str, var_str)
           build_interact_var(item)
         else

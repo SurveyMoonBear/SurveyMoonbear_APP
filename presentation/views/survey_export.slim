@@ -110,9 +110,9 @@ javascript:
           var set_var = interact_variable.id.split('__get')[0];
           if($('input[name='+set_var+']').val()){
             interact_variable.innerHTML = $('input[name='+set_var+']').val();
-          }else {
+          }else{
             interact_variable.innerHTML = $('textarea[name='+set_var+']').val();
-          }
+          };
         };
       }
       $('#page_pre').removeClass('disabled');
