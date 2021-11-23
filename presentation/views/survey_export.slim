@@ -105,9 +105,9 @@ javascript:
       $('#page_' + ++page).removeClass('d-none');
       if (page >= #{{pages}}.length) {
         $('#page_next').addClass('disabled');
-        var interact_variables = document.querySelectorAll('[class*="__get"]');
+        var interact_variables = document.querySelectorAll('[class*="__{}"]');
         for(let interact_variable of interact_variables){
-          var set_var = interact_variable.id.split('__get')[0];
+          var set_var = interact_variable.id.split('__{}')[0];
           if($('input[name='+set_var+']').val()){
             interact_variable.innerHTML = $('input[name='+set_var+']').val();
           }else{
