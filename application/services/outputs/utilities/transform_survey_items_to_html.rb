@@ -137,7 +137,7 @@ module SurveyMoonbear
       end
 
       def build_individual_question(item)
-        build_interact_var(item)
+        build_interact_var(item)        
         case item.type
         when 'Section Title'
           build_section_title(item)
@@ -159,8 +159,10 @@ module SurveyMoonbear
           build_multiple_choice_checkbox(item, other=true)
         when 'Random code'
           build_random_code(item)
+        when 'Jump to page'
+          build_random_code(item)
         else
-          puts "Sorry, there's no such individual question type: " + item.type
+          puts "Sorry, there's no such individual question type: #{item.type}"
         end
       end
 
@@ -220,15 +222,23 @@ module SurveyMoonbear
           str += "<label id='#{item.name}' class='lead'>#{item.description}</label>"
         end
 
-        if item.options
+        if item.options && !item.link_to
           item.options.split(',').map(&:strip).each_with_index do |option, index|
             str += "<div class='custom-control custom-radio'>"
             str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}' name='radio-#{item.name}' value='#{option}'>"
             str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
             str += '</div>'
           end
+        elsif item.options && item.link_to
+          link_to = item.link_to.split(',')
+          item.options.split(',').map(&:strip).each_with_index do |option, index|
+            str += "<div class='custom-control custom-radio'>"
+            str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}__#{link_to[index]}' name='radio-#{item.name}' value='#{option}'>"
+            str += "<label class='custom-control-label' for='#{item.name}#{index}__#{link_to[index]}'>#{option}</label>"
+            str += '</div>'
+          end
         else
-          str += "<p>No options were provided.</p>"
+          str += '<p>No options were provided.</p>'
         end
 
         if other

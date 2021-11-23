@@ -89,10 +89,12 @@ javascript:
   });
 
   /* Handle pages prev/next (pages show & hidden) */
-  var page = 1;
+  var page_idx = 0;
+  var record = [1];
+  var next_page_num = record[record.length-1]+1;
   function next_page() {
     var required_flag = true;
-    $('#page_' + page +' input.required').each(function (e) {
+    $('#page_' + record[page_idx] +' input.required').each(function (e) {
       if (this.value == '') {
         required_flag = false;
         return false;
@@ -100,10 +102,11 @@ javascript:
     });
     
     if (required_flag == true) {
+      record.push(next_page_num);
       $('.alert').alert('close');
-      $('#page_' + page).addClass('d-none');
-      $('#page_' + ++page).removeClass('d-none');
-      if (page >= #{{pages}}.length) {
+      $('#page_' + record[page_idx]).addClass('d-none');
+      $('#page_' + record[++page_idx]).removeClass('d-none');
+      if (record[page_idx] >= #{{pages}}.length) {
         $('#page_next').addClass('disabled');
       }
       $('#page_pre').removeClass('disabled');
@@ -119,7 +122,8 @@ javascript:
           interact_variable.innerHTML = $('textarea[name='+set_var+']').val();
         };
       };
-      location.href = '#page_' + page;
+      location.href = '#page_' + record[page_idx];
+      next_page_num = record[record.length-1]+1;
     } else {
       var str = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
       str += 'Please answer all questions marked with a "*" before going to next page .';
@@ -133,13 +137,14 @@ javascript:
   }
 
   function pre_page() {
-    $('#page_' + page).addClass('d-none');
-    $('#page_' + --page).removeClass('d-none');
-    if (page === 1) {
+    $('#page_' + record[page_idx]).addClass('d-none');
+    $('#page_' + record[--page_idx]).removeClass('d-none');
+    if (record[page_idx] === 1) {
       $('#page_pre').addClass('disabled');
     }
     $('#page_next').removeClass('disabled');
-    location.href = '#page_' + page;
+    location.href = '#page_' + record[page_idx];
+    next_page_num = record.pop();
     window.scrollTo(0, 0);
   }
 
@@ -171,6 +176,10 @@ javascript:
   $('input[type=radio]').click(function (e) {
     var type_name = $(this).prop('name');
     updateRadioHiddenInput(type_name, this.value);
+    var link_to_page = +$(this).prop('id').split('__')[1];
+    if(link_to_page){
+      next_page_num = link_to_page;
+    }
   });
 
   function updateRadioHiddenInput(type_name, value) {
