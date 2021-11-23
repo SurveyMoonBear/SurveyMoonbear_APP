@@ -216,7 +216,8 @@ javascript:
 
     var flag = true;
     $('input[name=moonbear_end_time]').val(new Date());
-    $('input.required').each(function (e) {
+    // check the last page's input required
+    $('#page_' + record[record.length-1] +' input.required').each(function (e) {
       if (this.value == '') {
         flag = false;
         return false;
