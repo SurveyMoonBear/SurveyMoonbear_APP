@@ -168,7 +168,7 @@ module SurveyMoonbear
         if (!item.description.nil?) && (item.description.include? '{{') && (item.description.include? '}}')
           var_name = item.description.split('{{')[1].split('}}')[0]
           replace_str = "{{#{var_name}}}"
-          var_str = "<span class='#{var_name}_get' id='#{var_name}_get'></span>"
+          var_str = "<span class='#{var_name}__get' id='#{var_name}__get'></span>"
           item.description.gsub!(replace_str, var_str)
           build_interact_var(item)
         else
@@ -212,7 +212,6 @@ module SurveyMoonbear
         str + '</div>'
       end
 
-      # TODO: cannot catch the value
       def build_multiple_choice_radio(item, other=false)
         str = "<fieldset class='form-group mt-5'>"
         if item.required == 1
@@ -248,7 +247,6 @@ module SurveyMoonbear
         str += '</fieldset>'
       end
 
-      # TODO: cannot catch the value
       def build_multiple_choice_checkbox(item, other=false)
         str = "<fieldset class='form-group mt-5'>"
         if item.required == 1
@@ -293,7 +291,6 @@ module SurveyMoonbear
         str + '</div>'
       end
 
-      # TODO: cannot catch Grid's interact var
       def build_grid_questions_radio(items)
         str = '<fieldset>'
         str += "<div class='table-responsive'>"
@@ -342,7 +339,6 @@ module SurveyMoonbear
         str += '</fieldset>'
       end
 
-      # TODO: cannot catch Grid's interact var
       def build_grid_questions_slider(items)
         str = '<fieldset>'
         str += "<table class='table'>"
@@ -381,7 +377,6 @@ module SurveyMoonbear
         str += '</fieldset>'
       end
 
-      # TODO: cannot catch Grid's interact var
       def build_grid_questions_vas(items)
         str = '<fieldset>'
         str += "<table class='table'>"
