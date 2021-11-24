@@ -107,6 +107,18 @@ javascript:
         $('#page_next').addClass('disabled');
       }
       $('#page_pre').removeClass('disabled');
+
+      // get all the span elements with interactive variable
+      var interact_variables = document.querySelectorAll('span[class*="__{}"]');
+      for(let interact_variable of interact_variables){
+        var set_var = interact_variable.id.split('__{}')[0];
+        // get the input value and insert in the span elements
+        if($('input[name='+set_var+']').val()){
+          interact_variable.innerHTML = $('input[name='+set_var+']').val();
+        }else{
+          interact_variable.innerHTML = $('textarea[name='+set_var+']').val();
+        };
+      };
       location.href = '#page_' + page;
     } else {
       var str = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
