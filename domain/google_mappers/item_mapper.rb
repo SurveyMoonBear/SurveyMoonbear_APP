@@ -38,7 +38,8 @@ module SurveyMoonbear
             name: name,
             description: description,
             required: required,
-            options: options
+            options: options,
+            visualization: visualization
           )
         end
 
@@ -62,6 +63,10 @@ module SurveyMoonbear
 
         def options
           @item_data[4]
+        end
+
+        def visualization
+          @item_data[5]
         end
       end
     end

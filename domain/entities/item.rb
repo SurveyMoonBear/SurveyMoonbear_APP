@@ -12,6 +12,7 @@ module SurveyMoonbear
       attribute :description, String.optional
       attribute :required, Strict::Integer
       attribute :options, Strict::String.optional
+      attribute :visualization, Strict::String.optional
     end
   end
 end
