@@ -16,7 +16,6 @@ module SurveyMoonbear
     plugin :flash
     plugin :hooks
     plugin :all_verbs
-    
 
     route do |routing|
       routing.assets
@@ -229,6 +228,25 @@ module SurveyMoonbear
                                 response.failure
           end
         end
+
+        # GET survey/[survey_id]/viz/[launch_id]
+        routing.on 'viz', String do |launch_id|
+          routing.get do
+            response = Service::TransformSheetsResponsesToChart.new.call(survey_id: survey_id, launch_id: launch_id)
+            response.success? ? response.value! : 
+                                response.failure
+            viz_page = response.value!
+            chart_nums = viz_page[:chart_names].length
+
+            view 'survey_viz',
+                  locals: { chart_names: viz_page[:chart_names],
+                            chart_labels: viz_page[:chart_labels],
+                            chart_datas: viz_page[:chart_datas],
+                            chart_types: viz_page[:chart_types],
+                            chart_nums: chart_nums,
+                            canvas_html: viz_page[:canvas_html] }
+          end
+        end
       end
 
       routing.on 'onlinesurvey', String, String do |survey_id, launch_id|
@@ -244,7 +262,7 @@ module SurveyMoonbear
               if response.failure? || surveys_started.nil?
                 routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
               end
-
+              puts response.value!
               view 'survey_finish',
                    layout: false,
                    locals: { survey: response.value! }
