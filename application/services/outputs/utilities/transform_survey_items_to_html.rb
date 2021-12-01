@@ -160,7 +160,7 @@ module SurveyMoonbear
         when 'Random code'
           build_random_code(item)
         when 'Jump to page'
-          build_random_code(item)
+          build_jump_page(item)
         else
           puts "Sorry, there's no such individual question type: #{item.type}"
         end
@@ -299,6 +299,10 @@ module SurveyMoonbear
         str += "<label for='#{item.name}' class='lead'>#{item.description}</lable>"
         str += "<input type='text' class='form-control' name='#{item.name}' id='#{item.name}' readonly='' value='#{random_code}'>"
         str + '</div>'
+      end
+
+      def build_jump_page(item)
+        str = "<span hidden name='jump_page_#{item.options}' id='jump_page_#{item.options}'>#{item.options}</span>"
       end
 
       def build_grid_questions_radio(items)

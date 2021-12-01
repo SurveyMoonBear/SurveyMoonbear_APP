@@ -102,6 +102,10 @@ javascript:
     });
     
     if (required_flag == true) {
+      var jump_page = +$('#page_' + record[page_idx] + ' span[name*="jump_page_"]').text();
+      if(jump_page !== 0){
+        next_page_num = jump_page;
+      };
       record.push(next_page_num);
       $('.alert').alert('close');
       $('#page_' + record[page_idx]).addClass('d-none');
