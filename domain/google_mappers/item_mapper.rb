@@ -39,6 +39,7 @@ module SurveyMoonbear
             description: description,
             required: required,
             options: options,
+            link_to: link_to,
             visualization: visualization
           )
         end
@@ -65,8 +66,12 @@ module SurveyMoonbear
           @item_data[4]
         end
 
-        def visualization
+        def link_to
           @item_data[5]
+        end
+
+        def visualization
+          @item_data[6]
         end
       end
     end

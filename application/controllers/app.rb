@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'roda'
 require 'figaro'
 require 'slim'
@@ -20,7 +22,6 @@ module SurveyMoonbear
     route do |routing|
       routing.assets
 
-      app = App
       config = App.config
 
       SecureDB.setup(config.DB_KEY)
@@ -129,8 +130,8 @@ module SurveyMoonbear
 
         # POST /survey/[survey_id]/update_options
         routing.post 'update_options' do
-          response = Service::UpdateSurveyOptions.new.call(survey_id: survey_id, 
-                                                           option: routing.params['option'], 
+          response = Service::UpdateSurveyOptions.new.call(survey_id: survey_id,
+                                                           option: routing.params['option'],
                                                            option_value: routing.params['option_value'])
 
           if response.failure?
@@ -163,10 +164,8 @@ module SurveyMoonbear
 
         # GET survey/[survey_id]/start
         routing.get 'start' do
-          response = Service::StartSurvey.new.call(survey_id: survey_id, 
-                                                   current_account: @current_account)
-
-          flash[:error] = response.failure + ' Please try again.' if response.failure?
+          response = Service::StartSurvey.new.call(survey_id: survey_id, current_account: @current_account)
+          flash[:error] = "#{response.failure} Please try again." if response.failure?
 
           routing.redirect '/survey_list'
         end
@@ -182,11 +181,10 @@ module SurveyMoonbear
 
         # DELETE survey/[survey_id]
         routing.delete do
-          response = Service::DeleteSurvey.new.call(config: config, 
-                                                    survey_id: survey_id)
+          response = Service::DeleteSurvey.new.call(config: config, survey_id: survey_id)
 
-          flash[:error] = "Failed to delete the survey. Please try again :(" if response.failure?
-          
+          flash[:error] = 'Failed to delete the survey. Please try again :(' if response.failure?
+
           routing.redirect '/survey_list', 303
         end
 
@@ -202,9 +200,10 @@ module SurveyMoonbear
               arr_launches = []
               survey.launches.each do |launch|
                 next if launch.responses.length.zero?
+
                 arr_responses = []
-                launch.responses.each do |response|
-                  arr_responses.push(response.respondent_id)
+                launch.responses.each do |res|
+                  arr_responses.push(res.respondent_id)
                 end
                 arr_responses.uniq!
                 stime = launch.started_at
@@ -224,8 +223,7 @@ module SurveyMoonbear
             response['Content-Type'] = 'application/csv'
 
             response = Service::TransformResponsesToCSV.new.call(survey_id: survey_id, launch_id: launch_id)
-            response.success? ? response.value! : 
-                                response.failure
+            response.success? ? response.value! : response.failure
           end
         end
 
@@ -259,10 +257,8 @@ module SurveyMoonbear
               response = Service::GetSurveyFromDatabase.new.call(survey_id: survey_id)
               surveys_started = SecureSession.new(session).get(:surveys_started)
 
-              if response.failure? || surveys_started.nil?
-                routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
-              end
-              puts response.value!
+              routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}" if response.failure? || surveys_started.nil?
+
               view 'survey_finish',
                    layout: false,
                    locals: { survey: response.value! }
@@ -275,9 +271,9 @@ module SurveyMoonbear
                 survey_started['survey_id'] == survey_id
               end
 
-              Service::StoreResponses.new.call(survey_id: survey_id, 
-                                               launch_id: launch_id, 
-                                               respondent_id: respondent['respondent_id'], 
+              Service::StoreResponses.new.call(survey_id: survey_id,
+                                               launch_id: launch_id,
+                                               respondent_id: respondent['respondent_id'],
                                                responses: routing.params,
                                                config: config)
 
@@ -300,10 +296,8 @@ module SurveyMoonbear
         routing.on 'closed' do
           routing.get do
             response = Service::GetSurveyFromDatabase.new.call(survey_id: survey_id)
-            
-            if response.failure?
-              view 'survey_closed', layout: false
-            end
+
+            view 'survey_closed', layout: false if response.failure?
 
             survey = response.value!
 
@@ -313,8 +307,8 @@ module SurveyMoonbear
             end
 
             view 'survey_closed',
-                  layout: false,
-                  locals: { survey: survey }
+                 layout: false,
+                 locals: { survey: survey }
           end
         end
 
