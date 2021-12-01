@@ -12,14 +12,14 @@ module SurveyMoonbear
       end
 
       def self.create_from(entity)
-
         db_item = Database::ItemOrm.create(
           order: entity.order,
           type: entity.type,
           name: entity.name,
           description: entity.description,
           required: entity.required,
-          options: entity.options
+          options: entity.options,
+          link_to: entity.link_to
         )
 
         rebuild_entity(db_item)
@@ -35,7 +35,8 @@ module SurveyMoonbear
           name: db_record.name,
           description: db_record.description,
           required: db_record.required,
-          options: db_record.options
+          options: db_record.options,
+          link_to: db_record.link_to
         )
       end
     end

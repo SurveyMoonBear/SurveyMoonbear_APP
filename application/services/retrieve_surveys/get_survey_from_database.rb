@@ -18,9 +18,9 @@ module SurveyMoonbear
       def get_survey_from_database(input)
         survey = Repository::For[Entity::Survey].find_id(input[:survey_id])
         raise unless survey
-        
+
         Success(survey)
-      rescue
+      rescue StandardError
         Failure('Failed to get survey from database.')
       end
     end
