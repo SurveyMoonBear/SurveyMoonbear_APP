@@ -180,9 +180,9 @@ javascript:
   $('input[type=radio]').click(function (e) {
     var type_name = $(this).prop('name');
     updateRadioHiddenInput(type_name, this.value);
-    var link_to_page = +$(this).prop('id').split('__')[1];
-    if(link_to_page){
-      next_page_num = link_to_page;
+    var flow_logic_page = +$(this).prop('id').split('__')[1];
+    if(flow_logic_page){
+      next_page_num = flow_logic_page;
     }
   });
 

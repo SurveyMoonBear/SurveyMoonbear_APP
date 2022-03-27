@@ -222,19 +222,19 @@ module SurveyMoonbear
           str += "<label id='#{item.name}' class='lead'>#{item.description}</label>"
         end
 
-        if item.options && !item.link_to
+        if item.options && !item.flow_logic
           item.options.split(',').map(&:strip).each_with_index do |option, index|
             str += "<div class='custom-control custom-radio'>"
             str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}' name='radio-#{item.name}' value='#{option}'>"
             str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
             str += '</div>'
           end
-        elsif item.options && item.link_to
-          link_to = item.link_to.split(',')
+        elsif item.options && item.flow_logic
+          flow_logic = item.flow_logic.split(',')
           item.options.split(',').map(&:strip).each_with_index do |option, index|
             str += "<div class='custom-control custom-radio'>"
-            str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}__#{link_to[index]}' name='radio-#{item.name}' value='#{option}'>"
-            str += "<label class='custom-control-label' for='#{item.name}#{index}__#{link_to[index]}'>#{option}</label>"
+            str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}__#{flow_logic[index]}' name='radio-#{item.name}' value='#{option}'>"
+            str += "<label class='custom-control-label' for='#{item.name}#{index}__#{flow_logic[index]}'>#{option}</label>"
             str += '</div>'
           end
         else
