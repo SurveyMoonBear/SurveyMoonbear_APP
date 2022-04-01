@@ -39,8 +39,8 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 
 ![](https://i.imgur.com/V0pYaZc.png)
 
-* different scope has different [access right](https://developers.google.com/drive/api/v3/about-auth)
-* use **`AUTH_DRIVE`** to get full permissive scope to access all of a user's files, excluding the Application Data folder
+* different scope has different [access right](https://developers.google.com/drive/api/v3/about-auth)( you can also [see here](https://googleapis.dev/ruby/google-api-client/latest/Google/Apis/DriveV3.html))
+* use **`AUTH_DRIVE`** instead of **`AUTH_DRIVE_METADATA_READONLY`** to get full permissive scope to access all of a user's files, excluding the Application Data folder
 
 ### Files Copy
 
