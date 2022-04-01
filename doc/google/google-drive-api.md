@@ -23,7 +23,7 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 * [Install the Google Client Library](https://developers.google.com/drive/api/v3/quickstart/ruby?hl=en#step\_1\_install_the_google_client_library) `gem install google-api-client`
 * [Set up the sample file](https://developers.google.com/drive/api/v3/quickstart/ruby?hl=en#step\_2\_set_up_the_sample) Create a file named quickstart.rb
 * Download the `credentials.json` from GCP Platform _This file has fixed format. You cannot change it._ 
-
+* `credentials.json` has your `google client ID` and `google client secret`
 ![](https://i.imgur.com/jwiatwg.png)
 
 * Run the sample `ruby quickstart.rb`
@@ -46,6 +46,7 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 
 * you can try API and see the document [here](https://developers.google.com/drive/api/v3/reference/files/copy?apix_params=%7B%22fileId%22%3A%221Nf6z-xXU2QT0fiC0H91pNfUiCNHfJPM8lddk_wVcR0c%22%2C%22resource%22%3A%7B%7D%7D#auth)
 * Find the fileID you want to copy (It would return the id in terminal when the quickstart finish. Or find the fileID in the url) 
+* We use these fileID for `sample file ID`
 
 ![](https://i.imgur.com/6klEd4v.png)
 
