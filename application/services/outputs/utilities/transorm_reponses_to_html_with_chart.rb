@@ -14,10 +14,15 @@ module SurveyMoonbear
 
       private
 
-      # input {"option_name"=>{...}, "option_name2"=>{...}, "option_name3"=>{...}
+      # input {entities of VisualReportItem}
       def build_html(input)
-        html_arr = input[:responses_to_chart].keys.map do |name|
-          "<canvas id='#{name}_chart' width='400' height='400'></canvas>"
+        html_arr = input[:charts].each_with_index.map do |chart, idx|
+          str = "<div class='form-group mt-5 grid-container'>"
+          str += "<p class='lead'>#{chart[1]}</p>"
+          str += "<div class='row justify-content-center'><canvas id='chart_#{idx}' width='400' height='400'></canvas></div>"
+          str + '</div>'
+        # html_arr = input[:responses_to_chart].keys.map do |name|
+        #   "<canvas id='#{name}_chart' width='400' height='400'></canvas>"
         end
 
         Success(html_arr)
