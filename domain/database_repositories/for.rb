@@ -5,7 +5,8 @@ module SurveyMoonbear
     For = {
       Entity::Account => Accounts,
       Entity::Survey  => Surveys,
-      Entity::Launch  => Launches
+      Entity::Launch  => Launches,
+      Entity::VisualReport => VisualReports
     }.freeze
   end
 end

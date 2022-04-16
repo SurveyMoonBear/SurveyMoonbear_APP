@@ -226,25 +226,6 @@ module SurveyMoonbear
             response.success? ? response.value! : response.failure
           end
         end
-
-        # GET survey/[survey_id]/viz/[launch_id]
-        routing.on 'viz', String do |launch_id|
-          routing.get do
-            response = Service::TransformSheetsResponsesToChart.new.call(survey_id: survey_id, launch_id: launch_id)
-            response.success? ? response.value! : 
-                                response.failure
-            viz_page = response.value!
-            chart_nums = viz_page[:chart_names].length
-
-            view 'survey_viz',
-                  locals: { chart_names: viz_page[:chart_names],
-                            chart_labels: viz_page[:chart_labels],
-                            chart_datas: viz_page[:chart_datas],
-                            chart_types: viz_page[:chart_types],
-                            chart_nums: chart_nums,
-                            canvas_html: viz_page[:canvas_html] }
-          end
-        end
       end
 
       routing.on 'onlinesurvey', String, String do |survey_id, launch_id|
@@ -365,6 +346,59 @@ module SurveyMoonbear
                          survey_url: survey_url,
                          pages: html_of_pages_arr,
                          url_params: url_params }
+        end
+      end
+
+      # /analytics branch
+      routing.on 'analytics' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        # GET /analytics
+        routing.get do
+          routing.redirect '/' unless @current_account
+          surveys = Repository::For[Entity::Survey]
+                    .find_owner(@current_account['id'])
+          visual_reports = Repository::For[Entity::VisualReport]
+                           .find_owner(@current_account['id'])
+          view 'analytics', locals: { surveys: surveys,
+                                      config: config,
+                                      visual_reports: visual_reports }
+        end
+
+        routing.post 'create' do
+          new_visual_report = Service::CreateVisualReport.new.call(config: config,
+                                                                   current_account: @current_account,
+                                                                   title: routing.params['title'])
+          new_visual_report.success? ? flash[:notice] = "#{new_visual_report.value!.title} is created!" :
+                                flash[:error] = 'Failed to create visual report, please try again :('
+
+          routing.redirect '/analytics'
+        end
+      end
+
+      # visual_report/[visual_report_id]
+      routing.on 'visual_report', String do |visual_report_id|
+
+        # visual_report/[visual_report_id]/online/[spreadsheet_id]
+        routing.on 'online', String do |spreadsheet_id|
+          routing.get do
+            # param: studentID
+            access_token = Google::Auth.new(config).refresh_access_token
+            response = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
+                                                                     spreadsheet_id: spreadsheet_id,
+                                                                     access_token: access_token)
+            if response.failure?
+              flash[:error] = response.failure + ' Please try again.'
+            end
+            visual_reports = Repository::For[Entity::VisualReport]
+                             .find_origin_id(spreadsheet_id)
+            graphs = response.value![:all_graphs]
+            html_arr = response.value![:html_arr]
+
+            view 'visual_report',
+                 layout: false,
+                 locals: { title: visual_reports.title, graphs: graphs, html_arr: html_arr }
+          end
         end
       end
     end

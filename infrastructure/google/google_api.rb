@@ -31,7 +31,7 @@ module SurveyMoonbear
           successful? ? @response : raise(HTTP_ERROR[@response.code])
         end
       end
-      
+
       # Gateway class to talk to Spreadsheet API
       class Sheets
         def initialize(access_token)
@@ -42,12 +42,12 @@ module SurveyMoonbear
           survey_req_url = spreadsheet_path(spreadsheet_id)
           Api.get_with_google_auth(survey_req_url, @access_token).parse
         end
-  
+
         def items_data(spreadsheet_id, title)
           items_req_url = spreadsheet_path([spreadsheet_id, title].join('/values/'))
           Api.get_with_google_auth(items_req_url, @access_token).parse
         end
-  
+
         def update_gs_title(spreadsheet_id, new_title)
           update_req_url = spreadsheet_path("#{spreadsheet_id}:batchUpdate")
           data = {
@@ -58,14 +58,56 @@ module SurveyMoonbear
               }
             }]
           }
-          
+
           updated_res = Api.post_with_google_auth(update_req_url, @access_token, data).parse
         end
 
+        def set_data_validation(spreadsheet_id, sheet_id, list_datas, row_dict)
+          update_req_url = spreadsheet_path("#{spreadsheet_id}:batchUpdate")
+          data = {
+            requests: [{
+              "setDataValidation": {
+                "range": {
+                  "sheetId": sheet_id,
+                  "startRowIndex": row_dict['start'],
+                  "endRowIndex": row_dict['end'],
+                  "startColumnIndex": 1,
+                  "endColumnIndex": 2
+                },
+                "rule": {
+                  "condition": {
+                    "type": 'ONE_OF_LIST',
+                    "values": list_datas_value(list_datas)
+                  },
+                  "showCustomUi": true,
+                  "strict": false
+                }
+              }
+            }]
+          }
+
+          Api.post_with_google_auth(update_req_url, @access_token, data).parse
+        end
+
+        # multiple ranges : ranges=A1:D5&ranges=Sheet2!A1:C4 If you not write the sheet name, it will be the first visible sheet
+        def get_range_data(spreadsheet_id, ranges)
+          req_url = spreadsheet_path("#{spreadsheet_id}/values:batchGet?#{ranges}")
+          Api.get_with_google_auth(req_url, @access_token).parse
+        end
+
         private
-  
+
         def spreadsheet_path(path)
           'https://sheets.googleapis.com/v4/spreadsheets/' + path
+        end
+
+        def list_datas_value(list_datas)
+          vals = []
+
+          list_datas.each do |list_data|
+            vals.append({ "userEnteredValue": list_data })
+          end
+          vals
         end
       end
 
