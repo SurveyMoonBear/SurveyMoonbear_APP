@@ -83,7 +83,8 @@ module SurveyMoonbear
                          input[:item_data].chart_type,
                          input[:count].values,
                          input[:count].keys,
-                         input[:chart_colors].values)
+                         input[:chart_colors].values,
+                         input[:item_data].legend)
         input[:graph_val] = graph_val
 
         Success(input)

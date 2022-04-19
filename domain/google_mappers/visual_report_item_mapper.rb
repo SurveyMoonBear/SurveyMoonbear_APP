@@ -45,7 +45,8 @@ module SurveyMoonbear
             graph_title: graph_title,
             data_source: data_source,
             question: question,
-            chart_type: chart_type
+            chart_type: chart_type,
+            legend: legend
           )
         end
 
@@ -66,6 +67,10 @@ module SurveyMoonbear
 
         def chart_type
           @item_data[3]
+        end
+
+        def legend
+          @item_data[4].nil? ? '' : @item_data[4]
         end
       end
     end
