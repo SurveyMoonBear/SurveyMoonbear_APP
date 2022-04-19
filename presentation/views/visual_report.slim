@@ -35,18 +35,31 @@ html
       integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" 
       crossorigin="anonymous"
     }
-    script src="https://cdn.jsdelivr.net/npm/chart.js"
+    / script src="https://cdn.jsdelivr.net/npm/chart.js"
+    script src="https://cdn.plot.ly/plotly-2.11.1.min.js"
 
     .container id='html_body'
       section class="mt-3 mb-5"
         / include :flash_bar
 
-        div class='row justify-content-center'
-          h1 class="col-md-10 my-4" #{title}
-        div class='row justify-content-center'
-          div class='bg-light col-md-10 shadow'
-            div class='container py-3' 
-              div id="chart_div" class='row'
+        - if show_enter_id 
+          div class='row justify-content-center'
+            div class="card w-50"
+              div class="card-body"
+                h5 class="card-title" Enter your school ID
+                form action="/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}" method="post"
+                  div class="form-group"
+                    input type="text" class="form-control" id="respondent" name="respondent" placeholder="e.g., 109078507"
+                    br
+                    button type="submit" class="btn btn-primary" id="btn-create" Enter
+        - else
+          div class='row justify-content-center'
+            h1 class="col-md-10 my-4" #{title}
+          div class='row justify-content-center'
+            div class='bg-light col-md-10 shadow'
+              div class='container py-3' 
+                div id="chart_div" class='row'
+
 
 javascript:
     $.each(#{{html_arr}}, function(i, canva){
@@ -55,47 +68,36 @@ javascript:
       // Append chart-html to chart-div
       $('#chart_div' + i).append(canva);
     });
+
     let myChart;
+    let chartData;
+    let chartLayout;
     let ctx;
+    let config;
     $.each(#{{graphs}}, function(i, graph){
       ctx = document.getElementById( 'chart_'+i );
 
-      myChart = new Chart(ctx, {
-        type: graph[2],
-        data: {
-            labels: graph[4],
-            datasets: [{
-                labels: 'count',
-                data: graph[3],
-                backgroundColor: graph[5],
-                borderWidth: 1
-            }]
+      chartData = {
+        x: graph[4],
+        y: graph[3],
+        marker:{
+          color: graph[5]
         },
-        options: {
-            plugins:{
-                legend: {
-                  display: false
-              },
-              tooltips: {
-                  callbacks: {
-                    label: function(tooltipItem) {
-                            return tooltipItem.yLabel;
-                    }
-                  }
-              }
-            },
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        display: false
-                    }
-                }],
-                y: {
-                    beginAtZero: true
-                }
-            },
-            responsive: false
+        type: graph[2]
+      };
+
+      chartLayout = {
+        title: graph[1],
+        width: 500,
+        xaxis: {
+          automargin: true
         }
-      });
+      };
+      config = {
+        responsive: false,
+        displayModeBar: false
+      };
+
+      Plotly.newPlot(ctx, [chartData], chartLayout, config);
     });
     

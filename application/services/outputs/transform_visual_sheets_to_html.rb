@@ -5,7 +5,7 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Return survey title & an array of page HTML strings
-    # Usage: Service::TransformSheetsSurveyToHTML.new.call(survey_id: "...", spreadsheet_id: "...", access_token: "...", random_seed: "...")
+    # Usage: Service::TransformVisualSheetsToHTML.new.call(survey_id: "...", spreadsheet_id: "...", access_token: "...", student_id: "...")
     class TransformVisualSheetsToHTML
       include Dry::Transaction
       include Dry::Monads
@@ -36,6 +36,18 @@ module SurveyMoonbear
         sources = GetSourcesFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                      access_token: input[:access_token])
 
+        other_sheet = {}
+        sources.value!.each do |source|
+          if source.source_type == 'spreadsheet'
+            url = source.source_name # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
+            other_sheet_id = url.match('.*/(.*)/')[1]
+            other_sheets_api = Google::Api::Sheets.new(input[:access_token])
+            other_sheet_title = other_sheets_api.survey_data(other_sheet_id)['sheets'][0]['properties']['title']
+            other_sheet[source.source_id] = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
+            input[:other_sheets] = other_sheet
+          end
+        end
+
         if sources.success?
           input[:sources] = sources.value!
           Success(input)
@@ -53,7 +65,7 @@ module SurveyMoonbear
           if source.source_type == 'surveymoonbear'
             survey = Repository::For[Entity::Survey].find_title(source.source_name)
             launch = Repository::For[Entity::Launch].find_id(survey.launch_id)
-            vis_identity = find_respondent_id('109003888', launch.responses)
+            vis_identity = find_respondent_id(input[:student_id], launch.responses) # 109003888
             graphs_val.append(map_moonbear_responses_and_report_item(item_data,
                                                                      launch.responses,
                                                                      vis_identity))
@@ -61,7 +73,8 @@ module SurveyMoonbear
             graph_response = MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
                                                                       access_token: input[:access_token],
                                                                       spreadsheet_source: source,
-                                                                      vis_identity: '109003888')
+                                                                      all_data: input[:other_sheets][source.source_id],
+                                                                      vis_identity: input[:student_id])
             graphs_val.append(graph_response.value![:graph_val])
           end
         end
