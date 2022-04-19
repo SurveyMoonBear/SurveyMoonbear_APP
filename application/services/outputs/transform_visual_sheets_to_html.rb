@@ -144,7 +144,8 @@ module SurveyMoonbear
                          item_data.chart_type,
                          response_cal_hash.values,
                          chart_colors.keys,
-                         chart_colors.values)
+                         chart_colors.values,
+                         item_data.legend)
       end
 
       def find_respondent_id(identity, responses)
