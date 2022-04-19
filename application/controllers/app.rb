@@ -381,23 +381,43 @@ module SurveyMoonbear
 
         # visual_report/[visual_report_id]/online/[spreadsheet_id]
         routing.on 'online', String do |spreadsheet_id|
-          routing.get do
-            # param: studentID
-            access_token = Google::Auth.new(config).refresh_access_token
-            response = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
-                                                                     spreadsheet_id: spreadsheet_id,
-                                                                     access_token: access_token)
-            if response.failure?
-              flash[:error] = response.failure + ' Please try again.'
-            end
-            visual_reports = Repository::For[Entity::VisualReport]
-                             .find_origin_id(spreadsheet_id)
-            graphs = response.value![:all_graphs]
-            html_arr = response.value![:html_arr]
+          routing.post do
+            student_id = routing.params['respondent']
+            student_id = SecureMessage.encrypt(student_id) # 109003888
 
-            view 'visual_report',
-                 layout: false,
-                 locals: { title: visual_reports.title, graphs: graphs, html_arr: html_arr }
+            routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{student_id}"
+          end
+
+          routing.get do
+            # param: respondent
+            student_id = routing.params['respondent']
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(visual_report_id)
+            graphs = []
+            html_arr = []
+            if student_id.nil?
+              show_enter_id = true
+            else
+              show_enter_id = false
+              student_id = SecureMessage.decrypt(student_id)
+              access_token = Google::Auth.new(config).refresh_access_token
+              response = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
+                                                                       spreadsheet_id: spreadsheet_id,
+                                                                       access_token: access_token,
+                                                                       student_id: student_id)
+              if response.failure?
+                flash[:error] = response.failure + ' Please try again or enter the correct school ID.'
+              end
+
+              graphs = response.value![:all_graphs]
+              html_arr = response.value![:html_arr]
+            end
+
+            view 'visual_report', layout: false, locals: { title: visual_report.title,
+                                                           graphs: graphs,
+                                                           html_arr: html_arr,
+                                                           visual_report: visual_report,
+                                                           show_enter_id: show_enter_id }
           end
         end
       end

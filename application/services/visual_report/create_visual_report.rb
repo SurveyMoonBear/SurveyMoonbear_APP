@@ -70,7 +70,6 @@ module SurveyMoonbear
               end
               row_dict['start'] = row_idx + 1
               row_dict['end'] = row_idx + 2
-              binding.irb
               input[:sheets_api].set_data_validation(input[:new_sheet].value!.origin_id, sheet_id, source_name, row_dict)
             end
           end
