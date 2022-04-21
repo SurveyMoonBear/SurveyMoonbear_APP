@@ -5,7 +5,7 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Return survey title & an array of page HTML strings
-    # Usage: Service::TransformVisualSheetsToHTML.new.call(survey_id: "...", spreadsheet_id: "...", access_token: "...", student_id: "...")
+    # Usage: Service::TransformVisualSheetsToHTMLWithCase.new.call(survey_id: "...", spreadsheet_id: "...", access_token: "...")
     class TransformVisualSheetsToHTML
       include Dry::Transaction
       include Dry::Monads
@@ -65,16 +65,13 @@ module SurveyMoonbear
           if source.source_type == 'surveymoonbear'
             survey = Repository::For[Entity::Survey].find_title(source.source_name)
             launch = Repository::For[Entity::Launch].find_id(survey.launch_id)
-            vis_identity = find_respondent_id(input[:student_id], launch.responses) # 109003888
             graphs_val.append(map_moonbear_responses_and_report_item(item_data,
-                                                                     launch.responses,
-                                                                     vis_identity))
+                                                                     launch.responses))
           elsif source.source_type == 'spreadsheet'
             graph_response = MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
                                                                       access_token: input[:access_token],
                                                                       spreadsheet_source: source,
-                                                                      all_data: input[:other_sheets][source.source_id],
-                                                                      vis_identity: input[:student_id])
+                                                                      all_data: input[:other_sheets][source.source_id])
             graphs_val.append(graph_response.value![:graph_val])
           end
         end
@@ -97,46 +94,38 @@ module SurveyMoonbear
         end
       end
 
-      def map_moonbear_responses_and_report_item(item_data, bear_responses, vis_identity)
+      def map_moonbear_responses_and_report_item(item_data, bear_responses)
         response_cal_hash = {}
         chart_colors = {}
-        item_responses = {}
+        item_responses = {} # { responses: item_all_responses, type: question['type'], res_id: 109003888}
         item_options = []
+        item_all_responses = [] # only response
         graph_val = []
         # 每個回覆中 哪些回覆是需要被visualize的 每一列的visual都有其responses了
         bear_responses.each do |res_obj|
           if !res_obj.item_data.nil?
           question = JSON.parse(res_obj.item_data)
-            if question['description'] == item_data.question
-              item_responses[res_obj.respondent_id] = {} if item_responses[res_obj.respondent_id].nil?
-              item_responses[res_obj.respondent_id]['responses'] = res_obj.response
-              item_responses[res_obj.respondent_id]['type'] = question['type']
+            if question['name'] == item_data.question
+              item_all_responses.append(res_obj.response)
+              item_responses['type'] = question['type']
               item_options = question['options'] if !question['options'].nil?
             end
           end
         end
+        item_responses['responses'] = item_all_responses
 
         # response_cal_hash.keys = chart_labels; response_cal_hash.values = chart_datas ; chart_colors.values = chart_colors
         # 計算單一問題的每個答案的次數
         if !item_options.empty?
-          options = item_options.split(',')
-          options = options.map { |option| option.gsub("\n", '') }
-          options.each { |option| response_cal_hash[option] = 0 }
-          response_cal_hash['other'] = 0
-
+          options = item_options.gsub("\n", '')
+          options = options.split(',')
+          # options = options.map { |option| option.gsub("\n", '') }
           options.each do |option|
+            response_cal_hash[option] = 0
             chart_colors[option] = 'rgb(54, 162, 235)'
-            chart_colors['other'] = 'rgb(54, 162, 235)'
-            item_responses.each_key do |res_id| # k=respondent_id
-              response_cal_hash, chart_colors = cal_individual_question(item_responses[res_id],
-                                                                        options,
-                                                                        option,
-                                                                        chart_colors,
-                                                                        response_cal_hash,
-                                                                        res_id,
-                                                                        vis_identity)
-            end
           end
+
+          response_cal_hash, chart_colors = cal_individual_question(item_responses, options, chart_colors, response_cal_hash)
         end
 
         graph_val.append(item_data.page,
@@ -148,14 +137,6 @@ module SurveyMoonbear
                          item_data.legend)
       end
 
-      def find_respondent_id(identity, responses)
-        responses.each do |res_obj|
-          if identity == res_obj.response
-            return res_obj.respondent_id
-          end
-        end
-      end
-
       def find_source(sources, item_data_source)
         sources.each do |source|
           if item_data_source == source.source_id
@@ -165,64 +146,96 @@ module SurveyMoonbear
         # return error? nil?
       end
 
-      def cal_individual_question(response_dic, options, option, chart_colors, response_cal_hash, res_id, vis_identity)
+      def cal_individual_question(response_dic, options, chart_colors, response_cal_hash)
         response_cal_hash, chart_colors =
           case response_dic['type']
           when 'Multiple choice (radio button)'
-            response_cal_hash.delete('other')
-            chart_colors.delete('other')
-            build_multiple_choice_radio(response_dic, option, chart_colors, response_cal_hash, vis_identity, res_id, other=false)
+            cal_multiple_choice_radio(response_dic, chart_colors, response_cal_hash)
           when "Multiple choice with 'other' (radio button)"
-            other = !(options.include? response_dic['responses'])
-            # response_cal_hash.delete('other') if response_cal_hash['other'] < 1 && !other
-            build_multiple_choice_radio(response_dic, option, chart_colors, response_cal_hash, vis_identity, res_id, other)
+            cal_multiple_choice_radio_with_other(response_dic, chart_colors, response_cal_hash)
           when 'Multiple choice (checkbox)'
-            response_cal_hash.delete('other')
-            chart_colors.delete('other')
-            response_dic['responses'] = response_dic['responses'].tr("\n", '')
-            responses_arr = response_dic['responses'].split(', ')
-            build_multiple_choice_checkbox(responses_arr, option, chart_colors, response_cal_hash, res_id, other=false)
+            # response_dic['responses'] = response_dic['responses'].tr("\n", '')
+            responses_arr = []
+            response_dic['responses'].each do |responses_perperson|
+              responses_arr += responses_perperson.split(', ')
+            end
+            cal_multiple_choice_checkbox(responses_arr, chart_colors, response_cal_hash)
           when "Multiple choice with 'other' (checkbox)"
-            response_dic['responses'] = response_dic['responses'].tr("\n", '')
-            responses_arr = response_dic['responses'].split(', ')
-            other = (responses_arr - options).empty? ? false : options.include?(responses_arr - options)
-            # response_cal_hash.delete('other') if response_cal_hash['other'] < 1 && !other
-            build_multiple_choice_checkbox(responses_arr, option, chart_colors, response_cal_hash, vis_identity, res_id, other)
+            # response_dic['responses'] = response_dic['responses'].tr("\n", '')
+            responses_arr = []
+            response_dic['responses'].each do |responses_perperson|
+              responses_arr += responses_perperson.split(', ')
+            end
+
+            cal_multiple_choice_checkbox_with_other(responses_arr, chart_colors, response_cal_hash)
+          when 'Multiple choice grid (radio button)'
+            temp_option = {}
+            options.each_with_index do |option, i|
+              temp_option["#{i+1}"] = option # {'1'=>'Strongly Disagre', '2'=>'Disgree'...}
+            end
+            cal_choice_grid(response_dic, temp_option, chart_colors, response_cal_hash)
           else
             puts "Sorry, we are not yet able to support this question type: #{response_dic['type']}"
           end
         return response_cal_hash, chart_colors
       end
 
-      def build_multiple_choice_radio(response_dic, option, chart_colors, response_cal_hash, vis_identity, res_id, other)
-        if other
-          response_cal_hash['other'] += 1
-          chart_colors['other'] = 'rgb(255, 205, 86)'
-        end
+      def cal_multiple_choice_radio(response_dic, chart_colors, response_cal_hash)
+        responses_hash = response_dic['responses'].tally
+        response_cal_hash.each_key { |key| responses_hash[key].nil? ? 0 : response_cal_hash[key] = responses_hash[key] }
 
-        if response_dic['responses'] == option
-          response_cal_hash[option] += 1
-          if vis_identity == res_id
-            chart_colors[option] = 'rgb(255, 205, 86)'
-          end
-        end
-        return response_cal_hash, chart_colors
+        [response_cal_hash, chart_colors]
       end
 
-      def build_multiple_choice_checkbox(responses_arr, option, chart_colors, response_cal_hash, vis_identity, res_id, other)
-        if other
-          response_cal_hash['other'] += 1
-          chart_colors['other'] = 'rgb(255, 205, 86)'
+      def cal_multiple_choice_radio_with_other(response_dic, chart_colors, response_cal_hash)
+        responses_hash = response_dic['responses'].tally
+        response_cal_hash.each_key do |key|
+          responses_hash[key].nil? ? 0 : response_cal_hash[key] = responses_hash[key]
+          responses_hash.delete(key)
         end
-        responses_arr.each do |response|
-          if response == option
-            response_cal_hash[option] += 1
-            if vis_identity == res_id
-              chart_colors[option] = 'rgb(255, 205, 86)'
-            end
+        response_cal_hash['other'] = 0
+        responses_hash.each_value { |val| response_cal_hash['other'] += val }
+
+        chart_colors['other'] = 'rgb(54, 162, 235)'
+
+        [response_cal_hash, chart_colors]
+      end
+
+      def cal_multiple_choice_checkbox(responses_arr, chart_colors, response_cal_hash)
+        responses_hash = responses_arr.tally
+        response_cal_hash.each_key do |key|
+          response_cal_hash[key] = responses_hash[key]
+        end
+
+        [response_cal_hash, chart_colors]
+      end
+
+      def cal_multiple_choice_checkbox_with_other(responses_arr, chart_colors, response_cal_hash)
+        responses_arr.each_with_index do |r, i|
+          if r.include? 'I sometimes ask questions about the homework'
+            responses_arr[i] = "I sometimes ask questions about the homework on MS Teams or read others' comments. 我有時會在微軟Teams上面發問或是瀏覽他人的討論串。"
           end
         end
-        return [response_cal_hash, chart_colors]
+        responses_hash = responses_arr.tally
+        response_cal_hash.each_key do |key|
+          responses_hash[key].nil? ? 0 : response_cal_hash[key] = responses_hash[key]
+          responses_hash.delete(key)
+        end
+        response_cal_hash['other'] = 0
+        responses_hash.each_value { |val| response_cal_hash['other'] += val }
+
+        chart_colors['other'] = 'rgb(54, 162, 235)'
+
+        [response_cal_hash, chart_colors]
+      end
+
+      def cal_choice_grid(response_dic, temp_option, chart_colors, response_cal_hash)
+        responses_hash = response_dic['responses'].sort.tally
+        responses_hash.each_key do |key|
+          response_cal_hash[temp_option[key]] = responses_hash[key]
+        end
+
+        [response_cal_hash, chart_colors]
       end
     end
   end
