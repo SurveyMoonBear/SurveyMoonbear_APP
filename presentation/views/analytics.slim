@@ -60,11 +60,11 @@ div class="mb-3"
                     /   id="startbtn-#{visual_report.id}"
                     / }
                     /   <i class="far fa-stop-circle"></i> &nbsp;Close Visual Report
-                input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}"
+                input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/public"
                 div class="input-group-append"
                   button class="btn btn-secondary" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
                     i class="fas fa-copy"
-                  a class="btn btn-secondary" target="_blank" href="/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}"
+                  a class="btn btn-secondary" target="_blank" href="/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/public"
                     i class="fas fa-external-link-alt"
                 / - else
                 /   a {
