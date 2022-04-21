@@ -381,6 +381,30 @@ module SurveyMoonbear
 
         # visual_report/[visual_report_id]/online/[spreadsheet_id]
         routing.on 'online', String do |spreadsheet_id|
+          # visual_report/[visual_report_id]/online/[spreadsheet_id]/public
+          routing.on 'public' do
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(visual_report_id)
+
+            access_token = Google::Auth.new(config).refresh_access_token
+            response = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
+                                                                      spreadsheet_id: spreadsheet_id,
+                                                                      access_token: access_token)
+            if response.failure?
+              flash[:error] = response.failure + ' Please try again or enter the correct school ID.'
+            end
+
+            graphs = response.value![:all_graphs]
+            html_arr = response.value![:html_arr]
+            show_enter_id = false
+
+            view 'visual_report', layout: false, locals: { title: visual_report.title,
+                                                           graphs: graphs,
+                                                           html_arr: html_arr,
+                                                           visual_report: visual_report,
+                                                           show_enter_id: show_enter_id }
+          end
+
           routing.post do
             student_id = routing.params['respondent']
             student_id = SecureMessage.encrypt(student_id) # 109003888
@@ -401,7 +425,7 @@ module SurveyMoonbear
               show_enter_id = false
               student_id = SecureMessage.decrypt(student_id)
               access_token = Google::Auth.new(config).refresh_access_token
-              response = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
+              response = Service::TransformVisualSheetsToHTMLWithCase.new.call(visual_report_id: visual_report_id,
                                                                        spreadsheet_id: spreadsheet_id,
                                                                        access_token: access_token,
                                                                        student_id: student_id)
