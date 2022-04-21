@@ -22,7 +22,7 @@ module SurveyMoonbear
         Success(sources)
       rescue StandardError => e
         puts e
-        Failure('Failed to read spreadsheet visual report.')
+        Failure('Failed to read spreadsheet visual report table source.')
       end
     end
   end
