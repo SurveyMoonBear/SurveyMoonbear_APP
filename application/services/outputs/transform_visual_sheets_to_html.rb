@@ -19,12 +19,11 @@ module SurveyMoonbear
 
       # input { visual_report_id:, spreadsheet_id:, access_token:, current_account: }
       def get_items_from_spreadsheet(input)
-        # sheets_report有兩層array TODO
         sheets_report = GetVisualreportFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                                 access_token: input[:access_token])
 
         if sheets_report.success?
-          input[:sheets_report] = sheets_report.value![0] # 因為兩層array所以才加 [0]
+          input[:sheets_report] = sheets_report.value! # [[table1 data],[table2 data]...]
           Success(input)
         else
           Failure(sheets_report.failure)
@@ -58,24 +57,30 @@ module SurveyMoonbear
 
       # input { ..., sheets_report}
       def get_responses_from_sources(input)
-        graphs_val = []
-        input[:sheets_report].each do |item_data|
-          source = find_source(input[:sources], item_data.data_source)
+        pages_val = {}
 
-          if source.source_type == 'surveymoonbear'
-            survey = Repository::For[Entity::Survey].find_title(source.source_name)
-            launch = Repository::For[Entity::Launch].find_id(survey.launch_id)
-            graphs_val.append(map_moonbear_responses_and_report_item(item_data,
-                                                                     launch.responses))
-          elsif source.source_type == 'spreadsheet'
-            graph_response = MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
-                                                                      access_token: input[:access_token],
-                                                                      spreadsheet_source: source,
-                                                                      all_data: input[:other_sheets][source.source_id])
-            graphs_val.append(graph_response.value![:graph_val])
+        input[:sheets_report].each do |key, items_data|
+          graphs_val = []
+          items_data.each do |item_data|
+            source = find_source(input[:sources], item_data.data_source)
+
+            if source.source_type == 'surveymoonbear'
+              survey = Repository::For[Entity::Survey].find_title(source.source_name)
+              launch = Repository::For[Entity::Launch].find_id(survey.launch_id)
+              graphs_val.append(map_moonbear_responses_and_report_item(item_data,
+                                                                       launch.responses))
+            elsif source.source_type == 'spreadsheet'
+              graph_response = MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
+                                                                        access_token: input[:access_token],
+                                                                        spreadsheet_source: source,
+                                                                        all_data: input[:other_sheets][source.source_id])
+              graphs_val.append(graph_response.value![:graph_val])
+            end
           end
+          pages_val[key] = graphs_val
         end
-        input[:all_graphs] = graphs_val
+
+        input[:all_graphs] = pages_val
 
         Success(input)
       rescue StandardError
@@ -84,11 +89,12 @@ module SurveyMoonbear
 
       # input { ..., sheets_report:, bear_responses: ,all_graphs:}
       def transform_sheet_items_to_html(input)
-        transform_result = TransformResponsesToHTMLWithChart.new.call(charts: input[:all_graphs])
-
+        transform_result = TransformResponsesToHTMLWithChart.new.call(pages_charts: input[:all_graphs])
         if transform_result.success?
           Success(all_graphs: input[:all_graphs],
-                  html_arr: transform_result.value!)
+                  nav_tab: transform_result.value![:nav_tab],
+                  nav_item: transform_result.value![:nav_item],
+                  pages_chart_val_hash: transform_result.value![:pages_chart_val_hash])
         else
           Failure(transform_result.failure)
         end

@@ -10,6 +10,7 @@ module SurveyMoonbear
       def load_several(spreadsheet_id)
         pages_data = @gateway.survey_data(spreadsheet_id)
         pages_data['sheets'].shift # remove the first page(source) of spreadsheet
+        pages_items = {}
         pages_data['sheets'].map do |page_data|
           title = page_data['properties']['title']
           page_index = page_data['properties']['index']
@@ -19,10 +20,12 @@ module SurveyMoonbear
 
           return nil unless items_data
 
-          items_data.each_with_index.map do |item_data|
-            VisualReportItemMapper.build_entity(spreadsheet_id, page_index, item_data)
-          end
+          pages_items[title] =
+            items_data.each_with_index.map do |item_data|
+              VisualReportItemMapper.build_entity(spreadsheet_id, page_index, item_data)
+            end
         end
+        pages_items
       end
 
       def self.build_entity(spreadsheet_id, page_index, item_data)

@@ -56,48 +56,92 @@ html
           div class='row justify-content-center'
             h1 class="col-md-10 my-4" #{title}
           div class='row justify-content-center'
+            div id="div_nav_tabs" class="col-md-10" style="padding-left: 0 ; padding-right: 0"
+            / nav class="col-md-10" style='padding-left: 0 ; padding-right: 0'
+            /   div class="nav nav-tabs" id="nav-tab" role="tablist"
+            /     a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" Class Infomation
+            /     a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" Homework
+            /     a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" R programming
+            /     a class="nav-item nav-link" id="nav-naaa-tab" data-toggle="tab" href="#nav-naaa" role="tab" aria-controls="nav-naaa" aria-selected="false" Statistics
+
             div class='bg-light col-md-10 shadow'
-              div class='container py-3' 
-                div id="chart_div" class='row'
+              div class='container py-3' id="div_tab_item"
+                / div class="tab-content" id="nav-tabContenttest"
+                /   div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
+                /     div id="chart_div" class='row'
+                /   div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab"second
+                /   div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab"third
+                /   div class="tab-pane fade" id="nav-naaa" role="tabpanel" aria-labelledby="nav-naaa-tab"four
 
 
 javascript:
+    if ("#{{nav_tab}}"){
+      $('#div_nav_tabs').append("#{{nav_tab}}");
+      $('#div_tab_item').append("#{{nav_item}}");
+    } else {
+      $('#div_tab_item').append("#{{nav_item}}");
+    }
+    // $.each(#{{nav_tab}}, function(i, tab){
+    // $('#div_nav_tabs').append("<nav class='col-md-10' style='padding-left: 0 ; padding-right: 0'><div class='nav nav-tabs' id='nav-tab' role='tablist'></div></nav>");
     $.each(#{{html_arr}}, function(i, canva){
-      $('#chart_div').append("<div id='chart_div" + ++i + "' class='container'></div>");
-
+      // $('#chart_div_page' + i).append("<div id='chart_div" + ++i + "' class='container'></div>");
       // Append chart-html to chart-div
-      $('#chart_div' + i).append(canva);
+      $('#chart_div_page' + i).append(canva);
     });
-
     let myChart;
     let chartData;
     let chartLayout;
     let ctx;
     let config;
-    $.each(#{{graphs}}, function(i, graph){
-      ctx = document.getElementById( 'chart_'+i );
+    let page_title
 
-      chartData = {
-        x: graph[4],
-        y: graph[3],
-        marker:{
-          color: graph[5]
-        },
-        type: graph[2]
-      };
-
-      chartLayout = {
-        title: graph[1],
-        width: 500,
-        xaxis: {
-          automargin: true
+    $.each(#{{graphs}}, function(title, graph_arr){
+      page_title = title.replace(' ', '_');
+      $.each(graph_arr, function(i, graph){
+        ctx = document.getElementById( 'chart_'+page_title+'_'+i );
+        if (graph[2]=='bar') {
+          chartData = {
+          x: graph[3],
+          y: graph[4],
+          orientation: 'h',
+          marker:{
+            color: graph[5]
+          },
+          type: graph[2]
+          };
+        } else if (graph[2]=='histogram'){
+          chartData = {
+            x: graph[4],
+            y: graph[3],
+            marker:{
+              color: graph[5]
+            },
+            type: 'bar'
+          };
+        } else {
+          chartData = {
+          x: graph[4],
+          y: graph[3],
+          marker:{
+            color: graph[5]
+          },
+          type: graph[2]
+          };
         }
-      };
-      config = {
-        responsive: false,
-        displayModeBar: false
-      };
 
-      Plotly.newPlot(ctx, [chartData], chartLayout, config);
+        chartLayout = {
+          title: graph[1],
+          width: 500,
+          xaxis: {
+            automargin: true
+          }
+        };
+
+        config = {
+          responsive: false,
+          displayModeBar: false
+        };
+
+        Plotly.newPlot(ctx, [chartData], chartLayout, config);
+      });
     });
-    
