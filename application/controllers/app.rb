@@ -394,13 +394,17 @@ module SurveyMoonbear
               flash[:error] = response.failure + ' Please try again or enter the correct school ID.'
             end
 
-            graphs = response.value![:all_graphs]
-            html_arr = response.value![:html_arr]
+            graphs = response.value![:all_graphs].to_json
+            html_arr = response.value![:pages_chart_val_hash]
+            nav_tab = response.value![:nav_tab]
+            nav_item = response.value![:nav_item]
             show_enter_id = false
 
             view 'visual_report', layout: false, locals: { title: visual_report.title,
                                                            graphs: graphs,
                                                            html_arr: html_arr,
+                                                           nav_tab: nav_tab,
+                                                           nav_item: nav_item,
                                                            visual_report: visual_report,
                                                            show_enter_id: show_enter_id }
           end
