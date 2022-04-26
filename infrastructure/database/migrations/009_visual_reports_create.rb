@@ -8,7 +8,6 @@ Sequel.migration do
       String      :origin_id, unique: true
       String      :title
       Time        :created_at
-      String      :state, default: 'design'
     end
   end
 end
