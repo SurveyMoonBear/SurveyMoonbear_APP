@@ -19,8 +19,7 @@ module SurveyMoonbear
           description: entity.description,
           required: entity.required,
           options: entity.options,
-          link_to: entity.link_to,
-          visualization: entity.visualization
+          flow_logic: entity.flow_logic
         )
 
         rebuild_entity(db_item)
@@ -37,8 +36,7 @@ module SurveyMoonbear
           description: db_record.description,
           required: db_record.required,
           options: db_record.options,
-          link_to: db_record.link_to,
-          visualization: db_record.visualization
+          flow_logic: db_record.flow_logic
         )
       end
     end
