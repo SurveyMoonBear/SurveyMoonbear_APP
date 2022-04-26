@@ -10,7 +10,6 @@ module SurveyMoonbear
       attribute :origin_id, Strict::String
       attribute :title, Strict::String
       attribute :created_at, Strict::Time.optional
-      attribute :state, Strict::String.optional
     end
   end
 end
