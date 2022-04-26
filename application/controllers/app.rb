@@ -360,6 +360,7 @@ module SurveyMoonbear
                     .find_owner(@current_account['id'])
           visual_reports = Repository::For[Entity::VisualReport]
                            .find_owner(@current_account['id'])
+
           view 'analytics', locals: { surveys: surveys,
                                       config: config,
                                       visual_reports: visual_reports }
@@ -371,6 +372,19 @@ module SurveyMoonbear
                                                                    title: routing.params['title'])
           new_visual_report.success? ? flash[:notice] = "#{new_visual_report.value!.title} is created!" :
                                 flash[:error] = 'Failed to create visual report, please try again :('
+
+          routing.redirect '/analytics'
+        end
+
+        # # POST /analytics/copy/[spreadsheet_id]
+        routing.post 'copy', String do |spreadsheet_id|
+          access_token = Google::Auth.new(config).refresh_access_token
+          new_visual_report = Service::CopyVisualReport.new.call(access_token: access_token,
+                                                                 current_account: @current_account,
+                                                                 spreadsheet_id: spreadsheet_id,
+                                                                 title: routing.params['title'])
+
+          flash[:error] = "Copy failed: '#{new_visual_report.failure}' Please try again :(" if new_visual_report.failure?
 
           routing.redirect '/analytics'
         end
