@@ -21,9 +21,9 @@ div class="mb-3"
               h3 class="mb-auto" #{visual_report.title}
             button {
                 class="btn btn-outline-dark border-0 ml-2 d-inline-flex align-middle"
-                data-toggle="modal" data-target="#modal_survey_settings" # TODO DELETE COPY
-                data-survey_id="#{visual_report.id}"
-                data-survey_title="#{visual_report.title}"
+                data-toggle="modal" data-target="#modal_visual_report_settings"
+                data-visual_report_id="#{visual_report.id}"
+                data-visual_report_title="#{visual_report.title}"
             }
               i class="fas fa-cog"
             button {
@@ -32,7 +32,7 @@ div class="mb-3"
             }
               i class="fas fa-chevron-down"
             div class="dropdown-menu"
-              a href="#" class="dropdown-item" onclick="confirmDeleteSurvey('#{visual_report.id}', '#{visual_report.title}')" Delete
+              a href="#" class="dropdown-item" onclick="confirmDeleteVisualReport('#{visual_report.id}', '#{visual_report.title}')" Delete
               a href="#" class="dropdown-item" data-origin_id="#{visual_report.origin_id}" data-toggle="modal" data-target="#modal_copy_survey" Copy
           p class="text-muted" 
             small Created at: #{visual_report.created_at}
@@ -85,9 +85,8 @@ div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="
             role="progressbar" style="width: 100%"
           }
 include :modal_create_visual_report
-include :modal_create_survey
 include :modal_copy_survey
-include :modal_survey_settings
+include :modal_visual_report_settings
 include :modal_survey_editor
 
 javascript:
@@ -104,14 +103,14 @@ javascript:
     $('[data-toggle="tooltip"]').tooltip();
   })
 
-  function confirmDeleteSurvey(survey_id, survey_title) {
-    if (confirm('Are you sure to delete "' + survey_title + '"?')) {
+  function confirmDeleteVisualReport(visual_report_id, visual_report_title) {
+    if (confirm('Are you sure to delete "' + visual_report_title + '"?')) {
       $('#modal_waiting').modal();
       $.ajax({
-        url: "/survey/" + survey_id,
+        url: "/visual_report/" + visual_report_id,
         type: 'DELETE',
         success: function(result) {
-          alert(survey_title + ' has been deleted!');
+          alert(visual_report_title + ' has been deleted!');
           location.reload();
         }
       });
@@ -146,14 +145,9 @@ javascript:
     $('#modal_create_visual_report').modal('hide');
     $('#modal_waiting').modal();
   });
-  
-/   $('#btn-create').on('click', function (e) {
-/     $('#modal_create_survey').modal('hide');
-/     $('#modal_waiting').modal();
-/   });
 
   $('#btn-save-settings').on('click', function (e) {
-    $('#modal_survey_settings').modal('hide');
+    $('#modal_visual_report_settings').modal('hide');
     $('#modal_waiting').modal();
   });
 

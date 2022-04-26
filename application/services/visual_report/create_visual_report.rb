@@ -15,8 +15,6 @@ module SurveyMoonbear
       step :copy_sample_spreadsheet
       step :read_source_spreadsheet
       step :get_source_type
-      # step :source_name_data_validation
-      # step :question_data_validation
 
       private
 
@@ -80,31 +78,6 @@ module SurveyMoonbear
         puts e
         Failure('Failed to get moonbear surveys or set sources data validation.')
       end
-
-      # def source_name_data_validation(input)
-      #   if !input[:surveys].nil?
-      #     source_name = []
-      #     input[:surveys].each do |survey|
-      #       source_name.append(survey.title)
-      #     end
-      #     sheet_id = input[:sheets_api].survey_data(input[:new_sheet].value!.origin_id)['sheets'][0]['properties']['sheetId']
-      #     input[:sheets_api].set_data_validation(input[:new_sheet].value!.origin_id, sheet_id, source_name)
-      #   end
-
-      #   Success(input[:new_sheet].value!)
-      # rescue StandardError => e
-      #   puts e
-      #   Failure('Failed to set sources data validation.')
-      # end
-
-      # TODO questions data validation
-      # def question_data_validation(input)
-
-      #   Success(input[:new_sheet].value!)
-      # rescue StandardError => e
-      #   puts e
-      #   Failure('Failed to set questions data validation.')
-      # end
     end
   end
 end
