@@ -378,7 +378,7 @@ module SurveyMoonbear
 
       # visual_report/[visual_report_id]
       routing.on 'visual_report', String do |visual_report_id|
-
+        @current_account = SecureSession.new(session).get(:current_account)
         # visual_report/[visual_report_id]/online/[spreadsheet_id]
         routing.on 'online', String do |spreadsheet_id|
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/public
@@ -447,6 +447,24 @@ module SurveyMoonbear
                                                            visual_report: visual_report,
                                                            show_enter_id: show_enter_id }
           end
+        end
+
+        # POST visual_report/[visual_report_id]/update_settings
+        routing.post 'update_settings' do
+          Service::EditVisualReportTitle.new.call(current_account: @current_account, 
+                                                  visual_report_id: visual_report_id, 
+                                                  new_title: routing.params['title'])
+
+          routing.redirect '/analytics'
+        end
+
+        # DELETE visual_report/[visual_report_id]
+        routing.delete do
+          response = Service::DeleteVisualReport.new.call(config: config, visual_report_id: visual_report_id)
+
+          flash[:error] = 'Failed to delete the visual report. Please try again :(' if response.failure?
+
+          routing.redirect '/analytics', 303
         end
       end
     end

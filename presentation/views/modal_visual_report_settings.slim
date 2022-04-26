@@ -1,0 +1,23 @@
+div class="modal fade" id="modal_visual_report_settings"
+  div class="modal-dialog" role="document"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Settings
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      form id="form_settings" method="post"
+        div class="modal-body"
+          div class="form-group"
+            label for="title" Visual Report Title
+            input type="text" class="form-control" id="input-title" name="title" placeholder="Enter visual report title"
+        div class="modal-footer"
+          button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+          button type="submit" class="btn btn-primary" id="btn-save-settings" Save
+
+javascript:
+  $('#modal_visual_report_settings').on('show.bs.modal', function(e) {
+    var visual_report_id = $(e.relatedTarget).data('visual_report_id');
+    var visual_report_title = $(e.relatedTarget).data('visual_report_title');
+    $('#form_settings').attr('action', '/visual_report/' + visual_report_id + '/update_settings');
+    $('#input-title').val(visual_report_title);
+  });
