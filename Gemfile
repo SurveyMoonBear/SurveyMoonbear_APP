@@ -23,6 +23,10 @@ gem 'rack-ssl-enforcer'
 gem 'rbnacl'
 gem 'secure_headers'
 
+# Caching
+gem 'rack-cache'
+gem 'redis-rack-cache'
+
 # Communication
 gem 'http'
 gem 'pony'
