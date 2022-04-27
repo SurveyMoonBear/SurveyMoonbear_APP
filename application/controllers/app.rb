@@ -18,6 +18,7 @@ module SurveyMoonbear
     plugin :flash
     plugin :hooks
     plugin :all_verbs
+    plugin :caching
 
     route do |routing|
       routing.assets
@@ -397,6 +398,8 @@ module SurveyMoonbear
         routing.on 'online', String do |spreadsheet_id|
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/public
           routing.on 'public' do
+            response.cache_control public: true, max_age: 60
+
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
 
