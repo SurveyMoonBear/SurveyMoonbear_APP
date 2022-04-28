@@ -50,8 +50,8 @@ module SurveyMoonbear
           expire_after: A_DAY, redis_server: App.config.REDIS_URL
       use Rack::Cache,
           verbose: true,
-          metastore: config.REDIS_URL + '/0/metastore',
-          entitystore: config.REDIS_URL + '/0/entitystore'
+          metastore: config.REDIS_URL + config.REDIS_RACK_CACHE_METASTORE,
+          entitystore: config.REDIS_URL + config.REDIS_RACK_CACHE_ENTITYTORE
     end
 
     configure do
