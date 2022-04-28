@@ -35,14 +35,13 @@ html
       integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" 
       crossorigin="anonymous"
     }
-    / script src="https://cdn.jsdelivr.net/npm/chart.js"
     script src="https://cdn.plot.ly/plotly-2.11.1.min.js"
 
     .container id='html_body'
       section class="mt-3 mb-5"
         / include :flash_bar
 
-        - if show_enter_id 
+        - if vis_report_object.show_enter_id 
           div class='row justify-content-center'
             div class="card w-50"
               div class="card-body"
@@ -54,38 +53,21 @@ html
                     button type="submit" class="btn btn-primary" id="btn-create" Enter
         - else
           div class='row justify-content-center'
-            h1 class="col-md-10 my-4" #{title}
+            h1 class="col-md-10 my-4" #{vis_report_object.title}
           div class='row justify-content-center'
             div id="div_nav_tabs" class="col-md-10" style="padding-left: 0 ; padding-right: 0"
-            / nav class="col-md-10" style='padding-left: 0 ; padding-right: 0'
-            /   div class="nav nav-tabs" id="nav-tab" role="tablist"
-            /     a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" Class Infomation
-            /     a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" Homework
-            /     a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false" R programming
-            /     a class="nav-item nav-link" id="nav-naaa-tab" data-toggle="tab" href="#nav-naaa" role="tab" aria-controls="nav-naaa" aria-selected="false" Statistics
-
             div class='bg-light col-md-10 shadow'
               div class='container py-3' id="div_tab_item"
-                / div class="tab-content" id="nav-tabContenttest"
-                /   div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
-                /     div id="chart_div" class='row'
-                /   div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab"second
-                /   div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab"third
-                /   div class="tab-pane fade" id="nav-naaa" role="tabpanel" aria-labelledby="nav-naaa-tab"four
 
 
 javascript:
-    if ("#{{nav_tab}}"){
-      $('#div_nav_tabs').append("#{{nav_tab}}");
-      $('#div_tab_item').append("#{{nav_item}}");
+    if ("#{{vis_report_object.nav_tab}}"){
+      $('#div_nav_tabs').append("#{{vis_report_object.nav_tab}}");
+      $('#div_tab_item').append("#{{vis_report_object.nav_item}}");
     } else {
-      $('#div_tab_item').append("#{{nav_item}}");
+      $('#div_tab_item').append("#{{vis_report_object.nav_item}}");
     }
-    // $.each(#{{nav_tab}}, function(i, tab){
-    // $('#div_nav_tabs').append("<nav class='col-md-10' style='padding-left: 0 ; padding-right: 0'><div class='nav nav-tabs' id='nav-tab' role='tablist'></div></nav>");
-    $.each(#{{html_arr}}, function(i, canva){
-      // $('#chart_div_page' + i).append("<div id='chart_div" + ++i + "' class='container'></div>");
-      // Append chart-html to chart-div
+    $.each(#{{vis_report_object.html_arr}}, function(i, canva){
       $('#chart_div_page' + i).append(canva);
     });
     let myChart;
@@ -95,7 +77,7 @@ javascript:
     let config;
     let page_title
 
-    $.each(#{{graphs}}, function(title, graph_arr){
+    $.each(#{{vis_report_object.graphs}}, function(title, graph_arr){
       page_title = title.replace(' ', '_');
       $.each(graph_arr, function(i, graph){
         ctx = document.getElementById( 'chart_'+page_title+'_'+i );

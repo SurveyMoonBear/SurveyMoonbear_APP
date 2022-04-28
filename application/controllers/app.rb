@@ -411,25 +411,16 @@ module SurveyMoonbear
             response = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
                                                                      spreadsheet_id: spreadsheet_id,
                                                                      access_token: access_token)
+
+            # TODO else response cache
             if response.failure?
-              # TODO: redirect?
-              flash[:error] = response.failure + ' Please try again ........?...response status..'
+              flash[:error] = response.failure + ' Please try again :('
+              routing.redirect '/analytics'
             end
+            vis_report_object = Views::PublicVisualReport.new(visual_report, response.value!)
 
-            # TODO: make one view objects
-            graphs = response.value![:all_graphs].to_json
-            html_arr = response.value![:pages_chart_val_hash]
-            nav_tab = response.value![:nav_tab]
-            nav_item = response.value![:nav_item]
-            show_enter_id = false
-
-            view 'visual_report', layout: false, locals: { title: visual_report.title,
-                                                           graphs: graphs,
-                                                           html_arr: html_arr,
-                                                           nav_tab: nav_tab,
-                                                           nav_item: nav_item,
-                                                           visual_report: visual_report,
-                                                           show_enter_id: show_enter_id }
+            view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
+                                                           visual_report: visual_report }
           end
 
           routing.post do
