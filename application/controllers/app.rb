@@ -398,19 +398,25 @@ module SurveyMoonbear
         routing.on 'online', String do |spreadsheet_id|
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/public
           routing.on 'public' do
-            response.cache_control public: true, max_age: 60
-
+            if App.environment == :production
+              response.cache_control public: true, max_age: 3600
+            end
+            if App.environment == :development
+              response.cache_control public: true, max_age: 60
+            end
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
 
             access_token = Google::Auth.new(config).refresh_access_token
             response = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
-                                                                      spreadsheet_id: spreadsheet_id,
-                                                                      access_token: access_token)
+                                                                     spreadsheet_id: spreadsheet_id,
+                                                                     access_token: access_token)
             if response.failure?
-              flash[:error] = response.failure + ' Please try again or enter the correct school ID.'
+              # TODO: redirect?
+              flash[:error] = response.failure + ' Please try again ........?...response status..'
             end
 
+            # TODO: make one view objects
             graphs = response.value![:all_graphs].to_json
             html_arr = response.value![:pages_chart_val_hash]
             nav_tab = response.value![:nav_tab]
@@ -433,6 +439,7 @@ module SurveyMoonbear
             routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{student_id}"
           end
 
+          # visual_report/[visual_report_id]/online/[spreadsheet_id]?respondent=[respondent]
           routing.get do
             # param: respondent
             student_id = routing.params['respondent']
