@@ -398,26 +398,20 @@ module SurveyMoonbear
         routing.on 'online', String do |spreadsheet_id|
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/public
           routing.on 'public' do
-            if App.environment == :production
-              response.cache_control public: true, max_age: 3600
-            end
-            if App.environment == :development
-              response.cache_control public: true, max_age: 60
-            end
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
 
             access_token = Google::Auth.new(config).refresh_access_token
-            response = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
+            responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
                                                                      spreadsheet_id: spreadsheet_id,
                                                                      access_token: access_token)
 
-            # TODO else response cache
-            if response.failure?
-              flash[:error] = response.failure + ' Please try again :('
-              routing.redirect '/analytics'
-            end
-            vis_report_object = Views::PublicVisualReport.new(visual_report, response.value!)
+            routing.halt 500 if responses.failure?
+
+            response.cache_control public: true, max_age: 3600 if App.environment == :production
+            response.cache_control public: true, max_age: 60 if App.environment == :development
+
+            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
 
             view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
                                                            visual_report: visual_report }
@@ -425,7 +419,7 @@ module SurveyMoonbear
 
           routing.post do
             student_id = routing.params['respondent']
-            student_id = SecureMessage.encrypt(student_id) # 109003888
+            student_id = SecureMessage.encrypt(student_id)
 
             routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{student_id}"
           end
@@ -450,6 +444,7 @@ module SurveyMoonbear
                                                                        student_id: student_id)
               if response.failure?
                 flash[:error] = response.failure + ' Please try again or enter the correct school ID.'
+                routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{student_id}"
               end
 
               graphs = response.value![:all_graphs]
