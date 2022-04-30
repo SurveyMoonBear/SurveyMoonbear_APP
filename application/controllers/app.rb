@@ -406,7 +406,10 @@ module SurveyMoonbear
                                                                       spreadsheet_id: spreadsheet_id,
                                                                       access_token: access_token)
 
-            routing.halt 500 if responses.failure?
+            if responses.failure?
+              flash[:error] = "#{responses.failure} Please try again :("
+              routing.redirect '/analytics'
+            end
 
             response.cache_control public: true, max_age: 3600 if App.environment == :production
             response.cache_control public: true, max_age: 60 if App.environment == :development
