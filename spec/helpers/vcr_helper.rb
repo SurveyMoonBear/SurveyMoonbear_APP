@@ -7,11 +7,13 @@ require 'json'
 # Setting up VCR
 class VcrHelper
   CASSETTES_FOLDER = 'spec/fixtures/cassettes'.freeze
-  
+
   def self.setup_vcr
     VCR.configure do |c|
       c.cassette_library_dir = CASSETTES_FOLDER
       c.hook_into :webmock
+      c.ignore_localhost = true
+      c.ignore_hosts 'sqs.ap-northeast-1.amazonaws.com'
     end
   end
 
@@ -23,14 +25,15 @@ class VcrHelper
       c.filter_sensitive_data('<SAMPLE_FILE_ID>') { SAMPLE_FILE_ID }
       c.filter_sensitive_data('<CURRENT_ACCOUNT>') { CURRENT_ACCOUNT }
       c.filter_sensitive_data('<ACCESS_TOKEN>') { ACCESS_TOKEN }
-      
-      # Filter access_token from request uri
-      c.filter_sensitive_data('<ACCESS_TOKEN>') do |interaction|
-        uri_query_str = URI.parse( URI.encode(interaction.request.uri) )
-                           .query
 
-        access_token_in_uri = URI.decode_www_form(uri_query_str).to_h['access_token'] unless uri_query_str.nil?
-      end
+      # Filter access_token from request uri
+      # c.filter_sensitive_data('<ACCESS_TOKEN>') do |interaction|
+      #   uri_query_str = URI.parse(interaction.request.uri)
+      #                      .query
+
+      #   access_token_in_uri = URI.decode_www_form(uri_query_str).to_h['refresh_token'] unless uri_query_str.nil?
+      # end
+
 
       # Filter access_token from request headers ('Authorization' => ["Bearer <ACCESS_TOKEN>"])
       c.filter_sensitive_data('<ACCESS_TOKEN>') do |interaction|

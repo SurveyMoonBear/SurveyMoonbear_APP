@@ -372,7 +372,7 @@ module SurveyMoonbear
                                                                    current_account: @current_account,
                                                                    title: routing.params['title'])
           new_visual_report.success? ? flash[:notice] = "#{new_visual_report.value!.title} is created!" :
-                                flash[:error] = 'Failed to create visual report, please try again :('
+                                       flash[:error] = 'Failed to create visual report, please try again :('
 
           routing.redirect '/analytics'
         end
@@ -403,8 +403,8 @@ module SurveyMoonbear
 
             access_token = Google::Auth.new(config).refresh_access_token
             responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
-                                                                     spreadsheet_id: spreadsheet_id,
-                                                                     access_token: access_token)
+                                                                      spreadsheet_id: spreadsheet_id,
+                                                                      access_token: access_token)
 
             routing.halt 500 if responses.failure?
 
@@ -417,52 +417,20 @@ module SurveyMoonbear
                                                            visual_report: visual_report }
           end
 
+          # customized visual report
+          # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
           routing.post do
             student_id = routing.params['respondent']
             student_id = SecureMessage.encrypt(student_id)
 
             routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{student_id}"
           end
-
-          # visual_report/[visual_report_id]/online/[spreadsheet_id]?respondent=[respondent]
-          routing.get do
-            # param: respondent
-            student_id = routing.params['respondent']
-            visual_report = Repository::For[Entity::VisualReport]
-                            .find_id(visual_report_id)
-            graphs = []
-            html_arr = []
-            if student_id.nil?
-              show_enter_id = true
-            else
-              show_enter_id = false
-              student_id = SecureMessage.decrypt(student_id)
-              access_token = Google::Auth.new(config).refresh_access_token
-              response = Service::TransformVisualSheetsToHTMLWithCase.new.call(visual_report_id: visual_report_id,
-                                                                       spreadsheet_id: spreadsheet_id,
-                                                                       access_token: access_token,
-                                                                       student_id: student_id)
-              if response.failure?
-                flash[:error] = response.failure + ' Please try again or enter the correct school ID.'
-                routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{student_id}"
-              end
-
-              graphs = response.value![:all_graphs]
-              html_arr = response.value![:html_arr]
-            end
-
-            view 'visual_report', layout: false, locals: { title: visual_report.title,
-                                                           graphs: graphs,
-                                                           html_arr: html_arr,
-                                                           visual_report: visual_report,
-                                                           show_enter_id: show_enter_id }
-          end
         end
 
         # POST visual_report/[visual_report_id]/update_settings
         routing.post 'update_settings' do
-          Service::EditVisualReportTitle.new.call(current_account: @current_account, 
-                                                  visual_report_id: visual_report_id, 
+          Service::EditVisualReportTitle.new.call(current_account: @current_account,
+                                                  visual_report_id: visual_report_id,
                                                   new_title: routing.params['title'])
 
           routing.redirect '/analytics'
