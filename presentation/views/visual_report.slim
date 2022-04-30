@@ -70,7 +70,7 @@ javascript:
     $.each(#{{vis_report_object.html_arr}}, function(i, canva){
       $('#chart_div_page' + i).append(canva);
     });
-    let myChart;
+
     let chartData;
     let chartLayout;
     let ctx;
@@ -113,14 +113,14 @@ javascript:
 
         chartLayout = {
           title: graph[1],
-          width: 500,
+          width: 700,
           xaxis: {
             automargin: true
           }
         };
 
         config = {
-          responsive: false,
+          responsive: true,
           displayModeBar: false
         };
 

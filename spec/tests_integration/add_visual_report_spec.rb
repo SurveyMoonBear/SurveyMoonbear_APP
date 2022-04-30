@@ -47,27 +47,4 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       _(deleted_visreport_res.value!.id).must_equal @visreport.id
     end
   end
-
-  # describe 'Transform DB/Sheets visual report to Html' do
-  #   before do
-  #     VcrHelper.build_cassette('happy_transform_visual_report_to_html')
-  #     @visreport_html = SurveyMoonbear::Service::CreateVisualReport.new.call(config: CONFIG,
-  #                                                                            current_account: CURRENT_ACCOUNT,
-  #                                                                            title: 'Visual Report for Testing Transform Services').value!
-  #   end
-
-  #   after do
-  #     SurveyMoonbear::Service::DeleteVisualReport.new.call(config: CONFIG, visual_report_id: @visreport_html.id)
-  #   end
-
-  #   it 'HAPPY: should be able to transform DB visual report to html' do
-  #     trans_html_res = SurveyMoonbear::Service::TransformVisualSheetsToHTML.new.call(visual_report_id: @visreport_html.id,
-  #                                                                                    spreadsheet_id: @visreport_html.origin_id,
-  #                                                                                    access_token: ACCESS_TOKEN)
-  #     _(trans_html_res.success?).must_equal true
-  #     _(trans_html_res.value![:all_graphs]).wont_be :empty?
-  #     _(trans_html_res.value![:pages_chart_val_hash]).wont_be :empty?
-  #     _(trans_html_res.value![:nav_item]).wont_be :empty?
-  #   end
-  # end
 end
