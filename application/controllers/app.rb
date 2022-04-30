@@ -420,6 +420,27 @@ module SurveyMoonbear
                                                            visual_report: visual_report }
           end
 
+          # visual_report/[visual_report_id]/online/[spreadsheet_id]/design
+          routing.on 'design' do
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(visual_report_id)
+
+            access_token = Google::Auth.new(config).refresh_access_token
+            responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
+                                                                      spreadsheet_id: spreadsheet_id,
+                                                                      access_token: access_token)
+
+            if responses.failure?
+              flash[:error] = "#{responses.failure} Please try again :("
+              routing.redirect '/analytics'
+            end
+
+            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+
+            view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
+                                                           visual_report: visual_report }
+          end
+
           # customized visual report
           # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
           routing.post do
