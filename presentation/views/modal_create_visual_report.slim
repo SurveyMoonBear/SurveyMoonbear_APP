@@ -1,0 +1,16 @@
+div class="modal fade" id="modal_create_visual_report"
+  div class="modal-dialog" role="document"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Create a New Visual Report
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      form action="/analytics/create" method="post"
+        div class="modal-body"
+          div class="form-group"
+            label for="title" Visual Report Title
+            input type="text" class="form-control" id="title" name="title" placeholder="Enter visual report title"
+        div class="modal-footer"
+          button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+          button type="submit" class="btn btn-primary" id="btn-create" Create
+

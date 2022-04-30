@@ -1,0 +1,144 @@
+div class="mb-3"
+  div class="row justify-content-center mt-3"
+    div class="col-10 col-sm-10 col-md-8"
+      div id="div-alert"
+        == render :flash_bar
+      a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_visual_report"
+        <i class="fas fa-plus"></i> &nbsp;Create a New Visual Report
+      / a { 
+      /   target="_blank" rel="Question Types"
+      /   href="https://paper.dropbox.com/doc/SurveyMoonbear-Question-Types--AbR4mDkzZ3rtLqvvIgZXTOK_AQ-aRR36FzeVcCGGZQgcsMZB"
+      / } 
+      /   abbr class="text-muted font-weight-light mx-3" title="Question Types Demo" style="font-size:.8rem" HELP
+    
+  - unless visual_reports.nil?
+    - visual_reports.reverse!
+    - visual_reports.each.with_index do |visual_report, index|
+      div class="row justify-content-center mt-3"
+        div class="col-10 col-sm-10 col-md-8 border"
+          div class="my-3 d-flex"
+            div class="d-inline-flex align-middle "
+              h3 class="mb-auto" #{visual_report.title}
+            button {
+                class="btn btn-outline-dark border-0 ml-2 d-inline-flex align-middle"
+                data-toggle="modal" data-target="#modal_visual_report_settings"
+                data-visual_report_id="#{visual_report.id}"
+                data-visual_report_title="#{visual_report.title}"
+            }
+              i class="fas fa-cog"
+            button {
+              class="btn btn-outline-dark border-0 ml-auto d-inline-flex align-middle"
+              data-toggle="dropdown"
+            }
+              i class="fas fa-chevron-down"
+            div class="dropdown-menu"
+              a href="#" class="dropdown-item" onclick="confirmDeleteVisualReport('#{visual_report.id}', '#{visual_report.title}')" Delete
+              a href="#" class="dropdown-item" data-origin_id="#{visual_report.origin_id}" data-toggle="modal" data-target="#modal_copy_visual_report" Copy
+          p class="text-muted" 
+            small Created at: #{visual_report.created_at}
+          div class="row d-flex"
+            div class="mb-3 pl-3"
+              button {
+                  class="btn btn-dark mr-1 mt-1" type="button"
+                  data-toggle="modal" data-target="#modal_survey_editor"
+                  data-origin_id="#{visual_report.origin_id}"
+              } 
+                <i class="fas fa-edit"></i> &nbsp;Edit
+              a {
+                class="btn btn-outline-dark mr-1 mt-1"
+                target="_blank"
+                href="https://docs.google.com/spreadsheets/d/#{visual_report.origin_id}/edit"
+              } 
+                <i class="fas fa-external-link-alt"></i> &nbsp;Edit in Google Sheets
+            div class="mt-1 mb-3 mx-3"
+              div class="input-group"
+                div class="input-group-prepend"
+                input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/public"
+                div class="input-group-append"
+                  button class="btn btn-secondary" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
+                    i class="fas fa-copy"
+                  a class="btn btn-secondary" target="_blank" href="/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/public"
+                    i class="fas fa-external-link-alt"
+
+div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="false" role="dialog"
+  div class="modal-dialog modal-dialog-centered" role="document"
+    div class="modal-content"
+      div class="modal-body"
+        h5 Processing...
+        div class="progress"
+          div {
+            class="progress-bar progress-bar-striped progress-bar-animated" 
+            role="progressbar" style="width: 100%"
+          }
+include :modal_create_visual_report
+include :modal_visual_report_settings
+include :modal_survey_editor
+include :modal_copy_visual_report
+
+javascript:
+  $("input[type='text']").on("click", function () {
+    $(this).select();
+  });
+
+  function copyURL(input) {
+    $('#' + input).select();
+    document.execCommand("copy");
+  }
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  })
+
+  function confirmDeleteVisualReport(visual_report_id, visual_report_title) {
+    if (confirm('Are you sure to delete "' + visual_report_title + '"?')) {
+      $('#modal_waiting').modal();
+      $.ajax({
+        url: "/visual_report/" + visual_report_id,
+        type: 'DELETE',
+        success: function(result) {
+          alert(visual_report_title + ' has been deleted!');
+          location.reload();
+        }
+      });
+    }
+  }
+
+  $('#modal_copy_visual_report').on('show.bs.modal', function(e) {
+    var origin_id = $(e.relatedTarget).data('origin_id');
+    
+    $('#visual_report_copy_form').on('submit', function(e) {
+      e.preventDefault();
+      $('#modal_copy_visual_report').modal('hide');
+      
+      var title = $(e.currentTarget).find('input[name="title"]').val();
+      copySurvey(origin_id, title);
+    });
+  });
+
+  function copySurvey(origin_id, title) {
+    $('#modal_waiting').modal();
+    $.ajax({
+      url: "/analytics/copy/" + origin_id,
+      type: 'POST',
+      data: { title: title },
+      success: function(result) {
+        location.reload();
+      }
+    });
+  }
+
+  $('#btn-create').on('click', function (e) {
+    $('#modal_create_visual_report').modal('hide');
+    $('#modal_waiting').modal();
+  });
+
+  $('#btn-save-settings').on('click', function (e) {
+    $('#modal_visual_report_settings').modal('hide');
+    $('#modal_waiting').modal();
+  });
+
+  $('.dropdown-menu a').on('click', function(e) {
+    var chosed_text = e.currentTarget.innerText
+    $(this).parents('.dropdown').find('.dropdown-toggle').text(chosed_text)
+  });
+

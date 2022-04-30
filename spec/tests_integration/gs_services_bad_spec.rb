@@ -1,12 +1,12 @@
 # frozen_string_literal: false
 
-require_relative './spec_helper.rb'
+require_relative './../spec_helper'
 
 describe 'BAD: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
   # Execute before/after each 'describe'
   before(:all) do
     VcrHelper.setup_vcr
-    DatabaseHelper.setup_database_cleaner
+    # DatabaseHelper.setup_database_cleaner
     VcrHelper.configure_vcr_for_gs
     VcrHelper.build_cassette('bad_gs_api')
   end
