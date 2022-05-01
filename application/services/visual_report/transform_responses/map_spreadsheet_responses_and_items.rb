@@ -9,25 +9,12 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
-      # step :get_sheet_from_spreadsheet
       step :get_responses_from_spreadsheet
       step :map_identity_and_responses
       step :map_individual_answer
       step :return_graph_result
 
       private
-
-      # input{ item_data:..., access_token:..., spreadsheet_source:..., vis_identity:...}
-      # def get_sheet_from_spreadsheet(input)
-      #   url = input[:spreadsheet_source].source_name # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
-      #   input[:spreadsheet_id] = url.match('.*/(.*)/')[1]
-      #   input[:sheets_api] = Google::Api::Sheets.new(input[:access_token])
-
-      #   Success(input)
-      # rescue StandardError => e
-      #   puts e
-      #   Failure('Failed to read source spreadsheet.')
-      # end
 
       # input{ first_sheet:..., sheets_api:..., spreadsheet_id:...}
       def get_responses_from_spreadsheet(input)

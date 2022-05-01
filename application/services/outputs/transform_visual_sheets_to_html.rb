@@ -103,11 +103,11 @@ module SurveyMoonbear
       def map_moonbear_responses_and_report_item(item_data, bear_responses)
         response_cal_hash = {}
         chart_colors = {}
-        item_responses = {} # { responses: item_all_responses, type: question['type'], res_id: 109003888}
+        item_responses = {}
         item_options = []
         item_all_responses = [] # only response
         graph_val = []
-        # 每個回覆中 哪些回覆是需要被visualize的 每一列的visual都有其responses了
+
         bear_responses.each do |res_obj|
           if !res_obj.item_data.nil?
           question = JSON.parse(res_obj.item_data)
@@ -120,12 +120,10 @@ module SurveyMoonbear
         end
         item_responses['responses'] = item_all_responses
 
-        # response_cal_hash.keys = chart_labels; response_cal_hash.values = chart_datas ; chart_colors.values = chart_colors
-        # 計算單一問題的每個答案的次數
+        # calculate each question's option 
         if !item_options.empty?
           options = item_options.gsub("\n", '')
           options = options.split(',')
-          # options = options.map { |option| option.gsub("\n", '') }
           options.each do |option|
             response_cal_hash[option] = 0
             chart_colors[option] = 'rgb(54, 162, 235)'
@@ -149,7 +147,6 @@ module SurveyMoonbear
             return source
           end
         end
-        # return error? nil?
       end
 
       def cal_individual_question(response_dic, options, chart_colors, response_cal_hash)
@@ -160,14 +157,12 @@ module SurveyMoonbear
           when "Multiple choice with 'other' (radio button)"
             cal_multiple_choice_radio_with_other(response_dic, chart_colors, response_cal_hash)
           when 'Multiple choice (checkbox)'
-            # response_dic['responses'] = response_dic['responses'].tr("\n", '')
             responses_arr = []
             response_dic['responses'].each do |responses_perperson|
               responses_arr += responses_perperson.split(', ')
             end
             cal_multiple_choice_checkbox(responses_arr, chart_colors, response_cal_hash)
           when "Multiple choice with 'other' (checkbox)"
-            # response_dic['responses'] = response_dic['responses'].tr("\n", '')
             responses_arr = []
             response_dic['responses'].each do |responses_perperson|
               responses_arr += responses_perperson.split(', ')

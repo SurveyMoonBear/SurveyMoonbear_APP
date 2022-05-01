@@ -11,7 +11,6 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
-      # step :refresh_access_token
       step :create_spreadsheet
       step :add_editor
       step :create_permission_reader_anyone
@@ -21,15 +20,6 @@ module SurveyMoonbear
       private
 
       # input { config:, current_account:, spreadsheet_id:, title: }
-      # def refresh_access_token(input)
-      #   input[:current_account]['access_token'] = Google::Auth.new(input[:config]).refresh_access_token
-
-      #   Success(input)
-      # rescue
-      #   Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
-      # end
-
-      # input { ... }
       def create_spreadsheet(input)
         response = Google::Api::Drive.new(input[:access_token])
                                      .copy_drive_file(input[:spreadsheet_id])

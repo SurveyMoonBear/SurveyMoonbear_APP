@@ -19,12 +19,11 @@ module SurveyMoonbear
 
       # input { visual_report_id:, spreadsheet_id:, access_token:, current_account: }
       def get_items_from_spreadsheet(input)
-        # sheets_report有兩層array TODO
         sheets_report = GetVisualreportFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                                 access_token: input[:access_token])
 
         if sheets_report.success?
-          input[:sheets_report] = sheets_report.value![0] # 因為兩層array所以才加 [0]
+          input[:sheets_report] = sheets_report.value![0]
           Success(input)
         else
           Failure(sheets_report.failure)
@@ -65,7 +64,7 @@ module SurveyMoonbear
           if source.source_type == 'surveymoonbear'
             survey = Repository::For[Entity::Survey].find_title(source.source_name)
             launch = Repository::For[Entity::Launch].find_id(survey.launch_id)
-            vis_identity = find_respondent_id(input[:student_id], launch.responses) # 109003888 will transform to uuid respondent_id
+            vis_identity = find_respondent_id(input[:student_id], launch.responses) # syudent_id will transform to uuid respondent_id
             graphs_val.append(map_moonbear_responses_and_report_item(item_data,
                                                                      launch.responses,
                                                                      vis_identity))
@@ -100,19 +99,16 @@ module SurveyMoonbear
       def map_moonbear_responses_and_report_item(item_data, bear_responses, vis_identity)
         response_cal_hash = {}
         chart_colors = {}
-        item_responses = {} # { responses: item_all_responses, type: question['type'], res_id: 109003888}
+        item_responses = {}
         item_options = []
         item_all_responses = [] # only response
         graph_val = []
-        # 每個回覆中 哪些回覆是需要被visualize的 每一列的visual都有其responses了
+
         bear_responses.each do |res_obj|
           if !res_obj.item_data.nil?
           question = JSON.parse(res_obj.item_data)
             if question['name'] == item_data.question
-              # item_responses[res_obj.respondent_id] = {} if item_responses[res_obj.respondent_id].nil?
-              # item_responses[res_obj.respondent_id]['responses'] = res_obj.response
               item_all_responses.append(res_obj.response)
-              # item_responses[res_obj.respondent_id]['type'] = question['type']
               item_responses['type'] = question['type']
               item_options = question['options'] if !question['options'].nil?
               item_responses['case_response'] = res_obj.response if vis_identity == res_obj.respondent_id
@@ -122,29 +118,16 @@ module SurveyMoonbear
         item_responses['responses'] = item_all_responses
         item_responses['case_id'] = vis_identity
 
-        # response_cal_hash.keys = chart_labels; response_cal_hash.values = chart_datas ; chart_colors.values = chart_colors
-        # 計算單一問題的每個答案的次數
+        # calculate each question's option
         if !item_options.empty?
           options = item_options.gsub("\n", '')
           options = options.split(',')
-          # options = options.map { |option| option.gsub("\n", '') }
           options.each do |option|
             response_cal_hash[option] = 0
             chart_colors[option] = 'rgb(54, 162, 235)'
           end
 
           response_cal_hash, chart_colors = cal_individual_question(item_responses, options, chart_colors, response_cal_hash)
-          # options.each do |option|
-          #   item_responses.each_key do |res_id| # k=respondent_id
-          #     response_cal_hash, chart_colors = cal_individual_question(item_responses[res_id],
-          #                                                               options,
-          #                                                               option,
-          #                                                               chart_colors,
-          #                                                               response_cal_hash,
-          #                                                               res_id,
-          #                                                               vis_identity)
-          #   end
-          # end
         end
 
         graph_val.append(item_data.page,
@@ -170,7 +153,6 @@ module SurveyMoonbear
             return source
           end
         end
-        # return error? nil?
       end
 
       def cal_individual_question(response_dic, options, chart_colors, response_cal_hash)
@@ -181,14 +163,12 @@ module SurveyMoonbear
           when "Multiple choice with 'other' (radio button)"
             cal_multiple_choice_radio_with_other(response_dic, chart_colors, response_cal_hash)
           when 'Multiple choice (checkbox)'
-            # response_dic['responses'] = response_dic['responses'].tr("\n", '')
             responses_arr = []
             response_dic['responses'].each do |responses_perperson|
               responses_arr += responses_perperson.split(', ')
             end
             cal_multiple_choice_checkbox(response_dic, responses_arr, chart_colors, response_cal_hash)
           when "Multiple choice with 'other' (checkbox)"
-            # response_dic['responses'] = response_dic['responses'].tr("\n", '')
             responses_arr = []
             response_dic['responses'].each do |responses_perperson|
               responses_arr += responses_perperson.split(', ')
