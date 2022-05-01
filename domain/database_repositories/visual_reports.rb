@@ -39,20 +39,6 @@ module SurveyMoonbear
         rebuild_entity(db_report)
       end
 
-      # def self.launch(entity)
-      #   db_report = Database::VisualReportOrm.where(origin_id: entity.origin_id).first
-      #   db_report.update(state: 'started')
-      #   rebuild_entity(db_report)
-      # end
-
-      # def self.update_state(entity)
-      #   db_report = Database::VisualReportOrm.find(id: entity.id)
-
-      #   db_report.update(state: 'closed')
-
-      #   rebuild_entity(db_report)
-      # end
-
       def self.update_title(entity)
         db_report = Database::VisualReportOrm.where(origin_id: entity.origin_id).first
         db_report.update(title: entity.title)
