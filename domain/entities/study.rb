@@ -8,9 +8,10 @@ module SurveyMoonbear
       attribute :id, String.optional
       attribute :owner, Account
       attribute :title, Strict::String
-      attribute :desc, Strict::String
+      attribute :desc, Strict::String.optional
       attribute :state, Strict::String.optional
-      attribute :aws_arn, Strict::String
+      attribute :enable_notification, Strict::Bool
+      attribute :aws_arn, Strict::String.optional
       attribute :track_activity, Strict::Bool
       attribute :activity_start_at, Strict::Time.optional
       attribute :activity_end_at, Strict::Time.optional

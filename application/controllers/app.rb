@@ -485,13 +485,15 @@ module SurveyMoonbear
         end
 
         routing.post 'create' do
-          # new_study = Service::CreateStudy.new.call(config: config,
-          #                                           current_account: @current_account,
-          #                                           title: routing.params['title'])
+          new_study = Service::CreateStudy.new.call(config: config,
+                                                    current_account: @current_account,
+                                                    params: routing.params)
 
-          # new_study.success? ? flash[:notice] = "#{new_study.value!.title} is created!" :
-          #                      flash[:error] = "Failed to create study, please try again :("
-
+          if new_study.success?
+            flash[:notice] = "#{new_study.value!.title} is created!"
+          else
+            flash[:error] = 'Failed to create study, please try again :('
+          end
           routing.redirect '/study_list'
         end
 

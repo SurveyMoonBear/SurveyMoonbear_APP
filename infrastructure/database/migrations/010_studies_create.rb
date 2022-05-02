@@ -11,9 +11,9 @@ Sequel.migration do
       String      :title, null: false
       String      :desc
       String      :state, default: 'closed'
-      # Bool        :enable_reminder
+      Bool        :enable_notification, default: false
       String      :aws_arn
-      Bool        :track_activity
+      Bool        :track_activity, default: false
       DateTime    :activity_start_at
       DateTime    :activity_end_at
 

@@ -13,16 +13,39 @@ div class="modal fade" id="modal_create_study"
               input type="text" class="form-control" id="title" name="title" placeholder="Enter study title"
             div class="mb-3"
               label for="description" Study Description
-              textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter study description"
-            div class="form-check"
-              input class="form-check-input" type="radio" name="track_activity" id="track_activity" value="true"
+              textarea class="form-control" id="desc" name="desc" rows="3" placeholder="Enter study description"
+            div class="form-check mb-2"
+              input class="form-check-input" type="checkbox" name="enable_notification" id="enable_notification" value="true"
+              label class="form-check-label" for="enable_notification" Enable Notification
+            div class="form-check mb-3"
+              input class="form-check-input" type="checkbox" name="track_activity" id="track_activity" value="true"
               label class="form-check-label" for="track_activity" Collect Activity Data
-            / TODO: period start at, period end at
+            div class="mb-2 row d-none" id="period_start_at"
+              div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"
+                label class="form-label" for="period_start_at" Period Start At 
+              div class="col-lg-9 col-md-9 col-sm-9 col-xs-12"
+                input type="date" class="form-control form-control-sm" id="activity_start_at" name="activity_start_at" 
+            div class="mb-3 row d-none" id="period_end_at"
+              div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"
+                label class="form-label" for="period_end_at" Period End At 
+              div class="col-lg-9 col-md-9 col-sm-9 col-xs-12"
+                input type="date" class="form-control form-control-sm" id="activity_end_at" name="activity_end_at" 
         div class="modal-footer"
           button type="button" class="btn btn-secondary" data-dismiss="modal" Close
           button type="submit" class="btn btn-primary" id="btn-create" Create
+
 javascript:
+  function check_to_track(track_activity){
+    if(track_activity){
+      $('#period_start_at').removeClass('d-none');
+      $('#period_end_at').removeClass('d-none');
+    }
+    else{
+      $('#period_start_at').addClass('d-none');
+      $('#period_end_at').addClass('d-none');
+    }
+  };
   $("#track_activity").change(() => {
-    var track_activity = $("#track_activity").val();
-    console.log(track_activity)
+    var track_activity = $("#track_activity:checked").val();
+    check_to_track(track_activity);
   });
