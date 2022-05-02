@@ -6,15 +6,9 @@ task :default do
   puts `rake -T`
 end
 
-desc 'run all tests'
-Rake::TestTask.new("spec:all") do |t|
-  t.pattern = 'spec/*_spec.rb'
-  t.warning = false
-end
-
-desc 'run tests exclude no-cassettes ones'
+desc 'Run integration tests'
 Rake::TestTask.new(:spec) do |t|
-  t.test_files = FileList['spec/*_spec.rb'].exclude('spec/*_novcr_spec.rb')
+  t.pattern = 'spec/tests_integration/*_spec.rb'
   t.warning = false
 end
 
@@ -117,7 +111,7 @@ namespace :db do
   desc 'Wipe records from all tables'
   task :wipe do
     require_relative 'spec/helpers/database_helper.rb'
-    DatabaseHelper.setup_database_cleaner
+    # DatabaseHelper.setup_database_cleaner
     DatabaseHelper.wipe_database
     puts "Wiped all records from tables in #{app.environment} database"
   end

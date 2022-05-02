@@ -6,7 +6,6 @@ describe 'BAD: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
   # Execute before/after each 'describe'
   before(:all) do
     VcrHelper.setup_vcr
-    # DatabaseHelper.setup_database_cleaner
     VcrHelper.configure_vcr_for_gs
     VcrHelper.build_cassette('bad_gs_api')
   end
