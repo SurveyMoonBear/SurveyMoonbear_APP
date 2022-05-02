@@ -469,6 +469,43 @@ module SurveyMoonbear
           routing.redirect '/analytics', 303
         end
       end
+
+      # /studies branch
+      routing.on 'study_list' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        # GET /study_list
+        routing.get do
+          routing.redirect '/' unless @current_account
+
+          studies = Repository::For[Entity::Study]
+                    .find_owner(@current_account['id'])
+
+          view 'study_list', locals: { studies: studies, config: config }
+        end
+
+        routing.post 'create' do
+          # new_study = Service::CreateStudy.new.call(config: config,
+          #                                           current_account: @current_account,
+          #                                           title: routing.params['title'])
+
+          # new_study.success? ? flash[:notice] = "#{new_study.value!.title} is created!" :
+          #                      flash[:error] = "Failed to create study, please try again :("
+
+          routing.redirect '/study_list'
+        end
+
+        # POST /study_list/copy/[spreadsheet_id]
+        routing.post 'copy' do
+          # new_study = Service::CopyStudy.new.call(config: config,
+          #                                         current_account: @current_account,
+          #                                         title: routing.params['title'])
+
+          # flash[:error] = "Copy failed: '#{new_study.failure}' Please try again :(" if new_study.failure?
+
+          routing.redirect '/study_list'
+        end
+      end
     end
   end
 end
