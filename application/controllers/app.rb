@@ -513,6 +513,14 @@ module SurveyMoonbear
       routing.on 'study', String do |study_id|
         @current_account = SecureSession.new(session).get(:current_account)
 
+        routing.post 'update_title' do
+          Service::UpdateStudyTitle.new.call(current_account: @current_account,
+                                             study_id: study_id,
+                                             new_title: routing.params['title'])
+
+          routing.redirect '/study_list'
+        end
+
         # routing.post 'update_settings' do
         #   Service::EditSurveyTitle.new.call(current_account: @current_account,
         #                                     survey_id: survey_id,

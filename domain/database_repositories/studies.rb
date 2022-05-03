@@ -54,9 +54,9 @@ module SurveyMoonbear
         rebuild_entity(db_study)
       end
 
-      def self.update_title(entity)
-        db_study = Database::StudyOrm.where(origin_id: entity.origin_id).first
-        db_study.update(title: entity.title)
+      def self.update_title(id, title)
+        db_study = Database::StudyOrm.where(id: id).first
+        db_study.update(title: title)
 
         rebuild_entity(db_study)
       end

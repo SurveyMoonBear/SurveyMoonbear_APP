@@ -22,7 +22,7 @@ div class="mb-3"
               h3 class="mb-auto" #{study.title}
             button {
                 class="btn btn-outline-dark border-0 ml-2 d-inline-flex align-middle"
-                data-toggle="modal" data-target="#modal_study_settings" 
+                data-toggle="modal" data-target="#modal_rename_study" 
                 data-study_id="#{study.id}"
                 data-study_title="#{study.title}"
             }
@@ -94,7 +94,7 @@ div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="
           }
 
 include :modal_create_study
-include :modal_study_settings
+include :modal_rename_study
 include :modal_responses_download
 
 javascript:
@@ -125,8 +125,8 @@ javascript:
     $('#modal_waiting').modal();
   });
 
-  $('#btn-save-settings').on('click', function (e) {
-    $('#modal_study_settings').modal('hide');
+  $('#btn-save-title').on('click', function (e) {
+    $('#modal_rename_study').modal('hide');
     $('#modal_waiting').modal();
   });
 
