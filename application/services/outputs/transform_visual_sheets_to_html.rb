@@ -11,6 +11,7 @@ module SurveyMoonbear
       include Dry::Monads
 
       step :get_items_from_spreadsheet
+      step :get_user_access_token
       step :get_sources_from_spreadsheet
       step :get_responses_from_sources
       step :transform_sheet_items_to_html
@@ -31,6 +32,18 @@ module SurveyMoonbear
       end
 
       # input { ..., sheets_report}
+      def get_user_access_token(input)
+        visual_report = Repository::For[Entity::VisualReport].find_origin_id(input[:spreadsheet_id])
+        input[:user_access_token] = visual_report.owner.access_token
+
+        if input[:user_access_token]
+          Success(input)
+        else
+          Failure("Failed to get user's access token.")
+        end
+      end
+
+      # input { ..., sheets_report, user_access_token}
       def get_sources_from_spreadsheet(input)
         sources = GetSourcesFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                      access_token: input[:access_token])
@@ -40,7 +53,7 @@ module SurveyMoonbear
           if source.source_type == 'spreadsheet'
             url = source.source_name # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
             other_sheet_id = url.match('.*/(.*)/')[1]
-            other_sheets_api = Google::Api::Sheets.new(input[:access_token])
+            other_sheets_api = Google::Api::Sheets.new(input[:user_access_token])
             other_sheet_title = other_sheets_api.survey_data(other_sheet_id)['sheets'][0]['properties']['title']
             other_sheet[source.source_id] = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
             input[:other_sheets] = other_sheet
@@ -71,7 +84,7 @@ module SurveyMoonbear
                                                                        launch.responses))
             elsif source.source_type == 'spreadsheet'
               graph_response = MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
-                                                                        access_token: input[:access_token],
+                                                                        access_token: input[:user_access_token],
                                                                         spreadsheet_source: source,
                                                                         all_data: input[:other_sheets][source.source_id])
               graphs_val.append(graph_response.value![:graph_val])
