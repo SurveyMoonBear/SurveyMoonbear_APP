@@ -401,10 +401,9 @@ module SurveyMoonbear
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
 
-            access_token = Google::Auth.new(config).refresh_access_token
             responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
                                                                       spreadsheet_id: spreadsheet_id,
-                                                                      access_token: access_token)
+                                                                      access_token: @current_account['access_token'])
 
             if responses.failure?
               flash[:error] = "#{responses.failure} Please try again :("
