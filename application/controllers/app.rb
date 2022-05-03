@@ -470,19 +470,9 @@ module SurveyMoonbear
         end
       end
 
-      # /study_list branch
-      routing.on 'study_list' do
+      # /studies branch
+      routing.on 'studies' do
         @current_account = SecureSession.new(session).get(:current_account)
-
-        # GET /study_list
-        routing.get do
-          routing.redirect '/' unless @current_account
-
-          studies = Repository::For[Entity::Study]
-                    .find_owner(@current_account['id'])
-
-          view 'study_list', locals: { studies: studies, config: config }
-        end
 
         routing.post 'create' do
           new_study = Service::CreateStudy.new.call(config: config,
@@ -494,88 +484,37 @@ module SurveyMoonbear
           else
             flash[:error] = 'Failed to create study, please try again :('
           end
-          routing.redirect '/study_list'
+          routing.redirect '/studies'
         end
 
-        # POST /study_list/copy/[spreadsheet_id]
-        routing.post 'copy' do
-          # new_study = Service::CopyStudy.new.call(config: config,
-          #                                         current_account: @current_account,
-          #                                         title: routing.params['title'])
+        routing.on String do |study_id|
+          # POST studies/[study_id]/update_title
+          routing.post 'update_title' do
+            Service::UpdateStudyTitle.new.call(current_account: @current_account,
+                                              study_id: study_id,
+                                              new_title: routing.params['title'])
 
-          # flash[:error] = "Copy failed: '#{new_study.failure}' Please try again :(" if new_study.failure?
+            routing.redirect '/studies'
+          end
 
-          routing.redirect '/study_list'
-        end
-      end
+          # DELETE studies/[study_id]
+          routing.delete do
+            response = Service::DeleteStudy.new.call(config: config, study_id: study_id)
 
-      # /study branch
-      routing.on 'study', String do |study_id|
-        @current_account = SecureSession.new(session).get(:current_account)
+            flash[:error] = 'Failed to delete the study. Please try again :(' if response.failure?
 
-        routing.post 'update_title' do
-          Service::UpdateStudyTitle.new.call(current_account: @current_account,
-                                             study_id: study_id,
-                                             new_title: routing.params['title'])
-
-          routing.redirect '/study_list'
+            routing.redirect '/studies', 303
+          end
         end
 
-        # routing.post 'update_settings' do
-        #   Service::EditSurveyTitle.new.call(current_account: @current_account,
-        #                                     survey_id: survey_id,
-        #                                     new_title: routing.params['title'])
+        # GET /studies
+        routing.get do
+          routing.redirect '/' unless @current_account
 
-        #   routing.redirect '/survey_list'
-        # end
+          studies = Repository::For[Entity::Study].find_owner(@current_account['id'])
 
-        # POST /survey/[survey_id]/update_options
-        # routing.post 'update_options' do
-        #   response = Service::UpdateSurveyOptions.new.call(survey_id: survey_id,
-        #                                                    option: routing.params['option'],
-        #                                                    option_value: routing.params['option_value'])
-
-        #   if response.failure?
-        #     flash[:error] = response.failure + ' Please try again.'
-        #   end
-
-        #   routing.redirect '/survey_list'
-        # end
-
-        # GET survey/[survey_id]/start
-        # routing.get 'start' do
-        #   response = Service::StartSurvey.new.call(survey_id: survey_id, current_account: @current_account)
-        #   flash[:error] = "#{response.failure} Please try again." if response.failure?
-
-        #   routing.redirect '/survey_list'
-        # end
-
-        # GET survey/[survey_id]/close
-        # routing.get 'close' do
-        #   response = Service::CloseSurvey.new.call(survey_id: survey_id)
-
-        #   flash[:error] = response.failure + ' Please try again.' if response.failure?
-
-        #   routing.redirect '/survey_list'
-        # end
-
-        # DELETE survey/[survey_id]
-        routing.delete do
-          response = Service::DeleteStudy.new.call(config: config, study_id: study_id)
-
-          flash[:error] = 'Failed to delete the study. Please try again :(' if response.failure?
-
-          routing.redirect '/study_list', 303
+          view 'study_list', locals: { studies: studies, config: config }
         end
-
-        # routing.on 'download', String, String do |launch_id, file_name|
-        #   routing.get do
-        #     response['Content-Type'] = 'application/csv'
-
-        #     response = Service::TransformResponsesToCSV.new.call(survey_id: survey_id, launch_id: launch_id)
-        #     response.success? ? response.value! : response.failure
-        #   end
-        # end
       end
     end
   end

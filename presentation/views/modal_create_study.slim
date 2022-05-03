@@ -5,7 +5,7 @@ div class="modal fade" id="modal_create_study"
         h5 class="modal-title" Create a New Study
         button type="button" class="close" data-dismiss="modal" aria-label="Close"
           span aria-hidden="true" &times;
-      form id="create_study_form" action="/study_list/create" method="post"
+      form id="create_study_form" action="/studies/create" method="post"
         div class="modal-body"
           div class="form-group"
             div class="mb-3"
@@ -19,7 +19,7 @@ div class="modal fade" id="modal_create_study"
               label class="form-check-label" for="enable_notification" Enable Notification
             div class="form-check mb-3"
               input class="form-check-input" type="checkbox" name="track_activity" id="track_activity" value="true"
-              label class="form-check-label" for="track_activity" Collect Activity Data
+              label class="form-check-label" for="track_activity" Collect Calendar Data
             div class="mb-2 row d-none" id="period_start_at"
               div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"
                 label class="form-label" for="period_start_at" Period Start At 
