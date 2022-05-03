@@ -71,6 +71,7 @@ module SurveyMoonbear
       def self.delete_from(id)
         db_study = Database::StudyOrm.where(id: id).first
 
+        # db_study.destroy => delete related entity
         db_study.delete
       end
 
