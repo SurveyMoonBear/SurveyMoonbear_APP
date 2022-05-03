@@ -6,15 +6,9 @@ task :default do
   puts `rake -T`
 end
 
-desc 'run all tests'
-Rake::TestTask.new("spec:all") do |t|
-  t.pattern = 'spec/*_spec.rb'
-  t.warning = false
-end
-
-desc 'run tests exclude no-cassettes ones'
+desc 'Run integration tests'
 Rake::TestTask.new(:spec) do |t|
-  t.test_files = FileList['spec/*_spec.rb'].exclude('spec/*_novcr_spec.rb')
+  t.pattern = 'spec/tests_integration/*_spec.rb'
   t.warning = false
 end
 
@@ -117,7 +111,7 @@ namespace :db do
   desc 'Wipe records from all tables'
   task :wipe do
     require_relative 'spec/helpers/database_helper.rb'
-    DatabaseHelper.setup_database_cleaner
+    # DatabaseHelper.setup_database_cleaner
     DatabaseHelper.wipe_database
     puts "Wiped all records from tables in #{app.environment} database"
   end
@@ -166,5 +160,49 @@ namespace :session do
     puts 'Deleting all sessions from Redis session store'
     wiped = SessionSecure.wipe_radis_session
     puts "#{wiped.count} sessions deleted"
+  end
+end
+
+namespace :cache do
+  task :config do
+    require_relative 'config/environment.rb' # load config info
+    require_relative 'app/infrastructure/cache/init.rb' # load cache client
+    @app = SurveyMoonbear::App
+  end
+
+  desc 'Directory listing of local dev cache'
+  namespace :list do
+    task :dev do
+      puts 'Lists development cache'
+      list = `ls _cache`
+      puts 'No local cache found' if list.empty?
+      puts list
+    end
+
+    desc 'Lists production cache'
+    task :production => :config do
+      puts 'Finding production cache'
+      keys = SurveyMoonbear::Cache::Client.new(@api.config).keys
+      puts 'No keys found' if keys.none?
+      keys.each { |key| puts "Key: #{key}" }
+    end
+  end
+
+  namespace :wipe do
+    desc 'Delete development cache'
+    task :dev do
+      puts 'Deleting development cache'
+      sh 'rm -rf _cache/*'
+    end
+
+    desc 'Delete production cache'
+    task :production => :config do
+      print 'Are you sure you wish to wipe the production cache? (y/n) '
+      if $stdin.gets.chomp.downcase == 'y'
+        puts 'Deleting production cache'
+        wiped = SurveyMoonbear::Cache::Client.new(@api.config).wipe
+        wiped.each_key { |key| puts "Wiped: #{key}" }
+      end
+    end
   end
 end

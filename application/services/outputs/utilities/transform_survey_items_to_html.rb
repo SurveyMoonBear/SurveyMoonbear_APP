@@ -56,7 +56,6 @@ module SurveyMoonbear
         if !input[:random_option].nil? && input[:random_option] != 'none'
           input[:random_seed] = input[:random_seed] ? input[:random_seed].to_i : rand(1000)
           ignored_types = ['Description', 'Section Title', 'Divider']
-          
           input[:items_of_pages].each do |page_items|
             page_items.each_with_index do |item, i|
               random_items_within_grid_group(item, input[:random_seed]) if item.class == Array
@@ -102,14 +101,14 @@ module SurveyMoonbear
           build_items_html_arr(page_items)
         end
 
-        Success(title: input[:survey][:title], 
-                pages: pages_html_arr, 
+        Success(title: input[:survey][:title],
+                pages: pages_html_arr,
                 random_seed: input[:random_seed])
       rescue StandardError => e
         puts e
         Failure('Failed to transform survey items to html')
       end
-      
+
       def build_items_html_arr(items)
         items_html_arr = items.map do |item|
           if item.class == Array
@@ -138,6 +137,7 @@ module SurveyMoonbear
       end
 
       def build_individual_question(item)
+        build_interact_var(item)        
         case item.type
         when 'Section Title'
           build_section_title(item)
@@ -159,8 +159,22 @@ module SurveyMoonbear
           build_multiple_choice_checkbox(item, other=true)
         when 'Random code'
           build_random_code(item)
+        when 'Jump to page'
+          build_jump_page(item)
         else
-          puts "Sorry, there's no such individual question type: " + item.type
+          puts "Sorry, there's no such individual question type: #{item.type}"
+        end
+      end
+
+      def build_interact_var(item)
+        if (!item.description.nil?) && (item.description.include? '{{') && (item.description.include? '}}')
+          var_name = item.description.split('{{')[1].split('}}')[0]
+          replace_str = "{{#{var_name}}}"
+          var_str = "<span class='#{var_name}__{}' id='#{var_name}__{}'>#{var_name}</span>"
+          item.description.gsub!(replace_str, var_str)
+          build_interact_var(item)
+        else
+          item
         end
       end
 
@@ -208,15 +222,23 @@ module SurveyMoonbear
           str += "<label id='#{item.name}' class='lead'>#{item.description}</label>"
         end
 
-        if item.options
+        if item.options && !item.flow_logic
           item.options.split(',').map(&:strip).each_with_index do |option, index|
             str += "<div class='custom-control custom-radio'>"
             str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}' name='radio-#{item.name}' value='#{option}'>"
             str += "<label class='custom-control-label' for='#{item.name}#{index}'>#{option}</label>"
             str += '</div>'
           end
+        elsif item.options && item.flow_logic
+          flow_logic = item.flow_logic.split(',')
+          item.options.split(',').map(&:strip).each_with_index do |option, index|
+            str += "<div class='custom-control custom-radio'>"
+            str += "<input type='radio' class='custom-control-input' id='#{item.name}#{index}__#{flow_logic[index]}' name='radio-#{item.name}' value='#{option}'>"
+            str += "<label class='custom-control-label' for='#{item.name}#{index}__#{flow_logic[index]}'>#{option}</label>"
+            str += '</div>'
+          end
         else
-          str += "<p>No options were provided.</p>"
+          str += '<p>No options were provided.</p>'
         end
 
         if other
@@ -231,7 +253,7 @@ module SurveyMoonbear
           str += "<input type='hidden' class='required' name='#{item.name}'>"
         else
           str += "<input type='hidden' name='#{item.name}'>"
-        end 
+        end
         str += '</fieldset>'
       end
 
@@ -277,6 +299,10 @@ module SurveyMoonbear
         str += "<label for='#{item.name}' class='lead'>#{item.description}</lable>"
         str += "<input type='text' class='form-control' name='#{item.name}' id='#{item.name}' readonly='' value='#{random_code}'>"
         str + '</div>'
+      end
+
+      def build_jump_page(item)
+        str = "<span hidden name='jump_page_#{item.options}' id='jump_page_#{item.options}'>#{item.options}</span>"
       end
 
       def build_grid_questions_radio(items)
@@ -398,10 +424,10 @@ module SurveyMoonbear
           str += "<td class='w-50 align-middle'><input type='range' class='custom-range vas-unclicked' name='vas-#{item.name}' min='#{min}' max='#{max}'></td>"
 
           str += if item.required == 1
-                  "<input type='hidden' class='required' name='#{item.name}'>"
-                else
-                  "<input type='hidden' name='#{item.name}'>"
-                end
+                   "<input type='hidden' class='required' name='#{item.name}'>"
+                 else
+                   "<input type='hidden' name='#{item.name}'>"
+                 end
           str += '</tr>'
         end
         str += '</table>'

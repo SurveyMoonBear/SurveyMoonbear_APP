@@ -38,7 +38,8 @@ module SurveyMoonbear
             name: name,
             description: description,
             required: required,
-            options: options
+            options: options,
+            flow_logic: flow_logic
           )
         end
 
@@ -62,6 +63,10 @@ module SurveyMoonbear
 
         def options
           @item_data[4]
+        end
+
+        def flow_logic
+          @item_data[5]
         end
       end
     end

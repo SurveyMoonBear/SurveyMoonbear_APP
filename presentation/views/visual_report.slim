@@ -1,0 +1,129 @@
+doctype html
+html
+  head
+    title SurveyMoonbear Report
+    meta charset="UTF-8"
+    meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    / Bootstrap CSS and theme (Yeti Theme)
+    link {
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/yeti/bootstrap.min.css" 
+      rel="stylesheet" integrity="sha384-yAYSLJjzniZh9Kau9E1v1ma5CzvyHF8fPK/xUpaRx1XTH9r60WxzDivvHG3xm6Hn" 
+      crossorigin="anonymous"
+    }
+
+    link {
+      rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" 
+      integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" 
+      crossorigin="anonymous"
+    }
+
+    == assets(:css)
+  body
+    / JQuery and Bootstrap JS
+    script {
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
+      crossorigin="anonymous"
+    }
+    script {
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" 
+      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" 
+      crossorigin="anonymous"
+    }
+    script {
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" 
+      integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" 
+      crossorigin="anonymous"
+    }
+    script src="https://cdn.plot.ly/plotly-2.11.1.min.js"
+
+    .container id='html_body'
+      section class="mt-3 mb-5"
+        / include :flash_bar
+
+        - if vis_report_object.show_enter_id 
+          div class='row justify-content-center'
+            div class="card w-50"
+              div class="card-body"
+                h5 class="card-title" Enter your school ID
+                form action="/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}" method="post"
+                  div class="form-group"
+                    input type="text" class="form-control" id="respondent" name="respondent" placeholder="e.g., 109078507"
+                    br
+                    button type="submit" class="btn btn-primary" id="btn-create" Enter
+        - else
+          div class='row justify-content-center'
+            h1 class="col-md-10 my-4" #{vis_report_object.title}
+          div class='row justify-content-center'
+            div id="div_nav_tabs" class="col-md-10" style="padding-left: 0 ; padding-right: 0"
+            div class='bg-light col-md-10 shadow'
+              div class='container py-3' id="div_tab_item"
+
+
+javascript:
+    if ("#{{vis_report_object.nav_tab}}"){
+      $('#div_nav_tabs').append("#{{vis_report_object.nav_tab}}");
+      $('#div_tab_item').append("#{{vis_report_object.nav_item}}");
+    } else {
+      $('#div_tab_item').append("#{{vis_report_object.nav_item}}");
+    }
+    $.each(#{{vis_report_object.html_arr}}, function(i, canva){
+      $('#chart_div_page' + i).append(canva);
+    });
+
+    let chartData;
+    let chartLayout;
+    let ctx;
+    let config;
+    let page_title
+
+    $.each(#{{vis_report_object.graphs}}, function(title, graph_arr){
+      page_title = title.replace(' ', '_');
+      $.each(graph_arr, function(i, graph){
+        ctx = document.getElementById( 'chart_'+page_title+'_'+i );
+        if (graph[2]=='bar') {
+          chartData = {
+          x: graph[3],
+          y: graph[4],
+          orientation: 'h',
+          marker:{
+            color: graph[5]
+          },
+          type: graph[2]
+          };
+        } else if (graph[2]=='histogram'){
+          chartData = {
+            x: graph[4],
+            y: graph[3],
+            marker:{
+              color: graph[5]
+            },
+            type: 'bar'
+          };
+        } else {
+          chartData = {
+          x: graph[4],
+          y: graph[3],
+          marker:{
+            color: graph[5]
+          },
+          type: graph[2]
+          };
+        }
+
+        chartLayout = {
+          title: graph[1],
+          width: 700,
+          xaxis: {
+            automargin: true
+          }
+        };
+
+        config = {
+          responsive: true,
+          displayModeBar: true
+        };
+
+        Plotly.newPlot(ctx, [chartData], chartLayout, config);
+      });
+    });

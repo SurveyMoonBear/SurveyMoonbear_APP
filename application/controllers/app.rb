@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'roda'
 require 'figaro'
 require 'slim'
@@ -16,12 +18,11 @@ module SurveyMoonbear
     plugin :flash
     plugin :hooks
     plugin :all_verbs
-    
+    plugin :caching
 
     route do |routing|
       routing.assets
 
-      app = App
       config = App.config
 
       SecureDB.setup(config.DB_KEY)
@@ -130,8 +131,8 @@ module SurveyMoonbear
 
         # POST /survey/[survey_id]/update_options
         routing.post 'update_options' do
-          response = Service::UpdateSurveyOptions.new.call(survey_id: survey_id, 
-                                                           option: routing.params['option'], 
+          response = Service::UpdateSurveyOptions.new.call(survey_id: survey_id,
+                                                           option: routing.params['option'],
                                                            option_value: routing.params['option_value'])
 
           if response.failure?
@@ -164,10 +165,8 @@ module SurveyMoonbear
 
         # GET survey/[survey_id]/start
         routing.get 'start' do
-          response = Service::StartSurvey.new.call(survey_id: survey_id, 
-                                                   current_account: @current_account)
-
-          flash[:error] = response.failure + ' Please try again.' if response.failure?
+          response = Service::StartSurvey.new.call(survey_id: survey_id, current_account: @current_account)
+          flash[:error] = "#{response.failure} Please try again." if response.failure?
 
           routing.redirect '/survey_list'
         end
@@ -183,11 +182,10 @@ module SurveyMoonbear
 
         # DELETE survey/[survey_id]
         routing.delete do
-          response = Service::DeleteSurvey.new.call(config: config, 
-                                                    survey_id: survey_id)
+          response = Service::DeleteSurvey.new.call(config: config, survey_id: survey_id)
 
-          flash[:error] = "Failed to delete the survey. Please try again :(" if response.failure?
-          
+          flash[:error] = 'Failed to delete the survey. Please try again :(' if response.failure?
+
           routing.redirect '/survey_list', 303
         end
 
@@ -203,9 +201,10 @@ module SurveyMoonbear
               arr_launches = []
               survey.launches.each do |launch|
                 next if launch.responses.length.zero?
+
                 arr_responses = []
-                launch.responses.each do |response|
-                  arr_responses.push(response.respondent_id)
+                launch.responses.each do |res|
+                  arr_responses.push(res.respondent_id)
                 end
                 arr_responses.uniq!
                 stime = launch.started_at
@@ -225,8 +224,7 @@ module SurveyMoonbear
             response['Content-Type'] = 'application/csv'
 
             response = Service::TransformResponsesToCSV.new.call(survey_id: survey_id, launch_id: launch_id)
-            response.success? ? response.value! : 
-                                response.failure
+            response.success? ? response.value! : response.failure
           end
         end
       end
@@ -241,9 +239,7 @@ module SurveyMoonbear
               response = Service::GetSurveyFromDatabase.new.call(survey_id: survey_id)
               surveys_started = SecureSession.new(session).get(:surveys_started)
 
-              if response.failure? || surveys_started.nil?
-                routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}"
-              end
+              routing.redirect "/onlinesurvey/#{survey_id}/#{launch_id}" if response.failure? || surveys_started.nil?
 
               view 'survey_finish',
                    layout: false,
@@ -257,9 +253,9 @@ module SurveyMoonbear
                 survey_started['survey_id'] == survey_id
               end
 
-              Service::StoreResponses.new.call(survey_id: survey_id, 
-                                               launch_id: launch_id, 
-                                               respondent_id: respondent['respondent_id'], 
+              Service::StoreResponses.new.call(survey_id: survey_id,
+                                               launch_id: launch_id,
+                                               respondent_id: respondent['respondent_id'],
                                                responses: routing.params,
                                                config: config)
 
@@ -282,10 +278,8 @@ module SurveyMoonbear
         routing.on 'closed' do
           routing.get do
             response = Service::GetSurveyFromDatabase.new.call(survey_id: survey_id)
-            
-            if response.failure?
-              view 'survey_closed', layout: false
-            end
+
+            view 'survey_closed', layout: false if response.failure?
 
             survey = response.value!
 
@@ -295,8 +289,8 @@ module SurveyMoonbear
             end
 
             view 'survey_closed',
-                  layout: false,
-                  locals: { survey: survey }
+                 layout: false,
+                 locals: { survey: survey }
           end
         end
 
@@ -353,6 +347,126 @@ module SurveyMoonbear
                          survey_url: survey_url,
                          pages: html_of_pages_arr,
                          url_params: url_params }
+        end
+      end
+
+      # /analytics branch
+      routing.on 'analytics' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        # GET /analytics
+        routing.get do
+          routing.redirect '/' unless @current_account
+          surveys = Repository::For[Entity::Survey]
+                    .find_owner(@current_account['id'])
+          visual_reports = Repository::For[Entity::VisualReport]
+                           .find_owner(@current_account['id'])
+
+          view 'analytics', locals: { surveys: surveys,
+                                      config: config,
+                                      visual_reports: visual_reports }
+        end
+
+        routing.post 'create' do
+          new_visual_report = Service::CreateVisualReport.new.call(config: config,
+                                                                   current_account: @current_account,
+                                                                   title: routing.params['title'])
+          new_visual_report.success? ? flash[:notice] = "#{new_visual_report.value!.title} is created!" :
+                                       flash[:error] = 'Failed to create visual report, please try again :('
+
+          routing.redirect '/analytics'
+        end
+
+        # # POST /analytics/copy/[spreadsheet_id]
+        routing.post 'copy', String do |spreadsheet_id|
+          access_token = Google::Auth.new(config).refresh_access_token
+          new_visual_report = Service::CopyVisualReport.new.call(access_token: access_token,
+                                                                 current_account: @current_account,
+                                                                 spreadsheet_id: spreadsheet_id,
+                                                                 title: routing.params['title'])
+
+          flash[:error] = "Copy failed: '#{new_visual_report.failure}' Please try again :(" if new_visual_report.failure?
+
+          routing.redirect '/analytics'
+        end
+      end
+
+      # visual_report/[visual_report_id]
+      routing.on 'visual_report', String do |visual_report_id|
+        @current_account = SecureSession.new(session).get(:current_account)
+        # visual_report/[visual_report_id]/online/[spreadsheet_id]
+        routing.on 'online', String do |spreadsheet_id|
+          # visual_report/[visual_report_id]/online/[spreadsheet_id]/public
+          routing.on 'public' do
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(visual_report_id)
+
+            access_token = Google::Auth.new(config).refresh_access_token
+            responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
+                                                                      spreadsheet_id: spreadsheet_id,
+                                                                      access_token: access_token)
+
+            if responses.failure?
+              flash[:error] = "#{responses.failure} Please try again :("
+              routing.redirect '/analytics'
+            end
+
+            response.cache_control public: true, max_age: 3600 if App.environment == :production
+            response.cache_control public: true, max_age: 60 if App.environment == :development
+
+            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+
+            view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
+                                                           visual_report: visual_report }
+          end
+
+          # visual_report/[visual_report_id]/online/[spreadsheet_id]/design
+          routing.on 'design' do
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(visual_report_id)
+
+            access_token = Google::Auth.new(config).refresh_access_token
+            responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
+                                                                      spreadsheet_id: spreadsheet_id,
+                                                                      access_token: access_token)
+
+            if responses.failure?
+              flash[:error] = "#{responses.failure} Please try again :("
+              routing.redirect '/analytics'
+            end
+
+            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+
+            view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
+                                                           visual_report: visual_report }
+          end
+
+          # customized visual report
+          # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
+          routing.post do
+            student_id = routing.params['respondent']
+            student_id = SecureMessage.encrypt(student_id)
+
+            routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{student_id}"
+          end
+        end
+
+        # POST visual_report/[visual_report_id]/update_settings
+        routing.post 'update_settings' do
+          Service::EditVisualReportTitle.new.call(current_account: @current_account,
+                                                  visual_report_id: visual_report_id,
+                                                  new_title: routing.params['title'])
+
+          routing.redirect '/analytics'
+        end
+
+        # DELETE visual_report/[visual_report_id]
+        routing.delete do
+          response = Service::DeleteVisualReport.new.call(config: config, visual_report_id: visual_report_id)
+
+          flash[:error] = 'Failed to delete the visual report. Please try again :(' if response.failure?
+
+          routing.redirect '/analytics', 303
         end
       end
     end

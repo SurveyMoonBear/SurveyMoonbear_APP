@@ -3,3 +3,4 @@ config/secrets.yml
 _*
 .bundle/
 coverage
+_cache/

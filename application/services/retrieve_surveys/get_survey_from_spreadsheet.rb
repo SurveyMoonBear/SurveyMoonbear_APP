@@ -17,8 +17,8 @@ module SurveyMoonbear
       # input { spreadsheet_id:, current_account: }
       def read_spreadsheet(input)
         sheets_api = Google::Api::Sheets.new(input[:access_token])
-        spreadsheet = Google::SurveyMapper.new(sheets_api)
-                                          .load(input[:spreadsheet_id], input[:owner])
+        spreadsheet = Google::SurveyMapper.new(sheets_api).load(input[:spreadsheet_id], input[:owner])
+
         Success(spreadsheet)
       rescue StandardError => e
         puts e
