@@ -30,7 +30,7 @@ module SurveyMoonbear
           successful? ? @response : raise(HTTP_ERROR[@response.code])
         end
       end
-      
+
       def initialize(config)
         @config = config
       end
@@ -41,7 +41,7 @@ module SurveyMoonbear
         call_gs_url(account_req_url, access_token).parse
       end
 
-      def get_access_token(code)
+      def get_refresh_and_access_token(code)
         access_req_url = google_oauth_v4_path('token')
         data = {
           form: {
@@ -49,27 +49,22 @@ module SurveyMoonbear
             client_secret: @config.GOOGLE_CLIENT_SECRET,
             grant_type: 'authorization_code',
             redirect_uri: "#{@config.APP_URL}/account/login/google_callback",
-            code: code 
+            code: code
           }
         }
-        
+
         response = post_gs_url(access_req_url, data).parse
-        response['access_token']
+        { 'access_token': response['access_token'], 'refresh_token': response['refresh_token'] }
       end
 
+      # get moonbear's access token
       def refresh_access_token
-        refresh_req_url = google_oauth_v4_path('token')
-        data = { 
-          params: {
-            refresh_token: @config.REFRESH_TOKEN,
-            client_id: @config.GOOGLE_CLIENT_ID,
-            client_secret: @config.GOOGLE_CLIENT_SECRET,
-            grant_type: 'refresh_token'
-          }
-        }
+        get_new_access_token(@config.REFRESH_TOKEN)
+      end
 
-        response = post_gs_url(refresh_req_url, data).parse
-        response['access_token']
+      # get logged person's acess token
+      def refresh_user_access_token(user_refresh_token)
+        get_new_access_token(user_refresh_token)
       end
 
       private
@@ -94,6 +89,21 @@ module SurveyMoonbear
                        .post(url, data)
 
         Response.new(response).response_or_error
+      end
+
+      def get_new_access_token(role_access_token)
+        refresh_req_url = google_oauth_v4_path('token')
+        data = {
+          params: {
+            refresh_token: role_access_token,
+            client_id: @config.GOOGLE_CLIENT_ID,
+            client_secret: @config.GOOGLE_CLIENT_SECRET,
+            grant_type: 'refresh_token'
+          }
+        }
+
+        response = post_gs_url(refresh_req_url, data).parse
+        response['access_token']
       end
     end
   end

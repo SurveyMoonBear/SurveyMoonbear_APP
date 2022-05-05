@@ -23,7 +23,8 @@ module SurveyMoonbear
             id: nil,
             email: email,
             username: username,
-            access_token: access_token
+            access_token: access_token,
+            refresh_token: refresh_token
           )
         end
 
@@ -37,6 +38,10 @@ module SurveyMoonbear
 
         def access_token
           @data['access_token']
+        end
+
+        def refresh_token
+          @data['refresh_token']
         end
       end
     end
