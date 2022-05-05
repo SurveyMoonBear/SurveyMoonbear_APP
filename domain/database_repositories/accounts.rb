@@ -24,7 +24,7 @@ module SurveyMoonbear
           email: entity.email,
           username: entity.username,
           access_token: entity.access_token,
-          refresh_token: refresh_token
+          refresh_token: entity.refresh_token
         )
 
         rebuild_entity(db_account)
