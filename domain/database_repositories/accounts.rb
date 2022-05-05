@@ -5,7 +5,8 @@ module SurveyMoonbear
       def self.find_entity(entity)
         db_record = Database::AccountOrm.first(email: entity.email)
         db_record&.update(username: entity.username,
-                          access_token: entity.access_token)
+                          access_token: entity.access_token,
+                          refresh_token: entity.refresh_token)
         rebuild_entity(db_record)
       end
 
@@ -22,7 +23,8 @@ module SurveyMoonbear
         db_account = Database::AccountOrm.create(
           email: entity.email,
           username: entity.username,
-          access_token: entity.access_token
+          access_token: entity.access_token,
+          refresh_token: entity.refresh_token
         )
 
         rebuild_entity(db_account)
@@ -35,7 +37,8 @@ module SurveyMoonbear
           id: db_record.id,
           email: db_record.email,
           username: db_record.username,
-          access_token: db_record.access_token
+          access_token: db_record.access_token,
+          refresh_token: db_record.refresh_token
         )
       end
     end

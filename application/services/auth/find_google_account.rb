@@ -11,7 +11,7 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
-      step :get_access_token
+      step :get_refresh_and_access_token
       step :get_google_account
       step :build_account_entity
       step :load_from_db
@@ -19,9 +19,9 @@ module SurveyMoonbear
       private
 
       # input { config:, code: }
-      def get_access_token(input)
-        input[:access_token] = Google::Auth.new(input[:config])
-                                           .get_access_token(input[:code])
+      def get_refresh_and_access_token(input)
+        input[:tokens] = Google::Auth.new(input[:config])
+                                          .get_refresh_and_access_token(input[:code])
         Success(input)
       rescue
         Failure('Failed to get access token')
@@ -30,7 +30,7 @@ module SurveyMoonbear
       # input { ..., access_token: }
       def get_google_account(input)
         input[:google_account] = Google::Auth.new(input[:config])
-                                             .get_google_account(input[:access_token])
+                                             .get_google_account(input[:tokens][:access_token])
         Success(input)
       rescue
         Failure('Failed to get google account')
@@ -39,9 +39,10 @@ module SurveyMoonbear
       # input { ..., google_account: }
       def build_account_entity(input)
         input[:account_entity] = Entity::Account.new(id: nil,
-                                                    email: input[:google_account]['email'],
-                                                    username: input[:google_account]['name'],
-                                                    access_token: input[:access_token])
+                                                     email: input[:google_account]['email'],
+                                                     username: input[:google_account]['name'],
+                                                     access_token: input[:tokens][:access_token],
+                                                     refresh_token: input[:tokens][:refresh_token])
         Success(input)
       rescue StandardError => e
         puts e

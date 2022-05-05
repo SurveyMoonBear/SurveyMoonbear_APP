@@ -33,5 +33,6 @@ ACCESS_TOKEN = SurveyMoonbear::Google::Auth.new(CONFIG).refresh_access_token
 CURRENT_ACCOUNT = {
   'email' => 'moonbear.survey.test@gmail.com'.freeze,
   'username' => 'SurveyMoonbear Test'.freeze,
-  'access_token' => ACCESS_TOKEN
+  'access_token' => ACCESS_TOKEN,
+  'refresh_token' => REFRESH_TOKEN
 }

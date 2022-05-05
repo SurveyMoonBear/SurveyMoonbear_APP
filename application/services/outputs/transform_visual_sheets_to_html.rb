@@ -34,7 +34,8 @@ module SurveyMoonbear
       # input { ..., sheets_report}
       def get_user_access_token(input)
         visual_report = Repository::For[Entity::VisualReport].find_origin_id(input[:spreadsheet_id])
-        input[:user_access_token] = visual_report.owner.access_token
+        refresh_token = visual_report.owner.refresh_token
+        input[:user_access_token] = Google::Auth.new(input[:config]).refresh_user_access_token(refresh_token)
 
         if input[:user_access_token]
           Success(input)
