@@ -472,6 +472,53 @@ module SurveyMoonbear
           routing.redirect '/analytics', 303
         end
       end
+
+      # /studies branch
+      routing.on 'studies' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        routing.post 'create' do
+          new_study = Service::CreateStudy.new.call(config: config,
+                                                    current_account: @current_account,
+                                                    params: routing.params)
+
+          if new_study.success?
+            flash[:notice] = "#{new_study.value!.title} is created!"
+          else
+            flash[:error] = 'Failed to create study, please try again :('
+          end
+          routing.redirect '/studies'
+        end
+
+        routing.on String do |study_id|
+          # POST studies/[study_id]/update_title
+          routing.post 'update_title' do
+            Service::UpdateStudyTitle.new.call(current_account: @current_account,
+                                              study_id: study_id,
+                                              new_title: routing.params['title'])
+
+            routing.redirect '/studies'
+          end
+
+          # DELETE studies/[study_id]
+          routing.delete do
+            response = Service::DeleteStudy.new.call(config: config, study_id: study_id)
+
+            flash[:error] = 'Failed to delete the study. Please try again :(' if response.failure?
+
+            routing.redirect '/studies', 303
+          end
+        end
+
+        # GET /studies
+        routing.get do
+          routing.redirect '/' unless @current_account
+
+          studies = Repository::For[Entity::Study].find_owner(@current_account['id'])
+
+          view 'study_list', locals: { studies: studies, config: config }
+        end
+      end
     end
   end
 end
