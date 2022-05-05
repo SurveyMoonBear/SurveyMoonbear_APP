@@ -4,3 +4,4 @@ _*
 .bundle/
 coverage
 _cache/
+.DS_Store

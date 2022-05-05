@@ -1,0 +1,23 @@
+div class="modal fade" id="modal_rename_study"
+  div class="modal-dialog" role="document"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Edit Study Title
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      form id="rename_study_form" method="post"
+        div class="modal-body"
+          div class="form-group"
+            label for="title" Study Title
+            input type="text" class="form-control" id="input-title" name="title" placeholder="Enter study title"
+        div class="modal-footer"
+          button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+          button type="submit" class="btn btn-primary" id="btn-save-title" Save
+
+javascript:
+  $('#modal_rename_study').on('show.bs.modal', function(e) {
+    var study_id = $(e.relatedTarget).data('study_id');
+    var study_title = $(e.relatedTarget).data('study_title');
+    $('#rename_study_form').attr('action', '/studies/' + study_id + '/update_title');
+    $('#input-title').val(study_title);
+  });

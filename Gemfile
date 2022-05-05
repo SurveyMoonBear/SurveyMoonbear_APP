@@ -51,6 +51,13 @@ gem 'shoryuken', '~> 4'
 gem 'dry-struct'
 gem 'dry-types'
 
+# Notification
+gem 'aws-sdk-sns'
+gem 'cronex'
+gem 'nokogiri'
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
+
 group :test do
   gem 'minitest'
   gem 'minitest-rg'
