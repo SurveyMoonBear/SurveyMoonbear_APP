@@ -9,7 +9,7 @@ module SurveyMoonbear
       attribute :email, Strict::String
       attribute :username, Strict::String
       attribute :access_token, Strict::String
-      attribute :refresh_token, Strict::String
+      attribute :refresh_token, Strict::String.optional
     end
   end
 end
