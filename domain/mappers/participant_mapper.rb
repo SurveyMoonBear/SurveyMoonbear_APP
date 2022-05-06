@@ -8,11 +8,11 @@ module SurveyMoonbear
   module Mapper
     # Data Mapper object for Google's spreadsheet
     class ParticipantMapper
-      def load(data, owner)
+      def load(data)
         participant = {}
-        participant[:data] = data
-        participant[:study] = study
-        participant[:owner] = owner
+        participant[:data] = data[:params]
+        participant[:study] = data[:study]
+        participant[:owner] = data[:current_account]
         build_entity(participant)
       end
 
@@ -24,7 +24,6 @@ module SurveyMoonbear
       class DataMapper
         def initialize(participant)
           @participant = participant
-          @study_mapper = StudyMapper.new
           @account_mapper = Google::AccountMapper.new
         end
 
@@ -49,7 +48,7 @@ module SurveyMoonbear
         end
 
         def study
-          @study_mapper.load(@participant[:study])
+          @participant[:study]
         end
 
         def details

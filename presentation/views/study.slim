@@ -22,8 +22,38 @@ div class="mb-3"
     div class="col-4 col-sm-12 col-md-3" 
       h4 Registered Participants
     div class="col-8 col-sm-12 col-md-7"
-      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_participant"
         i class="fas fa-plus"
+      div class="modal fade" id="modal_create_participant"
+        div class="modal-dialog" role="document"
+          div class="modal-content"
+            div class="modal-header"
+              h5 class="modal-title" Create a New Participant
+              button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                span aria-hidden="true" &times;
+            form id="create_participant_form" action="/studies/#{study.id}/create_participant" method="post"
+              div class="modal-body"
+                div class="form-group"
+                  div class="mb-2"
+                    label for="nickname" Nickname
+                    input type="text" class="form-control" id="nickname" name="nickname" placeholder="nick_1"
+                  div class="mb-2"
+                    label for="contact_type"  Contact Type
+                    select class="form-control" id="contact_type" name="contact_type"
+                      option value="email" Email
+                      option value="sms" SMS
+                  div class="mb-2  form-group"
+                    label for="email" Email
+                    input type="email" class="form-control" id="email" name="email" placeholder="participant@gmail.com"
+                  div class="mb-2  form-group"
+                    label for="phone" Phone(optional)
+                    input type="text" class="form-control" id="phone" name="phone" placeholder="0912345678"                
+                  div class="mb-2"
+                    label for="details" Participant Details
+                    input type="text" class="form-control" id="details" name="details" placeholder='{:Name=> "Nick", :Weight=> 54}'
+              div class="modal-footer"
+                button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                button type="submit" class="btn btn-primary" id="btn-create" Create
       form.d-inline-flex.align-middle.mr-1 role="form" action="/participant/confirm_status" method='get'
         input type="hidden" name="study_id" value="" 
         button type="submit" class="btn btn-outline-primary btn-sm"
@@ -90,28 +120,33 @@ div class="mb-3"
         i class="fas fa-plus" &nbsp;Create a new survey
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10"
-      table class="table"
-        thead
-          tr
-            th scope="col"  #
-            th scope="col"  Title
-            th scope="col"  State
-            th scope="col"  Created at
-            th scope="col"  
-        tbody
-          tr
-            th scope="row"  1
-            td Survey A
-            td Start
-            td 2022-05-05 19:27:38 +0800
-            td.p-1
-              button {
-                type="button" class="btn btn-outline-dark btn-sm border-0"
-                data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
-              }
-                i class="fas fa-times"
+      - if surveys.any?
+        table class="table"
+          thead
+            tr
+              th scope="col"  #
+              th scope="col"  Title
+              th scope="col"  State
+              th scope="col"  Created at
+              th scope="col"
+          tbody
+            - surveys.each.with_index do |survey, index|
+              tr
+                th scope="row"  1
+                td #{survey.title}
+                td #{survey.state}
+                td #{survey.created_at}
+                td.p-1
+                  button {
+                    type="button" class="btn btn-outline-dark btn-sm border-0"
+                    data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+                  }
+                    i class="fas fa-times"
   #collapseExample.collapse
     == render :surveys, locals: { surveys: surveys }
+
+include :modal_create_survey
+
 javascript:
   $(document).ready(function($) {
       $(".clickable-row").click(function() {

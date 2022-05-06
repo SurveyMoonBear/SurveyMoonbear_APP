@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'study'
+
 module SurveyMoonbear
   module Entity
     # Domain entity object for any participant
@@ -7,7 +9,7 @@ module SurveyMoonbear
       include Dry.Types
       attribute :id, String.optional
       attribute :owner, Account
-      attribute :study_id, String.optional
+      attribute :study, Study
       attribute :details, Strict::String.optional
       attribute :nickname, Strict::String
       attribute :contact_type, Strict::String

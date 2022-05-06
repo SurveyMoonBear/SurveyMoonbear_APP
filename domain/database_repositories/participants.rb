@@ -35,7 +35,7 @@ module SurveyMoonbear
       end
 
       def self.find_or_create(entity)
-        find_origin_id(entity.origin_id) || create_from(entity)
+        find_id(entity.id) || create_from(entity)
       end
 
       def self.create_from(entity)
@@ -94,7 +94,7 @@ module SurveyMoonbear
         Entity::Participant.new(
           id: db_record.id,
           owner: Accounts.rebuild_entity(db_record.owner),
-          study_id: db_record.study_id,
+          study: Studies.rebuild_entity(db_record.study),
           details: db_record.details,
           nickname: db_record.nickname,
           contact_type: db_record.contact_type,

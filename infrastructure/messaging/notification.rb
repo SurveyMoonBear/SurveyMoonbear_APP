@@ -6,8 +6,6 @@ module SurveyMoonbear
   module Messaging
     # Notification wrapper for AWS SNS
     class Notification
-      # IDLE_TIMEOUT = 5 # seconds
-
       def initialize(config)
         @config = config
         @config_aws_hash = {
@@ -31,6 +29,15 @@ module SurveyMoonbear
           end
         end
         topic.delete
+      end
+
+      def subscribe_topic(topic_arn, protocol, endpoint, uuid)
+        @sns_client.subscribe(topic_arn: topic_arn,
+                              protocol: protocol,
+                              endpoint: endpoint,
+                              attributes: {
+                                'FilterPolicy' => "{\"uuid\": [\"#{uuid}\", \"all\"]}"
+                              })[:subscription_arn]
       end
     end
   end

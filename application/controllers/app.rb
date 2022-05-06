@@ -505,6 +505,15 @@ module SurveyMoonbear
             routing.redirect '/studies'
           end
 
+          # POST studies/[study_id]/create_participant
+          routing.post 'create_participant' do
+            Service::CreateParticipant.new.call(config: config,
+                                                current_account: @current_account,
+                                                study_id: study_id,
+                                                params: routing.params)
+            routing.redirect "/studies/#{study_id}"
+          end
+
           # DELETE studies/[study_id]
           routing.delete do
             response = Service::DeleteStudy.new.call(config: config, study_id: study_id)
@@ -515,6 +524,7 @@ module SurveyMoonbear
           # GET /studies/[study_id]
           routing.get do
             routing.redirect '/' unless @current_account
+            # TODO: Service::GetStudy
             study = Repository::For[Entity::Study].find_id(study_id)
             surveys = Repository::For[Entity::Survey].find_owner(@current_account['id'])
             participants = Repository::For[Entity::Participant].find_study(study_id)
