@@ -9,6 +9,8 @@ require 'json'
 require 'csv'
 
 module SurveyMoonbear
+  # rubocop: disable Metrics/ClassLength
+  # rubocop: disable Metrics/BlockLength
   # Web API
   class App < Roda
     plugin :render, engine: 'slim', views: 'presentation/views'
@@ -60,7 +62,7 @@ module SurveyMoonbear
         routing.on 'login' do
           # GET /account/login/google_callback request
           routing.get 'google_callback' do
-            logged_in_account_res = Service::FindAuthenticatedGoogleAccount.new.call(config: config, 
+            logged_in_account_res = Service::FindAuthenticatedGoogleAccount.new.call(config: config,
                                                                                      code: routing.params['code'])
             if logged_in_account_res.failure?
               puts logged_in_account_res.failure
@@ -101,8 +103,11 @@ module SurveyMoonbear
                                                       current_account: @current_account,
                                                       title: routing.params['title'])
 
-          new_survey.success? ? flash[:notice] = "#{new_survey.value!.title} is created!" :
-                                flash[:error] = "Failed to create survey, please try again :("
+          if new_survey.success?
+            flash[:notice] = "#{new_survey.value!.title} is created!"
+          else
+            flash[:error] = 'Failed to create survey, please try again :('
+          end
 
           routing.redirect '/survey_list'
         end
@@ -110,7 +115,7 @@ module SurveyMoonbear
         # POST /survey_list/copy/[spreadsheet_id]
         routing.post 'copy', String do |spreadsheet_id|
           new_survey = Service::CopySurvey.new.call(config: config,
-                                                    current_account: @current_account, 
+                                                    current_account: @current_account,
                                                     spreadsheet_id: spreadsheet_id,
                                                     title: routing.params['title'])
 
@@ -124,8 +129,8 @@ module SurveyMoonbear
         @current_account = SecureSession.new(session).get(:current_account)
 
         routing.post 'update_settings' do
-          Service::EditSurveyTitle.new.call(current_account: @current_account, 
-                                            survey_id: survey_id, 
+          Service::EditSurveyTitle.new.call(current_account: @current_account,
+                                            survey_id: survey_id,
                                             new_title: routing.params['title'])
 
           routing.redirect '/survey_list'
@@ -137,9 +142,7 @@ module SurveyMoonbear
                                                            option: routing.params['option'],
                                                            option_value: routing.params['option_value'])
 
-          if response.failure?
-            flash[:error] = response.failure + ' Please try again.'
-          end
+          flash[:error] = "#{response.failure} Please try again." if response.failure?
 
           routing.redirect '/survey_list'
         end
@@ -154,14 +157,14 @@ module SurveyMoonbear
                                                                      current_account: @current_account,
                                                                      random_seed: routing.params['seed'])
             if response.failure?
-              flash[:error] = response.failure + ' Please try again.'
+              flash[:error] = "#{response.failure} Please try again."
               routing.redirect '/survey_list'
             end
 
             preview_survey = response.value!
             view 'survey_preview',
-                  layout: false,
-                  locals: { title: preview_survey[:title], pages: preview_survey[:pages] }
+                 layout: false,
+                 locals: { title: preview_survey[:title], pages: preview_survey[:pages] }
           end
         end
 
@@ -177,7 +180,7 @@ module SurveyMoonbear
         routing.get 'close' do
           response = Service::CloseSurvey.new.call(survey_id: survey_id)
 
-          flash[:error] = response.failure + ' Please try again.' if response.failure?
+          flash[:error] = "#{response.failure} Please try again." if response.failure?
 
           routing.redirect '/survey_list'
         end
@@ -221,7 +224,7 @@ module SurveyMoonbear
           end
         end
 
-        routing.on 'download', String, String do |launch_id, file_name|
+        routing.on 'download', String, String do |launch_id|
           routing.get do
             response['Content-Type'] = 'application/csv'
 
@@ -319,7 +322,9 @@ module SurveyMoonbear
           end
 
           html_of_pages_arr = html_transform_res.value![:pages]
-          routing.params['seed'] = html_transform_res.value![:random_seed] unless html_transform_res.value![:random_seed].nil?
+          unless html_transform_res.value![:random_seed].nil?
+            routing.params['seed'] = html_transform_res.value![:random_seed]
+          end
 
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
           url_params = JSON.generate(routing.params)
@@ -494,8 +499,8 @@ module SurveyMoonbear
           # POST studies/[study_id]/update_title
           routing.post 'update_title' do
             Service::UpdateStudyTitle.new.call(current_account: @current_account,
-                                              study_id: study_id,
-                                              new_title: routing.params['title'])
+                                               study_id: study_id,
+                                               new_title: routing.params['title'])
 
             routing.redirect '/studies'
           end
@@ -508,6 +513,13 @@ module SurveyMoonbear
 
             routing.redirect '/studies', 303
           end
+
+          # GET /studies/[study_id]
+          routing.get do
+            # studies = Repository::For[Entity::Study].find_owner(@current_account['id'])
+            surveys = Repository::For[Entity::Survey].find_owner(@current_account['id'])
+            view 'study', locals: { surveys: surveys, config: config }
+          end
         end
 
         # GET /studies
@@ -516,9 +528,11 @@ module SurveyMoonbear
 
           studies = Repository::For[Entity::Study].find_owner(@current_account['id'])
 
-          view 'study_list', locals: { studies: studies, config: config }
+          view 'studies', locals: { studies: studies, config: config }
         end
       end
     end
   end
+  # rubocop: enable Metrics/ClassLength
+  # rubocop: enable Metrics/BlockLength
 end
