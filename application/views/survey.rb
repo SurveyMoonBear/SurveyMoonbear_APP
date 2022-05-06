@@ -2,7 +2,7 @@
 
 module SurveyMoonbear
   module Views
-    # View object for a single repo's Github project
+    # View object for a single survey
     class Survey
       def initialize(spreadsheet)
         @spreadsheet = spreadsheet
@@ -15,10 +15,6 @@ module SurveyMoonbear
       def title
         @spreadsheet.title
       end
-
-      # def contributors
-      #   @repo.contributors.map(&:username).join(', ')
-      # end
     end
   end
 end

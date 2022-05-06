@@ -482,6 +482,7 @@ module SurveyMoonbear
       routing.on 'studies' do
         @current_account = SecureSession.new(session).get(:current_account)
 
+        # POST studies/create
         routing.post 'create' do
           new_study = Service::CreateStudy.new.call(config: config,
                                                     current_account: @current_account,
@@ -501,33 +502,35 @@ module SurveyMoonbear
             Service::UpdateStudyTitle.new.call(current_account: @current_account,
                                                study_id: study_id,
                                                new_title: routing.params['title'])
-
             routing.redirect '/studies'
           end
 
           # DELETE studies/[study_id]
           routing.delete do
             response = Service::DeleteStudy.new.call(config: config, study_id: study_id)
-
             flash[:error] = 'Failed to delete the study. Please try again :(' if response.failure?
-
             routing.redirect '/studies', 303
           end
 
           # GET /studies/[study_id]
           routing.get do
-            # studies = Repository::For[Entity::Study].find_owner(@current_account['id'])
+            routing.redirect '/' unless @current_account
+            study = Repository::For[Entity::Study].find_id(study_id)
             surveys = Repository::For[Entity::Survey].find_owner(@current_account['id'])
-            view 'study', locals: { surveys: surveys, config: config }
+            participants = Repository::For[Entity::Participant].find_study(study_id)
+            notifications = {}
+            view 'study', locals: { study: study,
+                                    participants: participants,
+                                    notifications: notifications,
+                                    surveys: surveys,
+                                    config: config }
           end
         end
 
         # GET /studies
         routing.get do
           routing.redirect '/' unless @current_account
-
           studies = Repository::For[Entity::Study].find_owner(@current_account['id'])
-
           view 'studies', locals: { studies: studies, config: config }
         end
       end

@@ -1,0 +1,120 @@
+div class="mb-3"
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
+      h3.m-0 Study Title
+      button {
+        class="btn btn-outline-dark border-0 ml-2 py-1"
+        data-toggle="modal" data-target="#modal_rename_study" 
+        data-study_id=""
+        data-study_title=""
+      }
+        i class="fas fa-cog"
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 p-3 border"
+      div
+        b Description:
+      div style="word-wrap:break-word;" #{study.desc}
+      - if study.track_activity
+        div.mt-3 
+          b Collect Calendar Data:
+        div From #{study.activity_start_at.strftime('%D')} to #{study.activity_end_at.strftime('%D')}
+  div class="row justify-content-center mt-3"
+    div class="col-4 col-sm-12 col-md-3" 
+      h4 Registered Participants
+    div class="col-8 col-sm-12 col-md-7"
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+        i class="fas fa-plus"
+      form.d-inline-flex.align-middle.mr-1 role="form" action="/participant/confirm_status" method='get'
+        input type="hidden" name="study_id" value="" 
+        button type="submit" class="btn btn-outline-primary btn-sm"
+          i class="fas fa-check" &nbsp;Update Confirm Status
+      - if study.track_activity
+        form.d-inline-flex.align-middle role="form" action="/participant/track_activiy" method='get'
+          input type="hidden" name="study_id" value="" 
+          button type="submit" class="btn btn-outline-info btn-sm"
+            i class="fas fa-calendar" &nbsp;Collect Calendar Data
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10"
+      - if participants.any?
+        table class="table table-hover"
+          thead
+            tr
+              th scope="col"  #
+              th scope="col"  Nickname
+              th scope="col"  ID
+              th scope="col"  Status
+              th scope="col"  Email
+              th scope="col"  Calendar Data
+          tbody
+            - participants.each.with_index do |participant, index|
+              tr class='clickable-row' style="cursor:pointer;" data-href="/participants/#{participant.id}"
+                th scope="row"  #{index+1}
+                td #{participant.nickname}
+                td #{participant.id}
+                td #{participant.status}
+                td #{participant.email}
+                td Calendar/Activity Data Summary
+  - if study.enable_notification
+    div class="row justify-content-center mt-3"
+      div class="col-4 col-sm-12 col-md-3" 
+        h4 Notifications
+      div class="col-8 col-sm-12 col-md-7"
+        button type="button" class="btn btn-outline-dark btn-sm mr-1" data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+          i class="fas fa-plus"
+    div class="row justify-content-center mt-3"
+      div class="col-12 col-sm-12 col-md-10"
+        - if notifications.any?
+          table class="table table-hover"
+            thead
+              tr
+                th scope="col"  #
+                th scope="col"  Title
+                th scope="col"  Survey Title
+                th scope="col"  Date & Time
+            tbody
+              - notifications.each.with_index do |notification, index|
+                tr class='clickable-row' style="cursor:pointer;" data-href="/notifications/#{notification.id}"
+                  th scope="row"  #{index+1}
+                  td #{notification.title}
+                  td #{notification.survey_id}
+                  td #{notification.date_time}
+  div class="row justify-content-center mt-3"
+    div class="col-4 col-sm-12 col-md-3" 
+      h4 Surveys
+    div class="col-8 col-sm-12 col-md-7"
+      button class="btn btn-outline-dark btn-sm mr-1" aria-controls="collapseExample" aria-expanded="false" data-target="#collapseExample" data-toggle="collapse" type="button" 
+        i class="fas fa-th-list" &nbsp;Detail list
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+        i class="fas fa-plus" &nbsp;Add an exist survey
+      a href="#" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_create_survey"
+        i class="fas fa-plus" &nbsp;Create a new survey
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10"
+      table class="table"
+        thead
+          tr
+            th scope="col"  #
+            th scope="col"  Title
+            th scope="col"  State
+            th scope="col"  Created at
+            th scope="col"  
+        tbody
+          tr
+            th scope="row"  1
+            td Survey A
+            td Start
+            td 2022-05-05 19:27:38 +0800
+            td.p-1
+              button {
+                type="button" class="btn btn-outline-dark btn-sm border-0"
+                data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+              }
+                i class="fas fa-times"
+  #collapseExample.collapse
+    == render :surveys, locals: { surveys: surveys }
+javascript:
+  $(document).ready(function($) {
+      $(".clickable-row").click(function() {
+          window.location = $(this).data("href");
+      });
+  });

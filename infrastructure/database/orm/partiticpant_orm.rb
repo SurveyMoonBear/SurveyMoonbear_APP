@@ -2,13 +2,12 @@
 
 module SurveyMoonbear
   module Database
-    # Object Relational Mapper for Repo Entities
-    class StudyOrm < Sequel::Model(:studies)
+    # Object Relational Mapper for Participant Entities
+    class ParticipantOrm < Sequel::Model(:participants)
       many_to_one :owner,
                   class: :'SurveyMoonbear::Database::AccountOrm'
-      one_to_many :owned_participants,
-                  class: :'SurveyMoonbear::Database::ParticipantOrm',
-                  key: :study_id
+      many_to_one :study,
+                  class: :'SurveyMoonbear::Database::StudyOrm'
 
       plugin :uuid, field: :id
       plugin :timestamps

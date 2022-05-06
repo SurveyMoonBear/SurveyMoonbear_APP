@@ -25,7 +25,7 @@ module SurveyMoonbear
       end
 
       def self.find_or_create(entity)
-        find_origin_id(entity.origin_id) || create_from(entity)
+        find_id(entity.id) || create_from(entity)
       end
 
       def self.create_from(entity)

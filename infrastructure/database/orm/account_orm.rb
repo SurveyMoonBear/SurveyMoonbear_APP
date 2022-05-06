@@ -8,6 +8,14 @@ module SurveyMoonbear
                   class: :'SurveyMoonbear::Database::SurveyOrm',
                   key: :owner_id
 
+      one_to_many :owned_studies,
+                  class: :'SurveyMoonbear::Database::StudyOrm',
+                  key: :owner_id
+
+      one_to_many :owned_participants,
+                  class: :'SurveyMoonbear::Database::ParticipantOrm',
+                  key: :owner_id
+
       def access_token=(acctoken_plain)
         self.access_token_secure = SecureDB.encrypt(acctoken_plain)
       end
