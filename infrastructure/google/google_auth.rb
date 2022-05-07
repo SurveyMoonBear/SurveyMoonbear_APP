@@ -54,7 +54,6 @@ module SurveyMoonbear
         }
 
         response = post_gs_url(access_req_url, data).parse
-        puts "res keys: #{response.keys}"
         { 'access_token': response['access_token'], 'refresh_token': response['refresh_token'] }
       end
 
