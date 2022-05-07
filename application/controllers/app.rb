@@ -36,6 +36,7 @@ module SurveyMoonbear
         params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
                   "redirect_uri=#{config.APP_URL}/account/login/google_callback",
                   'response_type=code',
+                  'access_type=offline',
                   "scope=#{scopes.join(' ')}"]
         @google_sso_url = "#{url}?#{params.join('&')}"
 
