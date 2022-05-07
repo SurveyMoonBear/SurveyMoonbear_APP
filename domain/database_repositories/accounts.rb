@@ -7,6 +7,7 @@ module SurveyMoonbear
         db_record&.update(username: entity.username,
                           access_token: entity.access_token,
                           refresh_token: entity.refresh_token)
+
         rebuild_entity(db_record)
       end
 
