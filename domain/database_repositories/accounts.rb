@@ -4,11 +4,11 @@ module SurveyMoonbear
     class Accounts
       def self.find_entity(entity)
         db_record = Database::AccountOrm.first(email: entity.email)
-        puts "before update db_record rf len: #{db_record.refresh_token},\nentity rt len:#{entity.refresh_token.length}"
+        App.logger.info "before update db_record rf len: #{db_record.refresh_token.length},\nentity rt len:#{entity.refresh_token.length}"
         db_record&.update(username: entity.username,
                           access_token: entity.access_token,
                           refresh_token: entity.refresh_token)
-        puts "after update db_record rf len: #{db_record.refresh_token},\nentity rt len:#{entity.refresh_token.length}"
+        App.logger.info "after update db_record rf len: #{db_record.refresh_token.length},\nentity rt len:#{entity.refresh_token.length}"
         rebuild_entity(db_record)
       end
 

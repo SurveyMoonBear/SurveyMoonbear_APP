@@ -5,6 +5,7 @@ require 'rack/ssl-enforcer'
 require 'rack/session/redis'
 require 'rack/cache'
 require 'redis-rack-cache'
+require 'logger'
 
 module SurveyMoonbear
   # Configuration for the API
@@ -25,6 +26,10 @@ module SurveyMoonbear
       SecureMessage.setup(config)
     end
 
+    # Logger setup
+    LOGGER = Logger.new($stderr)
+    def self.logger = LOGGER
+
     A_DAY = 60 * 60 * 24 # in seconds
 
     configure :development do
@@ -43,6 +48,7 @@ module SurveyMoonbear
           verbose: true,
           metastore: 'file:_cache/rack/meta',
           entitystore: 'file:_cache/rack/body'
+      logger.level = Logger::DEBUG
     end
 
     configure :production do
