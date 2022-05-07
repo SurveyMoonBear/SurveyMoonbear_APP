@@ -4,7 +4,7 @@ module SurveyMoonbear
     class Accounts
       def self.find_entity(entity)
         db_record = Database::AccountOrm.first(email: entity.email)
-        puts "before update db_record rf len: #{db_record},\nentity rt len:#{entity.refresh_token.length}"
+        puts "before update db_record rf len: #{db_record},\nentity rt len:#{entity.refresh_token.length}" if entity.refresh_token
         db_record&.update(username: entity.username,
                           access_token: entity.access_token,
                           refresh_token: entity.refresh_token)
