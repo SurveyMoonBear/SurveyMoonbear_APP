@@ -37,7 +37,7 @@ module SurveyMoonbear
                   "redirect_uri=#{config.APP_URL}/account/login/google_callback",
                   'response_type=code',
                   'access_type=offline',
-                  'approval_prompt=force',
+                  'prompt=consent',
                   "scope=#{scopes.join(' ')}"]
         @google_sso_url = "#{url}?#{params.join('&')}"
 

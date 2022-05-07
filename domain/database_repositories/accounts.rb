@@ -4,11 +4,15 @@ module SurveyMoonbear
     class Accounts
       def self.find_entity(entity)
         db_record = Database::AccountOrm.first(email: entity.email)
-        puts "before update db_record rf len: #{db_record},\nentity rt len:#{entity.refresh_token.length}" if entity.refresh_token
+        if db_record.refresh_token
+          puts "before update db_record rf len: #{db_record.refresh_token.length}"
+        else
+          puts 'no refresh_token in db'
+        end
         db_record&.update(username: entity.username,
                           access_token: entity.access_token,
                           refresh_token: entity.refresh_token)
-        puts "after update db_record rfs len: #{db_record.refresh_token_secure.length},\nentity rt len:#{entity.refresh_token.length}" if db_record
+        puts "after update db_record rfs len: #{db_record.refresh_token.length},\nentity rt len:#{entity.refresh_token.length}" if entity.refresh_token
         puts 'db_record is nil' unless db_record
         rebuild_entity(db_record)
       end
