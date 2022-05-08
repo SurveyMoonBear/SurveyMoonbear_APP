@@ -400,6 +400,9 @@ module SurveyMoonbear
         routing.on 'online', String do |spreadsheet_id|
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/public
           routing.on 'public' do
+            response.cache_control public: true, max_age: 3600 if App.environment == :production
+            response.cache_control public: true, max_age: 60 if App.environment == :development
+
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
 
@@ -414,11 +417,7 @@ module SurveyMoonbear
               routing.redirect '/analytics'
             end
 
-            response.cache_control public: true, max_age: 3600 if App.environment == :production
-            response.cache_control public: true, max_age: 60 if App.environment == :development
-
             vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
-
             view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
                                                            visual_report: visual_report }
           end
