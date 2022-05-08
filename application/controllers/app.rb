@@ -534,7 +534,7 @@ module SurveyMoonbear
             study = Repository::For[Entity::Study].find_id(study_id)
             surveys = Repository::For[Entity::Survey].find_owner(@current_account['id'])
             participants = Repository::For[Entity::Participant].find_study(study_id)
-            notifications = {}
+            notifications = Service::GetNotifications.new.call(study_id: study_id).value!
             view 'study', locals: { study: study,
                                     participants: participants,
                                     notifications: notifications,
@@ -584,6 +584,40 @@ module SurveyMoonbear
           end
         end
       end
+
+      # /notifications branch
+      # routing.on 'notifications' do
+      #   @current_account = SecureSession.new(session).get(:current_account)
+
+      #   routing.on String do |notification_id|
+      #     # POST /notifications/[notification_id]/update_notification
+      #     routing.post 'update_notification' do
+      #       Service::UpdateNotification.new.call(config: config,
+      #                                           notification_id: notification_id,
+      #                                           params: routing.params)
+      #       routing.redirect "/notifications/#{notification_id}"
+      #     end
+
+      #     # DELETE /notifications/[notification_id]
+      #     routing.post 'deletion' do
+      #       response = Service::DeleteNotification.new.call(config: config, notification_id: notification_id)
+
+      #       flash[:error] = 'Failed to delete the notification. Please try again :(' if response.failure?
+      #       routing.redirect "/studies/#{response.value![:deleted_notification].study.id}", 303
+      #     end
+
+      #     # GET /notifications/[notification_id]
+      #     routing.get do
+      #       routing.redirect '/' unless @current_account
+
+      #       notification = Service::GetNotification.new.call(notification_id: notification_id)
+      #       activities = {}
+      #       view 'notification', locals: { notification: notification.value![:notification],
+      #                                     details: notification.value![:details],
+      #                                     activities: activities }
+      #     end
+      #   end
+      # end
     end
   end
   # rubocop: enable Metrics/ClassLength

@@ -112,12 +112,12 @@ div class="mb-3"
                 th scope="col"  Survey Title
                 th scope="col"  Date & Time
             tbody
-              - notifications.each.with_index do |notification, index|
-                tr class='clickable-row' style="cursor:pointer;" data-href="/notifications/#{notification.id}"
+              - notifications.each.with_index do |row, index|
+                tr class='clickable-row' style="cursor:pointer;" data-href="/notifications/#{row[:notification].id}"
                   th scope="row"  #{index+1}
-                  td #{notification.title}
-                  td #{notification.survey_id}
-                  td #{notification.date_time}
+                  td #{row[:notification].title}
+                  td #{row[:notification].survey.title}
+                  td #{row[:date_time]}
   div class="row justify-content-center mt-3"
     div class="col-4 col-sm-12 col-md-3" 
       h4 Surveys

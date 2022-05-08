@@ -16,6 +16,9 @@ module SurveyMoonbear
                   class: :'SurveyMoonbear::Database::LaunchOrm',
                   key: :survey_id
 
+      one_to_many :notifications,
+                  class: :'SurveyMoonbear::Database::NotificationOrm'
+
       plugin :uuid, field: :id
       plugin :timestamps
     end
