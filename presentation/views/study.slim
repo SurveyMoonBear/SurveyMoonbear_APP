@@ -1,0 +1,165 @@
+div class="mb-3"
+  div class="row justify-content-center mt-3"
+    div class="col-10 col-sm-12 col-md-8 align-middle" 
+      a href="/studies"
+        i class="fas fa-angle-double-left" &nbsp;Back to My Studies
+    div class="col-2 col-sm-2 col-md-2 text-right text-muted"
+      small Study
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
+      h3.m-0 #{study.title}
+      button {
+        class="btn btn-outline-dark border-0 ml-2 py-1"
+        data-toggle="modal" data-target="#modal_rename_study" 
+        data-study_id=""
+        data-study_title=""
+      }
+        i class="fas fa-cog"
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 p-3 border"
+      div
+        b Description:
+      div style="word-wrap:break-word;" #{study.desc}
+      - if study.track_activity
+        div.mt-3 
+          b Collect Calendar Data:
+        div From #{study.activity_start_at.strftime('%D')} to #{study.activity_end_at.strftime('%D')}
+  div class="row justify-content-center mt-3"
+    div class="col-4 col-sm-12 col-md-3" 
+      h4 Registered Participants
+    div class="col-8 col-sm-12 col-md-7"
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_participant"
+        i class="fas fa-plus"
+      div class="modal fade" id="modal_create_participant"
+        div class="modal-dialog" role="document"
+          div class="modal-content"
+            div class="modal-header"
+              h5 class="modal-title" Create a New Participant
+              button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                span aria-hidden="true" &times;
+            form id="create_participant_form" action="/studies/#{study.id}/create_participant" method="post"
+              div class="modal-body"
+                div class="form-group"
+                  div class="mb-2"
+                    label for="nickname" Nickname
+                    input type="text" class="form-control" id="nickname" name="nickname" placeholder="nick_1"
+                  div class="mb-2"
+                    label for="contact_type"  Contact Type
+                    select class="form-control" id="contact_type" name="contact_type"
+                      option value="email" Email
+                      option value="sms" SMS
+                  div class="mb-2  form-group"
+                    label for="email" Email
+                    input type="email" class="form-control" id="email" name="email" placeholder="participant@gmail.com"
+                  div class="mb-2  form-group"
+                    label for="phone" Phone(optional)
+                    input type="text" class="form-control" id="phone" name="phone" placeholder="0912345678"                
+                  div class="mb-2"
+                    label for="details" Participant Details
+                    input type="text" class="form-control" id="details" name="details" placeholder='{:Name=> "Nick", :Weight=> 54}'
+              div class="modal-footer"
+                button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                button type="submit" class="btn btn-primary" id="btn-create" Create
+      - if study.enable_notification
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/confirm_status" method='post'
+          button type="submit" class="btn btn-outline-primary btn-sm"
+            i class="fas fa-check" &nbsp;Update Confirm Status
+      - if study.track_activity
+        form.d-inline-flex.align-middle role="form" action="/participant/track_activiy" method='get'
+          input type="hidden" name="study_id" value="" 
+          button type="submit" class="btn btn-outline-info btn-sm"
+            i class="fas fa-calendar" &nbsp;Collect Calendar Data
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10"
+      - if participants.any?
+        table class="table table-hover"
+          thead
+            tr
+              th scope="col"  #
+              th scope="col"  Nickname
+              th scope="col"  ID
+              th scope="col"  Email
+              - if study.enable_notification
+                th scope="col"  NTFY. Status
+              - if study.track_activity
+                th scope="col"  Calendar Status
+          tbody
+            - participants.each.with_index do |participant, index|
+              tr class='clickable-row' style="cursor:pointer;" data-href="/participants/#{participant.id}"
+                th scope="row"  #{index+1}
+                td #{participant.nickname}
+                td #{participant.id}
+                td #{participant.email}
+                - if study.enable_notification
+                  td #{participant.status}
+                - if study.track_activity
+                  td Calendar/Activity Data Summary
+  - if study.enable_notification
+    div class="row justify-content-center mt-3"
+      div class="col-4 col-sm-12 col-md-3" 
+        h4 Notifications
+      div class="col-8 col-sm-12 col-md-7"
+        button type="button" class="btn btn-outline-dark btn-sm mr-1" data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+          i class="fas fa-plus"
+    div class="row justify-content-center mt-3"
+      div class="col-12 col-sm-12 col-md-10"
+        - if notifications.any?
+          table class="table table-hover"
+            thead
+              tr
+                th scope="col"  #
+                th scope="col"  Title
+                th scope="col"  Survey Title
+                th scope="col"  Date & Time
+            tbody
+              - notifications.each.with_index do |notification, index|
+                tr class='clickable-row' style="cursor:pointer;" data-href="/notifications/#{notification.id}"
+                  th scope="row"  #{index+1}
+                  td #{notification.title}
+                  td #{notification.survey_id}
+                  td #{notification.date_time}
+  div class="row justify-content-center mt-3"
+    div class="col-4 col-sm-12 col-md-3" 
+      h4 Surveys
+    div class="col-8 col-sm-12 col-md-7"
+      button class="btn btn-outline-dark btn-sm mr-1" aria-controls="collapseExample" aria-expanded="false" data-target="#collapseExample" data-toggle="collapse" type="button" 
+        i class="fas fa-th-list" &nbsp;Detail list
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+        i class="fas fa-plus" &nbsp;Add an exist survey
+      a href="#" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_create_survey"
+        i class="fas fa-plus" &nbsp;Create a new survey
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10"
+      - if surveys.any?
+        table class="table"
+          thead
+            tr
+              th scope="col"  #
+              th scope="col"  Title
+              th scope="col"  State
+              th scope="col"  Created at
+              th scope="col"
+          tbody
+            - surveys.each.with_index do |survey, index|
+              tr
+                th scope="row"  1
+                td #{survey.title}
+                td #{survey.state}
+                td #{survey.created_at}
+                td.p-1
+                  button {
+                    type="button" class="btn btn-outline-dark btn-sm border-0"
+                    data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+                  }
+                    i class="fas fa-times"
+  #collapseExample.collapse
+    == render :surveys, locals: { surveys: surveys }
+
+include :modal_create_survey
+
+javascript:
+  $(document).ready(function($) {
+      $(".clickable-row").click(function() {
+          window.location = $(this).data("href");
+      });
+  });

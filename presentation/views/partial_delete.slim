@@ -1,0 +1,15 @@
+div id="#{id}" class="modal fade" role="dialog"
+  div class="modal-dialog" role="document"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Delete #{obj}?
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      form role="form" action="#{action}/deletion" method='post'
+        div class="modal-body"
+          div class="form-group"
+            div class="mb-2"
+              label.mb-2 class="form-label" Are you sure to delete?
+        div class="modal-footer"
+          button type="button" class="btn btn-outline-primary" data-dismiss="modal" Keep
+          button type="submit" class="btn btn-outline-danger" id="btn-submit" Delete
