@@ -59,14 +59,6 @@ module SurveyMoonbear
         rebuild_entity(db_participant)
       end
 
-      def self.update_state(entity)
-        db_participant = Database::ParticipantOrm.find(id: entity.id)
-
-        db_participant.update(state: 'closed')
-
-        rebuild_entity(db_participant)
-      end
-
       def self.update(id, params)
         db_participant = Database::ParticipantOrm.where(id: id).first
         db_participant.update(params)
@@ -74,9 +66,9 @@ module SurveyMoonbear
         rebuild_entity(db_participant)
       end
 
-      def self.update_arn(id, aws_arn)
+      def self.update_arn(id, aws_arn, status)
         db_participant = Database::ParticipantOrm.where(id: id).first
-        db_participant.update(aws_arn: aws_arn)
+        db_participant.update(aws_arn: aws_arn, status: status)
 
         rebuild_entity(db_participant)
       end
@@ -84,8 +76,7 @@ module SurveyMoonbear
       def self.delete_from(id)
         db_participant = Database::ParticipantOrm.where(id: id).first
 
-        # db_participant.destroy => delete related entity
-        db_participant.delete
+        db_participant.destroy
       end
 
       def self.rebuild_entity(db_record)

@@ -40,7 +40,7 @@ div class="mb-3"
                     input type="text" class="form-control" id="details" name="details" value="#{participant.details}"
               div class="modal-footer"
                 button type="button" class="btn btn-secondary" data-dismiss="modal" Close
-                button type="submit" class="btn btn-primary" id="btn-update" Save
+                button type="submit" class="btn btn-primary" id="btn-save" Save
       - if participant.status == 'confirmed'
         button {
             class="btn btn-outline-info btn-sm ml-2"
@@ -85,11 +85,22 @@ div class="mb-3"
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
                   button type="submit" class="btn btn-primary" id="btn-update" Subscribe
-      button {
-          class="btn btn-outline-dark btn-sm ml-2"
-          data-toggle="modal" data-target="#modal_rename_study" 
+      - if participant.status == 'confirmed' or participant.status == 'disabled'
+        button {
+            class="btn btn-outline-dark btn-sm ml-2"
+            data-toggle="modal" data-target="#modal_delete_#{participant.id}" 
+          }
+          i class="fas fa-trash"
+        == render :partial_delete, locals: { id:"modal_delete_#{participant.id}", action:"/participants/#{participant.id}", obj: "Participant: #{participant.nickname}" }
+      - else 
+        span {
+          class="d-inline-block" 
+          tabindex="0" 
+          data-toggle="tooltip" 
+          title="You can not delete #{participant.status} participant"
         }
-        i class="fas fa-trash"
+          button class="btn btn-outline-dark btn-sm ml-2" disabled=""
+            i class="fas fa-trash"
     div class="col-2 col-sm-2 col-md-2 text-right text-muted"
       small Participant
   div class="row justify-content-center mt-3"
@@ -162,3 +173,7 @@ div class="mb-3"
                   td #{event.title}
                   td #{event.start_at}
                   td #{event.end_at}
+javascript: 
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  })

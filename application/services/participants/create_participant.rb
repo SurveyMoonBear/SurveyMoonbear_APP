@@ -53,7 +53,8 @@ module SurveyMoonbear
       def update_participant_arn(input)
         participant = input[:participant]
         aws_arn = input[:params]['aws_arn']
-        updated_participant = Repository::For[participant.class].update_arn(participant.id, aws_arn)
+        status = input[:params]['status']
+        updated_participant = Repository::For[participant.class].update_arn(participant.id, aws_arn, status)
 
         Success(updated_participant)
       rescue

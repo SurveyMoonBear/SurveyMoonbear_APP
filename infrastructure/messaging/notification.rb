@@ -39,6 +39,21 @@ module SurveyMoonbear
                                 'FilterPolicy' => "{\"uuid\": [\"#{uuid}\", \"all\"]}"
                               })[:subscription_arn]
       end
+
+      def confirm_subscriptions(topic_arn)
+        topic = @sns_resource.topic(topic_arn)
+        updated_subscriptions_arn = {}
+        topic.subscriptions.map do |subscription|
+          next if subscription.arn == 'PendingConfirmation'
+
+          updated_subscriptions_arn.update({ subscription.attributes['Endpoint'] => subscription.arn })
+        end
+        updated_subscriptions_arn
+      end
+
+      def delete_subscription(subscription_arn)
+        @sns_resource.subscription(subscription_arn).delete
+      end
     end
   end
 end

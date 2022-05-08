@@ -557,6 +557,14 @@ module SurveyMoonbear
             routing.redirect "/participants/#{participant_id}"
           end
 
+          # DELETE /participants/[participant_id]
+          routing.post 'deletion' do
+            response = Service::DeleteParticipant.new.call(config: config, participant_id: participant_id)
+
+            flash[:error] = 'Failed to delete the participant. Please try again :(' if response.failure?
+            routing.redirect "/studies/#{response.value![:deleted_participant].study.id}", 303
+          end
+
           # GET /participants/[participant_id]
           routing.get do
             routing.redirect '/' unless @current_account
