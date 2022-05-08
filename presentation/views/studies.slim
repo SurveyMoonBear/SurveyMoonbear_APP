@@ -53,13 +53,12 @@ div class="mb-3"
             div class="mb-3 pl-3"
               a {
                   class="btn btn-dark mr-1 mt-1"
-                  target="_blank"
                   href="/studies/#{study.id}"
                 } 
                 <i class="fas fa-edit"></i> &nbsp;Edit
               button {
                 class="btn btn-outline-info mr-1 mt-1" type="button"
-                data-toggle="modal" data-target="#modal_responses_download"
+                data-toggle="modal" data-target="#modal_study_result_download"
                 data-origin_id="#{study.id}"
               } 
                 <i class="fas fa-download"></i> &nbsp;Download
@@ -95,7 +94,7 @@ div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="
 
 include :modal_create_study
 include :modal_rename_study
-include :modal_responses_download
+include :modal_study_result_download
 
 javascript:
   $("input[type='text']").on("click", function () {

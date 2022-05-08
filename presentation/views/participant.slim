@@ -1,0 +1,183 @@
+div class="mb-3"
+  div class="row justify-content-center mt-3"
+    div class="col-10 col-sm-12 col-md-8 align-middle" 
+      a href="/studies/#{participant.study.id}"
+        i class="fas fa-angle-double-left" &nbsp;Back to Study
+    div class="col-2 col-sm-2 col-md-2 text-right text-muted"
+      small Participant
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
+      h3.m-0 #{participant.nickname}
+      button {
+          class="btn btn-dark btn-sm ml-5"
+          data-toggle="modal" data-target="#modal_edit_participant" 
+        }
+        i class="fas fa-edit"
+      div class="modal fade" id="modal_edit_participant"
+        div class="modal-dialog" role="document"
+          div class="modal-content"
+            div class="modal-header"
+              h5 class="modal-title" Edit Participant
+              button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                span aria-hidden="true" &times;
+            form id="update_participant_form" action="/participants/#{participant.id}/update_participant" method="post"
+              div class="modal-body"
+                div class="form-group"
+                  div class="mb-2"
+                    label for="nickname" Nickname
+                    input type="text" class="form-control" id="nickname" name="nickname" value="#{participant.nickname}"
+                  div class="mb-2"
+                    label for="contact_type"  Contact Type
+                    select class="form-control" id="contact_type" name="contact_type"
+                      - if participant.contact_type == 'email'
+                        option selected="" value="email" Email
+                        option value="sms" SMS
+                      - else
+                        option value="email" Email
+                        option selected="" value="sms" SMS
+                  div class="mb-2  form-group"
+                    label for="email" Email
+                    input type="email" class="form-control" id="email" name="email" value="#{participant.email}"
+                  div class="mb-2  form-group"
+                    label for="phone" Phone(optional)
+                    input type="text" class="form-control" id="phone" name="phone" value="#{participant.phone}"          
+                  div class="mb-2"
+                    label for="details" Participant Details
+                    input type="text" class="form-control" id="details" name="details" value="#{participant.details}"
+              div class="modal-footer"
+                button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                button type="submit" class="btn btn-primary" id="btn-save" Save
+      - if participant.status == 'confirmed'
+        button {
+            class="btn btn-outline-info btn-sm ml-2"
+            data-toggle="modal" data-target="#modal_unsubscribe_study" 
+          }
+          i class="fas fa-bell-slash" &nbsp;Unsubscribe
+        div class="modal fade" id="modal_unsubscribe_study"
+          div class="modal-dialog" role="document"
+            div class="modal-content"
+              div class="modal-header"
+                h5 class="modal-title" Participant Unsubscribing?
+                button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  span aria-hidden="true" &times;
+              form id="unsubscribe_participant_form" action="/participants/#{participant.id}/update_participant" method="post"
+                div class="modal-body"
+                  div class="form-group"
+                    div class="mb-2"
+                      label for="form" #{participant.nickname} will not receive any notification.
+                      input type="hidden" name="status" value="unsubscribed" 
+                div class="modal-footer"
+                  button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                  button type="submit" class="btn btn-primary" id="btn-update" Unsubscribe
+      - if participant.status == 'unsubscribed'
+        button {
+            class="btn btn-outline-info btn-sm ml-2"
+            data-toggle="modal" data-target="#modal_subscribe_study" 
+          }
+          i class="fas fa-bell" &nbsp;Subscribe
+        div class="modal fade" id="modal_subscribe_study"
+          div class="modal-dialog" role="document"
+            div class="modal-content"
+              div class="modal-header"
+                h5 class="modal-title" Participant Subscribing?
+                button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  span aria-hidden="true" &times;
+              form id="subscribe_participant_form" action="/participants/#{participant.id}/update_participant" method="post"
+                div class="modal-body"
+                  div class="form-group"
+                    div class="mb-2"
+                      label for="form" #{participant.nickname} will receive every notification.
+                      input type="hidden" name="status" value="confirmed" 
+                div class="modal-footer"
+                  button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                  button type="submit" class="btn btn-primary" id="btn-update" Subscribe
+      - if participant.status == 'confirmed' or participant.status == 'disabled'
+        button {
+            class="btn btn-outline-dark btn-sm ml-2"
+            data-toggle="modal" data-target="#modal_delete_#{participant.id}" 
+          }
+          i class="fas fa-trash"
+        == render :partial_delete, locals: { id:"modal_delete_#{participant.id}", action:"/participants/#{participant.id}", obj: "Participant: #{participant.nickname}" }
+      - else 
+        span {
+          class="d-inline-block" 
+          tabindex="0" 
+          data-toggle="tooltip" 
+          title="You can not delete #{participant.status} participant"
+        }
+          button class="btn btn-outline-dark btn-sm ml-2" disabled=""
+            i class="fas fa-trash"
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 p-3 border"
+      .row
+        .col-md-2.col-sm-12
+          b Study
+        .col-md-10.col-sm-12 
+          a href="/studies/#{participant.study.id}" #{participant.study.title}
+      .row
+        .col-md-2.col-sm-12
+          b ID
+        .col-md-10.col-sm-12 #{participant.id}
+      - if participant.study.enable_notification
+        .row
+          .col-md-2.col-sm-12
+            b NTFY. Status
+          .col-md-10.col-sm-12 #{participant.status}
+        .row
+          .col-md-2.col-sm-12
+            b Contact Type
+          .col-md-10.col-sm-12 #{participant.contact_type}
+      .row
+        .col-md-2.col-sm-12
+          b Email
+        .col-md-10.col-sm-12 #{participant.email}
+      - unless participant.phone.empty?
+        .row
+          .col-md-2.col-sm-12
+            b Phone
+          .col-md-10.col-sm-12 #{participant.phone}
+  div class="row justify-content-center mt-3"
+    div class="col-4 col-sm-12 col-md-3" 
+      h4 Details
+    div class="col-8 col-sm-12 col-md-7"
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 p-3 border"
+      - details.each do |key, value|    
+        .row
+          .col-md-2.col-sm-12
+            b #{key}
+          .col-md-10.col-sm-12 #{value}
+  - if participant.study.track_activity
+    div class="row justify-content-center mt-3"
+      div class="col-4 col-sm-12 col-md-3" 
+        h4 Calendar Events
+      div class="col-8 col-sm-12 col-md-7"
+        button type="submit" class="btn btn-outline-info btn-sm"
+              i class="fas fa-calendar" &nbsp;Collect Calendar Data
+    div class="row justify-content-center mt-3"
+      div class="col-12 col-sm-12 col-md-10 p-3 border"
+        .row
+          .col-md-2.col-sm-12
+            b Summary
+          .col-md-10.col-sm-12 style="word-wrap:break-word;" 10 hours busy between 2022/04/13 to 2022/04/13 Events
+    div class="row justify-content-center mt-3"
+      div class="col-12 col-sm-12 col-md-10"
+        - if activities.any?
+          table class="table"
+            thead
+              tr
+                th scope="col"  #
+                th scope="col"  Title
+                th scope="col"  Start at
+                th scope="col"  End at
+            tbody
+              - activities.each.with_index do |event, index|
+                tr
+                  th scope="row"  1
+                  td #{event.title}
+                  td #{event.start_at}
+                  td #{event.end_at}
+javascript: 
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  })

@@ -1,0 +1,88 @@
+div class="modal fade" id="modal_study_result_download" 
+  div class="modal-dialog modal-lg modal-dialog-centered" role="document"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Download Study Result
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      / TODO: form action
+      form id="download_study_result_form" action="/studies/create" method="post"
+        div class="modal-body"
+          div class="form-group"
+            div class="row mb-3"
+              div class="col-4"
+                select class="custom-select" name="result_of" aria-label="Default select example" id="result_type"
+                  option value="responses" Responses Data
+                  option value="participants" Participants Data
+              div class="col"
+                p class="text-muted" some details
+            div class="row mb-3" id="survey_list"
+              div class="col-4"
+                select class="custom-select" name="suvey_id" aria-label="Default select example"
+                  option value="survey_id_1" Survey title A
+                  option value="survey_id_2" Survey title B
+              div class="col"
+                p class="text-muted" some details
+            div class="row mb-3" id="wave_list"
+              div class="col-4"
+                select class="custom-select" name="wave_id" aria-label="Default select example"
+                  option value="survey_id_1_wave_1" Wave 1
+                  option value="survey_id_2_wave_2" Wave 2
+              div class="col"
+                p class="text-muted" some details
+            div class="row mb-3"
+              div class="col-4"
+                select class="custom-select" name="participant_id" aria-label="Default select example"
+                  option value="all_participants" All participants
+                  option value="participant_id_1" Participants_A
+                  option value="participant_id_2" Participants_B
+                  option value="participant_id_3" Participants_C
+              div class="col"
+                p class="text-muted" some details
+        div class="modal-footer"
+          button type="submit" class="btn btn-outline-dark align-middle" id="btn-download"
+            i class='fas fa-download'
+
+/ TODO: javascript get data related to the study
+javascript:
+  $('#modal_study_result_download').on('show.bs.modal', function(e) {
+    function check_result_type(result_type){
+      if(result_type == 'participants'){
+        $('#survey_list').addClass('d-none');
+        $('#wave_list').addClass('d-none');
+      }
+      else{
+        $('#survey_list').removeClass('d-none');
+        $('#wave_list').removeClass('d-none');
+      }
+    };
+    check_result_type(result_type);
+    $("#result_type").change(() => {
+      var result_type = $("#result_type").val();
+      check_result_type(result_type)
+    });
+  });
+
+  /* $('#modal_study_result_download').on('show.bs.modal', function(e) {
+    var study_id = $(e.relatedTarget).data('origin_id');
+    var modal = $(this);
+    $.get("/studies/" + study_id + "/study_result_detail/", function(study_result, status) {
+      var str = "";
+      if (study_result.length == 0) {
+        str += "<p>The study hasn't received any response yet.</p>";
+      } else {
+        str += "<table class='table table-borderless'>";
+        $.each(study_result, function(i, wave) {
+          var start_time = new Date(wave[0]);
+          str += "<tr>";
+          str += '<td><p>Wave '+ ++i + '. </p></td>';
+          str += "<td><p class='text-muted'>Started at: " + start_time;
+          str += "<br>Number of Responses: " + wave[3] + "</p></td>";
+          str += "<td><a href='/studies/" + study_id + "/download/" + wave[1] + "/" + wave[2] + ".csv' class='btn btn-outline-dark align-middle'>";
+          str += "<i class='fas fa-download' /></a></td></tr>";
+        });
+        str += "</table>";
+      }
+      modal.find('#div-content').html(str);
+    });
+  }); */
