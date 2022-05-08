@@ -514,6 +514,12 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
+          # POST studies/[study_id]/confirm_status
+          routing.post 'confirm_status' do
+            Service::ConfirmParticipantsStatus.new.call(config: config, study_id: study_id)
+            routing.redirect "/studies/#{study_id}"
+          end
+
           # DELETE studies/[study_id]
           routing.delete do
             response = Service::DeleteStudy.new.call(config: config, study_id: study_id)

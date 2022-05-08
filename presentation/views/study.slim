@@ -56,10 +56,10 @@ div class="mb-3"
               div class="modal-footer"
                 button type="button" class="btn btn-secondary" data-dismiss="modal" Close
                 button type="submit" class="btn btn-primary" id="btn-create" Create
-      form.d-inline-flex.align-middle.mr-1 role="form" action="/participant/confirm_status" method='get'
-        input type="hidden" name="study_id" value="" 
-        button type="submit" class="btn btn-outline-primary btn-sm"
-          i class="fas fa-check" &nbsp;Update Confirm Status
+      - if study.enable_notification
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/confirm_status" method='post'
+          button type="submit" class="btn btn-outline-primary btn-sm"
+            i class="fas fa-check" &nbsp;Update Confirm Status
       - if study.track_activity
         form.d-inline-flex.align-middle role="form" action="/participant/track_activiy" method='get'
           input type="hidden" name="study_id" value="" 
