@@ -544,6 +544,31 @@ module SurveyMoonbear
           view 'studies', locals: { studies: studies, config: config }
         end
       end
+
+      # /participants branch
+      routing.on 'participants' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        routing.on String do |participant_id|
+          # POST /participants/[participant_id]/update_participant
+          routing.post 'update_participant' do
+            Service::UpdateParticipant.new.call(participant_id: participant_id,
+                                                params: routing.params)
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # GET /participants/[participant_id]
+          routing.get do
+            routing.redirect '/' unless @current_account
+
+            participant = Service::GetParticipant.new.call(participant_id: participant_id)
+            activities = {}
+            view 'participant', locals: { participant: participant.value![:participant],
+                                          details: participant.value![:details],
+                                          activities: activities }
+          end
+        end
+      end
     end
   end
   # rubocop: enable Metrics/ClassLength

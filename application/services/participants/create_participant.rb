@@ -42,7 +42,7 @@ module SurveyMoonbear
           input[:params]['status'] = 'pending'
         else
           input[:params]['aws_arn'] = 'disable notification'
-          input[:params]['status'] = 'confirm'
+          input[:params]['status'] = 'disabled'
         end
 
         Success(input)

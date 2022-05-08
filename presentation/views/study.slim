@@ -1,7 +1,7 @@
 div class="mb-3"
   div class="row justify-content-center mt-3"
-    div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
-      h3.m-0 Study Title
+    div class="col-10 col-sm-10 col-md-8 d-flex align-middle" 
+      h3.m-0 #{study.title}
       button {
         class="btn btn-outline-dark border-0 ml-2 py-1"
         data-toggle="modal" data-target="#modal_rename_study" 
@@ -9,6 +9,8 @@ div class="mb-3"
         data-study_title=""
       }
         i class="fas fa-cog"
+    div class="col-2 col-sm-2 col-md-2 text-right text-muted"
+      small Study
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10 p-3 border"
       div
@@ -72,18 +74,22 @@ div class="mb-3"
               th scope="col"  #
               th scope="col"  Nickname
               th scope="col"  ID
-              th scope="col"  Status
               th scope="col"  Email
-              th scope="col"  Calendar Data
+              - if study.enable_notification
+                th scope="col"  NTFY. Status
+              - if study.track_activity
+                th scope="col"  Calendar Status
           tbody
             - participants.each.with_index do |participant, index|
               tr class='clickable-row' style="cursor:pointer;" data-href="/participants/#{participant.id}"
                 th scope="row"  #{index+1}
                 td #{participant.nickname}
                 td #{participant.id}
-                td #{participant.status}
                 td #{participant.email}
-                td Calendar/Activity Data Summary
+                - if study.enable_notification
+                  td #{participant.status}
+                - if study.track_activity
+                  td Calendar/Activity Data Summary
   - if study.enable_notification
     div class="row justify-content-center mt-3"
       div class="col-4 col-sm-12 col-md-3" 

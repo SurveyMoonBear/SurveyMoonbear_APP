@@ -67,9 +67,9 @@ module SurveyMoonbear
         rebuild_entity(db_participant)
       end
 
-      def self.update_title(id, title)
+      def self.update(id, params)
         db_participant = Database::ParticipantOrm.where(id: id).first
-        db_participant.update(title: title)
+        db_participant.update(params)
 
         rebuild_entity(db_participant)
       end
