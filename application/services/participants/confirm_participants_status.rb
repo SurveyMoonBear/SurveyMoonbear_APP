@@ -29,7 +29,8 @@ module SurveyMoonbear
 
       # input { config:, study_id:, study: }
       def get_updated_participants_arn(input)
-        input[:updated_sub_arn] = Messaging::Notification.new(input[:config]).confirm_subscriptions(input[:study].aws_arn)
+        input[:updated_sub_arn] = Messaging::Notification.new(input[:config])
+                                                         .confirm_subscriptions(input[:study].aws_arn)
         Success(input)
       rescue StandardError => e
         puts e
@@ -44,7 +45,7 @@ module SurveyMoonbear
 
           # TODO: sms contact type
           sub_arn = input[:updated_sub_arn][participant.email]
-          params = { "aws_arn": sub_arn, "status": 'confirmed' }
+          params = { "aws_arn": sub_arn, "status": 'confirmed' } unless sub_arn.nil?
           UpdateParticipant.new.call(participant_id: participant.id, params: params)
         end
         Success(input)

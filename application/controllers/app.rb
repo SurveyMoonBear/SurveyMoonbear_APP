@@ -558,7 +558,8 @@ module SurveyMoonbear
         routing.on String do |participant_id|
           # POST /participants/[participant_id]/update_participant
           routing.post 'update_participant' do
-            Service::UpdateParticipant.new.call(participant_id: participant_id,
+            Service::UpdateParticipant.new.call(config: config,
+                                                participant_id: participant_id,
                                                 params: routing.params)
             routing.redirect "/participants/#{participant_id}"
           end

@@ -1,6 +1,12 @@
 div class="mb-3"
   div class="row justify-content-center mt-3"
-    div class="col-10 col-sm-12 col-md-8 d-flex align-middle" 
+    div class="col-10 col-sm-12 col-md-8 align-middle" 
+      a href="/studies/#{participant.study.id}"
+        i class="fas fa-angle-double-left" &nbsp;Back to Study
+    div class="col-2 col-sm-2 col-md-2 text-right text-muted"
+      small Participant
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
       h3.m-0 #{participant.nickname}
       button {
           class="btn btn-dark btn-sm ml-5"
@@ -101,8 +107,6 @@ div class="mb-3"
         }
           button class="btn btn-outline-dark btn-sm ml-2" disabled=""
             i class="fas fa-trash"
-    div class="col-2 col-sm-2 col-md-2 text-right text-muted"
-      small Participant
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10 p-3 border"
       .row
