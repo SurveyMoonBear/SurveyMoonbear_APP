@@ -520,6 +520,15 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
+          # POST studies/[study_id]/create_notification
+          routing.post 'create_notification' do
+            Service::CreateNotification.new.call(config: config,
+                                                 current_account: @current_account,
+                                                 study_id: study_id,
+                                                 params: routing.params)
+            routing.redirect "/studies/#{study_id}"
+          end
+
           # DELETE studies/[study_id]
           routing.delete do
             response = Service::DeleteStudy.new.call(config: config, study_id: study_id)

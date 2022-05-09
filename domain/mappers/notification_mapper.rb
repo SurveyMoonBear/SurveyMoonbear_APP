@@ -33,19 +33,28 @@ module SurveyMoonbear
             id: nil,
             owner: owner,
             study: study,
-            survey: stusurveydy,
+            survey: survey,
             type: type,
             title: title,
             fixed_timestamp: fixed_timestamp,
             content: content,
             notification_tz: notification_tz,
-            repeat_at: notification_tz,
+            repeat_at: repeat_at,
             repeat_set_time: repeat_set_time,
             repeat_random_every: repeat_random_every,
             repeat_random_start: repeat_random_start,
             repeat_random_end: repeat_random_end,
             created_at: nil
           )
+        end
+
+        def parse_repeat_every
+          case @notification[:data]['repeat_every']
+          when 'day'
+            '* * *'
+          when 'week'
+            "* * #{@notification[:data]['repeat_on']}"
+          end
         end
 
         def owner
@@ -69,7 +78,9 @@ module SurveyMoonbear
         end
 
         def fixed_timestamp
-          @notification[:data]['fixed_timestamp']
+          return Time.now unless type == 'fixed'
+
+          Time.parse(@notification[:data]['fixed_timestamp'])
         end
 
         def content
@@ -81,23 +92,34 @@ module SurveyMoonbear
         end
 
         def repeat_at
+          return '' unless type == 'repeating'
+
           @notification[:data]['repeat_at']
         end
 
         def repeat_set_time
-          @notification[:data]['repeat_set_time']
+          return '' unless type == 'repeating' && repeat_at == 'set_time'
+
+          time_obj = Time.parse(@notification[:data]['repeat_set_time']).strftime('%M %H')
+          "#{time_obj} #{parse_repeat_every}"
         end
 
         def repeat_random_every
-          @notification[:data]['repeat_random_every']
+          return '' unless type == 'repeating' && repeat_at == 'random'
+
+          parse_repeat_every.to_s
         end
 
         def repeat_random_start
-          @notification[:data]['repeat_random_start']
+          return '' unless type == 'repeating' && repeat_at == 'random'
+
+          Time.parse(@notification[:data]['repeat_random_start']).strftime('%H:%M')
         end
 
         def repeat_random_end
-          @notification[:data]['repeat_random_end']
+          return '' unless type == 'repeating' && repeat_at == 'random'
+
+          Time.parse(@notification[:data]['repeat_random_end']).strftime('%H:%M')
         end
       end
     end

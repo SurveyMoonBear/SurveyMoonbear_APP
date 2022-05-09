@@ -12,7 +12,7 @@ Sequel.migration do
 
       String      :type, default: 'fixed'
       String      :title, default: 'study_notification', null: false
-      Time        :fixed_timestamp, default: Time.now
+      DateTime    :fixed_timestamp
       String      :content, default: 'This is a notification message'
       String      :notification_tz # notification's timezone offset (seconds) eg. 32400 (+09:00 -> 9*60*60)
       String      :repeat_at, default: ''

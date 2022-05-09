@@ -43,10 +43,10 @@ module SurveyMoonbear
         db_owner = Database::AccountOrm.first(id: new_owner.id)
         new_study = Studies.find_or_create(entity.study)
         db_study = Database::StudyOrm.first(id: new_study.id)
-        new_survey = Survey.find_or_create(entity.survey)
+        new_survey = Surveys.find_or_create(entity.survey)
         db_survey = Database::SurveyOrm.first(id: new_survey.id)
 
-        db_notification = Database::Notification.create(
+        db_notification = Database::NotificationOrm.create(
           owner: db_owner,
           study: db_study,
           survey: db_survey,

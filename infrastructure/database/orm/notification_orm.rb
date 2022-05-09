@@ -11,7 +11,6 @@ module SurveyMoonbear
       many_to_one :survey,
                   class: :'SurveyMoonbear::Database::SurveyOrm'
 
-      plugin :uuid, field: :id
       plugin :timestamps
     end
   end

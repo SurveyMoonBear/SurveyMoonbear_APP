@@ -42,8 +42,7 @@ module SurveyMoonbear
                               when 'random'
                                 repeat = Cronex::ExpressionDescriptor.new("0 0 #{notification.repeat_random_every}").description
                                 repeat = repeat.split('only').length > 1 ? repeat.split('only')[1] : 'on Everyday'
-                                "random between #{time_parse(notification.repeat_random_start)} to
-                                                #{time_parse(notification.repeat_random_end)}, #{repeat}"
+                                "random between #{notification.repeat_random_start} to #{notification.repeat_random_end}, #{repeat}"
                               end
                             end
 
