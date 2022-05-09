@@ -595,38 +595,28 @@ module SurveyMoonbear
       end
 
       # /notifications branch
-      # routing.on 'notifications' do
-      #   @current_account = SecureSession.new(session).get(:current_account)
+      routing.on 'notifications' do
+        @current_account = SecureSession.new(session).get(:current_account)
 
-      #   routing.on String do |notification_id|
-      #     # POST /notifications/[notification_id]/update_notification
-      #     routing.post 'update_notification' do
-      #       Service::UpdateNotification.new.call(config: config,
-      #                                           notification_id: notification_id,
-      #                                           params: routing.params)
-      #       routing.redirect "/notifications/#{notification_id}"
-      #     end
+        routing.on String do |notification_id|
+          # DELETE /notifications/[notification_id]
+          routing.post 'deletion' do
+            response = Service::DeleteNotification.new.call(config: config, notification_id: notification_id)
 
-      #     # DELETE /notifications/[notification_id]
-      #     routing.post 'deletion' do
-      #       response = Service::DeleteNotification.new.call(config: config, notification_id: notification_id)
+            flash[:error] = 'Failed to delete the notification. Please try again :(' if response.failure?
+            routing.redirect "/studies/#{response.value!.study.id}", 303
+          end
 
-      #       flash[:error] = 'Failed to delete the notification. Please try again :(' if response.failure?
-      #       routing.redirect "/studies/#{response.value![:deleted_notification].study.id}", 303
-      #     end
+          # GET /notifications/[notification_id]
+          routing.get do
+            routing.redirect '/' unless @current_account
 
-      #     # GET /notifications/[notification_id]
-      #     routing.get do
-      #       routing.redirect '/' unless @current_account
-
-      #       notification = Service::GetNotification.new.call(notification_id: notification_id)
-      #       activities = {}
-      #       view 'notification', locals: { notification: notification.value![:notification],
-      #                                     details: notification.value![:details],
-      #                                     activities: activities }
-      #     end
-      #   end
-      # end
+            notification = Service::GetNotification.new.call(notification_id: notification_id)
+            view 'notification', locals: { notification: notification.value![:notification],
+                                           date_time: notification.value![:date_time] }
+          end
+        end
+      end
     end
   end
   # rubocop: enable Metrics/ClassLength
