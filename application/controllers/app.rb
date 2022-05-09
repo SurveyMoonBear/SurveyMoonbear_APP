@@ -102,6 +102,7 @@ module SurveyMoonbear
           new_survey = Service::CreateSurvey.new.call(config: config,
                                                       current_account: @current_account,
                                                       title: routing.params['title'])
+          redirect_rout = routing.params['rerout']
 
           if new_survey.success?
             flash[:notice] = "#{new_survey.value!.title} is created!"
@@ -109,7 +110,7 @@ module SurveyMoonbear
             flash[:error] = 'Failed to create survey, please try again :('
           end
 
-          routing.redirect '/survey_list'
+          routing.redirect redirect_rout
         end
 
         # POST /survey_list/copy/[spreadsheet_id]

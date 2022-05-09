@@ -1,3 +1,4 @@
+== render :modal_waiting
 div class="mb-3"
   div class="row justify-content-center mt-3"
     div class="col-10 col-sm-12 col-md-8 align-middle" 
@@ -6,7 +7,11 @@ div class="mb-3"
     div class="col-2 col-sm-2 col-md-2 text-right text-muted"
       small Study
   div class="row justify-content-center mt-3"
-    div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
+    div class="col-12 col-sm-12 col-md-10"
+      div id="div-alert"
+        == render :flash_bar 
+  div class="row justify-content-center"
+    div class="col-12 col-sm-12 col-md-10 d-flex align-middle"
       h3.m-0 #{study.title}
       button {
         class="btn btn-outline-dark border-0 ml-2 py-1"
@@ -98,8 +103,9 @@ div class="mb-3"
         i class="fas fa-th-list" &nbsp;Detail list
       button type="button" class="btn btn-outline-dark btn-sm mr-1" data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
         i class="fas fa-plus" &nbsp;Add an exist survey
-      a href="#" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_create_survey"
+      button href="#" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_create_survey"
         i class="fas fa-plus" &nbsp;Create a new survey
+      == render :modal_create_survey, locals: {rerout: "/studies/#{study.id}"}
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10"
       - if surveys.any?
@@ -127,11 +133,14 @@ div class="mb-3"
   #collapseExample.collapse
     == render :surveys, locals: { surveys: surveys }
 
-include :modal_create_survey
-
 javascript:
   $(document).ready(function($) {
       $(".clickable-row").click(function() {
           window.location = $(this).data("href");
       });
+  });
+
+  $('#btn-create-survey').on('click', function (e) {
+    $('#modal_create_survey').modal('hide');
+    $('#modal_waiting').modal();
   });
