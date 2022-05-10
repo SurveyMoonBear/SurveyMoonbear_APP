@@ -101,11 +101,12 @@ div class="mb-3"
     div class="col-8 col-sm-12 col-md-7"
       button class="btn btn-outline-dark btn-sm mr-1" aria-controls="collapseExample" aria-expanded="false" data-target="#collapseExample" data-toggle="collapse" type="button" 
         i class="fas fa-th-list" &nbsp;Detail list
-      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_add_exist_survey"
         i class="fas fa-plus" &nbsp;Add an exist survey
+      == render :modal_add_exist_survey, locals: { study: study, surveys: all_surveys }
       button href="#" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_create_survey"
         i class="fas fa-plus" &nbsp;Create a new survey
-      == render :modal_create_survey, locals: {rerout: "/studies/#{study.id}", study_id: "#{study.id}"}
+      == render :modal_create_survey, locals: { rerout: "/studies/#{study.id}", study_id: study.id }
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10"
       - unless study.including_surveys.empty?

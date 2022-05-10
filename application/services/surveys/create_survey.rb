@@ -33,7 +33,7 @@ module SurveyMoonbear
       # input { config:, current_account:, title: }
       def store_related_study(input)
         unless input[:params]['study_id'].nil?
-          Repository::For[Entity::Study].add_survey(input[:params]['study_id'], input[:survey])
+          Repository::For[Entity::Study].add_survey(input[:params]['study_id'], input[:survey].id)
         end
 
         Success(input[:survey])

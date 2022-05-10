@@ -530,6 +530,13 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
+          # POST studies/[study_id]/add_exist_survey
+          routing.post 'add_exist_survey' do
+            Service::AddExistSurvey.new.call(study_id: study_id,
+                                             survey_id: routing.params['survey_id'])
+            routing.redirect "/studies/#{study_id}"
+          end
+
           # DELETE studies/[study_id]
           routing.delete do
             response = Service::DeleteStudy.new.call(config: config, study_id: study_id)
