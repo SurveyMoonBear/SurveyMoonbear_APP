@@ -9,6 +9,9 @@ module SurveyMoonbear
       one_to_many :owned_participants,
                   class: :'SurveyMoonbear::Database::ParticipantOrm',
                   key: :study_id
+      one_to_many :owned_notifications,
+                  class: :'SurveyMoonbear::Database::NotificationOrm',
+                  key: :study_id
 
       plugin :uuid, field: :id
       plugin :timestamps

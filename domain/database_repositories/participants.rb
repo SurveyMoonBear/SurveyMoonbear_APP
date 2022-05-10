@@ -29,11 +29,6 @@ module SurveyMoonbear
         end
       end
 
-      def self.find_title(title)
-        db_record = Database::ParticipantOrm.first(title: title)
-        rebuild_entity(db_record)
-      end
-
       def self.find_or_create(entity)
         find_id(entity.id) || create_from(entity)
       end

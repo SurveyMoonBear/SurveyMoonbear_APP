@@ -102,6 +102,7 @@ module SurveyMoonbear
           new_survey = Service::CreateSurvey.new.call(config: config,
                                                       current_account: @current_account,
                                                       title: routing.params['title'])
+          redirect_rout = routing.params['rerout']
 
           if new_survey.success?
             flash[:notice] = "#{new_survey.value!.title} is created!"
@@ -109,7 +110,7 @@ module SurveyMoonbear
             flash[:error] = 'Failed to create survey, please try again :('
           end
 
-          routing.redirect '/survey_list'
+          routing.redirect redirect_rout
         end
 
         # POST /survey_list/copy/[spreadsheet_id]
@@ -520,6 +521,15 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
+          # POST studies/[study_id]/create_notification
+          routing.post 'create_notification' do
+            Service::CreateNotification.new.call(config: config,
+                                                 current_account: @current_account,
+                                                 study_id: study_id,
+                                                 params: routing.params)
+            routing.redirect "/studies/#{study_id}"
+          end
+
           # DELETE studies/[study_id]
           routing.delete do
             response = Service::DeleteStudy.new.call(config: config, study_id: study_id)
@@ -534,7 +544,7 @@ module SurveyMoonbear
             study = Repository::For[Entity::Study].find_id(study_id)
             surveys = Repository::For[Entity::Survey].find_owner(@current_account['id'])
             participants = Repository::For[Entity::Participant].find_study(study_id)
-            notifications = {}
+            notifications = Service::GetNotifications.new.call(study_id: study_id).value!
             view 'study', locals: { study: study,
                                     participants: participants,
                                     notifications: notifications,
@@ -581,6 +591,30 @@ module SurveyMoonbear
             view 'participant', locals: { participant: participant.value![:participant],
                                           details: participant.value![:details],
                                           activities: activities }
+          end
+        end
+      end
+
+      # /notifications branch
+      routing.on 'notifications' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        routing.on String do |notification_id|
+          # DELETE /notifications/[notification_id]
+          routing.post 'deletion' do
+            response = Service::DeleteNotification.new.call(config: config, notification_id: notification_id)
+
+            flash[:error] = 'Failed to delete the notification. Please try again :(' if response.failure?
+            routing.redirect "/studies/#{response.value!.study.id}", 303
+          end
+
+          # GET /notifications/[notification_id]
+          routing.get do
+            routing.redirect '/' unless @current_account
+
+            notification = Service::GetNotification.new.call(notification_id: notification_id)
+            view 'notification', locals: { notification: notification.value![:notification],
+                                           date_time: notification.value![:date_time] }
           end
         end
       end
