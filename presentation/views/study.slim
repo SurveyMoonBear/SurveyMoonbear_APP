@@ -131,7 +131,7 @@ div class="mb-3"
                   }
                     i class="fas fa-times"
   #collapseExample.collapse
-    == render :surveys, locals: { surveys: study.including_surveys }
+    == render :surveys, locals: { surveys: study.including_surveys, config: config }
 
 javascript:
   $(document).ready(function($) {
