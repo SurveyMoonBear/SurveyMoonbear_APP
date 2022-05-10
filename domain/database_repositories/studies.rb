@@ -89,6 +89,7 @@ module SurveyMoonbear
           track_activity: db_record.track_activity,
           activity_start_at: db_record.activity_start_at,
           activity_end_at: db_record.activity_end_at,
+          including_surveys: Surveys.rebuild_many(db_record.including_surveys),
           created_at: db_record.created_at
         )
       end

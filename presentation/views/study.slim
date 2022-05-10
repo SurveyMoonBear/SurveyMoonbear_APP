@@ -77,7 +77,7 @@ div class="mb-3"
       div class="col-8 col-sm-12 col-md-7"
         button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_notification"
           i class="fas fa-plus"
-        == render :modal_create_notification, locals: { study: study, surveys: surveys }
+        == render :modal_create_notification, locals: { study: study, surveys: all_surveys }
     div class="row justify-content-center mt-3"
       div class="col-12 col-sm-12 col-md-10"
         - if notifications.any?
@@ -108,7 +108,7 @@ div class="mb-3"
       == render :modal_create_survey, locals: {rerout: "/studies/#{study.id}"}
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10"
-      - if surveys.any?
+      - unless study.including_surveys.empty?
         table class="table"
           thead
             tr
@@ -118,9 +118,9 @@ div class="mb-3"
               th scope="col"  Created at
               th scope="col"
           tbody
-            - surveys.each.with_index do |survey, index|
+            - study.including_surveys.each.with_index do |survey, index|
               tr
-                th scope="row"  1
+                th scope="row"  #{index+1}
                 td #{survey.title}
                 td #{survey.state}
                 td #{survey.created_at}
@@ -131,7 +131,7 @@ div class="mb-3"
                   }
                     i class="fas fa-times"
   #collapseExample.collapse
-    == render :surveys, locals: { surveys: surveys }
+    == render :surveys, locals: { surveys: study.including_surveys }
 
 javascript:
   $(document).ready(function($) {

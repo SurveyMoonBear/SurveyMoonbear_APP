@@ -117,6 +117,12 @@ module SurveyMoonbear
         db_survey.delete
       end
 
+      def self.rebuild_many(db_records)
+        db_records.map do |db_record|
+          Surveys.rebuild_entity(db_record)
+        end
+      end
+
       def self.rebuild_entity(db_record)
         return nil unless db_record
 

@@ -540,15 +540,14 @@ module SurveyMoonbear
           # GET /studies/[study_id]
           routing.get do
             routing.redirect '/' unless @current_account
-            # TODO: Service::GetStudy
             study = Repository::For[Entity::Study].find_id(study_id)
-            surveys = Repository::For[Entity::Survey].find_owner(@current_account['id'])
+            all_surveys = Repository::For[Entity::Survey].find_owner(@current_account['id'])
             participants = Repository::For[Entity::Participant].find_study(study_id)
             notifications = Service::GetNotifications.new.call(study_id: study_id).value!
             view 'study', locals: { study: study,
                                     participants: participants,
                                     notifications: notifications,
-                                    surveys: surveys,
+                                    all_surveys: all_surveys,
                                     config: config }
           end
         end
