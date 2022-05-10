@@ -68,11 +68,19 @@ module SurveyMoonbear
         rebuild_entity(db_study)
       end
 
+      def self.add_survey(id, survey)
+        db_study = Database::StudyOrm.where(id: id).first
+        db_study.add_including_survey(survey.id)
+      end
+
       def self.delete_from(id)
         db_study = Database::StudyOrm.where(id: id).first
 
-        # db_study.destroy => delete related entity
-        db_study.delete
+        db_study.including_surveys.each do |survey|
+          db_study.remove_including_survey(survey.id)
+        end
+
+        db_study.destroy
       end
 
       def self.rebuild_entity(db_record)

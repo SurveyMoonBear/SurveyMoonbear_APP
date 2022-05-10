@@ -6,7 +6,7 @@ div class="mb-3"
       span class="text-primary" style="font-size:1.5rem;"My Surveys &nbsp;
       a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal_create_survey"
         <i class="fas fa-plus"></i> &nbsp;Create a New Survey
-      == render :modal_create_survey, locals: {rerout: "/survey_list"}
+      == render :modal_create_survey, locals: { rerout: "/survey_list", study_id: '' }
       a { 
         target="_blank" rel="Question Types"
         href="https://paper.dropbox.com/doc/SurveyMoonbear-Question-Types--AbR4mDkzZ3rtLqvvIgZXTOK_AQ-aRR36FzeVcCGGZQgcsMZB"
