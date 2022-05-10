@@ -30,7 +30,7 @@ module SurveyMoonbear
         end
       end
 
-      # input { config:, current_account:, title: }
+      # input { config:, current_account:, params:, survey: }
       def store_related_study(input)
         unless input[:params]['study_id'].nil?
           Repository::For[Entity::Study].add_survey(input[:params]['study_id'], input[:survey].id)
@@ -39,7 +39,7 @@ module SurveyMoonbear
         Success(input[:survey])
       rescue StandardError => e
         puts e
-        Failure('Failed to create survevy under the study')
+        Failure('Failed to add related study in to survey.')
       end
     end
   end

@@ -128,9 +128,27 @@ div class="mb-3"
                 td.p-1
                   button {
                     type="button" class="btn btn-outline-dark btn-sm border-0"
-                    data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+                    data-toggle="modal" data-target="#modal_remove_survey"
                   }
                     i class="fas fa-times"
+                  div class="modal fade" id="modal_remove_survey"
+                    div class="modal-dialog" role="document"
+                      div class="modal-content"
+                        div class="modal-header"
+                          h5 class="modal-title" Remove Survey
+                          button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            span aria-hidden="true" &times;
+                        form action="/studies/#{study.id}/remove_survey" method="post" id="form_remove_survey"
+                          div class="modal-body"
+                            div class="form-group"
+                              div class="mb-2"
+                                label for="title" Remove <b>#{survey.title}</b> from <b>#{study.title}</b>?
+                                label for="title"
+                                  i You can still access the <b>#{survey.title}</b> on My Surveys page.
+                                input type="hidden" class="form-control" id="survey_id" name="survey_id" value="#{survey.id}"
+                          div class="modal-footer"
+                            button type="button" class="btn btn-outline-info" data-dismiss="modal" Close
+                            button type="submit" class="btn btn-outline-danger" id="btn-add-exist-survey" Remove
   #collapseExample.collapse
     == render :surveys, locals: { surveys: study.including_surveys, config: config }
 

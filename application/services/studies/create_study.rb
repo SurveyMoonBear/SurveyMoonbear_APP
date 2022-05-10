@@ -17,15 +17,17 @@ module SurveyMoonbear
 
       private
 
+      # input { config:, current_account:, params: }
       def store_into_database(input)
         new_study = Mapper::StudyMapper.new.load(input[:params], input[:current_account])
         input[:study] = Repository::For[new_study.class].create_from(new_study)
 
         Success(input)
       rescue
-        Failure('Failed to store into database.')
+        Failure('Failed to create a study and store it into database.')
       end
 
+      # input { config:, current_account:, params:, study: }
       def get_study_arn(input)
         if input[:study].enable_notification
           study_arn = Messaging::Notification.new(input[:config]).create_topic(input[:study][:id])
@@ -36,15 +38,16 @@ module SurveyMoonbear
 
         Success(input)
       rescue
-        Failure('Failed to get aws_arn.')
+        Failure('Failed to create AWS topic to get study AWS arn.')
       end
 
+      # input { config:, current_account:, params:, study:, aws_arm: }
       def update_study_arn(input)
         updated_study = Repository::For[input[:study].class].update_arn(input[:study].id, input[:aws_arn])
 
         Success(updated_study)
       rescue
-        Failure('Failed to update study aws_arn in database')
+        Failure('Failed to update study AWS arn in database.')
       end
     end
   end

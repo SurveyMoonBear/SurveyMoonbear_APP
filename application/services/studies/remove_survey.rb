@@ -6,8 +6,8 @@ require 'http'
 module SurveyMoonbear
   module Service
     # Return editted study entity of new title
-    # Usage: Service::AddExistSurvey.new.call(study_id: "...", survey_id: "...")
-    class AddExistSurvey
+    # Usage: Service::RemoveSurvey.new.call(study_id: "...", survey_id: "...")
+    class RemoveSurvey
       include Dry::Transaction
       include Dry::Monads
 
@@ -17,10 +17,10 @@ module SurveyMoonbear
 
       # input { study_id:, survey_id: }
       def add_exist_survey(input)
-        study = Repository::For[Entity::Study].add_survey(input[:study_id], input[:survey_id])
+        study = Repository::For[Entity::Study].remove_survey(input[:study_id], input[:survey_id])
         Success(study)
       rescue
-        Failure('Failed to add an exist survey into study.')
+        Failure('Failed to remove survey from study.')
       end
     end
   end
