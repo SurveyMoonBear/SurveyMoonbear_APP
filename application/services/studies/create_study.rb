@@ -17,42 +17,37 @@ module SurveyMoonbear
 
       private
 
+      # input { config:, current_account:, params: }
       def store_into_database(input)
-        track_activity = !input[:params]['track_activity'].nil?
-        enable_notification = !input[:params]['enable_notification'].nil?
-        input[:params].update('track_activity' => track_activity,
-                              'enable_notification' => enable_notification,
-                              'aws_arn' => 'checking enable notification or not')
         new_study = Mapper::StudyMapper.new.load(input[:params], input[:current_account])
-        study = Repository::For[new_study.class].create_from(new_study)
-        input[:study] = study
+        input[:study] = Repository::For[new_study.class].create_from(new_study)
 
         Success(input)
       rescue
-        Failure('Failed to store into database.')
+        Failure('Failed to create a study and store it into database.')
       end
 
+      # input { config:, current_account:, params:, study: }
       def get_study_arn(input)
-        if input[:params]['enable_notification']
+        if input[:study].enable_notification
           study_arn = Messaging::Notification.new(input[:config]).create_topic(input[:study][:id])
-          input[:params]['aws_arn'] = study_arn
+          input[:aws_arn] = study_arn
         else
-          input[:params]['aws_arn'] = 'disable notification'
+          input[:aws_arn] = 'disable notification'
         end
 
         Success(input)
       rescue
-        Failure('Failed to get aws_arn.')
+        Failure('Failed to create AWS topic to get study AWS arn.')
       end
 
+      # input { config:, current_account:, params:, study:, aws_arm: }
       def update_study_arn(input)
-        study = input[:study]
-        aws_arn = input[:params]['aws_arn']
-        updated_study = Repository::For[study.class].update_arn(study.id, aws_arn)
+        updated_study = Repository::For[input[:study].class].update_arn(input[:study].id, input[:aws_arn])
 
         Success(updated_study)
       rescue
-        Failure('Failed to update study aws_arn in database')
+        Failure('Failed to update study AWS arn in database.')
       end
     end
   end
