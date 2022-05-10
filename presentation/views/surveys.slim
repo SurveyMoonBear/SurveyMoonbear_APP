@@ -93,18 +93,8 @@
                 }
                   <i class="fas fa-play-circle"></i> &nbsp;Start Survey
 
-div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="false" role="dialog"
-  div class="modal-dialog modal-dialog-centered" role="document"
-    div class="modal-content"
-      div class="modal-body"
-        h5 Processing...
-        div class="progress"
-          div {
-            class="progress-bar progress-bar-striped progress-bar-animated" 
-            role="progressbar" style="width: 100%"
-          }
+== render :modal_waiting
 
-include :modal_create_survey
 include :modal_copy_survey
 include :modal_survey_settings
 include :modal_survey_editor
@@ -162,7 +152,7 @@ javascript:
     });
   }
 
-  $('#btn-create').on('click', function (e) {
+  $('#btn-create-survey').on('click', function (e) {
     $('#modal_create_survey').modal('hide');
     $('#modal_waiting').modal();
   });
