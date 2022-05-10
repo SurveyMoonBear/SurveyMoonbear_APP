@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'survey'
+
 module SurveyMoonbear
   module Entity
     # Domain entity object for any study
@@ -15,6 +17,7 @@ module SurveyMoonbear
       attribute :track_activity, Strict::Bool
       attribute :activity_start_at, Strict::Time.optional
       attribute :activity_end_at, Strict::Time.optional
+      attribute :including_surveys, Strict::Array.of(Survey).optional
       attribute :created_at, Strict::Time.optional
     end
   end

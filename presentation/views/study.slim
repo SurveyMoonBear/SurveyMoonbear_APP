@@ -77,7 +77,7 @@ div class="mb-3"
       div class="col-8 col-sm-12 col-md-7"
         button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_notification"
           i class="fas fa-plus"
-        == render :modal_create_notification, locals: { study: study, surveys: surveys }
+        == render :modal_create_notification, locals: { study: study, surveys: all_surveys }
     div class="row justify-content-center mt-3"
       div class="col-12 col-sm-12 col-md-10"
         - if notifications.any?
@@ -101,14 +101,15 @@ div class="mb-3"
     div class="col-8 col-sm-12 col-md-7"
       button class="btn btn-outline-dark btn-sm mr-1" aria-controls="collapseExample" aria-expanded="false" data-target="#collapseExample" data-toggle="collapse" type="button" 
         i class="fas fa-th-list" &nbsp;Detail list
-      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_add_exist_survey"
         i class="fas fa-plus" &nbsp;Add an exist survey
+      == render :modal_add_exist_survey, locals: { study: study, surveys: all_surveys }
       button href="#" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_create_survey"
         i class="fas fa-plus" &nbsp;Create a new survey
-      == render :modal_create_survey, locals: {rerout: "/studies/#{study.id}"}
+      == render :modal_create_survey, locals: { rerout: "/studies/#{study.id}", study_id: study.id }
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10"
-      - if surveys.any?
+      - unless study.including_surveys.empty?
         table class="table"
           thead
             tr
@@ -118,20 +119,38 @@ div class="mb-3"
               th scope="col"  Created at
               th scope="col"
           tbody
-            - surveys.each.with_index do |survey, index|
+            - study.including_surveys.each.with_index do |survey, index|
               tr
-                th scope="row"  1
+                th scope="row"  #{index+1}
                 td #{survey.title}
                 td #{survey.state}
                 td #{survey.created_at}
                 td.p-1
                   button {
                     type="button" class="btn btn-outline-dark btn-sm border-0"
-                    data-bs-toggle="modal" data-bs-target="#CreateParticipantModal"
+                    data-toggle="modal" data-target="#modal_remove_survey"
                   }
                     i class="fas fa-times"
+                  div class="modal fade" id="modal_remove_survey"
+                    div class="modal-dialog" role="document"
+                      div class="modal-content"
+                        div class="modal-header"
+                          h5 class="modal-title" Remove Survey
+                          button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            span aria-hidden="true" &times;
+                        form action="/studies/#{study.id}/remove_survey" method="post" id="form_remove_survey"
+                          div class="modal-body"
+                            div class="form-group"
+                              div class="mb-2"
+                                label for="title" Remove <b>#{survey.title}</b> from <b>#{study.title}</b>?
+                                label for="title"
+                                  i You can still access the <b>#{survey.title}</b> on My Surveys page.
+                                input type="hidden" class="form-control" id="survey_id" name="survey_id" value="#{survey.id}"
+                          div class="modal-footer"
+                            button type="button" class="btn btn-outline-info" data-dismiss="modal" Close
+                            button type="submit" class="btn btn-outline-danger" id="btn-add-exist-survey" Remove
   #collapseExample.collapse
-    == render :surveys, locals: { surveys: surveys }
+    == render :surveys, locals: { surveys: study.including_surveys, config: config }
 
 javascript:
   $(document).ready(function($) {

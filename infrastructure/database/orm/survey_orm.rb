@@ -19,6 +19,11 @@ module SurveyMoonbear
       one_to_many :notifications,
                   class: :'SurveyMoonbear::Database::NotificationOrm'
 
+      many_to_many :related_studies,
+                   class: :'SurveyMoonbear::Database::StudyOrm',
+                   join_table: :studies_surveys,
+                   left_key: :survey_id, right_key: :study_id
+
       plugin :uuid, field: :id
       plugin :timestamps
     end

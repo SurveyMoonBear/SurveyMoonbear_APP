@@ -101,7 +101,7 @@ module SurveyMoonbear
         routing.post 'create' do
           new_survey = Service::CreateSurvey.new.call(config: config,
                                                       current_account: @current_account,
-                                                      title: routing.params['title'])
+                                                      params: routing.params)
           redirect_rout = routing.params['rerout']
 
           if new_survey.success?
@@ -530,6 +530,20 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
+          # POST studies/[study_id]/add_exist_survey
+          routing.post 'add_exist_survey' do
+            Service::AddExistSurvey.new.call(study_id: study_id,
+                                             survey_id: routing.params['survey_id'])
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/remove_survey
+          routing.post 'remove_survey' do
+            Service::RemoveSurvey.new.call(study_id: study_id,
+                                           survey_id: routing.params['survey_id'])
+            routing.redirect "/studies/#{study_id}"
+          end
+
           # DELETE studies/[study_id]
           routing.delete do
             response = Service::DeleteStudy.new.call(config: config, study_id: study_id)
@@ -540,15 +554,14 @@ module SurveyMoonbear
           # GET /studies/[study_id]
           routing.get do
             routing.redirect '/' unless @current_account
-            # TODO: Service::GetStudy
             study = Repository::For[Entity::Study].find_id(study_id)
-            surveys = Repository::For[Entity::Survey].find_owner(@current_account['id'])
+            all_surveys = Repository::For[Entity::Survey].find_owner(@current_account['id'])
             participants = Repository::For[Entity::Participant].find_study(study_id)
             notifications = Service::GetNotifications.new.call(study_id: study_id).value!
             view 'study', locals: { study: study,
                                     participants: participants,
                                     notifications: notifications,
-                                    surveys: surveys,
+                                    all_surveys: all_surveys,
                                     config: config }
           end
         end
