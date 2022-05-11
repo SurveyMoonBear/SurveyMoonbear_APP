@@ -33,8 +33,8 @@ module SurveyMoonbear
       # def create_schedule(input)
       #   notification = input[:notification]
       #   aws_arn = input[:params]['aws_arn']
-      #   status = input[:params]['status']
-      #   notification = Repository::For[notification.class].update_arn(notification.id, aws_arn, status)
+      #   noti_status = input[:params]['noti_status']
+      #   notification = Repository::For[notification.class].update_arn(notification.id, aws_arn, noti_status)
 
       #   Success(updated_notification)
       # rescue

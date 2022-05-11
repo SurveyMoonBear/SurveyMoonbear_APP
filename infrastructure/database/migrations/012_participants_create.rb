@@ -15,7 +15,7 @@ Sequel.migration do
       String      :email, null: false
       String      :phone
       String      :aws_arn
-      String      :status, default: 'pending'
+      String      :noti_status, default: 'checking'
 
       DateTime :created_at
       DateTime :updated_at

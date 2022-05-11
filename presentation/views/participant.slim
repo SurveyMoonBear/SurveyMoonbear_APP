@@ -47,51 +47,51 @@ div class="mb-3"
               div class="modal-footer"
                 button type="button" class="btn btn-secondary" data-dismiss="modal" Close
                 button type="submit" class="btn btn-primary" id="btn-save" Save
-      - if participant.status == 'confirmed'
+      - if participant.noti_status == 'confirmed'
         button {
             class="btn btn-outline-info btn-sm ml-2"
-            data-toggle="modal" data-target="#modal_unsubscribe_study" 
+            data-toggle="modal" data-target="#modal_turnoff_notification" 
           }
-          i class="fas fa-bell-slash" &nbsp;Unsubscribe
-        div class="modal fade" id="modal_unsubscribe_study"
+          i class="fas fa-bell-slash" &nbsp;Turn off
+        div class="modal fade" id="modal_turnoff_notification"
           div class="modal-dialog" role="document"
             div class="modal-content"
               div class="modal-header"
-                h5 class="modal-title" Participant Unsubscribing?
+                h5 class="modal-title" Turn off Participant's Notification
                 button type="button" class="close" data-dismiss="modal" aria-label="Close"
                   span aria-hidden="true" &times;
-              form id="unsubscribe_participant_form" action="/participants/#{participant.id}/update_participant" method="post"
+              form id="form_turnoff_notification" action="/participants/#{participant.id}/update_participant" method="post"
                 div class="modal-body"
                   div class="form-group"
                     div class="mb-2"
-                      label for="form" #{participant.nickname} will not receive any notification.
-                      input type="hidden" name="status" value="unsubscribed" 
+                      label for="form" #{participant.nickname} will not receive any notifications.
+                      input type="hidden" name="noti_status" value="turn_off" 
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
-                  button type="submit" class="btn btn-primary" id="btn-update" Unsubscribe
-      - if participant.status == 'unsubscribed'
+                  button type="submit" class="btn btn-primary" id="btn-update" Turn off
+      - if participant.noti_status == 'turn_off'
         button {
             class="btn btn-outline-info btn-sm ml-2"
-            data-toggle="modal" data-target="#modal_subscribe_study" 
+            data-toggle="modal" data-target="#modal_turnon_notification" 
           }
-          i class="fas fa-bell" &nbsp;Subscribe
-        div class="modal fade" id="modal_subscribe_study"
+          i class="fas fa-bell" &nbsp;Turn on
+        div class="modal fade" id="modal_turnon_notification"
           div class="modal-dialog" role="document"
             div class="modal-content"
               div class="modal-header"
-                h5 class="modal-title" Participant Subscribing?
+                h5 class="modal-title" Turn on Participant's Notification
                 button type="button" class="close" data-dismiss="modal" aria-label="Close"
                   span aria-hidden="true" &times;
-              form id="subscribe_participant_form" action="/participants/#{participant.id}/update_participant" method="post"
+              form id="form_turnon_notification" action="/participants/#{participant.id}/update_participant" method="post"
                 div class="modal-body"
                   div class="form-group"
                     div class="mb-2"
-                      label for="form" #{participant.nickname} will receive every notification.
-                      input type="hidden" name="status" value="confirmed" 
+                      label for="form" #{participant.nickname} will receive notifications.
+                      input type="hidden" name="noti_status" value="confirmed" 
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
-                  button type="submit" class="btn btn-primary" id="btn-update" Subscribe
-      - if participant.status == 'confirmed' or participant.status == 'disabled'
+                  button type="submit" class="btn btn-primary" id="btn-update" Turn on
+      - if participant.noti_status == 'confirmed' or participant.noti_status == 'disabled'
         button {
             class="btn btn-outline-dark btn-sm ml-2"
             data-toggle="modal" data-target="#modal_delete_#{participant.id}" 
@@ -103,7 +103,7 @@ div class="mb-3"
           class="d-inline-block" 
           tabindex="0" 
           data-toggle="tooltip" 
-          title="You can not delete #{participant.status} participant"
+          title="You can not delete #{participant.noti_status} participant"
         }
           button class="btn btn-outline-dark btn-sm ml-2" disabled=""
             i class="fas fa-trash"
@@ -122,7 +122,7 @@ div class="mb-3"
         .row
           .col-md-2.col-sm-12
             b NTFY. Status
-          .col-md-10.col-sm-12 #{participant.status}
+          .col-md-10.col-sm-12 #{participant.noti_status}
         .row
           .col-md-2.col-sm-12
             b Contact Type

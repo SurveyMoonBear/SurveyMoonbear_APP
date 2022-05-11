@@ -515,9 +515,9 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
-          # POST studies/[study_id]/confirm_status
-          routing.post 'confirm_status' do
-            Service::ConfirmParticipantsStatus.new.call(config: config, study_id: study_id)
+          # POST studies/[study_id]/confirm_noti_status
+          routing.post 'confirm_noti_status' do
+            Service::ConfirmParticipantsNotiStatus.new.call(config: config, study_id: study_id)
             routing.redirect "/studies/#{study_id}"
           end
 

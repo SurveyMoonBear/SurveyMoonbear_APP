@@ -37,9 +37,9 @@ div class="mb-3"
         i class="fas fa-plus"
       == render :modal_create_participant, locals: { study: study }
       - if study.enable_notification
-        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/confirm_status" method='post'
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/confirm_noti_status" method='post'
           button type="submit" class="btn btn-outline-primary btn-sm"
-            i class="fas fa-check" &nbsp;Update Confirm Status
+            i class="fas fa-check" &nbsp;Update NTFY. Status
       - if study.track_activity
         form.d-inline-flex.align-middle role="form" action="/participant/track_activiy" method='get'
           input type="hidden" name="study_id" value="" 
@@ -67,7 +67,7 @@ div class="mb-3"
                 td #{participant.id}
                 td #{participant.email}
                 - if study.enable_notification
-                  td #{participant.status}
+                  td #{participant.noti_status}
                 - if study.track_activity
                   td Calendar/Activity Data Summary
   - if study.enable_notification
