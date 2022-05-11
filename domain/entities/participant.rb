@@ -17,6 +17,7 @@ module SurveyMoonbear
       attribute :phone, Strict::String.optional
       attribute :aws_arn, Strict::String.optional
       attribute :noti_status, Strict::String
+      attribute :act_status, Strict::String
       attribute :created_at, Strict::Time.optional
     end
   end

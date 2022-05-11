@@ -91,6 +91,50 @@ div class="mb-3"
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
                   button type="submit" class="btn btn-primary" id="btn-update" Turn on
+      - if participant.act_status == 'subscribed'
+        button {
+            class="btn btn-outline-info btn-sm ml-2"
+            data-toggle="modal" data-target="#modal_unsubscribe_calendar" 
+          }
+          i class="fas fa-calendar" &nbsp;Unsubscribe
+        div class="modal fade" id="modal_unsubscribe_calendar"
+          div class="modal-dialog" role="document"
+            div class="modal-content"
+              div class="modal-header"
+                h5 class="modal-title" Unsubscribe Participant's Calendar
+                button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  span aria-hidden="true" &times;
+              form id="form_unsubscribe_calendar" action="/participants/#{participant.id}/update_participant" method="post"
+                div class="modal-body"
+                  div class="form-group"
+                    div class="mb-2"
+                      label for="form" Remove subscription of #{participant.email} from your Google Calendar.
+                      input type="hidden" name="act_status" value="unsubscribed" 
+                div class="modal-footer"
+                  button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                  button type="submit" class="btn btn-primary" id="btn-update" Unsubscribe
+      - if participant.act_status == 'unsubscribed'
+        button {
+            class="btn btn-outline-info btn-sm ml-2"
+            data-toggle="modal" data-target="#modal_subscribe_calendar" 
+          }
+          i class="fas fa-calendar" &nbsp;Subscribe
+        div class="modal fade" id="modal_subscribe_calendar"
+          div class="modal-dialog" role="document"
+            div class="modal-content"
+              div class="modal-header"
+                h5 class="modal-title" Subscribe Participant's Calendar
+                button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  span aria-hidden="true" &times;
+              form id="form_subscribe_calendar" action="/participants/#{participant.id}/update_participant" method="post"
+                div class="modal-body"
+                  div class="form-group"
+                    div class="mb-2"
+                      label for="form" Add subscription of #{participant.email} into your Google Calendar.
+                      input type="hidden" name="act_status" value="subscribed" 
+                div class="modal-footer"
+                  button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                  button type="submit" class="btn btn-primary" id="btn-update" Subscribe
       - if participant.noti_status == 'confirmed' or participant.noti_status == 'disabled'
         button {
             class="btn btn-outline-dark btn-sm ml-2"
@@ -122,19 +166,32 @@ div class="mb-3"
         .row
           .col-md-2.col-sm-12
             b NTFY. Status
-          .col-md-10.col-sm-12 #{participant.noti_status}
+          .col-md-10.col-sm-12 
+            - if participant.noti_status == 'turnoff' || participant.noti_status == 'pending'
+              span class="badge badge-pill badge-secondary"#{participant.noti_status}
+            - if participant.noti_status == 'confirmed'
+              span class="badge badge-pill badge-info" #{participant.noti_status}
         .row
           .col-md-2.col-sm-12
             b Contact Type
           .col-md-10.col-sm-12 #{participant.contact_type}
+      - if participant.study.track_activity
+        .row
+          .col-md-2.col-sm-12
+            b Cal. Status
+          .col-md-10.col-sm-12
+            - if participant.act_status == 'unsubscribed'
+              span class="badge badge-pill badge-secondary" #{participant.act_status}
+            - if participant.act_status == 'subscribed'
+              span class="badge badge-pill badge-info" #{participant.act_status}
       .row
         .col-md-2.col-sm-12
           b Email
         .col-md-10.col-sm-12 #{participant.email}
-      - unless participant.phone.empty?
-        .row
-          .col-md-2.col-sm-12
-            b Phone
+      .row
+        .col-md-2.col-sm-12
+          b Phone
+        - unless participant.phone.empty?
           .col-md-10.col-sm-12 #{participant.phone}
   div class="row justify-content-center mt-3"
     div class="col-4 col-sm-12 col-md-3" 
@@ -151,29 +208,33 @@ div class="mb-3"
     div class="row justify-content-center mt-3"
       div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
         h4 Calendar Events
-        button type="submit" class="btn btn-outline-info btn-sm ml-5"
-          i class="fas fa-calendar" &nbsp;Collect Calendar Data
+        - if participant.act_status == 'subscribed'
+          button type="submit" class="btn btn-outline-primary btn-sm ml-5"
+            i class="fas fa-sync" &nbsp;Refresh
+        - if participant.act_status == 'unsubscribed'
+        span {
+          class="d-inline-block" 
+          tabindex="0" 
+          data-toggle="tooltip" 
+          title="You cannot refresh unsubscribed calendar"
+        }
+          button type="submit" class="btn btn-outline-primary btn-sm ml-5" disabled=""
+            i class="fas fa-sync" &nbsp;Refresh
     div class="row justify-content-center mt-3"
-      div class="col-12 col-sm-12 col-md-10 p-3 border"
-        .row
-          .col-md-2.col-sm-12
-            b Summary
-          .col-md-10.col-sm-12 style="word-wrap:break-word;" 10 hours busy between 2022/04/13 to 2022/04/13 Events
-    div class="row justify-content-center mt-3"
-      div class="col-12 col-sm-12 col-md-10"
-        - if activities.any?
+      div class="col-12 col-sm-12 col-md-10" style="word-wrap:break-word;"
+        div.mb-4
+          <b>#{busy_time}</b> total busy time between <b>#{participant.study.activity_start_at.strftime('%D')}</b> to <b>#{participant.study.activity_start_at.strftime('%D')}</b>
+        - if events.any?
           table class="table"
             thead
               tr
                 th scope="col"  #
-                th scope="col"  Title
                 th scope="col"  Start at
                 th scope="col"  End at
             tbody
-              - activities.each.with_index do |event, index|
+              - events.each.with_index do |event, index|
                 tr
-                  th scope="row"  1
-                  td #{event.title}
+                  th scope="row" #{index+1}
                   td #{event.start_at}
                   td #{event.end_at}
 javascript: 

@@ -39,6 +39,7 @@ module SurveyMoonbear
             phone: phone,
             aws_arn: aws_arn,
             noti_status: noti_status,
+            act_status: act_status,
             created_at: nil
           )
         end
@@ -77,6 +78,14 @@ module SurveyMoonbear
 
         def noti_status
           'checking' || @participant[:data]['noti_status']
+        end
+
+        def act_status
+          if study.track_activity
+            'unsubscribed'
+          else
+            'disabled'
+          end
         end
       end
     end

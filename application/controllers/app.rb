@@ -600,10 +600,11 @@ module SurveyMoonbear
             routing.redirect '/' unless @current_account
 
             participant = Service::GetParticipant.new.call(participant_id: participant_id)
-            activities = {}
+            events = Service::GetEvents.new.call(participant_id: participant_id)
             view 'participant', locals: { participant: participant.value![:participant],
                                           details: participant.value![:details],
-                                          activities: activities }
+                                          events: events.value![:events],
+                                          busy_time: events.value![:busy_time] }
           end
         end
       end

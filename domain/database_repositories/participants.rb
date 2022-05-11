@@ -48,7 +48,8 @@ module SurveyMoonbear
           email: entity.email,
           phone: entity.phone,
           aws_arn: entity.aws_arn,
-          noti_status: entity.noti_status
+          noti_status: entity.noti_status,
+          act_status: entity.act_status
         )
 
         rebuild_entity(db_participant)
@@ -88,6 +89,7 @@ module SurveyMoonbear
           phone: db_record.phone,
           aws_arn: db_record.aws_arn,
           noti_status: db_record.noti_status,
+          act_status: db_record.act_status,
           created_at: db_record.created_at
         )
       end
