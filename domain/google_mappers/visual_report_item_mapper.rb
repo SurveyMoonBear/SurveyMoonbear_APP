@@ -49,7 +49,8 @@ module SurveyMoonbear
             data_source: data_source,
             question: question,
             chart_type: chart_type,
-            legend: legend
+            legend: legend,
+            self_marker: self_marker
           )
         end
 
@@ -74,6 +75,10 @@ module SurveyMoonbear
 
         def legend
           @item_data[4].nil? ? '' : @item_data[4]
+        end
+
+        def self_marker
+          @item_data[5].nil? ? '' : @item_data[5]
         end
       end
     end

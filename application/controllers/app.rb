@@ -455,10 +455,36 @@ module SurveyMoonbear
           # customized visual report
           # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
           routing.post do
-            student_id = routing.params['respondent']
-            student_id = SecureMessage.encrypt(student_id)
+            case_id = routing.params['respondent']
+            case_id = SecureMessage.encrypt(case_id)
 
-            routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{student_id}"
+            routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{case_id}"
+          end
+
+          # customized visual report
+          # GET visual_report/[visual_report_id]/online/[spreadsheet_id]
+          # ?respondent=YAPXFYIctmUXzuoXKz7sF2i9cinpIEr4Oxs1QKZ0rC5dS-th-G-v7XTR0U5yF7Rzx2tn
+          routing.get do
+            case_id = SecureMessage.decrypt(routing.params['respondent'])
+
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(visual_report_id)
+
+            access_token = Google::Auth.new(config).refresh_access_token
+            responses = Service::TransformVisualSheetsToHTMLWithCase.new.call(visual_report_id: visual_report_id,
+                                                                              spreadsheet_id: spreadsheet_id,
+                                                                              config: config,
+                                                                              access_token: access_token,
+                                                                              case_id: case_id)
+
+            if responses.failure?
+              flash[:error] = "#{responses.failure} Please try again :("
+              routing.redirect '/analytics'
+            end
+
+            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+            view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
+                                                           visual_report: visual_report }
           end
         end
 

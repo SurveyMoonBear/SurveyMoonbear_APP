@@ -13,6 +13,7 @@ module SurveyMoonbear
       attribute :question, Strict::String
       attribute :chart_type, Strict::String
       attribute :legend, Strict::String.optional
+      attribute :self_marker, Strict::String.optional
     end
   end
 end

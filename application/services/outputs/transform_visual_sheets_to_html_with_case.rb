@@ -5,25 +5,26 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Return survey title & an array of page HTML strings
-    # Usage: Service::TransformVisualSheetsToHTMLWithCase.new.call(survey_id: "...", spreadsheet_id: "...", access_token: "...", student_id: "...")
+    # Usage: Service::TransformVisualSheetsToHTMLWithCase.new.call(survey_id: "...", spreadsheet_id: "...", config: "...", access_token: "...", case_id: "...")
     class TransformVisualSheetsToHTMLWithCase
       include Dry::Transaction
       include Dry::Monads
 
       step :get_items_from_spreadsheet
+      step :get_user_access_token
       step :get_sources_from_spreadsheet
       step :get_responses_from_sources
       step :transform_sheet_items_to_html
 
       private
 
-      # input { visual_report_id:, spreadsheet_id:, access_token:, current_account: }
+      # input { visual_report_id:, spreadsheet_id:, access_token:, config: }
       def get_items_from_spreadsheet(input)
         sheets_report = GetVisualreportFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                                 access_token: input[:access_token])
 
         if sheets_report.success?
-          input[:sheets_report] = sheets_report.value![0]
+          input[:sheets_report] = sheets_report.value!
           Success(input)
         else
           Failure(sheets_report.failure)
@@ -31,6 +32,19 @@ module SurveyMoonbear
       end
 
       # input { ..., sheets_report}
+      def get_user_access_token(input)
+        visual_report = Repository::For[Entity::VisualReport].find_origin_id(input[:spreadsheet_id])
+        refresh_token = visual_report.owner.refresh_token
+        input[:user_access_token] = Google::Auth.new(input[:config]).refresh_user_access_token(refresh_token)
+
+        if input[:user_access_token]
+          Success(input)
+        else
+          Failure("Failed to get user's access token.")
+        end
+      end
+
+      # input { ..., sheets_report, user_access_token}
       def get_sources_from_spreadsheet(input)
         sources = GetSourcesFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                      access_token: input[:access_token])
@@ -40,7 +54,7 @@ module SurveyMoonbear
           if source.source_type == 'spreadsheet'
             url = source.source_name # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
             other_sheet_id = url.match('.*/(.*)/')[1]
-            other_sheets_api = Google::Api::Sheets.new(input[:access_token])
+            other_sheets_api = Google::Api::Sheets.new(input[:user_access_token])
             other_sheet_title = other_sheets_api.survey_data(other_sheet_id)['sheets'][0]['properties']['title']
             other_sheet[source.source_id] = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
             input[:other_sheets] = other_sheet
@@ -55,42 +69,48 @@ module SurveyMoonbear
         end
       end
 
-      # input { ..., sheets_report}
+      # input { ..., sheets_report, user_access_token, sources}
       def get_responses_from_sources(input)
-        graphs_val = []
-        input[:sheets_report].each do |item_data|
-          source = find_source(input[:sources], item_data.data_source)
+        pages_val = {}
+        input[:sheets_report].each do |key, items_data|
+          graphs_val = []
+          items_data.each do |item_data|
+            source = find_source(input[:sources], item_data.data_source)
 
-          if source.source_type == 'surveymoonbear'
-            survey = Repository::For[Entity::Survey].find_title(source.source_name)
-            launch = Repository::For[Entity::Launch].find_id(survey.launch_id)
-            vis_identity = find_respondent_id(input[:student_id], launch.responses) # syudent_id will transform to uuid respondent_id
-            graphs_val.append(map_moonbear_responses_and_report_item(item_data,
-                                                                     launch.responses,
-                                                                     vis_identity))
-          elsif source.source_type == 'spreadsheet'
-            graph_response = MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
-                                                                      access_token: input[:access_token],
-                                                                      spreadsheet_source: source,
-                                                                      all_data: input[:other_sheets][source.source_id],
-                                                                      vis_identity: input[:student_id])
-            graphs_val.append(graph_response.value![:graph_val])
+            if source.source_type == 'surveymoonbear'
+              survey = Repository::For[Entity::Survey].find_title(source.source_name)
+              launch = Repository::For[Entity::Launch].find_id(survey.launch_id)
+              vis_identity = input[:case_id].nil? ? nil : find_respondent_id(input[:case_id], launch.responses)
+              graphs_val.append(map_moonbear_responses_and_report_item(item_data,
+                                                                       launch.responses,
+                                                                       vis_identity))
+            elsif source.source_type == 'spreadsheet'
+              graph_response = MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
+                                                                        access_token: input[:access_token],
+                                                                        spreadsheet_source: source,
+                                                                        all_data: input[:other_sheets][source.source_id],
+                                                                        vis_identity: input[:case_id])
+              graphs_val.append(graph_response.value![:graph_val])
+            end
           end
+          pages_val[key] = graphs_val
         end
-        input[:all_graphs] = graphs_val
+        input[:all_graphs] = pages_val
 
         Success(input)
       rescue StandardError
         Failure('Failed to map responses and visual report items.')
       end
 
-      # input { ..., sheets_report:, bear_responses: ,all_graphs:}
+      # input { ..., all_graphs:}
       def transform_sheet_items_to_html(input)
-        transform_result = TransformResponsesToHTMLWithChart.new.call(charts: input[:all_graphs])
+        transform_result = TransformResponsesToHTMLWithChart.new.call(pages_charts: input[:all_graphs])
 
         if transform_result.success?
           Success(all_graphs: input[:all_graphs],
-                  html_arr: transform_result.value!)
+                  nav_tab: transform_result.value![:nav_tab],
+                  nav_item: transform_result.value![:nav_item],
+                  pages_chart_val_hash: transform_result.value![:pages_chart_val_hash])
         else
           Failure(transform_result.failure)
         end
@@ -116,7 +136,7 @@ module SurveyMoonbear
           end
         end
         item_responses['responses'] = item_all_responses
-        item_responses['case_id'] = vis_identity
+        item_responses['self_marker'] = item_data.self_marker.empty? ? false : true
 
         # calculate each question's option
         if !item_options.empty?
@@ -127,7 +147,7 @@ module SurveyMoonbear
             chart_colors[option] = 'rgb(54, 162, 235)'
           end
 
-          response_cal_hash, chart_colors = cal_individual_question(item_responses, options, chart_colors, response_cal_hash)
+          response_cal_hash, chart_colors = cal_individual_question(item_responses, options, chart_colors, response_cal_hash, vis_identity)
         end
 
         graph_val.append(item_data.page,
@@ -139,12 +159,14 @@ module SurveyMoonbear
                          item_data.legend)
       end
 
+      # case_id will transform to uuid respondent_id
       def find_respondent_id(identity, responses)
         responses.each do |res_obj|
           if identity == res_obj.response
             return res_obj.respondent_id
           end
         end
+        nil
       end
 
       def find_source(sources, item_data_source)
@@ -155,47 +177,47 @@ module SurveyMoonbear
         end
       end
 
-      def cal_individual_question(response_dic, options, chart_colors, response_cal_hash)
+      def cal_individual_question(response_dic, options, chart_colors, response_cal_hash, vis_identity)
         response_cal_hash, chart_colors =
           case response_dic['type']
           when 'Multiple choice (radio button)'
-            cal_multiple_choice_radio(response_dic, chart_colors, response_cal_hash)
+            cal_multiple_choice_radio(response_dic, chart_colors, response_cal_hash, vis_identity)
           when "Multiple choice with 'other' (radio button)"
-            cal_multiple_choice_radio_with_other(response_dic, chart_colors, response_cal_hash)
+            cal_multiple_choice_radio_with_other(response_dic, chart_colors, response_cal_hash, vis_identity)
           when 'Multiple choice (checkbox)'
             responses_arr = []
             response_dic['responses'].each do |responses_perperson|
               responses_arr += responses_perperson.split(', ')
             end
-            cal_multiple_choice_checkbox(response_dic, responses_arr, chart_colors, response_cal_hash)
+            cal_multiple_choice_checkbox(response_dic, responses_arr, chart_colors, response_cal_hash, vis_identity)
           when "Multiple choice with 'other' (checkbox)"
             responses_arr = []
             response_dic['responses'].each do |responses_perperson|
               responses_arr += responses_perperson.split(', ')
             end
 
-            cal_multiple_choice_checkbox_with_other(response_dic, responses_arr, chart_colors, response_cal_hash)
+            cal_multiple_choice_checkbox_with_other(response_dic, responses_arr, chart_colors, response_cal_hash, vis_identity)
           when 'Multiple choice grid (radio button)'
             temp_option={}
             options.each_with_index do |option, i|
               temp_option["#{i+1}"]=option # {'1'=>'Strongly Disagre', '2'=>'Disgree'...}
             end
-            cal_choice_grid(response_dic, temp_option, chart_colors, response_cal_hash)
+            cal_choice_grid(response_dic, temp_option, chart_colors, response_cal_hash, vis_identity)
           else
             puts "Sorry, we are not yet able to support this question type: #{response_dic['type']}"
           end
         return response_cal_hash, chart_colors
       end
 
-      def cal_multiple_choice_radio(response_dic, chart_colors, response_cal_hash)
+      def cal_multiple_choice_radio(response_dic, chart_colors, response_cal_hash, vis_identity)
         responses_hash = response_dic['responses'].tally
         response_cal_hash.each_key { |key| responses_hash[key].nil? ? 0 : response_cal_hash[key] = responses_hash[key] }
-        chart_colors[response_dic['case_response']] = 'rgb(255, 205, 86)'
+        chart_colors[response_dic['case_response']] = 'rgb(255, 205, 86)' if response_dic['self_marker'] && vis_identity
 
         [response_cal_hash, chart_colors]
       end
 
-      def cal_multiple_choice_radio_with_other(response_dic, chart_colors, response_cal_hash)
+      def cal_multiple_choice_radio_with_other(response_dic, chart_colors, response_cal_hash, vis_identity)
         responses_hash = response_dic['responses'].tally
         response_cal_hash.each_key do |key|
           responses_hash[key].nil? ? 0 : response_cal_hash[key] = responses_hash[key]
@@ -205,24 +227,27 @@ module SurveyMoonbear
         responses_hash.each_value { |val| response_cal_hash['other'] += val }
 
         chart_colors['other'] = 'rgb(54, 162, 235)'
-        chart_colors[response_dic['case_response']].nil? ? chart_colors['other'] = 'rgb(255, 205, 86)' : chart_colors[response_dic['case_response']] = 'rgb(255, 205, 86)'
-
+        if response_dic['self_marker'] && vis_identity
+          chart_colors[response_dic['case_response']].nil? ? chart_colors['other'] = 'rgb(255, 205, 86)' : chart_colors[response_dic['case_response']] = 'rgb(255, 205, 86)'
+        end
         [response_cal_hash, chart_colors]
       end
 
-      def cal_multiple_choice_checkbox(response_dic, responses_arr, chart_colors, response_cal_hash)
+      def cal_multiple_choice_checkbox(response_dic, responses_arr, chart_colors, response_cal_hash, vis_identity)
         responses_hash = responses_arr.tally
         response_cal_hash.each_key do |key|
           response_cal_hash[key] = responses_hash[key]
         end
-        case_res_arr = response_dic['case_response'].split(', ')
-        case_res_arr.each do |case_res|
-          chart_colors[case_res] = 'rgb(255, 205, 86)'
+        if response_dic['self_marker'] && vis_identity
+          case_res_arr = response_dic['case_response'].split(', ')
+          case_res_arr.each do |case_res|
+            chart_colors[case_res] = 'rgb(255, 205, 86)'
+          end
         end
         [response_cal_hash, chart_colors]
       end
 
-      def cal_multiple_choice_checkbox_with_other(response_dic, responses_arr, chart_colors, response_cal_hash)
+      def cal_multiple_choice_checkbox_with_other(response_dic, responses_arr, chart_colors, response_cal_hash, vis_identity)
         responses_arr.each_with_index do |r, i|
           if r.include? 'I sometimes ask questions about the homework'
             responses_arr[i] = "I sometimes ask questions about the homework on MS Teams or read others' comments. 我有時會在微軟Teams上面發問或是瀏覽他人的討論串。"
@@ -237,25 +262,26 @@ module SurveyMoonbear
         responses_hash.each_value { |val| response_cal_hash['other'] += val }
 
         chart_colors['other'] = 'rgb(54, 162, 235)'
-        case_res_arr = response_dic['case_response'].split(', ')
-        case_res_arr.each_with_index do |r, i|
-          if r.include? 'I sometimes ask questions about the homework'
-            case_res_arr[i] = "I sometimes ask questions about the homework on MS Teams or read others' comments. 我有時會在微軟Teams上面發問或是瀏覽他人的討論串。"
+        if response_dic['self_marker'] && vis_identity
+          case_res_arr = response_dic['case_response'].split(', ')
+          case_res_arr.each_with_index do |r, i|
+            if r.include? 'I sometimes ask questions about the homework'
+              case_res_arr[i] = "I sometimes ask questions about the homework on MS Teams or read others' comments. 我有時會在微軟Teams上面發問或是瀏覽他人的討論串。"
+            end
+          end
+          case_res_arr.each do |case_res|
+            chart_colors[case_res].nil? ? chart_colors['other'] = 'rgb(255, 205, 86)' : chart_colors[case_res] = 'rgb(255, 205, 86)'
           end
         end
-        case_res_arr.each do |case_res|
-          chart_colors[case_res].nil? ? chart_colors['other'] = 'rgb(255, 205, 86)' : chart_colors[case_res] = 'rgb(255, 205, 86)'
-        end
-
         [response_cal_hash, chart_colors]
       end
 
-      def cal_choice_grid(response_dic, temp_option, chart_colors, response_cal_hash)
+      def cal_choice_grid(response_dic, temp_option, chart_colors, response_cal_hash, vis_identity)
         responses_hash = response_dic['responses'].sort.tally
         responses_hash.each_key do |key|
           response_cal_hash[temp_option[key]] = responses_hash[key]
         end
-        chart_colors[temp_option[response_dic['case_response']]] = 'rgb(255, 205, 86)'
+        chart_colors[temp_option[response_dic['case_response']]] = 'rgb(255, 205, 86)' if response_dic['self_marker'] && vis_identity
 
         [response_cal_hash, chart_colors]
       end

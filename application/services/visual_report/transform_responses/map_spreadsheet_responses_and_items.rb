@@ -4,7 +4,7 @@ module SurveyMoonbear
   module Service
     # Return graph array:
     # [item_data.page, item_data.graph_title, item_data.chart_type, response_cal_hash, labels, chart_colors]
-    # Usage: Service::MapSpreadsheetResponsesAndItems.new.call(item_data: "...", spreadsheet_source: "...", vis_identity: "...")
+    # Usage: Service::MapSpreadsheetResponsesAndItems.new.call(item_data: "...", access_token: "...", spreadsheet_source: "...", all_data: "...", vis_identity: "...")
     class MapSpreadsheetResponsesAndItems
       include Dry::Transaction
       include Dry::Monads
@@ -16,12 +16,12 @@ module SurveyMoonbear
 
       private
 
-      # input{ first_sheet:..., sheets_api:..., spreadsheet_id:...}
+      # input{ item_data:..., spreadsheet_source:..., spreadsheet_id:...}
       def get_responses_from_spreadsheet(input)
         case_id = input[:spreadsheet_source].case_id # C3:C141
         question = input[:item_data].question # M3:M141
 
-        unless case_id.nil?
+        if !case_id.nil? && !input[:item_data].self_marker.empty?
           case_range = transform_anotation(case_id)
           input[:case_id_val] = get_range_val(input[:all_data], case_range)
         end
@@ -31,7 +31,7 @@ module SurveyMoonbear
         Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to read first sheet data.')
+        Failure('Failed to read source spreadsheet first sheet data.')
       end
 
       def map_identity_and_responses(input)
@@ -43,7 +43,7 @@ module SurveyMoonbear
         Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to map identity and responses which the sources from spreadsheet url.')
+        Failure('Failed to map identity and responses which the sources from spreadsheet.')
       end
 
       def map_individual_answer(input)
@@ -60,7 +60,7 @@ module SurveyMoonbear
         Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to map individual answer which the sources from spreadsheet url.')
+        Failure('Failed to map individual answer which the sources from spreadsheet.')
       end
 
       def return_graph_result(input)
@@ -77,7 +77,7 @@ module SurveyMoonbear
         Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to return graph results which the sources from spreadsheet url.')
+        Failure('Failed to return graph results which the sources from spreadsheet.')
       end
 
       def transfom_sheet_val(values_arr)
