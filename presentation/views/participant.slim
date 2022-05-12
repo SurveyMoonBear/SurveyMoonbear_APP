@@ -6,6 +6,10 @@ div class="mb-3"
     div class="col-2 col-sm-2 col-md-2 text-right text-muted"
       small Participant
   div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10"
+      div id="div-alert"
+        == render :flash_bar 
+  div class="row justify-content-center"
     div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
       h3.m-0 #{participant.nickname}
       button {
@@ -64,7 +68,8 @@ div class="mb-3"
                 div class="modal-body"
                   div class="form-group"
                     div class="mb-2"
-                      label for="form" #{participant.nickname} will not receive any notifications.
+                      label for="form" 
+                        <b>#{participant.nickname}</b> will not receive any notifications.
                       input type="hidden" name="noti_status" value="turn_off" 
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
@@ -86,7 +91,8 @@ div class="mb-3"
                 div class="modal-body"
                   div class="form-group"
                     div class="mb-2"
-                      label for="form" #{participant.nickname} will receive notifications.
+                      label for="form" 
+                        <b>#{participant.nickname}</b> will receive notifications.
                       input type="hidden" name="noti_status" value="confirmed" 
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
@@ -108,7 +114,8 @@ div class="mb-3"
                 div class="modal-body"
                   div class="form-group"
                     div class="mb-2"
-                      label for="form" Remove subscription of #{participant.email} from your Google Calendar.
+                      label for="form" Remove subscription of
+                        <b>#{participant.email}</b> from your Google Calendar.
                       input type="hidden" name="act_status" value="unsubscribed" 
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
@@ -126,12 +133,14 @@ div class="mb-3"
                 h5 class="modal-title" Subscribe Participant's Calendar
                 button type="button" class="close" data-dismiss="modal" aria-label="Close"
                   span aria-hidden="true" &times;
-              form id="form_subscribe_calendar" action="/participants/#{participant.id}/update_participant" method="post"
+              form id="form_subscribe_calendar" action="/participants/#{participant.id}/subscribe_calendar" method="post"
                 div class="modal-body"
                   div class="form-group"
                     div class="mb-2"
-                      label for="form" Add subscription of #{participant.email} into your Google Calendar.
+                      label for="form" Add subscription of
+                        <b>#{participant.email}</b> into your Google Calendar.
                       input type="hidden" name="act_status" value="subscribed" 
+                      input type="hidden" name="calendar_id" value="#{participant.email}" 
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
                   button type="submit" class="btn btn-primary" id="btn-update" Subscribe

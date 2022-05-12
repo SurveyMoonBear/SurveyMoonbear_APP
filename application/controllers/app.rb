@@ -32,9 +32,11 @@ module SurveyMoonbear
       # GET / request
       routing.root do
         url = 'https://accounts.google.com/o/oauth2/v2/auth'
+        # TODO: request additional calendar scopes when user needs
         scopes = ['https://www.googleapis.com/auth/userinfo.profile',
                   'https://www.googleapis.com/auth/userinfo.email',
-                  'https://www.googleapis.com/auth/spreadsheets']
+                  'https://www.googleapis.com/auth/spreadsheets',
+                  'https://www.googleapis.com/auth/calendar']
         params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
                   "redirect_uri=#{config.APP_URL}/account/login/google_callback",
                   'response_type=code',
@@ -584,6 +586,20 @@ module SurveyMoonbear
             Service::UpdateParticipant.new.call(config: config,
                                                 participant_id: participant_id,
                                                 params: routing.params)
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # POST /participants/[participant_id]/subscribe_calendar
+          routing.post 'subscribe_calendar' do
+            res = Service::SubscribeCalendar.new.call(config: config,
+                                                      current_account: @current_account,
+                                                      participant_id: participant_id,
+                                                      calendar_id: routing.params['calendar_id'])
+          if res.failure?
+            flash[:error] = 'Participant doesn\'t open calendar to you. Or wrong gmail address.'
+          else
+            flash[:notice] = 'Successfully subscribe participant!'
+          end
             routing.redirect "/participants/#{participant_id}"
           end
 
