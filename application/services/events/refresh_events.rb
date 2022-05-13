@@ -34,8 +34,8 @@ module SurveyMoonbear
         start_date = input[:study].activity_start_at
         end_date = input[:study].activity_end_at
         response = Google::Api::Calendar.new(input[:user_access_token])
-                                        .get_calendar_events(input[:participant].email, start_date, end_date)
-        input[:events] = response['items']
+                                        .events_data(input[:participant].email, start_date, end_date)
+        input[:events] = response['calendars'][input[:participant].email]['busy']
         Success(input)
       rescue
         Failure('Failed to get events data from Google Calendar.')

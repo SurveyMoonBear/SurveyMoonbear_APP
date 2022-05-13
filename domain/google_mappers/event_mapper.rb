@@ -30,10 +30,9 @@ module SurveyMoonbear
             id: nil,
             owner: owner,
             participant: participant,
-            origin_id: origin_id,
             start_at: start_at,
             end_at: end_at,
-            time_zone: time_zone,
+            # time_zone: time_zone,
             created_at: nil,
             updated_at: nil
           )
@@ -47,23 +46,17 @@ module SurveyMoonbear
           @event[:participant]
         end
 
-        def origin_id
-          @event[:data]['id']
-        end
-
         def start_at
-          time_str = @event[:data]['start']['date'] || @event[:data]['start']['dateTime']
-          Time.parse(time_str)
+          Time.parse(@event[:data]['start'])
         end
 
         def end_at
-          time_str = @event[:data]['end']['date'] || @event[:data]['end']['dateTime']
-          Time.parse(time_str)
+          Time.parse(@event[:data]['end'])
         end
 
-        def time_zone
-          @event[:data]['start']['timeZone']
-        end
+        # def time_zone
+        #   @event[:data]['start']['timeZone']
+        # end
       end
     end
   end

@@ -13,8 +13,8 @@ module SurveyMoonbear
 
       step :refresh_user_access_token
       step :subscribe_calendar
-      step :update_participant_act_status
       step :refresh_events
+      step :update_participant_act_status
 
       private
 
@@ -37,22 +37,22 @@ module SurveyMoonbear
         Failure('Failed to subscribe participant calendar.')
       end
 
-      # input { ... }
-      def update_participant_act_status(input)
-        UpdateParticipant.new.call(participant_id: input[:participant_id],
-                                   params: { act_status: 'subscribed' })
+      def refresh_events(input)
+        RefreshEvents.new.call(config: input[:config],
+                               current_account: input[:current_account],
+                               participant_id: input[:participant_id])
         Success(input)
       rescue
-        Failure('Failed to update participant calendar status into database.')
+        Failure('Failed to refresh participant events into database.')
       end
 
-      def refresh_events(input)
-        new_events = RefreshEvents.new.call(config: input[:config],
-                                            current_account: input[:current_account],
-                                            participant_id: input[:participant_id])
-        Success(new_events)
+      # input { ... }
+      def update_participant_act_status(input)
+        upd_parti = UpdateParticipant.new.call(participant_id: input[:participant_id],
+                                               params: { act_status: 'subscribed' })
+        Success(upd_parti)
       rescue
-        Failure('Failed to refresh participant events into database.')
+        Failure('Failed to update participant calendar status into database.')
       end
     end
   end
