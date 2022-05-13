@@ -9,6 +9,11 @@ module SurveyMoonbear
         rebuild_entity(db_record)
       end
 
+      def self.find_origin_id(origin_id)
+        db_record = Database::EventOrm.first(origin_id: origin_id)
+        rebuild_entity(db_record)
+      end
+
       def self.find_owner(owner_id)
         db_records = Database::EventOrm.where(owner_id: owner_id).all
 
@@ -30,7 +35,7 @@ module SurveyMoonbear
       end
 
       def self.find_or_create(entity)
-        find_id(entity.id) || create_from(entity)
+        find_origin_id(entity.origin_id) || create_from(entity)
       end
 
       def self.create_from(entity)
@@ -56,6 +61,12 @@ module SurveyMoonbear
         db_event.update(params)
 
         rebuild_entity(db_event)
+      end
+
+      def self.delete_all(db_records)
+        db_records.map do |record|
+          delete_from(record.id)
+        end
       end
 
       def self.delete_from(id)

@@ -595,11 +595,24 @@ module SurveyMoonbear
                                                       current_account: @current_account,
                                                       participant_id: participant_id,
                                                       calendar_id: routing.params['calendar_id'])
-          if res.failure?
-            flash[:error] = 'Participant doesn\'t open calendar to you. Or wrong gmail address.'
-          else
-            flash[:notice] = 'Successfully subscribe participant!'
+            if res.failure?
+              flash[:error] = 'Participant doesn\'t open calendar to you. Or wrong gmail address.'
+            else
+              flash[:notice] = 'Successfully subscribe participant!'
+            end
+            routing.redirect "/participants/#{participant_id}"
           end
+
+          # GET /participants/[participant_id]/refresh_events
+          routing.get 'refresh_events' do
+            res = Service::RefreshEvents.new.call(config: config,
+                                                  current_account: @current_account,
+                                                  participant_id: participant_id)
+            if res.failure?
+              flash[:error] = 'Fail to refresh paparticipant\'s events. Please try again. :('
+            else
+              flash[:notice] = 'Successfully refresh participant\'s events!'
+            end
             routing.redirect "/participants/#{participant_id}"
           end
 

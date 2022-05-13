@@ -218,21 +218,22 @@ div class="mb-3"
       div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
         h4 Calendar Events
         - if participant.act_status == 'subscribed'
-          button type="submit" class="btn btn-outline-primary btn-sm ml-5"
-            i class="fas fa-sync" &nbsp;Refresh
+          form.d-inline-flex.align-middle role="form" action="/participants/#{participant.id}/refresh_events" method='get'
+            button type="submit" class="btn btn-outline-primary btn-sm ml-5"
+              i class="fas fa-sync" &nbsp;Refresh
         - if participant.act_status == 'unsubscribed'
-        span {
-          class="d-inline-block" 
-          tabindex="0" 
-          data-toggle="tooltip" 
-          title="You cannot refresh unsubscribed calendar"
-        }
-          button type="submit" class="btn btn-outline-primary btn-sm ml-5" disabled=""
-            i class="fas fa-sync" &nbsp;Refresh
+          span {
+            class="d-inline-block"
+            tabindex="0"
+            data-toggle="tooltip"
+            title="You cannot refresh unsubscribed calendar"
+          }
+            button type="submit" class="btn btn-outline-primary btn-sm ml-5" disabled=""
+              i class="fas fa-sync" &nbsp;Refresh
     div class="row justify-content-center mt-3"
       div class="col-12 col-sm-12 col-md-10" style="word-wrap:break-word;"
         div.mb-4
-          <b>#{busy_time}</b> total busy time between <b>#{participant.study.activity_start_at.strftime('%D')}</b> to <b>#{participant.study.activity_start_at.strftime('%D')}</b>
+          <b>#{busy_time}</b> total busy time between <b>#{participant.study.activity_start_at.strftime('%D')}</b> to <b>#{participant.study.activity_end_at.strftime('%D')}</b>
         - if events.any?
           table class="table"
             thead

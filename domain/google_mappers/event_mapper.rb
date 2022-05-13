@@ -1,45 +1,41 @@
 # frozen_string_literal: true
 
 require_relative 'account_mapper'
-require_relative '../mappers/participant_mapper'
 
 module SurveyMoonbear
   module Google
     # Data Mapper object for Google's calendar
     class EventMapper
-      def initialize(gateway)
-        @gateway = gateway
-      end
-
-      def load(calendar_id, owner)
+      def load(data, participant, owner)
         event = {}
-        event[:data] = @gateway.event_data(calendar_id)
+        event[:data] = data
+        event[:participant] = participant
         event[:owner] = owner
         build_entity(event)
       end
 
       def build_entity(event)
-        DataMapper.new(event, @gateway).build_entity
+        DataMapper.new(event).build_entity
       end
 
       # Extracts entity specific elements from data structure
       class DataMapper
         def initialize(event)
-          # def initialize(event, gateway)
           @event = event
           @account_mapper = AccountMapper.new
-          @participant_mapper = ParticipantMapper.new
         end
 
         def build_entity
-          EventMoonbear::Entity::Event.new(
+          SurveyMoonbear::Entity::Event.new(
             id: nil,
             owner: owner,
-            participant: nil,
+            participant: participant,
             origin_id: origin_id,
             start_at: start_at,
             end_at: end_at,
-            time_zone: time_zone
+            time_zone: time_zone,
+            created_at: nil,
+            updated_at: nil
           )
         end
 
@@ -48,23 +44,25 @@ module SurveyMoonbear
         end
 
         def participant
-          @participant_mapper.load(@event[:participant])
+          @event[:participant]
         end
 
         def origin_id
-          @event[:data]['calendarId']
+          @event[:data]['id']
         end
 
         def start_at
-          @event[:data]['properties']['title']
+          time_str = @event[:data]['start']['date'] || @event[:data]['start']['dateTime']
+          Time.parse(time_str)
         end
 
         def end_at
-          @event[:data]['properties']['title']
+          time_str = @event[:data]['end']['date'] || @event[:data]['end']['dateTime']
+          Time.parse(time_str)
         end
 
         def time_zone
-          @event[:data]['properties']['title']
+          @event[:data]['start']['timeZone']
         end
       end
     end
