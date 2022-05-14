@@ -117,6 +117,7 @@ div class="mb-3"
                       label for="form" Remove subscription of
                         <b>#{participant.email}</b> from your Google Calendar.
                       input type="hidden" name="act_status" value="unsubscribed" 
+                      input type="hidden" name="calendar_id" value="#{participant.email}" 
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
                   button type="submit" class="btn btn-primary" id="btn-update" Unsubscribe
@@ -228,7 +229,7 @@ div class="mb-3"
             data-toggle="tooltip"
             title="You cannot refresh unsubscribed calendar"
           }
-            button type="submit" class="btn btn-outline-primary btn-sm ml-5" disabled=""
+            button type="submit" class="btn btn-outline-dark btn-sm ml-5" disabled=""
               i class="fas fa-sync" &nbsp;Refresh
     div class="row justify-content-center mt-3"
       div class="col-12 col-sm-12 col-md-10" style="word-wrap:break-word;"

@@ -603,6 +603,20 @@ module SurveyMoonbear
             routing.redirect "/participants/#{participant_id}"
           end
 
+          # POST /participants/[participant_id]/unsubscribe_calendar
+          routing.post 'unsubscribe_calendar' do
+            res = Service::UnsubscribeCalendar.new.call(config: config,
+                                                        current_account: @current_account,
+                                                        participant_id: participant_id,
+                                                        calendar_id: routing.params['calendar_id'])
+            if res.failure?
+              flash[:error] = 'Fail to unsubscribe. Please try again.'
+            else
+              flash[:notice] = 'Successfully unsubscribe participant!'
+            end
+            routing.redirect "/participants/#{participant_id}"
+          end
+
           # GET /participants/[participant_id]/refresh_events
           routing.get 'refresh_events' do
             res = Service::RefreshEvents.new.call(config: config,

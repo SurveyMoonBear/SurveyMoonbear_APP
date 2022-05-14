@@ -12,6 +12,7 @@ module SurveyMoonbear
       include Dry::Monads
 
       step :refresh_user_access_token
+      step :check_calendar_in_list
       step :get_events_data_from_google
       step :delete_archive_events_from_db
       step :store_new_events_into_db
@@ -29,13 +30,26 @@ module SurveyMoonbear
         Failure('Failed to refresh Google API user access token.')
       end
 
+      def check_calendar_in_list(input)
+        check = CheckCalendarInList.new.call(config: input[:config],
+                                             calendar_id: input[:participant].email,
+                                             current_account: input[:current_account],
+                                             participant_id: input[:participant_id])
+        if check.value!
+          Success(input)
+        else
+          Failure('Calendar is out of list')
+        end
+      rescue
+        Failure('Failed to check calender in list or not.')
+      end
+
       # input { ... }
       def get_events_data_from_google(input)
-        start_date = input[:study].activity_start_at
-        end_date = input[:study].activity_end_at
-        response = Google::Api::Calendar.new(input[:user_access_token])
-                                        .events_data(input[:participant].email, start_date, end_date)
-        input[:events] = response['calendars'][input[:participant].email]['busy']
+        input[:events] = Google::Api::Calendar.new(input[:user_access_token])
+                                              .events_data(input[:participant].email,
+                                                           input[:study].activity_start_at,
+                                                           input[:study].activity_end_at)
         Success(input)
       rescue
         Failure('Failed to get events data from Google Calendar.')
