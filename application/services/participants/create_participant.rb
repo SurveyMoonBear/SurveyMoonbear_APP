@@ -6,7 +6,7 @@ require 'http'
 module SurveyMoonbear
   module Service
     # Returns a new study, or nil
-    # Usage: Service::CreateParticipant.new.call(config: <config>, current_account: {...}, params: {...})
+    # Usage: Service::CreateParticipant.new.call(config:, current_account:, study_id:, params:)
     class CreateParticipant
       include Dry::Transaction
       include Dry::Monads
@@ -17,13 +17,11 @@ module SurveyMoonbear
 
       private
 
+      # input { config:, current_account:, study_id:, params: }
       def store_into_database(input)
         input[:study] = Repository::For[Entity::Study].find_id(input[:study_id])
-        input[:params].update('status' => 'checking',
-                              'aws_arn' => 'checking enable notification or not')
         new_participant = Mapper::ParticipantMapper.new.load(input)
-        participant = Repository::For[new_participant.class].find_or_create(new_participant)
-        input[:participant] = participant
+        input[:participant] = Repository::For[new_participant.class].find_or_create(new_participant)
 
         Success(input)
       rescue
@@ -31,6 +29,7 @@ module SurveyMoonbear
       end
 
       # TODO: sms contact_type
+      # input { config:, current_account:, study_id:, params:, study:, participant: }
       def get_participant_arn(input)
         if input[:study][:enable_notification]
           participant_arn = Messaging::Notification.new(input[:config])
@@ -38,11 +37,11 @@ module SurveyMoonbear
                                                                     input[:participant][:contact_type],
                                                                     input[:participant][:email],
                                                                     input[:participant][:id])
-          input[:params]['aws_arn'] = participant_arn
-          input[:params]['status'] = 'pending'
+          input[:aws_arn] = participant_arn
+          input[:noti_status] = 'pending'
         else
-          input[:params]['aws_arn'] = 'disable notification'
-          input[:params]['status'] = 'disabled'
+          input[:aws_arn] = 'disable notification'
+          input[:noti_status] = 'disabled'
         end
 
         Success(input)
@@ -50,11 +49,12 @@ module SurveyMoonbear
         Failure('Failed to subscribe AWS topic.')
       end
 
+      # input { config:, current_account:, study_id:, params:,
+      #         study:, participant:, aws_arn:, noti_status: }
       def update_participant_arn(input)
-        participant = input[:participant]
-        aws_arn = input[:params]['aws_arn']
-        status = input[:params]['status']
-        updated_participant = Repository::For[participant.class].update_arn(participant.id, aws_arn, status)
+        updated_participant = Repository::For[input[:participant].class].update_arn(input[:participant].id,
+                                                                                    input[:aws_arn],
+                                                                                    input[:noti_status])
 
         Success(updated_participant)
       rescue

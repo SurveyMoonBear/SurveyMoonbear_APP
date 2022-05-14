@@ -32,9 +32,11 @@ module SurveyMoonbear
       # GET / request
       routing.root do
         url = 'https://accounts.google.com/o/oauth2/v2/auth'
+        # TODO: request additional calendar scopes when user needs
         scopes = ['https://www.googleapis.com/auth/userinfo.profile',
                   'https://www.googleapis.com/auth/userinfo.email',
-                  'https://www.googleapis.com/auth/spreadsheets']
+                  'https://www.googleapis.com/auth/spreadsheets',
+                  'https://www.googleapis.com/auth/calendar']
         params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
                   "redirect_uri=#{config.APP_URL}/account/login/google_callback",
                   'response_type=code',
@@ -515,9 +517,35 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
-          # POST studies/[study_id]/confirm_status
-          routing.post 'confirm_status' do
-            Service::ConfirmParticipantsStatus.new.call(config: config, study_id: study_id)
+          # POST studies/[study_id]/confirm_noti_status
+          routing.post 'confirm_noti_status' do
+            Service::ConfirmParticipantsNotiStatus.new.call(config: config, study_id: study_id)
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/subscribe_all
+          routing.post 'subscribe_all' do
+            res = Service::SubscribeAllCalendars.new.call(config: config,
+                                                          current_account: @current_account,
+                                                          study_id: study_id)
+            if res.failure?
+              flash[:error] = 'Fail to subscribe all participants. Please try again.'
+            else
+              flash[:notice] = 'Successfully subscribe all participants\' calendars which is open to you!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/unsubscribe_all
+          routing.post 'unsubscribe_all' do
+            res = Service::UnsubscribeAllCalendars.new.call(config: config,
+                                                            current_account: @current_account,
+                                                            study_id: study_id)
+            if res.failure?
+              flash[:error] = 'Fail to unsubscribe all participants. Please try again.'
+            else
+              flash[:notice] = 'Successfully unsubscribe all participants!'
+            end
             routing.redirect "/studies/#{study_id}"
           end
 
@@ -587,6 +615,47 @@ module SurveyMoonbear
             routing.redirect "/participants/#{participant_id}"
           end
 
+          # POST /participants/[participant_id]/subscribe_calendar
+          routing.post 'subscribe_calendar' do
+            res = Service::SubscribeCalendar.new.call(config: config,
+                                                      current_account: @current_account,
+                                                      participant_id: participant_id,
+                                                      calendar_id: routing.params['calendar_id'])
+            if res.failure?
+              flash[:error] = 'Participant doesn\'t open calendar to you or give a wrong gmail address.'
+            else
+              flash[:notice] = 'Successfully subscribe participant!'
+            end
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # POST /participants/[participant_id]/unsubscribe_calendar
+          routing.post 'unsubscribe_calendar' do
+            res = Service::UnsubscribeCalendar.new.call(config: config,
+                                                        current_account: @current_account,
+                                                        participant_id: participant_id,
+                                                        calendar_id: routing.params['calendar_id'])
+            if res.failure?
+              flash[:error] = 'Fail to unsubscribe. Please try again.'
+            else
+              flash[:notice] = 'Successfully unsubscribe participant!'
+            end
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # GET /participants/[participant_id]/refresh_events
+          routing.get 'refresh_events' do
+            res = Service::RefreshEvents.new.call(config: config,
+                                                  current_account: @current_account,
+                                                  participant_id: participant_id)
+            if res.failure?
+              flash[:error] = 'Fail to refresh paparticipant\'s events. Please try again. :('
+            else
+              flash[:notice] = 'Successfully refresh participant\'s events!'
+            end
+            routing.redirect "/participants/#{participant_id}"
+          end
+
           # DELETE /participants/[participant_id]
           routing.post 'deletion' do
             response = Service::DeleteParticipant.new.call(config: config, participant_id: participant_id)
@@ -600,10 +669,11 @@ module SurveyMoonbear
             routing.redirect '/' unless @current_account
 
             participant = Service::GetParticipant.new.call(participant_id: participant_id)
-            activities = {}
+            events = Service::GetEvents.new.call(participant_id: participant_id)
             view 'participant', locals: { participant: participant.value![:participant],
                                           details: participant.value![:details],
-                                          activities: activities }
+                                          events: events.value![:events],
+                                          busy_time: events.value![:busy_time] }
           end
         end
       end

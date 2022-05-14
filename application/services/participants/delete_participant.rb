@@ -31,7 +31,7 @@ module SurveyMoonbear
       def delete_aws_subscription(input)
         participant = input[:participant]
         # only can delete confirmed participants
-        if participant.status == 'confirmed'
+        if participant.noti_status == 'confirmed'
           Messaging::Notification.new(input[:config]).delete_subscription(participant.aws_arn)
         end
 
@@ -58,7 +58,7 @@ module SurveyMoonbear
       def delete_record_in_database(input)
         participant = input[:participant]
 
-        input[:deleted_participant] = if participant.status == 'confirmed' or participant.status == 'disabled'
+        input[:deleted_participant] = if participant.noti_status == 'confirmed' || participant.noti_status == 'disabled'
                                         Repository::For[Entity::Participant].delete_from(participant.id)
                                       else
                                         'It only can delete confirmed participants.'

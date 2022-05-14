@@ -37,14 +37,18 @@ div class="mb-3"
         i class="fas fa-plus"
       == render :modal_create_participant, locals: { study: study }
       - if study.enable_notification
-        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/confirm_status" method='post'
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/confirm_noti_status" method='post'
           button type="submit" class="btn btn-outline-primary btn-sm"
-            i class="fas fa-check" &nbsp;Update Confirm Status
+            i class="fas fa-check" &nbsp;Update NTFY. Status
       - if study.track_activity
-        form.d-inline-flex.align-middle role="form" action="/participant/track_activiy" method='get'
-          input type="hidden" name="study_id" value="" 
-          button type="submit" class="btn btn-outline-info btn-sm"
-            i class="fas fa-calendar" &nbsp;Collect Calendar Data
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/subscribe_all" method='post'
+          button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
+            i class="fas fa-calendar" &nbsp;Subscribe All
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/unsubscribe_all" method='post'
+          button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
+            i class="fas fa-calendar" &nbsp;Unsubscribe All
+      div class="dropdown-menu"
+        a href="#" class="dropdown-item" onclick="confirmDeleteStudy('#{study.id}', '#{study.title}')" Delete
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10"
       - if participants.any?
@@ -56,9 +60,9 @@ div class="mb-3"
               th scope="col"  ID
               th scope="col"  Email
               - if study.enable_notification
-                th scope="col"  NTFY. Status
+                th scope="col" NTFY. Status
               - if study.track_activity
-                th scope="col"  Calendar Status
+                th scope="col" Cal. Status
           tbody
             - participants.each.with_index do |participant, index|
               tr class='clickable-row' style="cursor:pointer;" data-href="/participants/#{participant.id}"
@@ -67,9 +71,19 @@ div class="mb-3"
                 td #{participant.id}
                 td #{participant.email}
                 - if study.enable_notification
-                  td #{participant.status}
+                  - if participant.noti_status == 'turnoff' || participant.noti_status == 'pending'
+                    td
+                      span class="badge badge-pill badge-secondary" #{participant.noti_status}
+                  - if participant.noti_status == 'confirmed'
+                    td
+                      span class="badge badge-pill badge-info" #{participant.noti_status}
                 - if study.track_activity
-                  td Calendar/Activity Data Summary
+                  - if participant.act_status == 'unsubscribed'
+                    td 
+                      span class="badge badge-pill badge-secondary" #{participant.act_status}
+                  - if participant.act_status == 'subscribed'
+                    td
+                      span class="badge badge-pill badge-info" #{participant.act_status}
   - if study.enable_notification
     div class="row justify-content-center mt-3"
       div class="col-4 col-sm-12 col-md-3" 
@@ -161,5 +175,9 @@ javascript:
 
   $('#btn-create-survey').on('click', function (e) {
     $('#modal_create_survey').modal('hide');
+    $('#modal_waiting').modal();
+  });
+
+  $('#btn-submit').on('click', function (e) {
     $('#modal_waiting').modal();
   });

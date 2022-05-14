@@ -9,7 +9,8 @@ module SurveyMoonbear
       Entity::VisualReport => VisualReports,
       Entity::Study => Studies,
       Entity::Participant => Participants,
-      Entity::Notification => Notifications
+      Entity::Notification => Notifications,
+      Entity::Event => Events
     }.freeze
   end
 end

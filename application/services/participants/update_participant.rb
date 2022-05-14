@@ -21,8 +21,10 @@ module SurveyMoonbear
         participant = Repository::For[Entity::Participant].find_id(input[:participant_id])
         new_email = input[:params]['email']
         if !new_email.nil? && participant.study.enable_notification && participant.email != new_email
-          # delete original arn: 1. pending -> directly new create 2. confirmed
-          if participant.status == 'confirmed' || participant.status == 'unsubscribed'
+          # delete original arn:
+          # 1. pending -> no need to delete and directly a new create
+          # 2. confirmed
+          if participant.noti_status == 'confirmed' || participant.noti_status == 'turn_off'
             Messaging::Notification.new(input[:config]).delete_subscription(participant.aws_arn)
           end
           # new create arn
@@ -32,7 +34,7 @@ module SurveyMoonbear
                                                             new_email,
                                                             participant.id)
           input[:params]['aws_arn'] = new_arn
-          input[:params]['status'] = 'pending'
+          input[:params]['noti_status'] = 'pending'
         end
         Success(input)
       rescue
