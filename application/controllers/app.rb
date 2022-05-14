@@ -523,6 +523,32 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
+          # POST studies/[study_id]/subscribe_all
+          routing.post 'subscribe_all' do
+            res = Service::SubscribeAllCalendars.new.call(config: config,
+                                                          current_account: @current_account,
+                                                          study_id: study_id)
+            if res.failure?
+              flash[:error] = 'Fail to subscribe all participants. Please try again.'
+            else
+              flash[:notice] = 'Successfully subscribe all participants\' calendars which is open to you!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/unsubscribe_all
+          routing.post 'unsubscribe_all' do
+            res = Service::UnsubscribeAllCalendars.new.call(config: config,
+                                                            current_account: @current_account,
+                                                            study_id: study_id)
+            if res.failure?
+              flash[:error] = 'Fail to unsubscribe all participants. Please try again.'
+            else
+              flash[:notice] = 'Successfully unsubscribe all participants!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
           # POST studies/[study_id]/create_notification
           routing.post 'create_notification' do
             Service::CreateNotification.new.call(config: config,
@@ -596,7 +622,7 @@ module SurveyMoonbear
                                                       participant_id: participant_id,
                                                       calendar_id: routing.params['calendar_id'])
             if res.failure?
-              flash[:error] = 'Participant doesn\'t open calendar to you. Or wrong gmail address.'
+              flash[:error] = 'Participant doesn\'t open calendar to you or give a wrong gmail address.'
             else
               flash[:notice] = 'Successfully subscribe participant!'
             end

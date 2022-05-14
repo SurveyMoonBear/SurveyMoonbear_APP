@@ -41,10 +41,14 @@ div class="mb-3"
           button type="submit" class="btn btn-outline-primary btn-sm"
             i class="fas fa-check" &nbsp;Update NTFY. Status
       - if study.track_activity
-        form.d-inline-flex.align-middle role="form" action="/participant/track_activiy" method='get'
-          input type="hidden" name="study_id" value="" 
-          button type="submit" class="btn btn-outline-info btn-sm"
-            i class="fas fa-calendar" &nbsp;Update Cal. Data
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/subscribe_all" method='post'
+          button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
+            i class="fas fa-calendar" &nbsp;Subscribe All
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/unsubscribe_all" method='post'
+          button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
+            i class="fas fa-calendar" &nbsp;Unsubscribe All
+      div class="dropdown-menu"
+        a href="#" class="dropdown-item" onclick="confirmDeleteStudy('#{study.id}', '#{study.title}')" Delete
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10"
       - if participants.any?
@@ -171,5 +175,9 @@ javascript:
 
   $('#btn-create-survey').on('click', function (e) {
     $('#modal_create_survey').modal('hide');
+    $('#modal_waiting').modal();
+  });
+
+  $('#btn-submit').on('click', function (e) {
     $('#modal_waiting').modal();
   });
