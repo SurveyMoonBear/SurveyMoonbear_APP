@@ -5,7 +5,7 @@ require 'aws-sdk-sns'
 require 'sidekiq'
 require 'sidekiq-scheduler'
 require 'sidekiq/web'
-# require_relative '../require_app'
+require_relative '../../init'
 
 # Jobs
 module Jobs
@@ -68,16 +68,13 @@ module Jobs
   class SendNotification
     include Sidekiq::Worker
 
-    def perform(topic_arn, message)
-      puts 'Message sending.'
+    def perform(topic_arn, message, participant_id)
+      puts 'Message sending...'
 
-      sns_client = Aws::SNS::Client.new(
-        access_key_id: App.config.AWS_ACCESS_KEY_ID,
-        secret_access_key: App.config.AWS_SECRET_ACCESS_KEY,
-        region: App.config.AWS_REGION
-      )
-
-      sns_client.publish(topic_arn: topic_arn, message: message)
+      SurveyMoonbear::Messaging::Notification.new(App.config)
+                                             .send_notification(topic_arn,
+                                                                message,
+                                                                participant_id)
 
       puts "The message: #{message} was sent."
     end

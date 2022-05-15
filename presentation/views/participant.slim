@@ -181,10 +181,6 @@ div class="mb-3"
               span class="badge badge-pill badge-secondary"#{participant.noti_status}
             - if participant.noti_status == 'confirmed'
               span class="badge badge-pill badge-info" #{participant.noti_status}
-        .row
-          .col-md-2.col-sm-12
-            b Contact Type
-          .col-md-10.col-sm-12 #{participant.contact_type}
       - if participant.study.track_activity
         .row
           .col-md-2.col-sm-12
@@ -194,6 +190,10 @@ div class="mb-3"
               span class="badge badge-pill badge-secondary" #{participant.act_status}
             - if participant.act_status == 'subscribed'
               span class="badge badge-pill badge-info" #{participant.act_status}
+      .row
+        .col-md-2.col-sm-12
+          b Contact Type
+        .col-md-10.col-sm-12 #{participant.contact_type}
       .row
         .col-md-2.col-sm-12
           b Email
@@ -207,13 +207,14 @@ div class="mb-3"
     div class="col-4 col-sm-12 col-md-3" 
       h4 Details
     div class="col-8 col-sm-12 col-md-7"
-  div class="row justify-content-center mt-3"
-    div class="col-12 col-sm-12 col-md-10 p-3 border"
-      - details.each do |key, value|    
-        .row
-          .col-md-2.col-sm-12
-            b #{key}
-          .col-md-10.col-sm-12 #{value}
+  - unless details.empty?
+    div class="row justify-content-center mt-3"
+      div class="col-12 col-sm-12 col-md-10 p-3 border"
+        - details.each do |key, value|    
+          .row
+            .col-md-2.col-sm-12
+              b #{key}
+            .col-md-10.col-sm-12 #{value}
   - if participant.study.track_activity
     div class="row justify-content-center mt-3"
       div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 

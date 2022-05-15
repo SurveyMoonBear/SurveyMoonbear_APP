@@ -28,16 +28,20 @@ module SurveyMoonbear
 
       # input { participant_id: , participant: }
       def get_participant_details(input)
-        modified_string = input[:participant][:details]
-                          .gsub(/:(\w+)/) { "\"#{$1}\"" }
-                          .gsub('=>', ':')
-                          .gsub('nil', 'null')
+        input[:details] = if input[:participant].details.empty?
+                            input[:participant].details
+                          else
+                            modified_string = input[:participant][:details]
+                                              .gsub(/:(\w+)/) { "\"#{$1}\"" }
+                                              .gsub('=>', ':')
+                                              .gsub('nil', 'null')
 
-        input[:details] = JSON.parse(modified_string)
+                            JSON.parse(modified_string)
+                          end
         Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to get participant arn from database.')
+        Failure('Failed to get participant details from database.')
       end
     end
   end

@@ -62,25 +62,7 @@ div class="mb-3"
                 data-origin_id="#{study.id}"
               } 
                 <i class="fas fa-download"></i> &nbsp;Download
-              
-            div class="mt-1 mb-3 mx-3"
-              div class="input-group"
-                - if study.state == 'started'
-                  div class="input-group-prepend"
-                    a {
-                      class="btn btn-outline-primary"
-                      href="/studies/#{study.id}/close"
-                      id="startbtn-#{study.id}"
-                    }
-                      <i class="far fa-stop-circle"></i> &nbsp;Close Study
-                - else
-                  a {
-                    class="btn btn-primary"
-                    href="/studies/#{study.id}/start"
-                    id="startbtn-#{study.id}"
-                  }
-                    <i class="fas fa-play-circle"></i> &nbsp;Start Study
-
+            
 div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="false" role="dialog"
   div class="modal-dialog modal-dialog-centered" role="document"
     div class="modal-content"

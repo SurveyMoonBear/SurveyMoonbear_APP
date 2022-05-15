@@ -29,6 +29,16 @@ module SurveyMoonbear
         end
       end
 
+      def self.find_study_confirmed(study_id)
+        db_records = Database::ParticipantOrm.where(study_id: study_id, noti_status: 'confirmed').all
+
+        return nil if db_records.nil?
+
+        db_records.map do |db_record|
+          rebuild_entity(db_record)
+        end
+      end
+
       def self.find_or_create(entity)
         find_id(entity.id) || create_from(entity)
       end

@@ -13,7 +13,6 @@ module SurveyMoonbear
       include Dry::Monads
 
       step :store_into_database
-      # step :create_schedule
 
       private
 
@@ -26,20 +25,8 @@ module SurveyMoonbear
 
         Success(input)
       rescue
-        Failure('Failed to subscribe AWS topic.')
+        Failure('Failed to store notification into database.')
       end
-
-      # TODO: Create schedule
-      # def create_schedule(input)
-      #   notification = input[:notification]
-      #   aws_arn = input[:params]['aws_arn']
-      #   noti_status = input[:params]['noti_status']
-      #   notification = Repository::For[notification.class].update_arn(notification.id, aws_arn, noti_status)
-
-      #   Success(updated_notification)
-      # rescue
-      #   Failure('Failed to update notification AWS subscription arn in database')
-      # end
     end
   end
 end

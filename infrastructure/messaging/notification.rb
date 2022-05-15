@@ -54,6 +54,12 @@ module SurveyMoonbear
       def delete_subscription(subscription_arn)
         @sns_resource.subscription(subscription_arn).delete
       end
+
+      # { participant_id = all } to send the message to all participants
+      def send_notification(topic_arn, message, participant_id)
+        msg_attr = { 'uuid' => { 'data_type': 'String', 'string_value': participant_id } }
+        @sns_client.publish(topic_arn: topic_arn, message: message, message_attributes: msg_attr)
+      end
     end
   end
 end
