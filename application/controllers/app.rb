@@ -697,7 +697,8 @@ module SurveyMoonbear
 
             notification = Service::GetNotification.new.call(notification_id: notification_id)
             view 'notification', locals: { notification: notification.value![:notification],
-                                           date_time: notification.value![:date_time] }
+                                           date_time: notification.value![:date_time],
+                                           config: config }
           end
         end
       end
