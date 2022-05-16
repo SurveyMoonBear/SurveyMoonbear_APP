@@ -13,7 +13,7 @@ module SurveyMoonbear
       include Dry::Monads
 
       step :store_into_database
-      # step :create_schedule
+      step :create_notification_session
 
       private
 
@@ -26,20 +26,25 @@ module SurveyMoonbear
 
         Success(input)
       rescue
-        Failure('Failed to subscribe AWS topic.')
+        Failure('Failed to store notification into database.')
       end
 
-      # TODO: Create schedule
-      # def create_schedule(input)
-      #   notification = input[:notification]
-      #   aws_arn = input[:params]['aws_arn']
-      #   noti_status = input[:params]['noti_status']
-      #   notification = Repository::For[notification.class].update_arn(notification.id, aws_arn, noti_status)
-
-      #   Success(updated_notification)
-      # rescue
-      #   Failure('Failed to update notification AWS subscription arn in database')
-      # end
+      # input { config:, current_account:, study_id:, params:, study:, survey:, notification }
+      def create_notification_session(input)
+        if input[:study].state == 'started'
+          participants = Repository::For[Entity::Participant].find_study_confirmed(input[:study_id])
+          participants.map do |participant|
+            survey_link = "#{input[:config].APP_URL}/onlinesurvey/#{input[:survey].id}/#{input[:survey].launch_id}"
+            CreateNotificationSession.new.call(notification: input[:notification],
+                                               study: input[:study],
+                                               survey_link: survey_link,
+                                               participant_id: participant.id)
+          end
+        end
+        Success(input[:notification])
+      rescue
+        Failure('Failed to create notification session when study is started.')
+      end
     end
   end
 end

@@ -46,10 +46,10 @@ module SurveyMoonbear
         rebuild_entity(db_study)
       end
 
-      def self.update_state(entity)
-        db_study = Database::StudyOrm.find(id: entity.id)
+      def self.update_state(entity_id, state)
+        db_study = Database::StudyOrm.find(id: entity_id)
 
-        db_study.update(state: 'closed')
+        db_study.update(state: state)
 
         rebuild_entity(db_study)
       end

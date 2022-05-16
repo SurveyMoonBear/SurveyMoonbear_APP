@@ -34,6 +34,13 @@ module SurveyMoonbear
         rebuild_entity(db_record)
       end
 
+      def self.find_random
+        db_records = Database::NotificationOrm.where(repeat_at: 'random').all
+        db_records.map do |db_record|
+          rebuild_entity(db_record)
+        end
+      end
+
       def self.find_or_create(entity)
         find_id(entity.id) || create_from(entity)
       end

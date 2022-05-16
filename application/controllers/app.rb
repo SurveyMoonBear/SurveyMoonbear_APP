@@ -551,10 +551,12 @@ module SurveyMoonbear
 
           # POST studies/[study_id]/create_notification
           routing.post 'create_notification' do
-            Service::CreateNotification.new.call(config: config,
-                                                 current_account: @current_account,
-                                                 study_id: study_id,
-                                                 params: routing.params)
+            res = Service::CreateNotification.new.call(config: config,
+                                                       current_account: @current_account,
+                                                       study_id: study_id,
+                                                       params: routing.params)
+
+            flash[:error] = 'Fail to create notification. Please try again.' if res.failure?
             routing.redirect "/studies/#{study_id}"
           end
 
@@ -569,6 +571,30 @@ module SurveyMoonbear
           routing.post 'remove_survey' do
             Service::RemoveSurvey.new.call(study_id: study_id,
                                            survey_id: routing.params['survey_id'])
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/start_notification
+          routing.post 'start_notification' do
+            res = Service::StartNotification.new.call(config: config, study_id: study_id)
+
+            if res.failure?
+              flash[:error] = 'Cannot start the notificaiton. Please try again. :('
+            else
+              flash[:notice] = 'Successfully start the notificaiton!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/close_notification
+          routing.post 'close_notification' do
+            res = Service::CloseNotification.new.call(config: config, study_id: study_id)
+
+            if res.failure?
+              flash[:error] = 'Cannot close the notificaiton. Please try again. :('
+            else
+              flash[:notice] = 'Successfully close the notificaiton!'
+            end
             routing.redirect "/studies/#{study_id}"
           end
 
@@ -670,10 +696,16 @@ module SurveyMoonbear
 
             participant = Service::GetParticipant.new.call(participant_id: participant_id)
             events = Service::GetEvents.new.call(participant_id: participant_id)
-            view 'participant', locals: { participant: participant.value![:participant],
-                                          details: participant.value![:details],
-                                          events: events.value![:events],
-                                          busy_time: events.value![:busy_time] }
+
+            if participant.failure? || events.failure?
+              flash[:error] = 'Failed to get the participant. Please try again :('
+              routing.redirect '/studies'
+            else
+              view 'participant', locals: { participant: participant.value![:participant],
+                                            details: participant.value![:details],
+                                            events: events.value![:events],
+                                            busy_time: events.value![:busy_time] }
+            end
           end
         end
       end
@@ -697,7 +729,8 @@ module SurveyMoonbear
 
             notification = Service::GetNotification.new.call(notification_id: notification_id)
             view 'notification', locals: { notification: notification.value![:notification],
-                                           date_time: notification.value![:date_time] }
+                                           date_time: notification.value![:date_time],
+                                           config: config }
           end
         end
       end

@@ -20,15 +20,62 @@ div class="mb-3"
         data-study_title=""
       }
         i class="fas fa-cog"
+      - if study.enable_notification
+        - if study.state == 'started'
+          button class="btn btn-sm btn-outline-primary ml-auto" data-toggle="modal" data-target="#modal_close_notification"
+            i class="far fa-stop-circle" &nbsp;Close Notification
+          div id="modal_close_notification" class="modal fade" role="dialog"
+            div class="modal-dialog" role="document"
+              div class="modal-content"
+                div class="modal-header"
+                  h5 class="modal-title" Close Notification on
+                    <b>#{study.title}</b>?
+                  button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    span aria-hidden="true" &times;
+                form role="form" action="/studies/#{study.id}/close_notification" method='post'
+                  div class="modal-body"
+                    div class="form-group"
+                      div class="mb-2" All the participant will not receive any message after you close the notification
+                  div class="modal-footer"
+                    button type="button" class="btn btn-secondary" data-dismiss="modal" Keep
+                    button type="submit" class="btn btn-outline-danger" id="btn-submit" Close
+        - else
+          button class="btn btn-sm btn-primary ml-auto" data-toggle="modal" data-target="#modal_start_notification"
+            i class="fas fa-play-circle" &nbsp;Start Notification
+          div id="modal_start_notification" class="modal fade" role="dialog"
+            div class="modal-dialog" role="document"
+              div class="modal-content"
+                div class="modal-header"
+                  h5 class="modal-title" Start Notification on
+                    <b>#{study.title}</b>?
+                  button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    span aria-hidden="true" &times;
+                form role="form" action="/studies/#{study.id}/start_notification" method='post'
+                  div class="modal-body"
+                    div class="form-group"
+                      div class="mb-2"
+                        i class="far fa-check-square" &nbsp;Make sure the participants are all confirmed notification
+                        i class="far fa-check-square" &nbsp;Make sure the notifications are all set
+                        i class="far fa-check-square" &nbsp;Make sure the surveys are all started
+                  div class="modal-footer"
+                    button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                    button type="submit" class="btn btn-outline-primary" id="btn-submit" Start
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10 p-3 border"
       div
         b Description:
       div style="word-wrap:break-word;" #{study.desc}
+      div.mt-3 style="word-wrap:break-word;"
+        - if study.enable_notification
+          b Notification:&nbsp;&nbsp;
+          - if study.state == 'started'
+            span class="badge badge-info" #{study.state}
+          - else 
+            span class="badge badge-secondary" #{study.state}
       - if study.track_activity
-        div.mt-3 
-          b Collect Calendar Data:
-        div From #{study.activity_start_at.strftime('%D')} to #{study.activity_end_at.strftime('%D')}
+        div.mt-3 style="word-wrap:break-word;"
+          b Collect Calendar Events:&nbsp;&nbsp;
+          span From #{study.activity_start_at.strftime('%D')} to #{study.activity_end_at.strftime('%D')}
   div class="row justify-content-center mt-3"
     div class="col-4 col-sm-12 col-md-3" 
       h4 Registered Participants
@@ -89,9 +136,19 @@ div class="mb-3"
       div class="col-4 col-sm-12 col-md-3" 
         h4 Notifications
       div class="col-8 col-sm-12 col-md-7"
-        button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_notification"
-          i class="fas fa-plus"
-        == render :modal_create_notification, locals: { study: study, surveys: all_surveys }
+        - if study.including_surveys.empty?
+          span {
+            class="d-inline-block" 
+            tabindex="0" 
+            data-toggle="tooltip" 
+            title="Include the survey first."
+          }
+            button type="button" class="btn btn-outline-dark btn-sm mr-1" disabled=""
+              i class="fas fa-plus"
+        - else
+          button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_notification"
+            i class="fas fa-plus"
+          == render :modal_create_notification, locals: { study: study, surveys: all_surveys }
     div class="row justify-content-center mt-3"
       div class="col-12 col-sm-12 col-md-10"
         - if notifications.any?
@@ -137,7 +194,12 @@ div class="mb-3"
               tr
                 th scope="row"  #{index+1}
                 td #{survey.title}
-                td #{survey.state}
+                - if survey.state == 'started'
+                  td
+                    span class="badge badge-pill badge-info" #{survey.state}
+                - else
+                  td
+                    span class="badge badge-pill badge-secondary" #{survey.state}
                 td #{survey.created_at}
                 td.p-1
                   button {

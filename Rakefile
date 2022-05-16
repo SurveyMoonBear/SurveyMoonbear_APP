@@ -80,6 +80,25 @@ namespace :worker do
       sh 'RACK_ENV=production bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken.yml'
     end
   end
+
+  namespace :job do
+    namespace :run do
+      desc 'Run the background worker for scheduling job in development mode'
+      task :dev => :config do
+        sh 'RACK_ENV=development bundle exec sidekiq -r ./workers/jobs/jobs_scheduler.rb'
+      end
+
+      desc 'Run the background worker for scheduling job in testing mode'
+      task :test => :config do
+        sh 'RACK_ENV=development bundle exec sidekiq -r ./workers/jobs/jobs_scheduler.rb'
+      end
+
+      desc 'Run the background worker for scheduling job in production mode'
+      task :production => :config do
+        sh 'RACK_ENV=development bundle exec sidekiq -r ./workers/jobs/jobs_scheduler.rb'
+      end
+    end
+  end
 end
 
 task :console do
