@@ -28,7 +28,6 @@ module SurveyMoonbear
         Failure('Failed to store participant into database.')
       end
 
-      # TODO: sms contact_type
       # input { config:, current_account:, study_id:, params:, study:, participant: }
       def get_participant_arn(input)
         if input[:study][:enable_notification]
@@ -52,11 +51,11 @@ module SurveyMoonbear
       # input { config:, current_account:, study_id:, params:,
       #         study:, participant:, aws_arn:, noti_status: }
       def update_participant_arn(input)
-        updated_participant = Repository::For[input[:participant].class].update_arn(input[:participant].id,
-                                                                                    input[:aws_arn],
-                                                                                    input[:noti_status])
+        participant = Repository::For[input[:participant].class].update_arn(input[:participant].id,
+                                                                            input[:aws_arn],
+                                                                            input[:noti_status])
 
-        Success(updated_participant)
+        Success(participant)
       rescue
         Failure('Failed to update participant AWS subscription arn in database')
       end

@@ -11,13 +11,13 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
-      step :delete_schedule
+      step :delete_notification_session
       step :delete_record_in_database
 
       private
 
       # input { config:, notification_id: }
-      def delete_schedule(input)
+      def delete_notification_session(input)
         notification = Repository::For[Entity::Notification].find_id(input[:notification_id])
 
         if notification.study.state == 'started'
