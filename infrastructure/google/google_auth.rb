@@ -67,6 +67,21 @@ module SurveyMoonbear
         get_new_access_token(user_refresh_token)
       end
 
+      def get_access_token(code, visual_report_id, spreadsheet_id)
+        access_req_url = google_oauth_v4_path('token')
+        data = {
+          form: {
+            client_id: @config.GOOGLE_CLIENT_ID,
+            client_secret: @config.GOOGLE_CLIENT_SECRET,
+            grant_type: 'authorization_code',
+            redirect_uri: "#{@config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}",
+            code: code
+          }
+        }
+        response = post_gs_url(access_req_url, data).parse
+        response['access_token']
+      end
+
       private
 
       def google_oauth_v1_path(path)

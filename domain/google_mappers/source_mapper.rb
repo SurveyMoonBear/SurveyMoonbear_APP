@@ -37,7 +37,8 @@ module SurveyMoonbear
             source_type: source_type,
             source_name: source_name,
             source_id: source_id,
-            case_id: case_id
+            case_id: case_id,
+            sso_email: sso_email
           )
         end
 
@@ -57,6 +58,10 @@ module SurveyMoonbear
 
         def case_id
           @source_data[3]
+        end
+
+        def sso_email
+          @source_data[4]
         end
       end
     end
