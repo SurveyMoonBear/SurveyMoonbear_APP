@@ -13,6 +13,7 @@ module SurveyMoonbear
       include Dry::Monads
 
       step :store_into_database
+      step :create_notification_session
 
       private
 
@@ -26,6 +27,23 @@ module SurveyMoonbear
         Success(input)
       rescue
         Failure('Failed to store notification into database.')
+      end
+
+      # input { config:, current_account:, study_id:, params:, study:, survey:, notification }
+      def create_notification_session(input)
+        if input[:study].state == 'started'
+          participants = Repository::For[Entity::Participant].find_study_confirmed(input[:study_id])
+          participants.map do |participant|
+            survey_link = "#{input[:config].APP_URL}/onlinesurvey/#{input[:survey].id}/#{input[:survey].launch_id}"
+            CreateNotificationSession.new.call(notification: input[:notification],
+                                               study: input[:study],
+                                               survey_link: survey_link,
+                                               participant_id: participant.id)
+          end
+        end
+        Success(input[:notification])
+      rescue
+        Failure('Failed to create notification session when study is started.')
       end
     end
   end

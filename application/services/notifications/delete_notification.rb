@@ -19,13 +19,19 @@ module SurveyMoonbear
       # input { config:, notification_id: }
       def delete_schedule(input)
         notification = Repository::For[Entity::Notification].find_id(input[:notification_id])
-        title = "#{notification.title}_#{notification.id}"
-        Sidekiq.remove_schedule(title)
+
+        if notification.study.state == 'started'
+          participants = Repository::For[Entity::Participant].find_study_confirmed(notification.study.id)
+          participants.map do |participant|
+            title = "#{notification.title}_#{notification.id}_#{participant.id}"
+            Sidekiq.remove_schedule(title)
+          end
+        end
 
         Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to delete schedule in database.')
+        Failure('Failed to delete schedule from session.')
       end
 
       # input { config:, notification_id: }
