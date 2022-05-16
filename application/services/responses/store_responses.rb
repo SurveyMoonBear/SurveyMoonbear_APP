@@ -42,7 +42,7 @@ module SurveyMoonbear
         input[:pages].each do |page|
           page_index = page.index
           page.items.each do |item|
-            next if item.type == 'Description' || item.type == 'Section Title' || item.type == 'Divider'
+            next if item.type == 'Description' || item.type == 'Section Title' || item.type == 'Divider' || item.type == 'Jump to page'
             new_response = create_response_entity(page_index,
                                                   item,
                                                   input[:respondent_id],
