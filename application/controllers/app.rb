@@ -551,10 +551,12 @@ module SurveyMoonbear
 
           # POST studies/[study_id]/create_notification
           routing.post 'create_notification' do
-            Service::CreateNotification.new.call(config: config,
-                                                 current_account: @current_account,
-                                                 study_id: study_id,
-                                                 params: routing.params)
+            res = Service::CreateNotification.new.call(config: config,
+                                                       current_account: @current_account,
+                                                       study_id: study_id,
+                                                       params: routing.params)
+
+            flash[:error] = 'Fail to create notification. Please try again.' if res.failure?
             routing.redirect "/studies/#{study_id}"
           end
 
