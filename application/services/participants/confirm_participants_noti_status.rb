@@ -14,6 +14,7 @@ module SurveyMoonbear
       step :get_study_arn_from_db
       step :get_updated_participants_arn
       step :update_participants_arn_in_db
+      step :create_notification_session
 
       private
 
@@ -37,13 +38,12 @@ module SurveyMoonbear
         Failure('Failed to get updated participant arn.')
       end
 
-      # input { config:, study_id:, study:, }
+      # input { config:, study_id:, study:, updated_sub_arn: }
       def update_participants_arn_in_db(input)
         participants = Repository::For[Entity::Participant].find_study(input[:study].id)
         participants.each do |participant|
           next unless participant.noti_status == 'pending'
 
-          # TODO: sms contact type
           sub_arn = input[:updated_sub_arn][participant.email]
           params = { "aws_arn": sub_arn, "noti_status": 'confirmed' } unless sub_arn.nil?
           UpdateParticipant.new.call(participant_id: participant.id, params: params)
@@ -52,6 +52,14 @@ module SurveyMoonbear
       rescue StandardError => e
         puts e
         Failure('Failed to update participants AWS arn.')
+      end
+
+      # input { config:, study_id:, study:, updated_sub_arn: }
+      def create_notification_session(input)
+        StartNotification.new.call(config: input[:config], study_id: input[:study_id])
+        Success(participant)
+      rescue
+        Failure('Failed to create notification session')
       end
     end
   end
