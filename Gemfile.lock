@@ -210,6 +210,8 @@ GEM
     raabro (1.4.0)
     racc (1.6.0)
     rack (2.2.3)
+    rack-attack (6.6.1)
+      rack (>= 1.0, < 3)
     rack-cache (1.13.0)
       rack (>= 0.4)
     rack-flash3 (1.0.5)
@@ -342,6 +344,7 @@ DEPENDENCIES
   pony
   pry
   puma
+  rack-attack
   rack-cache
   rack-flash3
   rack-ssl-enforcer

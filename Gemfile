@@ -9,6 +9,7 @@ gem 'google-api-client'
 # Web app related
 gem 'figaro'
 gem 'puma'
+gem 'rack-attack'
 gem 'rack-flash3'
 gem 'roda'
 gem 'slim'
