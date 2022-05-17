@@ -21,7 +21,7 @@ module SurveyMoonbear
         case_id = input[:spreadsheet_source].case_id # C3:C141
         question = input[:item_data].question # M3:M141
 
-        if !case_id.nil? && !input[:item_data].self_marker.empty?
+        if !case_id.nil? && input[:item_data].self_marker == 'yes'
           case_range = transform_anotation(case_id)
           input[:case_id_val] = get_range_val(input[:all_data], case_range)
         end

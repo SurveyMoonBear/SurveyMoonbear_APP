@@ -74,11 +74,11 @@ module SurveyMoonbear
         end
 
         def legend
-          @item_data[4].nil? ? '' : @item_data[4]
+          @item_data[4]
         end
 
         def self_marker
-          @item_data[5].nil? ? '' : @item_data[5]
+          @item_data[5]
         end
       end
     end
