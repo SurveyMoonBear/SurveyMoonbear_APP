@@ -600,7 +600,9 @@ module SurveyMoonbear
 
           # DELETE studies/[study_id]
           routing.delete do
-            response = Service::DeleteStudy.new.call(config: config, study_id: study_id)
+            response = Service::DeleteStudy.new.call(config: config,
+                                                     current_account: @current_account,
+                                                     study_id: study_id)
             flash[:error] = 'Failed to delete the study. Please try again :(' if response.failure?
             routing.redirect '/studies', 303
           end
@@ -684,7 +686,9 @@ module SurveyMoonbear
 
           # DELETE /participants/[participant_id]
           routing.post 'deletion' do
-            response = Service::DeleteParticipant.new.call(config: config, participant_id: participant_id)
+            response = Service::DeleteParticipant.new.call(config: config,
+                                                           current_account: @current_account,
+                                                           participant_id: participant_id)
 
             flash[:error] = 'Failed to delete the participant. Please try again :(' if response.failure?
             routing.redirect "/studies/#{response.value![:deleted_participant].study.id}", 303

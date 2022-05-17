@@ -118,7 +118,7 @@ div class="mb-3"
                 td #{participant.id}
                 td #{participant.email}
                 - if study.enable_notification
-                  - if participant.noti_status == 'turnoff' || participant.noti_status == 'pending'
+                  - if participant.noti_status == 'turn_off' || participant.noti_status == 'pending'
                     td
                       span class="badge badge-pill badge-secondary" #{participant.noti_status}
                   - if participant.noti_status == 'confirmed'
