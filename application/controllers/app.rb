@@ -444,7 +444,7 @@ module SurveyMoonbear
 
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
-            view 'visual_report_identify', locals: { google_sso_url: @google_sso_url, visual_report: visual_report }
+            view 'visual_report_identify', layout: false, locals: { google_sso_url: @google_sso_url, visual_report: visual_report }
           end
 
           # customized visual report

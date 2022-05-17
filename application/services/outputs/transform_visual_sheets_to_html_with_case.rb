@@ -81,8 +81,8 @@ module SurveyMoonbear
             all_email = get_range_val(input[:other_sheets][source.source_id], email_range)
             all_case = get_range_val(input[:other_sheets][source.source_id], case_range)
             all_email.each_with_index do |email, idx|
-              # if input[:case_email] == email # qann1024@gmail.com
-              if 'wisarud.y@gmail.com' == email
+              if input[:case_email] == email
+              # if 'wisarud.y@gmail.com' == email
                 input[:case_id] = all_case[idx]
                 break
               end
@@ -161,7 +161,7 @@ module SurveyMoonbear
           end
         end
         item_responses['responses'] = item_all_responses
-        item_responses['self_marker'] = item_data.self_marker.empty? ? false : true
+        item_responses['self_marker'] = item_data.self_marker == 'yes'
 
         # calculate each question's option
         if !item_options.empty?

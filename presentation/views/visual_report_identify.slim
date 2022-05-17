@@ -36,8 +36,9 @@ html
         / include :flash_bar
 
         div class='row justify-content-center'
-          h1 class="col-md-10 mt-4" This is the report: "#{visual_report.title}".
-          h1 class="col-md-10" Login to see your customized report.
-          <br>
-          a class="btn btn-lg btn-block btn-outline" href='#{google_sso_url}'
-            img src="https://img.icons8.com/color/16/000000/google-logo.png" Google
+          div class="d-flex align-items-md-end" style="height: 200px;"
+            h4 This is the report: <b> #{visual_report.title}</b>
+        dic class='row justify-content-center'
+          div class='col-md-5' align="center"
+            h4 Login to see your customized report
+            a href="#{google_sso_url}" class="btn btn-primary btn-block" style='margin-top: 20px' Login with Google
