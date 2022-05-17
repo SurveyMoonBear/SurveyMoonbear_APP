@@ -1,8 +1,11 @@
 div class="mb-3"
   div class="row justify-content-center mt-3"
-    div class="col-10 col-sm-12 col-md-8 align-middle" 
-      a href="/studies/#{participant.study.id}"
-        i class="fas fa-angle-double-left" &nbsp;Back to Study
+    div class="col-10 col-sm-12 col-md-8 text-muted"
+      small.align-middle
+        a href="/studies" My Studies&nbsp;
+        i class="fas fa-angle-double-right"&nbsp;
+        a href="/studies/#{participant.study.id}" #{participant.study.title}&nbsp;
+        i class="fas fa-angle-double-right"&nbsp;#{participant.nickname}
     div class="col-2 col-sm-2 col-md-2 text-right text-muted"
       small Participant
   div class="row justify-content-center mt-3"
@@ -175,7 +178,7 @@ div class="mb-3"
       - if participant.study.enable_notification
         .row
           .col-md-2.col-sm-12
-            b NTFY. Status
+            b Notify Status
           .col-md-10.col-sm-12 
             - if participant.noti_status == 'turn_off' || participant.noti_status == 'pending'
               span class="badge badge-pill badge-secondary"#{participant.noti_status}
@@ -184,7 +187,7 @@ div class="mb-3"
       - if participant.study.track_activity
         .row
           .col-md-2.col-sm-12
-            b Cal. Status
+            b Calendar Status
           .col-md-10.col-sm-12
             - if participant.act_status == 'unsubscribed'
               span class="badge badge-pill badge-secondary" #{participant.act_status}

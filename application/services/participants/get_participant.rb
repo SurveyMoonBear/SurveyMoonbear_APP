@@ -31,12 +31,7 @@ module SurveyMoonbear
         input[:details] = if input[:participant].details.empty?
                             input[:participant].details
                           else
-                            modified_string = input[:participant][:details]
-                                              .gsub(/:(\w+)/) { "\"#{$1}\"" }
-                                              .gsub('=>', ':')
-                                              .gsub('nil', 'null')
-
-                            JSON.parse(modified_string)
+                            JSON.parse(input[:participant].details)
                           end
         Success(input)
       rescue StandardError => e

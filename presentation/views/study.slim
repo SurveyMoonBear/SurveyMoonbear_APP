@@ -1,9 +1,10 @@
 == render :modal_waiting
 div class="mb-3"
   div class="row justify-content-center mt-3"
-    div class="col-10 col-sm-12 col-md-8 align-middle" 
-      a href="/studies"
-        i class="fas fa-angle-double-left" &nbsp;Back to My Studies
+    div class="col-10 col-sm-12 col-md-8 text-muted"
+      small.align-middle
+        a href="/studies" My Studies&nbsp;
+        i class="fas fa-angle-double-right"&nbsp;#{study.title}
     div class="col-2 col-sm-2 col-md-2 text-right text-muted"
       small Study
   div class="row justify-content-center mt-3"
@@ -78,6 +79,68 @@ div class="mb-3"
           span From #{study.activity_start_at.strftime('%D')} to #{study.activity_end_at.strftime('%D')}
   div class="row justify-content-center mt-3"
     div class="col-4 col-sm-12 col-md-3" 
+      h4 Surveys
+    div class="col-8 col-sm-12 col-md-7"
+      button class="btn btn-outline-dark btn-sm mr-1" aria-controls="collapseExample" aria-expanded="false" data-target="#collapseExample" data-toggle="collapse" type="button" 
+        i class="fas fa-th-list" &nbsp;Detail list
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_add_exist_survey"
+        i class="fas fa-plus" &nbsp;Add an exist survey
+      == render :modal_add_exist_survey, locals: { study: study, surveys: all_surveys }
+      button href="#" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_create_survey"
+        i class="fas fa-plus" &nbsp;Create a new survey
+      == render :modal_create_survey, locals: { rerout: "/studies/#{study.id}", study_id: study.id }
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10"
+      - unless study.including_surveys.empty?
+        table class="table"
+          thead
+            tr
+              th scope="col"  #
+              th scope="col"  Title
+              th scope="col"  State
+              th scope="col"  Created at
+              th scope="col"
+          tbody
+            - study.including_surveys.each.with_index do |survey, index|
+              tr
+                th scope="row"  #{index+1}
+                td #{survey.title}
+                - if survey.state == 'started'
+                  td
+                    span class="badge badge-pill badge-info" #{survey.state}
+                - else
+                  td
+                    span class="badge badge-pill badge-secondary" #{survey.state}
+                td #{survey.created_at}
+                td.p-1
+                  button {
+                    type="button" class="btn btn-outline-dark btn-sm border-0"
+                    data-toggle="modal" data-target="#modal_remove_survey"
+                  }
+                    i class="fas fa-times"
+                  div class="modal fade" id="modal_remove_survey"
+                    div class="modal-dialog" role="document"
+                      div class="modal-content"
+                        div class="modal-header"
+                          h5 class="modal-title" Remove
+                            <b>#{survey.title}</b> from <b>#{study.title}</b>?
+                          button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            span aria-hidden="true" &times;
+                        form action="/studies/#{study.id}/remove_survey" method="post" id="form_remove_survey"
+                          div class="modal-body"
+                            div class="form-group"
+                              div class="mb-2"
+                                label for="title"
+                                  i You can still access the <b>#{survey.title}</b> on My Surveys page.
+                                input type="hidden" class="form-control" id="survey_id" name="survey_id" value="#{survey.id}"
+                          div class="modal-footer"
+                            button type="button" class="btn btn-outline-info" data-dismiss="modal" Close
+                            button type="submit" class="btn btn-outline-danger" id="btn-add-exist-survey" Remove
+  #collapseExample.collapse
+    == render :surveys, locals: { surveys: study.including_surveys, config: config }
+
+  div class="row justify-content-center mt-3"
+    div class="col-4 col-sm-12 col-md-3" 
       h4 Registered Participants
     div class="col-8 col-sm-12 col-md-7"
       button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_participant"
@@ -86,7 +149,7 @@ div class="mb-3"
       - if study.enable_notification
         form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/confirm_noti_status" method='post'
           button type="submit" class="btn btn-outline-primary btn-sm"
-            i class="fas fa-check" &nbsp;Update NTFY. Status
+            i class="fas fa-check" &nbsp;Update Notify Status
       - if study.track_activity
         form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/subscribe_all" method='post'
           button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
@@ -107,9 +170,9 @@ div class="mb-3"
               th scope="col"  ID
               th scope="col"  Email
               - if study.enable_notification
-                th scope="col" NTFY. Status
+                th scope="col" Notify Status
               - if study.track_activity
-                th scope="col" Cal. Status
+                th scope="col" Calendar Status
           tbody
             - participants.each.with_index do |participant, index|
               tr class='clickable-row' style="cursor:pointer;" data-href="/participants/#{participant.id}"
@@ -166,68 +229,6 @@ div class="mb-3"
                   td #{row[:notification].title}
                   td #{row[:notification].survey.title}
                   td #{row[:date_time]}
-  div class="row justify-content-center mt-3"
-    div class="col-4 col-sm-12 col-md-3" 
-      h4 Surveys
-    div class="col-8 col-sm-12 col-md-7"
-      button class="btn btn-outline-dark btn-sm mr-1" aria-controls="collapseExample" aria-expanded="false" data-target="#collapseExample" data-toggle="collapse" type="button" 
-        i class="fas fa-th-list" &nbsp;Detail list
-      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_add_exist_survey"
-        i class="fas fa-plus" &nbsp;Add an exist survey
-      == render :modal_add_exist_survey, locals: { study: study, surveys: all_surveys }
-      button href="#" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_create_survey"
-        i class="fas fa-plus" &nbsp;Create a new survey
-      == render :modal_create_survey, locals: { rerout: "/studies/#{study.id}", study_id: study.id }
-  div class="row justify-content-center mt-3"
-    div class="col-12 col-sm-12 col-md-10"
-      - unless study.including_surveys.empty?
-        table class="table"
-          thead
-            tr
-              th scope="col"  #
-              th scope="col"  Title
-              th scope="col"  State
-              th scope="col"  Created at
-              th scope="col"
-          tbody
-            - study.including_surveys.each.with_index do |survey, index|
-              tr
-                th scope="row"  #{index+1}
-                td #{survey.title}
-                - if survey.state == 'started'
-                  td
-                    span class="badge badge-pill badge-info" #{survey.state}
-                - else
-                  td
-                    span class="badge badge-pill badge-secondary" #{survey.state}
-                td #{survey.created_at}
-                td.p-1
-                  button {
-                    type="button" class="btn btn-outline-dark btn-sm border-0"
-                    data-toggle="modal" data-target="#modal_remove_survey"
-                  }
-                    i class="fas fa-times"
-                  div class="modal fade" id="modal_remove_survey"
-                    div class="modal-dialog" role="document"
-                      div class="modal-content"
-                        div class="modal-header"
-                          h5 class="modal-title" Remove Survey
-                          button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                            span aria-hidden="true" &times;
-                        form action="/studies/#{study.id}/remove_survey" method="post" id="form_remove_survey"
-                          div class="modal-body"
-                            div class="form-group"
-                              div class="mb-2"
-                                label for="title" Remove <b>#{survey.title}</b> from <b>#{study.title}</b>?
-                                label for="title"
-                                  i You can still access the <b>#{survey.title}</b> on My Surveys page.
-                                input type="hidden" class="form-control" id="survey_id" name="survey_id" value="#{survey.id}"
-                          div class="modal-footer"
-                            button type="button" class="btn btn-outline-info" data-dismiss="modal" Close
-                            button type="submit" class="btn btn-outline-danger" id="btn-add-exist-survey" Remove
-  #collapseExample.collapse
-    == render :surveys, locals: { surveys: study.including_surveys, config: config }
-
 javascript:
   $(document).ready(function($) {
       $(".clickable-row").click(function() {
