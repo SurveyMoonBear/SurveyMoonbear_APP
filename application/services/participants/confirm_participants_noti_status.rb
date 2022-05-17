@@ -46,7 +46,9 @@ module SurveyMoonbear
 
           sub_arn = input[:updated_sub_arn][participant.email]
           params = { "aws_arn": sub_arn, "noti_status": 'confirmed' } unless sub_arn.nil?
-          UpdateParticipant.new.call(participant_id: participant.id, params: params)
+          UpdateParticipant.new.call(config: input[:config],
+                                     participant_id: participant.id,
+                                     params: params)
         end
         Success(input)
       rescue StandardError => e
@@ -56,7 +58,17 @@ module SurveyMoonbear
 
       # input { config:, study_id:, study:, updated_sub_arn: }
       def create_notification_session(input)
-        StartNotification.new.call(config: input[:config], study_id: input[:study_id])
+        input[:participants] = Repository::For[Entity::Participant].find_study_confirmed(input[:study_id])
+        input[:notifications] = Repository::For[Entity::Notification].find_study(input[:study_id])
+        input[:notifications].map do |notification|
+          input[:participants].map do |participant|
+            survey_link = "#{input[:config].APP_URL}/onlinesurvey/#{notification.survey.id}/#{notification.survey.launch_id}"
+            CreateNotificationSession.new.call(notification: notification,
+                                               study: participant.study,
+                                               survey_link: survey_link,
+                                               participant_id: participant.id)
+          end
+        end
         Success(participant)
       rescue
         Failure('Failed to create notification session')

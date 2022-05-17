@@ -6,17 +6,18 @@ require 'http'
 module SurveyMoonbear
   module Service
     # Return editted participant entity of new title
-    # Usage: Service::UpdateParticipant.new.call(participant_id: "...", params: "...")
+    # Usage: Service::UpdateParticipant.new.call(config: <config>, participant_id: "...", params: "...")
     class UpdateParticipant
       include Dry::Transaction
       include Dry::Monads
 
       step :check_email_changing
+      step :turn_on_off_noti
       step :update_participant
 
       private
 
-      # input { participant_id:, params: }
+      # input { config:, participant_id:, params: }
       def check_email_changing(input)
         participant = Repository::For[Entity::Participant].find_id(input[:participant_id])
         new_email = input[:params]['email']
@@ -35,6 +36,33 @@ module SurveyMoonbear
                                                             participant.id)
           input[:params]['aws_arn'] = new_arn
           input[:params]['noti_status'] = 'pending'
+        end
+        Success(input)
+      rescue
+        Failure('Failed to update participant aws arn')
+      end
+
+      # input { config:, participant_id:, params: }
+      def turn_on_off_noti(input)
+        participant = Repository::For[Entity::Participant].find_id(input[:participant_id])
+        if participant.study.state == 'started'
+          case input[:params]['noti_status']
+          when 'confirmed'
+            notifications = Repository::For[Entity::Notification].find_study(participant.study.id)
+            notifications.map do |notification|
+              survey_link = "#{input[:config].APP_URL}/onlinesurvey/#{notification.survey.id}/#{notification.survey.launch_id}"
+              CreateNotificationSession.new.call(notification: notification,
+                                                 study: participant.study,
+                                                 survey_link: survey_link,
+                                                 participant_id: participant.id)
+            end
+          when 'turn_off'
+            notifications = Repository::For[Entity::Notification].find_study(participant.study.id)
+            notifications.map do |notification|
+              title = "#{notification.title}_#{notification.id}_#{participant.id}"
+              Sidekiq.remove_schedule(title)
+            end
+          end
         end
         Success(input)
       rescue

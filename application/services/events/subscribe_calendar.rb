@@ -48,7 +48,8 @@ module SurveyMoonbear
 
       # input { ... }
       def update_participant_act_status(input)
-        upd_parti = UpdateParticipant.new.call(participant_id: input[:participant_id],
+        upd_parti = UpdateParticipant.new.call(config: input[:config],
+                                               participant_id: input[:participant_id],
                                                params: { act_status: 'subscribed' })
         Success(upd_parti)
       rescue
