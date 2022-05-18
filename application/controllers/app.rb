@@ -640,11 +640,18 @@ module SurveyMoonbear
         @current_account = SecureSession.new(session).get(:current_account)
 
         routing.on String do |participant_id|
-          # POST /participants/[participant_id]/update_participant
-          routing.post 'update_participant' do
+          # POST /participants/[participant_id]/update
+          routing.post 'update' do
             Service::UpdateParticipant.new.call(config: config,
                                                 participant_id: participant_id,
                                                 params: routing.params)
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # POST /participants/[participant_id]/turn_off_notify
+          routing.post 'turn_off_notify' do
+            Service::TurnOffNotify.new.call(config: config,
+                                            participant_id: participant_id)
             routing.redirect "/participants/#{participant_id}"
           end
 

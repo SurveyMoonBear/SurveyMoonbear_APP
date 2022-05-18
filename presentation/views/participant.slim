@@ -27,7 +27,7 @@ div class="mb-3"
               h5 class="modal-title" Edit Participant
               button type="button" class="close" data-dismiss="modal" aria-label="Close"
                 span aria-hidden="true" &times;
-            form id="update_participant_form" action="/participants/#{participant.id}/update_participant" method="post"
+            form id="update_participant_form" action="/participants/#{participant.id}/update" method="post"
               div class="modal-body"
                 div class="form-group"
                   div class="mb-2"
@@ -67,13 +67,12 @@ div class="mb-3"
                 h5 class="modal-title" Turn off Participant's Notification
                 button type="button" class="close" data-dismiss="modal" aria-label="Close"
                   span aria-hidden="true" &times;
-              form id="form_turnoff_notification" action="/participants/#{participant.id}/update_participant" method="post"
+              form id="form_turnoff_notification" action="/participants/#{participant.id}/turn_off_notify" method="post"
                 div class="modal-body"
                   div class="form-group"
                     div class="mb-2"
                       label for="form" 
                         <b>#{participant.nickname}</b> will not receive any notifications.
-                      input type="hidden" name="noti_status" value="turn_off" 
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
                   button type="submit" class="btn btn-primary" id="btn-update" Turn off
