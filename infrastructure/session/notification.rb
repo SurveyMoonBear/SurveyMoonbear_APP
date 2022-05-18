@@ -11,8 +11,7 @@ module SurveyMoonbear
         @notification = input[:notification]
         @topic = @notification.study.aws_arn
         @subscriber = input[:subscriber]
-        @message = "#{@notification.content} survey link: #{@config.APP_URL}/onlinesurvey/
-                    #{@notification.survey.id}/#{@notification.survey.launch_id}?p=#{@subscriber}"
+        @message = "#{@notification.content} survey link: #{@config.APP_URL}/onlinesurvey/#{@notification.survey.id}/#{@notification.survey.launch_id}?p=#{@subscriber}"
       end
 
       def fixed_timestamp

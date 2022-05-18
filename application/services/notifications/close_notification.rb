@@ -36,12 +36,9 @@ module SurveyMoonbear
 
       # input { config:, study_id:, participants:, notifications: }
       def delete_notification_session(input)
-        input[:notifications].map do |notification|
-          input[:participants].map do |participant|
-            title = "#{notification.title}_#{notification.id}_#{participant.id}"
-            Sidekiq.remove_schedule(title)
-          end
-        end
+        DeleteNotificationSession.new.call(config: input[:config],
+                                           notifications: input[:notifications],
+                                           participants: input[:participants])
         Success(input)
       rescue
         Failure('Failed to delete notification session.')

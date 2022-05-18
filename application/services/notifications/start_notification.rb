@@ -34,18 +34,11 @@ module SurveyMoonbear
         Failure('Failed to get notification list.')
       end
 
-
       # input { config:, study_id:, participants:, notifications: }
       def create_notification_session(input)
-        input[:notifications].map do |notification|
-          input[:participants].map do |participant|
-            survey_link = "#{input[:config].APP_URL}/onlinesurvey/#{notification.survey.id}/#{notification.survey.launch_id}"
-            CreateNotificationSession.new.call(notification: notification,
-                                               study: participant.study,
-                                               survey_link: survey_link,
-                                               participant_id: participant.id)
-          end
-        end
+        CreateNotificationSession.new.call(config: input[:config],
+                                           notifications: input[:notifications],
+                                           participants: input[:participants])
         Success(input)
       rescue
         Failure('Failed to create notification session.')

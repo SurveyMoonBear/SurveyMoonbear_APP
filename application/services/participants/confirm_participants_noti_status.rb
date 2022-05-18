@@ -65,11 +65,7 @@ module SurveyMoonbear
       # input { config:, study_id:, study:, upd_arn:, participants: }
       def create_notification_session(input)
         if input[:study].state == 'started'
-          participants = Repository::For[Entity::Participant].find_study_confirmed(input[:study_id])
-          notifications = Repository::For[Entity::Notification].find_study(input[:study_id])
-          CreateNotificationSession.new.call(config: input[:config],
-                                             notifications: notifications,
-                                             participants: participants)
+          StartNotification.new.call(config: input[:config], study_id: input[:study_id])
         end
         Success(input)
       rescue
