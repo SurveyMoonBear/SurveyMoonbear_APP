@@ -31,24 +31,39 @@ module SurveyMoonbear
         topic.delete
       end
 
-      def subscribe_topic(topic_arn, protocol, endpoint, uuid)
-        @sns_client.subscribe(topic_arn: topic_arn,
-                              protocol: protocol,
-                              endpoint: endpoint,
-                              attributes: {
-                                'FilterPolicy' => "{\"uuid\": [\"#{uuid}\", \"all\"]}"
-                              })[:subscription_arn]
-      end
-
-      def confirm_subscriptions(topic_arn)
+      def confirm_subscriptions(topic_arn, uuids)
         topic = @sns_resource.topic(topic_arn)
-        updated_subscriptions_arn = {}
+        updated_arn = {}
         topic.subscriptions.map do |subscription|
           next if subscription.arn == 'PendingConfirmation'
 
-          updated_subscriptions_arn.update({ subscription.attributes['Endpoint'] => subscription.arn })
+          endpoint = subscription.attributes['Endpoint']
+          subscription.set_attributes({ attribute_name: 'FilterPolicy',
+                                        attribute_value: "{\"uuid\": [\"#{uuids[endpoint]}\", \"all\"]}" })
+          updated_arn.update({ endpoint => subscription.arn })
         end
-        updated_subscriptions_arn
+        updated_arn
+      end
+
+      def confirm_subscriptions_arn(topic_arn)
+        topic = @sns_resource.topic(topic_arn)
+        updated_arn = {}
+        topic.subscriptions.map do |subscription|
+          next if subscription.arn == 'PendingConfirmation'
+
+          updated_arn.update({ subscription.attributes['Endpoint'] => subscription.arn })
+        end
+        updated_arn
+      end
+
+      def subscribe_topic(topic_arn, protocol, endpoint)
+        pending_list = confirm_subscriptions_arn(topic_arn)
+        if pending_list[endpoint].nil?
+          @sns_client.subscribe(topic_arn: topic_arn, protocol: protocol,
+                                endpoint: endpoint)[:subscription_arn]
+        else
+          pending_list[endpoint]
+        end
       end
 
       def delete_subscription(subscription_arn)

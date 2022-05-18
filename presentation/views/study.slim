@@ -184,9 +184,12 @@ div class="mb-3"
                   - if participant.noti_status == 'turn_off' || participant.noti_status == 'pending'
                     td
                       span class="badge badge-pill badge-secondary" #{participant.noti_status}
-                  - if participant.noti_status == 'confirmed'
+                  - elsif participant.noti_status == 'confirmed'
                     td
                       span class="badge badge-pill badge-info" #{participant.noti_status}
+                  - else
+                    td
+                      span class="badge badge-pill badge-danger" failed please delete it
                 - if study.track_activity
                   - if participant.act_status == 'unsubscribed'
                     td 

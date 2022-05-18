@@ -12,6 +12,7 @@ module SurveyMoonbear
       include Dry::Monads
 
       step :get_study_arn_from_db
+      step :create_uuids
       step :get_updated_participants_arn
       step :get_original_participants
       step :update_participants_arn_in_db
@@ -29,10 +30,22 @@ module SurveyMoonbear
         Failure('Failed to get study arn from database.')
       end
 
+      def create_uuids(input)
+        participants = Repository::For[Entity::Participant].find_study(input[:study].id)
+        input[:uuids] = {}
+        participants.map do |participant|
+          input[:uuids].update({ participant.email => participant.id })
+        end
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to create uuid hash.')
+      end
+
       # input { config:, study_id:, study: }
       def get_updated_participants_arn(input)
         input[:upd_arn] = Messaging::Notification.new(input[:config])
-                                                 .confirm_subscriptions(input[:study].aws_arn)
+                                                 .confirm_subscriptions(input[:study].aws_arn, input[:uuids])
         Success(input)
       rescue StandardError => e
         puts e
