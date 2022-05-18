@@ -5,26 +5,26 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Returns a new study, or nil
-    # Usage: Service::CreateNotificationSession.new.call(config: <config>, notifications: [{...}], participants: [{...}])
-    class CreateNotificationSession
+    # Usage: Service::DeleteNotificationSession.new.call(config: <config>, notifications: [{...}], participants: [{...}])
+    class DeleteNotificationSession
       include Dry::Transaction
       include Dry::Monads
 
-      step :create_notification_session
+      step :delete_notification_session
 
       private
 
       # input { config:, notifications:, participants: }
-      def create_notification_session(input)
+      def delete_notification_session(input)
         input[:notifications].map do |notification|
           input[:participants].map do |participant|
             input_item = { config: input[:config], notification: notification, subscriber: participant.id }
-            Session::Notification.new(input_item).create_session
+            Session::Notification.new(input_item).delete_session
           end
         end
         Success(input)
       rescue
-        Failure('Failed to create notification in session')
+        Failure('Failed to delete notification from session')
       end
     end
   end
