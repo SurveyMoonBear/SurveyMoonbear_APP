@@ -643,6 +643,7 @@ module SurveyMoonbear
           # POST /participants/[participant_id]/update
           routing.post 'update' do
             Service::UpdateParticipant.new.call(config: config,
+                                                current_account: @current_account,
                                                 participant_id: participant_id,
                                                 params: routing.params)
             routing.redirect "/participants/#{participant_id}"

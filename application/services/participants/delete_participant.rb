@@ -34,10 +34,9 @@ module SurveyMoonbear
         participant = input[:participant]
         if participant.study.state == 'started'
           notifications = Repository::For[Entity::Notification].find_study(participant.study.id)
-          notifications.map do |notification|
-            title = "#{notification.title}_#{notification.id}_#{participant.id}"
-            Sidekiq.remove_schedule(title)
-          end
+          DeleteNotificationSession.new.call(config: input[:config],
+                                             notifications: notifications,
+                                             participants: [participant])
         end
         Success(input)
       rescue StandardError => e
@@ -72,10 +71,10 @@ module SurveyMoonbear
       # input { config:, participant_id:, participant: }
       def unsubscribe_calendar(input)
         if input[:participant].act_status == 'subscribed'
-          Service::UnsubscribeCalendar.new.call(config: input[:config],
-                                                current_account: input[:current_account],
-                                                participant_id: input[:participant_id],
-                                                calendar_id: input[:participant].email)
+          UnsubscribeCalendar.new.call(config: input[:config],
+                                       current_account: input[:current_account],
+                                       participant_id: input[:participant_id],
+                                       calendar_id: input[:participant].email)
         end
         Success(input)
       rescue StandardError => e
