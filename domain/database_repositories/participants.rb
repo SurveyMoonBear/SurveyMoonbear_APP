@@ -86,6 +86,13 @@ module SurveyMoonbear
         rebuild_entity(db_participant)
       end
 
+      def self.update_act_status(id, act_status)
+        db_participant = Database::ParticipantOrm.where(id: id).first
+        db_participant.update(act_status: act_status)
+
+        rebuild_entity(db_participant)
+      end
+
       def self.delete_from(id)
         db_participant = Database::ParticipantOrm.where(id: id).first
 

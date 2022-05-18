@@ -48,9 +48,7 @@ module SurveyMoonbear
 
       # input { ... }
       def update_participant_act_status(input)
-        upd_parti = UpdateParticipant.new.call(config: input[:config],
-                                               participant_id: input[:participant_id],
-                                               params: { act_status: 'subscribed' })
+        upd_parti = Repository::For[Entity::Participant].update_act_status(input[:participant_id], 'subscribed')
         Success(upd_parti)
       rescue
         Failure('Failed to update participant calendar status into database.')
