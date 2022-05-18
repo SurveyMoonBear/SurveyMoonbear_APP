@@ -89,13 +89,12 @@ div class="mb-3"
                 h5 class="modal-title" Turn on Participant's Notification
                 button type="button" class="close" data-dismiss="modal" aria-label="Close"
                   span aria-hidden="true" &times;
-              form id="form_turnon_notification" action="/participants/#{participant.id}/update_participant" method="post"
+              form id="form_turnon_notification" action="/participants/#{participant.id}/turn_on_notify" method="post"
                 div class="modal-body"
                   div class="form-group"
                     div class="mb-2"
                       label for="form" 
                         <b>#{participant.nickname}</b> will receive notifications.
-                      input type="hidden" name="noti_status" value="confirmed" 
                 div class="modal-footer"
                   button type="button" class="btn btn-secondary" data-dismiss="modal" Close
                   button type="submit" class="btn btn-primary" id="btn-update" Turn on

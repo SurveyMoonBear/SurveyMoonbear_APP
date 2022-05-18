@@ -655,6 +655,13 @@ module SurveyMoonbear
             routing.redirect "/participants/#{participant_id}"
           end
 
+          # POST /participants/[participant_id]/turn_on_notify
+          routing.post 'turn_on_notify' do
+            Service::TurnOnNotify.new.call(config: config,
+                                           participant_id: participant_id)
+            routing.redirect "/participants/#{participant_id}"
+          end
+
           # POST /participants/[participant_id]/subscribe_calendar
           routing.post 'subscribe_calendar' do
             res = Service::SubscribeCalendar.new.call(config: config,
