@@ -45,25 +45,9 @@ module SurveyMoonbear
         updated_arn
       end
 
-      def confirm_subscriptions_arn(topic_arn)
-        topic = @sns_resource.topic(topic_arn)
-        updated_arn = {}
-        topic.subscriptions.map do |subscription|
-          next if subscription.arn == 'PendingConfirmation'
-
-          updated_arn.update({ subscription.attributes['Endpoint'] => subscription.arn })
-        end
-        updated_arn
-      end
-
       def subscribe_topic(topic_arn, protocol, endpoint)
-        pending_list = confirm_subscriptions_arn(topic_arn)
-        if pending_list[endpoint].nil?
-          @sns_client.subscribe(topic_arn: topic_arn, protocol: protocol,
-                                endpoint: endpoint)[:subscription_arn]
-        else
-          pending_list[endpoint]
-        end
+        @sns_client.subscribe(topic_arn: topic_arn, protocol: protocol,
+                              endpoint: endpoint)[:subscription_arn]
       end
 
       def delete_subscription(subscription_arn)
