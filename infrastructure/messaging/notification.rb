@@ -35,7 +35,7 @@ module SurveyMoonbear
         topic = @sns_resource.topic(topic_arn)
         updated_arn = {}
         topic.subscriptions.map do |subscription|
-          next if subscription.arn == 'PendingConfirmation'
+          next if subscription.arn == 'PendingConfirmation' || subscription.arn == 'Deleted'
 
           endpoint = subscription.attributes['Endpoint']
           subscription.set_attributes({ attribute_name: 'FilterPolicy',

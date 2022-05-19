@@ -15,7 +15,8 @@ module SurveyMoonbear
       step :create_uuids
       step :get_updated_participants_arn
       step :get_original_participants
-      step :update_participants_arn_in_db
+      step :update_participants_new_arn_in_db
+      step :update_participants_deleted_arn_in_db
       step :create_notification_session
 
       private
@@ -62,7 +63,7 @@ module SurveyMoonbear
       end
 
       # input { config:, study_id:, study:, upd_arn:, participants: }
-      def update_participants_arn_in_db(input)
+      def update_participants_new_arn_in_db(input)
         input[:participants].each do |participant|
           sub_arn = input[:upd_arn][participant.email]
           next unless participant.noti_status == 'pending' && !sub_arn.nil?
@@ -72,7 +73,25 @@ module SurveyMoonbear
         Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to update participants AWS arn.')
+        Failure('Failed to update participants new AWS arn.')
+      end
+
+      # input { config:, study_id:, study:, upd_arn:, participants: }
+      def update_participants_deleted_arn_in_db(input)
+        input[:participants].each do |participant|
+          sub_arn = input[:upd_arn][participant.email]
+          next unless participant.noti_status == 'confirmed' && sub_arn.nil?
+
+          arn = Messaging::Notification.new(input[:config])
+                                       .subscribe_topic(input[:study].aws_arn,
+                                                        participant.contact_type,
+                                                        participant.email)
+          Repository::For[Entity::Participant].update_arn(participant.id, arn, 'pending')
+        end
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to update participants deleted AWS arn.')
       end
 
       # input { config:, study_id:, study:, upd_arn:, participants: }
