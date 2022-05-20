@@ -20,9 +20,11 @@ module SurveyMoonbear
 
       # input { config:, study_id: }
       def get_participants_list(input)
+        UpdateParticipantsNotiStatus.new.call(config: input[:config], study_id: input[:study_id])
         input[:participants] = Repository::For[Entity::Participant].find_study_confirmed(input[:study_id])
         Success(input)
-      rescue
+      rescue StandardError => e
+        puts e
         Failure('Failed to get confirmed participant list')
       end
 
@@ -30,7 +32,8 @@ module SurveyMoonbear
       def get_notifications_list(input)
         input[:notifications] = Repository::For[Entity::Notification].find_study(input[:study_id])
         Success(input)
-      rescue
+      rescue StandardError => e
+        puts e
         Failure('Failed to get notification list.')
       end
 
@@ -40,7 +43,8 @@ module SurveyMoonbear
                                            notifications: input[:notifications],
                                            participants: input[:participants])
         Success(input)
-      rescue
+      rescue StandardError => e
+        puts e
         Failure('Failed to create notification session.')
       end
 
@@ -48,7 +52,8 @@ module SurveyMoonbear
       def update_study_state(input)
         study = Repository::For[Entity::Study].update_state(input[:study_id], 'started')
         Success(study)
-      rescue
+      rescue StandardError => e
+        puts e
         Failure('Failed to update study state in database.')
       end
     end

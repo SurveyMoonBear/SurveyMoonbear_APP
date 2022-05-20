@@ -519,7 +519,7 @@ module SurveyMoonbear
 
           # POST studies/[study_id]/confirm_noti_status
           routing.post 'confirm_noti_status' do
-            res = Service::ConfirmParticipantsNotiStatus.new.call(config: config, study_id: study_id)
+            res = Service::UpdateParticipantsNotiStatus.new.call(config: config, study_id: study_id)
             if res.failure?
               flash[:error] = 'Fail to update the confirmed participants. Please try again.'
             else
