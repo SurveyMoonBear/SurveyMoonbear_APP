@@ -470,11 +470,7 @@ module SurveyMoonbear
                                                                     config: config,
                                                                     code: code,
                                                                     access_token: access_token)
-            # responses = Service::TransformVisualSheetsToHTMLWithCase.new.call(visual_report_id: visual_report_id,
-            #                                                                   spreadsheet_id: spreadsheet_id,
-            #                                                                   config: config,
-            #                                                                   access_token: access_token,
-            #                                                                   case_id: case_id)
+
             if responses.failure?
               flash[:error] = "#{responses.failure} Please try again :("
               routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"

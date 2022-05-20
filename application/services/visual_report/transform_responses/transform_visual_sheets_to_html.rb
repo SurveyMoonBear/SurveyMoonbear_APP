@@ -71,30 +71,28 @@ module SurveyMoonbear
 
       # input { ..., sheets_report, user_access_token, sources}
       def cal_responses_from_sources(input)
-        pages_val = {}
+        pages_val =
+          input[:sheets_report].map do |key, items_data|
+            graphs_val =
+              items_data.map do |item_data|
+                source = find_source(input[:sources], item_data.data_source)
+                case source.source_type
+                when 'surveymoonbear'
+                  MapSurveyResponsesAndItems.new.call(item_data: item_data,
+                                                      source: source).value!
 
-        input[:sheets_report].each do |key, items_data|
-          graphs_val = []
-          items_data.each do |item_data|
-            source = find_source(input[:sources], item_data.data_source)
-
-            if source.source_type == 'surveymoonbear'
-              graph_response = MapSurveyResponsesAndItems.new.call(item_data: item_data,
-                                                                   source: source)
-              graphs_val.append(graph_response.value!)
-
-            elsif source.source_type == 'spreadsheet'
-              graph_response = MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
-                                                                        access_token: input[:user_access_token],
-                                                                        spreadsheet_source: source,
-                                                                        all_data: input[:other_sheets][source.source_id])
-              graphs_val.append(graph_response.value![:graph_val])
-            end
+                when 'spreadsheet'
+                  MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
+                                                           access_token: input[:user_access_token],
+                                                           spreadsheet_source: source,
+                                                           all_data: input[:other_sheets][source.source_id]).value!
+                else
+                  Failure('Source type is wrong!')
+                end
+              end
+            [key, graphs_val]
           end
-          pages_val[key] = graphs_val
-        end
-
-        input[:all_graphs] = pages_val
+        input[:all_graphs] = pages_val.to_h
 
         Success(input)
       rescue StandardError

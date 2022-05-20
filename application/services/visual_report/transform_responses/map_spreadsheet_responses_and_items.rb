@@ -12,7 +12,6 @@ module SurveyMoonbear
       step :get_responses_from_spreadsheet
       step :map_identity_and_responses
       step :map_individual_answer
-      step :return_graph_result
 
       private
 
@@ -35,10 +34,8 @@ module SurveyMoonbear
       end
 
       def map_identity_and_responses(input)
-        input[:count] = {}
         input[:new_values] = transfom_sheet_val(input[:res_val])
-        input[:count] = input[:new_values].tally
-        input[:count] = input[:count].sort.to_h
+        input[:count] = input[:new_values].tally.sort.to_h
 
         Success(input)
       rescue StandardError => e
@@ -47,8 +44,7 @@ module SurveyMoonbear
       end
 
       def map_individual_answer(input)
-        chart_colors = {}
-        input[:count].each_key { |key| chart_colors[key] = 'rgb(54, 162, 235)' }
+        chart_colors = input[:count].transform_values { 'rgb(54, 162, 235)' }
         unless input[:case_id_val].nil?
           input[:case_id_val].each_with_index do |id, idx|
             if id == input[:vis_identity]
@@ -56,40 +52,27 @@ module SurveyMoonbear
             end
           end
         end
-        input[:chart_colors] = chart_colors
-        Success(input)
+        # input[:chart_colors] = chart_colors
+        Success([input[:item_data].page,
+                 input[:item_data].graph_title,
+                 input[:item_data].chart_type,
+                 input[:count].values,
+                 input[:count].keys,
+                 chart_colors.values,
+                 input[:item_data].legend])
       rescue StandardError => e
         puts e
         Failure('Failed to map individual answer which the sources from spreadsheet.')
       end
 
-      def return_graph_result(input)
-        graph_val = []
-        graph_val.append(input[:item_data].page,
-                         input[:item_data].graph_title,
-                         input[:item_data].chart_type,
-                         input[:count].values,
-                         input[:count].keys,
-                         input[:chart_colors].values,
-                         input[:item_data].legend)
-        input[:graph_val] = graph_val
-
-        Success(input)
-      rescue StandardError => e
-        puts e
-        Failure('Failed to return graph results which the sources from spreadsheet.')
-      end
-
       def transfom_sheet_val(values_arr)
-        new_values = []
-        values_arr.each do |val|
+        values_arr.map do |val|
           if val.nil? || val.empty?
-            new_values.append('0')
+            '0'
           else
-            new_values.append(val)
+            val
           end
         end
-        new_values
       end
 
       # C3:C141 shift(2) ;run 141-3+1 times;
@@ -107,21 +90,19 @@ module SurveyMoonbear
         end_row.shift
         column_times = alphabet_table[end_row[0]] - alphabet_table[start_row[0]] + 1
         row_times = end_row[1].to_i - start_row[1].to_i + 1
-        { 'shift_num': (start_row[1].to_i) - 1,
+        { 'shift_num': start_row[1].to_i - 1,
           'column': alphabet_table[start_row[0]],
           'column_times': column_times,
           'row_times': row_times }
       end
 
       def get_range_val(all_data, case_range)
-        new_val = []
         data = all_data.drop(case_range[:shift_num])
-        data.each_with_index do |row_value, idx|
+        data.map.with_index do |row_value, idx|
           break if idx == case_range[:row_times]
 
-          new_val.append(row_value[case_range[:column]])
+          row_value[case_range[:column]]
         end
-        new_val
       end
     end
   end

@@ -12,7 +12,6 @@ module SurveyMoonbear
       step :get_survey_responses
       step :organize_all_responses
       step :generate_default_options_and_cal
-      step :return_graph_result
 
       private
 
@@ -31,20 +30,18 @@ module SurveyMoonbear
       # input{ all_responses: ..., item_data: ..., source: ...}
       def organize_all_responses(input)
         input[:item_responses] = {}
-        input[:item_options] = []
-        item_all_responses = [] # only response
-
-        input[:all_responses].each do |res_obj|
-          if !res_obj.item_data.nil?
-          question = JSON.parse(res_obj.item_data)
-            if question['name'] == input[:item_data].question
-              item_all_responses.append(res_obj.response)
-              input[:item_responses]['type'] = question['type']
-              input[:item_options] = question['options'] if !question['options'].nil?
+        item_all_responses =
+          input[:all_responses].map do |res_obj|
+            unless res_obj.item_data.nil?
+              question = JSON.parse(res_obj.item_data)
+              if question['name'] == input[:item_data].question
+                input[:item_responses]['type'] = question['type']
+                input[:item_options] = question['options'] unless question['options'].nil?
+                res_obj.response
+              end
             end
           end
-        end
-        input[:item_responses]['responses'] = item_all_responses
+        input[:item_responses]['responses'] = item_all_responses.compact
         Success(input)
       rescue StandardError => e
         puts e
@@ -69,26 +66,16 @@ module SurveyMoonbear
                                                                                     response_cal_hash)
         end
 
-        Success(input)
+        Success([input[:item_data].page,
+                 input[:item_data].graph_title,
+                 input[:item_data].chart_type,
+                 input[:response_cal_hash].values,
+                 input[:chart_colors].keys,
+                 input[:chart_colors].values,
+                 input[:item_data].legend])
       rescue StandardError => e
         puts e
         Failure('Failed to generate default options or calculate reponses.')
-      end
-
-      # input{ response_cal_hash:..., chart_colors: ..., item_data: ..., ...}
-      def return_graph_result(input)
-        graph_val = []
-        graph_val.append(input[:item_data].page,
-                         input[:item_data].graph_title,
-                         input[:item_data].chart_type,
-                         input[:response_cal_hash].values,
-                         input[:chart_colors].keys,
-                         input[:chart_colors].values,
-                         input[:item_data].legend)
-        Success(graph_val)
-      rescue StandardError => e
-        puts e
-        Failure('Failed to return graph result.')
       end
 
       def cal_individual_question(response_dic, options, chart_colors, response_cal_hash)
