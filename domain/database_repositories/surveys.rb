@@ -114,10 +114,6 @@ module SurveyMoonbear
           launch.delete
         end
 
-        db_survey.related_studies.each do |study|
-          db_survey.remove_related_study(study.id)
-        end
-
         db_survey.destroy
       end
 
