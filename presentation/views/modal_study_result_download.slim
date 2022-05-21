@@ -1,44 +1,29 @@
 div class="modal fade" id="modal_study_result_download" 
-  div class="modal-dialog modal-lg modal-dialog-centered" role="document"
+  div class="modal-dialog modal-dialog-centered" role="document"
     div class="modal-content"
       div class="modal-header"
         h5 class="modal-title" Download Study Result
         button type="button" class="close" data-dismiss="modal" aria-label="Close"
           span aria-hidden="true" &times;
       / TODO: form action
-      form id="download_study_result_form" action="/studies/create" method="post"
+      form id="download_study_result_form" action="/studies/download" method="post"
         div class="modal-body"
           div class="form-group"
             div class="row mb-3"
-              div class="col-4"
-                select class="custom-select" name="result_of" aria-label="Default select example" id="result_type"
+              div class="col"
+                select class="form-control" name="result_type" id="result_type"
                   option value="responses" Responses Data
                   option value="participants" Participants Data
-              div class="col"
-                p class="text-muted" some details
-            div class="row mb-3" id="survey_list"
-              div class="col-4"
-                select class="custom-select" name="suvey_id" aria-label="Default select example"
-                  option value="survey_id_1" Survey title A
-                  option value="survey_id_2" Survey title B
-              div class="col"
-                p class="text-muted" some details
-            div class="row mb-3" id="wave_list"
-              div class="col-4"
-                select class="custom-select" name="wave_id" aria-label="Default select example"
-                  option value="survey_id_1_wave_1" Wave 1
-                  option value="survey_id_2_wave_2" Wave 2
-              div class="col"
-                p class="text-muted" some details
             div class="row mb-3"
-              div class="col-4"
-                select class="custom-select" name="participant_id" aria-label="Default select example"
-                  option value="all_participants" All participants
-                  option value="participant_id_1" Participants_A
-                  option value="participant_id_2" Participants_B
-                  option value="participant_id_3" Participants_C
               div class="col"
-                p class="text-muted" some details
+                select class="form-control" name="participant_id" id="participant-option"
+            div class="row mb-3" id="survey_list"
+              div class="col" id="wave-option"
+            div class="row mb-3 d-none" id="details_or_events"
+              div class="col"
+                select class="form-control" name="details_or_events" id="details-or-events-option"
+                  option value="details" Info & Details Data
+                  option value="events" Events Data
         div class="modal-footer"
           button type="submit" class="btn btn-outline-dark align-middle" id="btn-download"
             i class='fas fa-download'
@@ -46,14 +31,28 @@ div class="modal fade" id="modal_study_result_download"
 / TODO: javascript get data related to the study
 javascript:
   $('#modal_study_result_download').on('show.bs.modal', function(e) {
+    var study_id = $(e.relatedTarget).data('origin_id');
+    var track_activity = $(e.relatedTarget).data('track_activity');
+    var modal = $(this);
+
+    /* Showing 'Events Data' option or not */
+    var str = "<option value='info_and_details'> Info & Details Data </option>";
+    if(track_activity){
+      str += "<option value='events'> Events Data </option>";
+    }
+    modal.find('#details-or-events-option').html(str);
+
+    /* Showing different result type form */
     function check_result_type(result_type){
       if(result_type == 'participants'){
         $('#survey_list').addClass('d-none');
         $('#wave_list').addClass('d-none');
+        $('#details_or_events').removeClass('d-none');
       }
       else{
         $('#survey_list').removeClass('d-none');
         $('#wave_list').removeClass('d-none');
+        $('#details_or_events').addClass('d-none');
       }
     };
     check_result_type(result_type);
@@ -61,28 +60,35 @@ javascript:
       var result_type = $("#result_type").val();
       check_result_type(result_type)
     });
-  });
-
-  /* $('#modal_study_result_download').on('show.bs.modal', function(e) {
-    var study_id = $(e.relatedTarget).data('origin_id');
-    var modal = $(this);
-    $.get("/studies/" + study_id + "/study_result_detail/", function(study_result, status) {
-      var str = "";
-      if (study_result.length == 0) {
-        str += "<p>The study hasn't received any response yet.</p>";
+    
+    /* Getting study result detail */
+    $.get("/studies/" + study_id + "/study_result_detail/", function(result_detail, status) {
+      /* Wave detail */
+      var wave_str = "";
+      if (result_detail.waves.length == 0) {
+        wave_str += "<small class='text-muted'>The study hasn't received any response yet.</small>";
       } else {
-        str += "<table class='table table-borderless'>";
-        $.each(study_result, function(i, wave) {
-          var start_time = new Date(wave[0]);
-          str += "<tr>";
-          str += '<td><p>Wave '+ ++i + '. </p></td>';
-          str += "<td><p class='text-muted'>Started at: " + start_time;
-          str += "<br>Number of Responses: " + wave[3] + "</p></td>";
-          str += "<td><a href='/studies/" + study_id + "/download/" + wave[1] + "/" + wave[2] + ".csv' class='btn btn-outline-dark align-middle'>";
-          str += "<i class='fas fa-download' /></a></td></tr>";
+        wave_str += "<select class='form-control' name='wave_id'>";
+        $.each(result_detail.waves, function(i, wave) {
+          var wave_id = '\"' + wave.survey_id + '_' + wave.launch_id + '\"';
+          wave_str += "<option value=" + wave_id + ">" + wave.survey_title + ": wave" + ++i + "</option>";
         });
-        str += "</table>";
+        wave_str += "</select>";
       }
-      modal.find('#div-content').html(str);
+      modal.find('#wave-option').html(wave_str);
+
+      /* Participant detail */
+      var participant_str = "<option value='all_participants'> All Participants </option>";
+      if (result_detail.participants.length != 0) {
+        $.each(result_detail.participants, function(i, participant) {
+          var p_id = '\"' + participant.participant_id + '\"';
+          participant_str += "<option value=" + p_id + ">" + participant.participant_nickname + "</option>";
+        });
+      }
+      modal.find('#participant-option').html(participant_str);
+
+      /* Init form result type */
+      var result_type = modal.find('#result_type').val();
+      check_result_type(result_type)
     });
-  }); */
+  });

@@ -604,6 +604,19 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
+          # GET studies/[study_id]/study_result_detail
+          routing.on 'study_result_detail' do
+            routing.get do
+              result_detail = Service::GetStudyResultDetail.new.call(study_id: study_id)
+              if result_detail.failure?
+                puts result_detail.failure
+                []
+              else
+                result_detail.value!
+              end
+            end
+          end
+
           # DELETE studies/[study_id]
           routing.delete do
             response = Service::DeleteStudy.new.call(config: config,
