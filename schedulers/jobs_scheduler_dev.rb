@@ -5,20 +5,11 @@ require 'aws-sdk-sns'
 require 'sidekiq'
 require 'sidekiq-scheduler'
 require 'sidekiq/web'
-require_relative '../../init'
+require_relative '../init'
 
-# Jobs
-module Jobs
-  # Testing sidekiq
-  class WorkWell
-    include Sidekiq::Worker
-
-    def perform
-      puts 'work well'
-    end
-  end
-
-  # Job config
+# Schedulers
+module Schedulers
+  # Scheduler config
   class App
     # Environment variables setup
     Figaro.application = Figaro::Application.new(
@@ -30,9 +21,18 @@ module Jobs
 
     Sidekiq.configure_server do |config|
       config.on(:startup) do
-        Sidekiq.schedule = YAML.load_file(File.expand_path('./workers/jobs/sidekiq_scheduler.yml'))
+        Sidekiq.schedule = YAML.load_file(File.expand_path('./schedulers/sidekiq_scheduler_dev.yml'))
         SidekiqScheduler::Scheduler.instance.reload_schedule!
       end
+    end
+  end
+
+  # Check Sidekiq working
+  class WorkWell
+    include Sidekiq::Worker
+
+    def perform
+      puts 'work well'
     end
   end
 
@@ -59,7 +59,7 @@ module Jobs
           r_result = r_start + rand(r_end - r_start)
           Sidekiq.set_schedule(
             title, { 'cron' => "#{r_result.min} #{r_result.hour} #{notification.repeat_random_every}",
-                     'class' => 'Jobs::SendNotification',
+                     'class' => 'Schedulers::SendNotification',
                      'enabled' => schedule['enabled'],
                      'args' => schedule['args'] }
           )

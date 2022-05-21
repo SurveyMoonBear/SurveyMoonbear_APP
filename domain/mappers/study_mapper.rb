@@ -37,7 +37,7 @@ module SurveyMoonbear
             track_activity: track_activity,
             activity_start_at: activity_start_at,
             activity_end_at: activity_end_at,
-            including_surveys: including_surveys,
+            owned_surveys: owned_surveys,
             created_at: nil
           )
         end
@@ -82,8 +82,8 @@ module SurveyMoonbear
           end
         end
 
-        def including_surveys
-          [] || @study[:including_surveys].map! { |survey| @survey_mapper.load(survey) }
+        def owned_surveys
+          [] || @study[:owned_surveys].map! { |survey| @survey_mapper.load(survey) }
         end
       end
     end

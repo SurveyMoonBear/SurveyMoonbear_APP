@@ -1,2 +1,3 @@
 web: bundle exec puma -t 5:5 -p ${PORT:-9090} -e ${RACK_ENV:-development}
 worker: bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken_dev.yml
+scheduler: bundle exec sidekiq -r ./schedulers/jobs_scheduler_dev.rb

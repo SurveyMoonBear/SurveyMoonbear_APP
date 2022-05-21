@@ -12,7 +12,7 @@ module SurveyMoonbear
       include Dry::Monads
 
       step :copy_sample_spreadsheet
-      step :store_related_study
+      step :store_belongs_study
 
       private
 
@@ -31,7 +31,7 @@ module SurveyMoonbear
       end
 
       # input { config:, current_account:, params:, survey: }
-      def store_related_study(input)
+      def store_belongs_study(input)
         unless input[:params]['study_id'].nil?
           Repository::For[Entity::Study].add_survey(input[:params]['study_id'], input[:survey].id)
         end

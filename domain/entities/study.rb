@@ -17,7 +17,7 @@ module SurveyMoonbear
       attribute :track_activity, Strict::Bool
       attribute :activity_start_at, Strict::Time.optional
       attribute :activity_end_at, Strict::Time.optional
-      attribute :including_surveys, Strict::Array.of(Survey).optional
+      attribute :owned_surveys, Strict::Array.of(Survey).optional
       attribute :created_at, Strict::Time.optional
     end
   end

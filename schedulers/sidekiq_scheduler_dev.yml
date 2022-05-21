@@ -1,13 +1,12 @@
 # define the cron, static, scheduler jobs here
-
 # :schedule: # (this header line used in config/sidekiq.yml)
 work_well:
   cron: '* * * * *'   # Runs once per minute
-  class: Jobs::WorkWell
+  class: Schedulers::WorkWell
   description: "This job shows the scheduler work well"
   enabled: false
-random_notification:
+update_random_notification:
   cron: '5 0 * * *'
-  class: Jobs::UpdateRandomNotification
-  description: "update everydays random notification with a different time"
+  class: Schedulers::UpdateRandomNotification
+  description: "update everydays random notification with a random time"
   enabled: true

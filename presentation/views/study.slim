@@ -85,13 +85,13 @@ div class="mb-3"
         i class="fas fa-th-list" &nbsp;Detail list
       button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_add_exist_survey"
         i class="fas fa-plus" &nbsp;Add an exist survey
-      == render :modal_add_exist_survey, locals: { study: study, surveys: all_surveys }
+      == render :modal_add_exist_survey, locals: { study: study, surveys: alone_surveys }
       button href="#" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_create_survey"
         i class="fas fa-plus" &nbsp;Create a new survey
       == render :modal_create_survey, locals: { rerout: "/studies/#{study.id}", study_id: study.id }
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10"
-      - unless study.including_surveys.empty?
+      - unless study.owned_surveys.empty?
         table class="table"
           thead
             tr
@@ -101,7 +101,7 @@ div class="mb-3"
               th scope="col"  Created at
               th scope="col"
           tbody
-            - study.including_surveys.each.with_index do |survey, index|
+            - study.owned_surveys.each.with_index do |survey, index|
               tr
                 th scope="row"  #{index+1}
                 td #{survey.title}
@@ -137,7 +137,7 @@ div class="mb-3"
                             button type="button" class="btn btn-outline-info" data-dismiss="modal" Close
                             button type="submit" class="btn btn-outline-danger" id="btn-add-exist-survey" Remove
   #collapseExample.collapse
-    == render :surveys, locals: { surveys: study.including_surveys, config: config }
+    == render :surveys, locals: { surveys: study.owned_surveys, config: config }
 
   div class="row justify-content-center mt-3"
     div class="col-4 col-sm-12 col-md-3" 
@@ -202,7 +202,7 @@ div class="mb-3"
       div class="col-4 col-sm-12 col-md-3" 
         h4 Notifications
       div class="col-8 col-sm-12 col-md-7"
-        - if study.including_surveys.empty?
+        - if study.owned_surveys.empty?
           span {
             class="d-inline-block" 
             tabindex="0" 
@@ -214,7 +214,7 @@ div class="mb-3"
         - else
           button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_notification"
             i class="fas fa-plus"
-          == render :modal_create_notification, locals: { study: study, surveys: all_surveys }
+          == render :modal_create_notification, locals: { study: study, surveys: study.owned_surveys }
     div class="row justify-content-center mt-3"
       div class="col-12 col-sm-12 col-md-10"
         - if notifications.any?

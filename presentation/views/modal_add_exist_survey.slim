@@ -15,7 +15,7 @@ div class="modal fade" id="modal_add_exist_survey"
                   - surveys.each do |survey|
                     option value="#{survey.id}" #{survey.title}
               - else
-                div You have no exist survey
+                div.text-muted You have no alone survey
         div class="modal-footer"
           button type="button" class="btn btn-secondary" data-dismiss="modal" Close
           button type="submit" class="btn btn-primary" id="btn-add-exist-survey" Add

@@ -23,7 +23,8 @@ module SurveyMoonbear
         input[:study] = Repository::For[new_study.class].create_from(new_study)
 
         Success(input)
-      rescue
+      rescue StandardError => e
+        puts e
         Failure('Failed to create a study and store it into database.')
       end
 
@@ -37,7 +38,8 @@ module SurveyMoonbear
         end
 
         Success(input)
-      rescue
+      rescue StandardError => e
+        puts e
         Failure('Failed to create AWS topic to get study AWS arn.')
       end
 
@@ -46,7 +48,8 @@ module SurveyMoonbear
         updated_study = Repository::For[input[:study].class].update_arn(input[:study].id, input[:aws_arn])
 
         Success(updated_study)
-      rescue
+      rescue StandardError => e
+        puts e
         Failure('Failed to update study AWS arn in database.')
       end
     end

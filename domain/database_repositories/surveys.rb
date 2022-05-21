@@ -22,6 +22,16 @@ module SurveyMoonbear
         end
       end
 
+      def self.find_alone(owner_id)
+        db_records = Database::SurveyOrm.where(owner_id: owner_id, study_id: nil).all
+
+        return nil if db_records.nil?
+
+        db_records.map do |db_record|
+          rebuild_entity(db_record)
+        end
+      end
+
       def self.find_title(title)
         db_record = Database::SurveyOrm.first(title: title)
         rebuild_entity(db_record)
@@ -114,10 +124,6 @@ module SurveyMoonbear
           launch.delete
         end
 
-        db_survey.related_studies.each do |study|
-          db_survey.remove_related_study(study.id)
-        end
-
         db_survey.destroy
       end
 
@@ -148,7 +154,8 @@ module SurveyMoonbear
           state: db_record.state,
           options: db_record.options,
           pages: pages,
-          launches: launches
+          launches: launches,
+          study_id: db_record.study_id
         )
       end
     end

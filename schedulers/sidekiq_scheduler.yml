@@ -1,0 +1,5 @@
+update_random_notification:
+  cron: '5 0 * * *'
+  class: Schedulers::UpdateRandomNotification
+  description: "update everydays random notification with a random time"
+  enabled: true
