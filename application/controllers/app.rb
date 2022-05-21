@@ -616,13 +616,13 @@ module SurveyMoonbear
           routing.get do
             routing.redirect '/' unless @current_account
             study = Repository::For[Entity::Study].find_id(study_id)
-            all_surveys = Repository::For[Entity::Survey].find_owner(@current_account['id'])
+            alone_surveys = Repository::For[Entity::Survey].find_alone(@current_account['id'])
             participants = Repository::For[Entity::Participant].find_study(study_id)
             notifications = Service::GetNotifications.new.call(study_id: study_id).value!
             view 'study', locals: { study: study,
                                     participants: participants,
                                     notifications: notifications,
-                                    all_surveys: all_surveys,
+                                    alone_surveys: alone_surveys,
                                     config: config }
           end
         end

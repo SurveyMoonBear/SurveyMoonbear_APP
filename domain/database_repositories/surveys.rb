@@ -22,6 +22,16 @@ module SurveyMoonbear
         end
       end
 
+      def self.find_alone(owner_id)
+        db_records = Database::SurveyOrm.where(owner_id: owner_id, study_id: nil).all
+
+        return nil if db_records.nil?
+
+        db_records.map do |db_record|
+          rebuild_entity(db_record)
+        end
+      end
+
       def self.find_title(title)
         db_record = Database::SurveyOrm.first(title: title)
         rebuild_entity(db_record)

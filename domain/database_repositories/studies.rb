@@ -70,12 +70,12 @@ module SurveyMoonbear
 
       def self.add_survey(id, survey_id)
         db_study = Database::StudyOrm.where(id: id).first
-        db_study.add_including_survey(survey_id)
+        db_study.add_owned_survey(survey_id)
       end
 
       def self.remove_survey(id, survey_id)
         db_study = Database::StudyOrm.where(id: id).first
-        db_study.remove_including_survey(survey_id)
+        db_study.remove_owned_survey(survey_id)
       end
 
       def self.delete_from(id)

@@ -85,7 +85,7 @@ div class="mb-3"
         i class="fas fa-th-list" &nbsp;Detail list
       button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_add_exist_survey"
         i class="fas fa-plus" &nbsp;Add an exist survey
-      == render :modal_add_exist_survey, locals: { study: study, surveys: all_surveys }
+      == render :modal_add_exist_survey, locals: { study: study, surveys: alone_surveys }
       button href="#" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_create_survey"
         i class="fas fa-plus" &nbsp;Create a new survey
       == render :modal_create_survey, locals: { rerout: "/studies/#{study.id}", study_id: study.id }
