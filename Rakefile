@@ -26,8 +26,6 @@ end
 namespace :run do
   task :dev do
     sh 'rerun -c "heroku local -f Procfile.dev -p 9090"'
-    sh 'rerun -c "rackup -p 9090"'
-    # sh 'rackup -p 9090'
   end
 
   task :test do
@@ -80,23 +78,23 @@ namespace :worker do
       sh 'RACK_ENV=production bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken.yml'
     end
   end
+end
 
-  namespace :job do
-    namespace :run do
-      desc 'Run the background worker for scheduling job in development mode'
-      task :dev => :config do
-        sh 'RACK_ENV=development bundle exec sidekiq -r ./workers/jobs/jobs_scheduler.rb'
-      end
+namespace :scheduler do
+  namespace :run do
+    desc 'Run the background worker for scheduling job in development mode'
+    task :dev => :config do
+      sh 'RACK_ENV=development bundle exec sidekiq -r ./schedulers/jobs_scheduler_dev.rb'
+    end
 
-      desc 'Run the background worker for scheduling job in testing mode'
-      task :test => :config do
-        sh 'RACK_ENV=development bundle exec sidekiq -r ./workers/jobs/jobs_scheduler.rb'
-      end
+    desc 'Run the background worker for scheduling job in testing mode'
+    task :test => :config do
+      sh 'RACK_ENV=test bundle exec sidekiq -r ./schedulers/jobs_scheduler_test.rb'
+    end
 
-      desc 'Run the background worker for scheduling job in production mode'
-      task :production => :config do
-        sh 'RACK_ENV=development bundle exec sidekiq -r ./workers/jobs/jobs_scheduler.rb'
-      end
+    desc 'Run the background worker for scheduling job in production mode'
+    task :production => :config do
+      sh 'RACK_ENV=production bundle exec sidekiq -r ./schedulers/jobs_scheduler.rb'
     end
   end
 end
