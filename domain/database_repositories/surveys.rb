@@ -154,7 +154,8 @@ module SurveyMoonbear
           state: db_record.state,
           options: db_record.options,
           pages: pages,
-          launches: launches
+          launches: launches,
+          study_id: db_record.study_id
         )
       end
     end

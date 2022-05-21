@@ -81,10 +81,9 @@ module SurveyMoonbear
       def self.delete_from(id)
         db_study = Database::StudyOrm.where(id: id).first
 
-        # TODO: delete study but not delete survey
-        # db_study.owned_surveys.each do |survey|
-        #   db_study.remove_owned_surveys(survey.id)
-        # end
+        db_study.owned_surveys.each do |survey|
+          remove_survey(id, survey.id)
+        end
 
         db_study.destroy
       end

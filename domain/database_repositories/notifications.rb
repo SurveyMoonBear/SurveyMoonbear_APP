@@ -29,6 +29,16 @@ module SurveyMoonbear
         end
       end
 
+      def self.find_survey(survey_id)
+        db_records = Database::NotificationOrm.where(survey_id: survey_id).all
+
+        return nil if db_records.nil?
+
+        db_records.map do |db_record|
+          rebuild_entity(db_record)
+        end
+      end
+
       def self.find_title(title)
         db_record = Database::NotificationOrm.first(title: title)
         rebuild_entity(db_record)

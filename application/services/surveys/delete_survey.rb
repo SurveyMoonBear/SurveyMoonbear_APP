@@ -11,6 +11,7 @@ module SurveyMoonbear
       include Dry::Monads
 
       step :refresh_access_token
+      step :remove_from_study
       step :delete_record_in_database
       step :delete_spreadsheet
 
@@ -22,6 +23,17 @@ module SurveyMoonbear
         Success(input)
       rescue
         Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
+      end
+
+      def remove_from_study(input)
+        study_id = Repository::For[Entity::Survey].find_id(input[:survey_id]).study_id
+        unless study_id.nil?
+          RemoveSurvey.new.call(config: input[:config], study_id: study_id, survey_id: input[:survey_id])
+        end
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to remove survey from study.')
       end
 
       # input { ..., access_token }

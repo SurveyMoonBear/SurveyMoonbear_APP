@@ -41,7 +41,8 @@ module SurveyMoonbear
             state: nil,
             options: nil,
             pages: pages,
-            launches: nil
+            launches: nil,
+            study_id: nil
           )
         end
 
