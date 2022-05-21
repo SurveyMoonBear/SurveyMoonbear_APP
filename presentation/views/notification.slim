@@ -1,8 +1,11 @@
 div class="mb-3"
   div class="row justify-content-center mt-3"
-    div class="col-10 col-sm-12 col-md-8 align-middle" 
-      a href="/studies/#{notification.study.id}"
-        i class="fas fa-angle-double-left" &nbsp;Back to Study
+    div class="col-10 col-sm-12 col-md-8 text-muted"
+      small.align-middle
+        a href="/studies" My Studies&nbsp;
+        i class="fas fa-angle-double-right"&nbsp;
+        a href="/studies/#{notification.study.id}" #{notification.study.title}&nbsp;
+        i class="fas fa-angle-double-right"&nbsp;#{notification.title}
     div class="col-2 col-sm-2 col-md-2 text-right text-muted"
       small Notification
   div class="row justify-content-center mt-3"

@@ -68,7 +68,6 @@ module SurveyMoonbear
 
       # input { config:, current_account:, study_id:, study: }
       def delete_notifications(input)
-        binding.irb
         notifications = Repository::For[Entity::Notification].find_study(input[:study_id])
         notifications.map do |notification|
           DeleteNotification.new.call(config: input[:config], notification_id: notification.id)
@@ -81,7 +80,6 @@ module SurveyMoonbear
 
       # input { config:, study_id:, aws_arn: }
       def delete_record_in_database(input)
-        binding.irb
         input[:deleted_study] = Repository::For[Entity::Study].delete_from(input[:study_id])
         Success(input)
       rescue StandardError => e

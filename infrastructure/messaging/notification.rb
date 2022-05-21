@@ -31,24 +31,23 @@ module SurveyMoonbear
         topic.delete
       end
 
-      def subscribe_topic(topic_arn, protocol, endpoint, uuid)
-        @sns_client.subscribe(topic_arn: topic_arn,
-                              protocol: protocol,
-                              endpoint: endpoint,
-                              attributes: {
-                                'FilterPolicy' => "{\"uuid\": [\"#{uuid}\", \"all\"]}"
-                              })[:subscription_arn]
+      def confirm_subscriptions(topic_arn, uuids)
+        topic = @sns_resource.topic(topic_arn)
+        updated_arn = {}
+        topic.subscriptions.map do |subscription|
+          next if subscription.arn == 'PendingConfirmation' || subscription.arn == 'Deleted'
+
+          endpoint = subscription.attributes['Endpoint']
+          subscription.set_attributes({ attribute_name: 'FilterPolicy',
+                                        attribute_value: "{\"uuid\": [\"#{uuids[endpoint]}\", \"all\"]}" })
+          updated_arn.update({ endpoint => subscription.arn })
+        end
+        updated_arn
       end
 
-      def confirm_subscriptions(topic_arn)
-        topic = @sns_resource.topic(topic_arn)
-        updated_subscriptions_arn = {}
-        topic.subscriptions.map do |subscription|
-          next if subscription.arn == 'PendingConfirmation'
-
-          updated_subscriptions_arn.update({ subscription.attributes['Endpoint'] => subscription.arn })
-        end
-        updated_subscriptions_arn
+      def subscribe_topic(topic_arn, protocol, endpoint)
+        @sns_client.subscribe(topic_arn: topic_arn, protocol: protocol,
+                              endpoint: endpoint)[:subscription_arn]
       end
 
       def delete_subscription(subscription_arn)

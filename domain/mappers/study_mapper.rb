@@ -76,7 +76,7 @@ module SurveyMoonbear
 
         def activity_end_at
           if @study[:data]['activity_end_at'].empty?
-            Time.now
+            activity_start_at + 86_400 # default end at the next day
           else
             Time.parse(@study[:data]['activity_end_at'])
           end

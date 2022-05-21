@@ -73,11 +73,11 @@ module SurveyMoonbear
         end
 
         def aws_arn
-          '' || @participant[:data]['aws_arn']
+          @participant[:data]['aws_arn']
         end
 
         def noti_status
-          'checking' || @participant[:data]['noti_status']
+          @participant[:data]['noti_status']
         end
 
         def act_status

@@ -22,10 +22,9 @@ module SurveyMoonbear
 
         if notification.study.state == 'started'
           participants = Repository::For[Entity::Participant].find_study_confirmed(notification.study.id)
-          participants.map do |participant|
-            title = "#{notification.title}_#{notification.id}_#{participant.id}"
-            Sidekiq.remove_schedule(title)
-          end
+          DeleteNotificationSession.new.call(config: input[:config],
+                                             notifications: [notification],
+                                             participants: participants)
         end
 
         Success(input)

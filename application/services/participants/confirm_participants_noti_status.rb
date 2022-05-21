@@ -6,71 +6,38 @@ require 'http'
 module SurveyMoonbear
   module Service
     # Returns a new study, or nil
-    # Usage: Service::CreateParticipant.new.call(config: <config>, study_id: {...})
+    # Usage: Service::ConfirmParticipantsNotiStatus.new.call(config: <config>, study: {...},
+    #                                                        participant: {...}, arn: {...})
     class ConfirmParticipantsNotiStatus
       include Dry::Transaction
       include Dry::Monads
 
-      step :get_study_arn_from_db
-      step :get_updated_participants_arn
-      step :update_participants_arn_in_db
+      step :update_participants_new_arn_in_db
       step :create_notification_session
 
       private
 
-      # input { config:, study_id:}
-      def get_study_arn_from_db(input)
-        input[:study] = Repository::For[Entity::Study].find_id(input[:study_id])
-
+      # input { config:, study_id:, study:, upd_arn:, participants: }
+      def update_participants_new_arn_in_db(input)
+        input[:participant] = Repository::For[Entity::Participant].update_arn(input[:participant].id,
+                                                                              input[:arn], 'confirmed')
         Success(input)
       rescue StandardError => e
         puts e
-        Failure('Failed to get study arn from database.')
+        Failure('Failed to update participants new AWS arn in db.')
       end
 
-      # input { config:, study_id:, study: }
-      def get_updated_participants_arn(input)
-        input[:updated_sub_arn] = Messaging::Notification.new(input[:config])
-                                                         .confirm_subscriptions(input[:study].aws_arn)
-        Success(input)
-      rescue StandardError => e
-        puts e
-        Failure('Failed to get updated participant arn.')
-      end
-
-      # input { config:, study_id:, study:, updated_sub_arn: }
-      def update_participants_arn_in_db(input)
-        participants = Repository::For[Entity::Participant].find_study(input[:study].id)
-        participants.each do |participant|
-          next unless participant.noti_status == 'pending'
-
-          sub_arn = input[:updated_sub_arn][participant.email]
-          params = { "aws_arn": sub_arn, "noti_status": 'confirmed' } unless sub_arn.nil?
-          UpdateParticipant.new.call(config: input[:config],
-                                     participant_id: participant.id,
-                                     params: params)
-        end
-        Success(input)
-      rescue StandardError => e
-        puts e
-        Failure('Failed to update participants AWS arn.')
-      end
-
-      # input { config:, study_id:, study:, updated_sub_arn: }
+      # input { config:, study_id:, study:, upd_arn:, participants: }
       def create_notification_session(input)
-        input[:participants] = Repository::For[Entity::Participant].find_study_confirmed(input[:study_id])
-        input[:notifications] = Repository::For[Entity::Notification].find_study(input[:study_id])
-        input[:notifications].map do |notification|
-          input[:participants].map do |participant|
-            survey_link = "#{input[:config].APP_URL}/onlinesurvey/#{notification.survey.id}/#{notification.survey.launch_id}"
-            CreateNotificationSession.new.call(notification: notification,
-                                               study: participant.study,
-                                               survey_link: survey_link,
-                                               participant_id: participant.id)
-          end
+        if input[:study].state == 'started'
+          notifications = Repository::For[Entity::Notification].find_study(input[:study].id)
+          CreateNotificationSession.new.call(config: input[:config],
+                                             notifications: notifications,
+                                             participants: [input[:participant]])
         end
-        Success(participant)
-      rescue
+        Success(input)
+      rescue StandardError => e
+        puts e
         Failure('Failed to create notification session')
       end
     end

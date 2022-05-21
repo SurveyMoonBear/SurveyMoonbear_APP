@@ -519,7 +519,12 @@ module SurveyMoonbear
 
           # POST studies/[study_id]/confirm_noti_status
           routing.post 'confirm_noti_status' do
-            Service::ConfirmParticipantsNotiStatus.new.call(config: config, study_id: study_id)
+            res = Service::UpdateParticipantsNotiStatus.new.call(config: config, study_id: study_id)
+            if res.failure?
+              flash[:error] = 'Fail to update the confirmed participants. Please try again.'
+            else
+              flash[:notice] = 'Successfully update the confirmed participants!'
+            end
             routing.redirect "/studies/#{study_id}"
           end
 
@@ -635,11 +640,26 @@ module SurveyMoonbear
         @current_account = SecureSession.new(session).get(:current_account)
 
         routing.on String do |participant_id|
-          # POST /participants/[participant_id]/update_participant
-          routing.post 'update_participant' do
+          # POST /participants/[participant_id]/update
+          routing.post 'update' do
             Service::UpdateParticipant.new.call(config: config,
+                                                current_account: @current_account,
                                                 participant_id: participant_id,
                                                 params: routing.params)
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # POST /participants/[participant_id]/turn_off_notify
+          routing.post 'turn_off_notify' do
+            Service::TurnOffNotify.new.call(config: config,
+                                            participant_id: participant_id)
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # POST /participants/[participant_id]/turn_on_notify
+          routing.post 'turn_on_notify' do
+            Service::TurnOnNotify.new.call(config: config,
+                                           participant_id: participant_id)
             routing.redirect "/participants/#{participant_id}"
           end
 

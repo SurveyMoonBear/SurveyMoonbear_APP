@@ -1,9 +1,10 @@
 == render :modal_waiting
 div class="mb-3"
   div class="row justify-content-center mt-3"
-    div class="col-10 col-sm-12 col-md-8 align-middle" 
-      a href="/studies"
-        i class="fas fa-angle-double-left" &nbsp;Back to My Studies
+    div class="col-10 col-sm-12 col-md-8 text-muted"
+      small.align-middle
+        a href="/studies" My Studies&nbsp;
+        i class="fas fa-angle-double-right"&nbsp;#{study.title}
     div class="col-2 col-sm-2 col-md-2 text-right text-muted"
       small Study
   div class="row justify-content-center mt-3"
@@ -78,96 +79,6 @@ div class="mb-3"
           span From #{study.activity_start_at.strftime('%D')} to #{study.activity_end_at.strftime('%D')}
   div class="row justify-content-center mt-3"
     div class="col-4 col-sm-12 col-md-3" 
-      h4 Registered Participants
-    div class="col-8 col-sm-12 col-md-7"
-      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_participant"
-        i class="fas fa-plus"
-      == render :modal_create_participant, locals: { study: study }
-      - if study.enable_notification
-        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/confirm_noti_status" method='post'
-          button type="submit" class="btn btn-outline-primary btn-sm"
-            i class="fas fa-check" &nbsp;Update NTFY. Status
-      - if study.track_activity
-        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/subscribe_all" method='post'
-          button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
-            i class="fas fa-calendar" &nbsp;Subscribe All
-        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/unsubscribe_all" method='post'
-          button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
-            i class="fas fa-calendar" &nbsp;Unsubscribe All
-      div class="dropdown-menu"
-        a href="#" class="dropdown-item" onclick="confirmDeleteStudy('#{study.id}', '#{study.title}')" Delete
-  div class="row justify-content-center mt-3"
-    div class="col-12 col-sm-12 col-md-10"
-      - if participants.any?
-        table class="table table-hover"
-          thead
-            tr
-              th scope="col"  #
-              th scope="col"  Nickname
-              th scope="col"  ID
-              th scope="col"  Email
-              - if study.enable_notification
-                th scope="col" NTFY. Status
-              - if study.track_activity
-                th scope="col" Cal. Status
-          tbody
-            - participants.each.with_index do |participant, index|
-              tr class='clickable-row' style="cursor:pointer;" data-href="/participants/#{participant.id}"
-                th scope="row"  #{index+1}
-                td #{participant.nickname}
-                td #{participant.id}
-                td #{participant.email}
-                - if study.enable_notification
-                  - if participant.noti_status == 'turn_off' || participant.noti_status == 'pending'
-                    td
-                      span class="badge badge-pill badge-secondary" #{participant.noti_status}
-                  - if participant.noti_status == 'confirmed'
-                    td
-                      span class="badge badge-pill badge-info" #{participant.noti_status}
-                - if study.track_activity
-                  - if participant.act_status == 'unsubscribed'
-                    td 
-                      span class="badge badge-pill badge-secondary" #{participant.act_status}
-                  - if participant.act_status == 'subscribed'
-                    td
-                      span class="badge badge-pill badge-info" #{participant.act_status}
-  - if study.enable_notification
-    div class="row justify-content-center mt-3"
-      div class="col-4 col-sm-12 col-md-3" 
-        h4 Notifications
-      div class="col-8 col-sm-12 col-md-7"
-        - if study.including_surveys.empty?
-          span {
-            class="d-inline-block" 
-            tabindex="0" 
-            data-toggle="tooltip" 
-            title="Include the survey first."
-          }
-            button type="button" class="btn btn-outline-dark btn-sm mr-1" disabled=""
-              i class="fas fa-plus"
-        - else
-          button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_notification"
-            i class="fas fa-plus"
-          == render :modal_create_notification, locals: { study: study, surveys: all_surveys }
-    div class="row justify-content-center mt-3"
-      div class="col-12 col-sm-12 col-md-10"
-        - if notifications.any?
-          table class="table table-hover"
-            thead
-              tr
-                th scope="col"  #
-                th scope="col"  Title
-                th scope="col"  Survey Title
-                th scope="col"  Date & Time
-            tbody
-              - notifications.each.with_index do |row, index|
-                tr class='clickable-row' style="cursor:pointer;" data-href="/notifications/#{row[:notification].id}"
-                  th scope="row"  #{index+1}
-                  td #{row[:notification].title}
-                  td #{row[:notification].survey.title}
-                  td #{row[:date_time]}
-  div class="row justify-content-center mt-3"
-    div class="col-4 col-sm-12 col-md-3" 
       h4 Surveys
     div class="col-8 col-sm-12 col-md-7"
       button class="btn btn-outline-dark btn-sm mr-1" aria-controls="collapseExample" aria-expanded="false" data-target="#collapseExample" data-toggle="collapse" type="button" 
@@ -211,14 +122,14 @@ div class="mb-3"
                     div class="modal-dialog" role="document"
                       div class="modal-content"
                         div class="modal-header"
-                          h5 class="modal-title" Remove Survey
+                          h5 class="modal-title" Remove
+                            <b>#{survey.title}</b> from <b>#{study.title}</b>?
                           button type="button" class="close" data-dismiss="modal" aria-label="Close"
                             span aria-hidden="true" &times;
                         form action="/studies/#{study.id}/remove_survey" method="post" id="form_remove_survey"
                           div class="modal-body"
                             div class="form-group"
                               div class="mb-2"
-                                label for="title" Remove <b>#{survey.title}</b> from <b>#{study.title}</b>?
                                 label for="title"
                                   i You can still access the <b>#{survey.title}</b> on My Surveys page.
                                 input type="hidden" class="form-control" id="survey_id" name="survey_id" value="#{survey.id}"
@@ -228,6 +139,99 @@ div class="mb-3"
   #collapseExample.collapse
     == render :surveys, locals: { surveys: study.including_surveys, config: config }
 
+  div class="row justify-content-center mt-3"
+    div class="col-4 col-sm-12 col-md-3" 
+      h4 Registered Participants
+    div class="col-8 col-sm-12 col-md-7"
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_participant"
+        i class="fas fa-plus"
+      == render :modal_create_participant, locals: { study: study }
+      - if study.enable_notification
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/confirm_noti_status" method='post'
+          button type="submit" class="btn btn-outline-primary btn-sm"
+            i class="fas fa-check" &nbsp;Update Notify Status
+      - if study.track_activity
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/subscribe_all" method='post'
+          button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
+            i class="fas fa-calendar" &nbsp;Subscribe All
+        form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/unsubscribe_all" method='post'
+          button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
+            i class="fas fa-calendar" &nbsp;Unsubscribe All
+      div class="dropdown-menu"
+        a href="#" class="dropdown-item" onclick="confirmDeleteStudy('#{study.id}', '#{study.title}')" Delete
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10"
+      - if participants.any?
+        table class="table table-hover"
+          thead
+            tr
+              th scope="col"  #
+              th scope="col"  Nickname
+              th scope="col"  ID
+              th scope="col"  Email
+              - if study.enable_notification
+                th scope="col" Notify Status
+              - if study.track_activity
+                th scope="col" Calendar Status
+          tbody
+            - participants.each.with_index do |participant, index|
+              tr class='clickable-row' style="cursor:pointer;" data-href="/participants/#{participant.id}"
+                th scope="row"  #{index+1}
+                td #{participant.nickname}
+                td #{participant.id}
+                td #{participant.email}
+                - if study.enable_notification
+                  - if participant.noti_status == 'turn_off' || participant.noti_status == 'pending'
+                    td
+                      span class="badge badge-pill badge-secondary" #{participant.noti_status}
+                  - elsif participant.noti_status == 'confirmed'
+                    td
+                      span class="badge badge-pill badge-info" #{participant.noti_status}
+                  - else
+                    td
+                      span class="badge badge-pill badge-danger" failed please delete it
+                - if study.track_activity
+                  - if participant.act_status == 'unsubscribed'
+                    td 
+                      span class="badge badge-pill badge-secondary" #{participant.act_status}
+                  - if participant.act_status == 'subscribed'
+                    td
+                      span class="badge badge-pill badge-info" #{participant.act_status}
+  - if study.enable_notification
+    div class="row justify-content-center mt-3"
+      div class="col-4 col-sm-12 col-md-3" 
+        h4 Notifications
+      div class="col-8 col-sm-12 col-md-7"
+        - if study.including_surveys.empty?
+          span {
+            class="d-inline-block" 
+            tabindex="0" 
+            data-toggle="tooltip" 
+            title="Include the survey first."
+          }
+            button type="button" class="btn btn-outline-dark btn-sm mr-1" disabled=""
+              i class="fas fa-plus"
+        - else
+          button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_notification"
+            i class="fas fa-plus"
+          == render :modal_create_notification, locals: { study: study, surveys: all_surveys }
+    div class="row justify-content-center mt-3"
+      div class="col-12 col-sm-12 col-md-10"
+        - if notifications.any?
+          table class="table table-hover"
+            thead
+              tr
+                th scope="col"  #
+                th scope="col"  Title
+                th scope="col"  Survey Title
+                th scope="col"  Date & Time
+            tbody
+              - notifications.each.with_index do |row, index|
+                tr class='clickable-row' style="cursor:pointer;" data-href="/notifications/#{row[:notification].id}"
+                  th scope="row"  #{index+1}
+                  td #{row[:notification].title}
+                  td #{row[:notification].survey.title}
+                  td #{row[:date_time]}
 javascript:
   $(document).ready(function($) {
       $(".clickable-row").click(function() {
