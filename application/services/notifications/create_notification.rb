@@ -33,13 +33,9 @@ module SurveyMoonbear
       def create_notification_session(input)
         if input[:study].state == 'started'
           participants = Repository::For[Entity::Participant].find_study_confirmed(input[:study_id])
-          participants.map do |participant|
-            survey_link = "#{input[:config].APP_URL}/onlinesurvey/#{input[:survey].id}/#{input[:survey].launch_id}"
-            CreateNotificationSession.new.call(notification: input[:notification],
-                                               study: input[:study],
-                                               survey_link: survey_link,
-                                               participant_id: participant.id)
-          end
+          CreateNotificationSession.new.call(config: input[:config],
+                                             notifications: [input[:notification]],
+                                             participants: participants)
         end
         Success(input[:notification])
       rescue
