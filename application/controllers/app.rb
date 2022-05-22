@@ -604,6 +604,20 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
+          # POST studies/[study_id]/update
+          routing.post 'update' do
+            res = Service::UpdateStudy.new.call(config: config, study_id: study_id,
+                                                current_account: @current_account,
+                                                params: routing.params)
+
+            if res.failure?
+              flash[:error] = 'Cannot update the study. Please try again. :('
+            else
+              flash[:notice] = 'Successfully update the study!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
           # GET studies/[study_id]/study_result_detail
           routing.on 'study_result_detail' do
             routing.get do

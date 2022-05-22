@@ -16,11 +16,10 @@ div class="mb-3"
       h3.m-0 #{study.title}
       button {
         class="btn btn-outline-dark border-0 ml-2 py-1"
-        data-toggle="modal" data-target="#modal_rename_study" 
-        data-study_id=""
-        data-study_title=""
+        data-toggle="modal" data-target="#modal_update_study" 
       }
         i class="fas fa-cog"
+      == render :modal_update_study, locals: { study: study }
       - if study.enable_notification
         - if study.state == 'started'
           button class="btn btn-sm btn-outline-primary ml-auto" data-toggle="modal" data-target="#modal_close_notification"
