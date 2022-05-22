@@ -617,11 +617,21 @@ module SurveyMoonbear
             end
           end
 
-          # POST studies/[study_id]/download/{file_name}
+          # POST studies/[study_id]/download/[file_name]
           routing.on 'download', String do |file_name|
             routing.post do
               response['Content-Type'] = 'application/csv'
-              response = Service::TransformStudyResultToCSV.new.call(study_id: study_id, params: routing.params)
+              params = routing.params
+              response = if params['result_type'] == 'responses'
+                           Service::TransformResponsesToCSV.new.call(launch_id: params['wave_id'],
+                                                                     participant_id: params['participant_id'])
+                         elsif params['info_details_or_events'] == 'events'
+                           Service::TransformEventsToCSV.new.call(study_id: study_id,
+                                                                  participant_id: params['participant_id'])
+                         else
+                           Service::TransformParticipantsToCSV.new.call(study_id: study_id,
+                                                                        participant_id: params['participant_id'])
+                         end
 
               response.success? ? response.value! : response.failure
             end
