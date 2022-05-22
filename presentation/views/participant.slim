@@ -165,45 +165,45 @@ div class="mb-3"
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10 p-3 border"
       .row
-        .col-md-2.col-sm-12
+        .col-md-3.col-sm-12
           b Study
-        .col-md-10.col-sm-12 
+        .col-md-9.col-sm-12 
           a href="/studies/#{participant.study.id}" #{participant.study.title}
       .row
-        .col-md-2.col-sm-12
+        .col-md-3.col-sm-12
           b ID
-        .col-md-10.col-sm-12 #{participant.id}
+        .col-md-9.col-sm-12 #{participant.id}
       - if participant.study.enable_notification
         .row
-          .col-md-2.col-sm-12
+          .col-md-3.col-sm-12
             b Notify Status
-          .col-md-10.col-sm-12 
+          .col-md-9.col-sm-12 
             - if participant.noti_status == 'turn_off' || participant.noti_status == 'pending'
               span class="badge badge-pill badge-secondary"#{participant.noti_status}
             - if participant.noti_status == 'confirmed'
               span class="badge badge-pill badge-info" #{participant.noti_status}
       - if participant.study.track_activity
         .row
-          .col-md-2.col-sm-12
+          .col-md-3.col-sm-12
             b Calendar Status
-          .col-md-10.col-sm-12
+          .col-md-9.col-sm-12
             - if participant.act_status == 'unsubscribed'
               span class="badge badge-pill badge-secondary" #{participant.act_status}
             - if participant.act_status == 'subscribed'
               span class="badge badge-pill badge-info" #{participant.act_status}
       .row
-        .col-md-2.col-sm-12
+        .col-md-3.col-sm-12
           b Contact Type
-        .col-md-10.col-sm-12 #{participant.contact_type}
+        .col-md-9.col-sm-12 #{participant.contact_type}
       .row
-        .col-md-2.col-sm-12
+        .col-md-3.col-sm-12
           b Email
-        .col-md-10.col-sm-12 #{participant.email}
+        .col-md-9.col-sm-12 #{participant.email}
       .row
-        .col-md-2.col-sm-12
+        .col-md-3.col-sm-12
           b Phone
         - unless participant.phone.empty?
-          .col-md-10.col-sm-12 #{participant.phone}
+          .col-md-9.col-sm-12 #{participant.phone}
   div class="row justify-content-center mt-3"
     div class="col-4 col-sm-12 col-md-3" 
       h4 Details
@@ -213,9 +213,9 @@ div class="mb-3"
       div class="col-12 col-sm-12 col-md-10 p-3 border"
         - details.each do |key, value|    
           .row
-            .col-md-2.col-sm-12
+            .col-md-3.col-sm-12
               b #{key}
-            .col-md-10.col-sm-12 #{value}
+            .col-md-9.col-sm-12 #{value}
   - if participant.study.track_activity
     div class="row justify-content-center mt-3"
       div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
