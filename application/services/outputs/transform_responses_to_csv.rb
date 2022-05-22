@@ -20,6 +20,7 @@ module SurveyMoonbear
       step :sort_responses_by_item_name
       step :build_response_table_headers
       step :build_response_rows_arr
+      step :filter_participant
       step :transform_to_csv
 
       private
@@ -96,7 +97,7 @@ module SurveyMoonbear
         puts e
         Failure('Failed to build responses table headers.')
       end
-    
+
       # input { ..., headers_arr: }
       def build_response_rows_arr(input)
         input[:rows_arr] = input[:sorted_response_hashes].map do |hash|
@@ -112,6 +113,20 @@ module SurveyMoonbear
       rescue StandardError => e
         puts e
         Failure('Failed to build response rows array.')
+      end
+
+      def filter_participant(input)
+        unless input[:participant_id].nil? || input[:participant_id].empty?
+          rows_arr = []
+          input[:rows_arr].each do |row|
+            rows_arr << row if row.include?("{\"p\":\"#{input[:participant_id]}\"}")
+          end
+          input[:rows_arr] = rows_arr
+        end
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to filter participant in rows array.')
       end
 
       # input { ..., rows_arr: }

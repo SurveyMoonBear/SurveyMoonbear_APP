@@ -604,6 +604,39 @@ module SurveyMoonbear
             routing.redirect "/studies/#{study_id}"
           end
 
+          # GET studies/[study_id]/study_result_detail
+          routing.on 'study_result_detail' do
+            routing.get do
+              result_detail = Service::GetStudyResultDetail.new.call(study_id: study_id)
+              if result_detail.failure?
+                puts result_detail.failure
+                []
+              else
+                result_detail.value!
+              end
+            end
+          end
+
+          # POST studies/[study_id]/download/[file_name]
+          routing.on 'download', String do |file_name|
+            routing.post do
+              response['Content-Type'] = 'application/csv'
+              params = routing.params
+              response = if params['result_type'] == 'responses'
+                           Service::TransformResponsesToCSV.new.call(launch_id: params['wave_id'],
+                                                                     participant_id: params['participant_id'])
+                         elsif params['info_details_or_events'] == 'events'
+                           Service::TransformEventsToCSV.new.call(study_id: study_id,
+                                                                  participant_id: params['participant_id'])
+                         else
+                           Service::TransformParticipantsToCSV.new.call(study_id: study_id,
+                                                                        participant_id: params['participant_id'])
+                         end
+
+              response.success? ? response.value! : response.failure
+            end
+          end
+
           # DELETE studies/[study_id]
           routing.delete do
             response = Service::DeleteStudy.new.call(config: config,
