@@ -68,6 +68,13 @@ module SurveyMoonbear
         rebuild_entity(db_study)
       end
 
+      def self.update(id, params)
+        db_study = Database::StudyOrm.where(id: id).first
+        db_study.update(params)
+
+        rebuild_entity(db_study)
+      end
+
       def self.add_survey(id, survey_id)
         db_study = Database::StudyOrm.where(id: id).first
         db_study.add_owned_survey(survey_id)
