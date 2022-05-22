@@ -11,7 +11,7 @@ use Rack::Attack
 
 # Rack::Session::Cookie provides simple cookie based session management.
 # By default, the session is a Ruby Hash stored as base64 encoded marshalled data set to :key (default: rack.session).
-Sidekiq::Web.use(Rack::Session::Cookie, secret: ENV['SECRET_KEY_BASE'])
+Sidekiq::Web.use(Rack::Session::Cookie, secret: ENV['SESSION_SECRET'])
 
 # Secure Sidekiq::Web dashboard with HTTP Basic Authentication using Rack::Auth::Basic.
 Sidekiq::Web.use(Rack::Auth::Basic) do |username, password|
