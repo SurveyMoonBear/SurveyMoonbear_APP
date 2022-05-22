@@ -23,9 +23,16 @@ module SurveyMoonbear
           survey.launches.each do |launch|
             next if launch.responses.length.zero?
 
+            arr_responses = []
+            launch.responses.each do |res|
+              arr_responses.push(res.respondent_id)
+            end
+
             input[:waves].push({ survey_id: survey.id,
                                  survey_title: survey.title,
-                                 launch_id: launch.id })
+                                 launch_id: launch.id,
+                                 start_at: launch.started_at.strftime('%D %H:%M'),
+                                 res_len: arr_responses.uniq!.length })
           end
         end
 

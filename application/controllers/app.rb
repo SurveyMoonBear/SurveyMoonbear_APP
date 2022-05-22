@@ -617,6 +617,16 @@ module SurveyMoonbear
             end
           end
 
+          # POST studies/[study_id]/download/{file_name}
+          routing.on 'download', String do |file_name|
+            routing.post do
+              response['Content-Type'] = 'application/csv'
+              response = Service::TransformStudyResultToCSV.new.call(study_id: study_id, params: routing.params)
+
+              response.success? ? response.value! : response.failure
+            end
+          end
+
           # DELETE studies/[study_id]
           routing.delete do
             response = Service::DeleteStudy.new.call(config: config,
