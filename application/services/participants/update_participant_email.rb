@@ -37,7 +37,7 @@ module SurveyMoonbear
       def delete_original_participant_aws_subscription(input)
         participant = input[:participant]
         if participant.noti_status != 'disabled' && participant.noti_status != 'pending'
-          Messaging::Notification.new(input[:config]).delete_subscription(participant.aws_arn)
+          Messaging::NotificationSubscriber.new(input[:config]).delete_subscription(participant.aws_arn)
         end
         Success(input)
       rescue
@@ -62,7 +62,7 @@ module SurveyMoonbear
       def create_new_participant_aws_subscription(input)
         participant = input[:participant]
         if participant.noti_status != 'disabled'
-          Messaging::Notification.new(input[:config]).subscribe_topic(participant.study.aws_arn,
+          Messaging::NotificationSubscriber.new(input[:config]).subscribe_topic(participant.study.aws_arn,
                                                                       participant.contact_type,
                                                                       input[:new_email],
                                                                       participant.id)

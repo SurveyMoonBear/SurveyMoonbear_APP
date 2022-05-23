@@ -31,7 +31,7 @@ module SurveyMoonbear
       # input { config:, current_account:, params:, study: }
       def get_study_arn(input)
         if input[:study].enable_notification
-          study_arn = Messaging::Notification.new(input[:config]).create_topic(input[:study][:id])
+          study_arn = Messaging::NotificationSubscriber.new(input[:config]).create_topic(input[:study][:id])
           input[:aws_arn] = study_arn
         else
           input[:aws_arn] = 'disable notification'

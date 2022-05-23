@@ -28,7 +28,7 @@ module SurveyMoonbear
       # input { config:, current_account:, study_id:, params:, study: }
       def get_participant_arn(input)
         if input[:study].enable_notification
-          participant_arn = Messaging::Notification.new(input[:config])
+          participant_arn = Messaging::NotificationSubscriber.new(input[:config])
                                                    .subscribe_topic(input[:study][:aws_arn],
                                                                     input[:params]['contact_type'],
                                                                     input[:params]['email'])

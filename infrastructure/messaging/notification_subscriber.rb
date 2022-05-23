@@ -5,7 +5,7 @@ require 'aws-sdk-sns'
 module SurveyMoonbear
   module Messaging
     # Notification wrapper for AWS SNS
-    class Notification
+    class NotificationSubscriber
       def initialize(config)
         @config = config
         @config_aws_hash = {
@@ -55,9 +55,15 @@ module SurveyMoonbear
       end
 
       # { participant_id = all } to send the message to all participants
-      def send_notification(topic_arn, message, participant_id)
+      def send_email_notification(topic_arn, message, participant_id)
         msg_attr = { 'uuid' => { 'data_type': 'String', 'string_value': participant_id } }
         @sns_client.publish(topic_arn: topic_arn, message: message, message_attributes: msg_attr)
+      end
+
+      # { participant_id = all } to send the message to all participants
+      def send_sms_notification(phone_number, message, participant_id)
+        msg_attr = { 'uuid' => { 'data_type': 'String', 'string_value': participant_id } }
+        @sns_client.publish(phone_number: phone_number, message: message, message_attributes: msg_attr)
       end
     end
   end

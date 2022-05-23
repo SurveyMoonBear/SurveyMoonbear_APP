@@ -32,7 +32,7 @@ module SurveyMoonbear
       # input { config:, current_account:, study_id:, study: }
       def delete_aws_topic(input)
         study = input[:study]
-        Messaging::Notification.new(input[:config]).delete_topic(study.aws_arn) if study.enable_notification
+        Messaging::NotificationSubscriber.new(input[:config]).delete_topic(study.aws_arn) if study.enable_notification
 
         Success(input)
       rescue StandardError => e

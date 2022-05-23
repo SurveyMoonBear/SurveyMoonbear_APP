@@ -49,7 +49,7 @@ module SurveyMoonbear
           input[:participants].map { |ptcp| Repository::For[Entity::Participant].update_arn(ptcp.id, '', 'disabled') }
 
           # study: delete study aws topic & delete confirmed participants aws subscription
-          Messaging::Notification.new(input[:config]).delete_topic(input[:study].aws_arn)
+          Messaging::NotificationSubscriber.new(input[:config]).delete_topic(input[:study].aws_arn)
           input[:study] = Repository::For[Entity::Study].update_arn(input[:study_id], '')
         end
 
@@ -62,12 +62,12 @@ module SurveyMoonbear
       def check_to_enable_notification(input)
         if input[:params]['enable_notification'] && input[:params]['enable_notification'] != input[:study].enable_notification
           # study: create a new aws topic
-          study_arn = Messaging::Notification.new(input[:config]).create_topic(input[:study_id])
+          study_arn = Messaging::NotificationSubscriber.new(input[:config]).create_topic(input[:study_id])
           input[:study] = Repository::For[Entity::Study].update_arn(input[:study_id], study_arn)
 
           # participant: subscribe aws topic, status -> pending
           input[:participants].map do |ptcp|
-            arn = Messaging::Notification.new(input[:config]).subscribe_topic(study_arn, ptcp.contact_type, ptcp.email)
+            arn = Messaging::NotificationSubscriber.new(input[:config]).subscribe_topic(study_arn, ptcp.contact_type, ptcp.email)
             Repository::For[Entity::Participant].update_arn(ptcp.id, arn, 'pending')
           end
         end
