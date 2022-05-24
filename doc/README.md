@@ -65,6 +65,7 @@ Developer could folow the guide to develop SurveyMoonbear.
 * [How to update Heroku with updating GitHub code](heroku/update_from_github.md)
 * [How to test on Heroku new stack](heroku/test-on-heroku-new-stack.md)
 * [pgAdmin Remote Connection](heroku/pgAdmin-remote-connection.md)
+* [How to create a staging app](heroku/staging_app.md)
 
 ### Docker
 - [How to Dockerize](docker/docker_project.md)
