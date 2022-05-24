@@ -5,7 +5,7 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Return sources entity from spreadsheet
-    # Usage: Service::GetSourcesFromSpreadsheet.new.call(spreadsheet_id: "...", access_token: "...")
+    # Usage: Service::GetSourcesFromSpreadsheet.new.call(spreadsheet_id: "...", access_token: "...", redis:"...")
     class GetSourcesFromSpreadsheet
       include Dry::Transaction
       include Dry::Monads
@@ -16,8 +16,13 @@ module SurveyMoonbear
 
       # input { spreadsheet_id:, current_account: }
       def read_spreadsheet(input)
+        key = 'source' + input[:spreadsheet_id]
+
         sheets_api = Google::Api::Sheets.new(input[:access_token])
-        sources = Google::SourceMapper.new(sheets_api).load_several(input[:spreadsheet_id], 'sources')
+        sources = Google::SourceMapper.new(sheets_api).load_several(input[:spreadsheet_id],
+                                                                    'sources',
+                                                                    input[:redis],
+                                                                    key)
 
         Success(sources)
       rescue StandardError => e

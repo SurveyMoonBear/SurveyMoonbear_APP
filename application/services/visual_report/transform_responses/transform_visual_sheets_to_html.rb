@@ -4,9 +4,9 @@ require 'dry/transaction'
 
 module SurveyMoonbear
   module Service
-    # Return survey title & an array of page HTML strings
-    # Usage: Service::TransformVisualSheetsToHTML.new.call(survey_id: "...", spreadsheet_id: "...", config: "...", access_token: "...")
-    class TransformVisualSheetsToHTML
+    # Return an array of page HTML strings
+    # Usage: Service::TransformVisualSheetsToChart.new.call(survey_id: "...", spreadsheet_id: "...", config: "...", redis: "...", access_token: "...")
+    class TransformVisualSheetsToChart
       include Dry::Transaction
       include Dry::Monads
 
@@ -14,15 +14,14 @@ module SurveyMoonbear
       step :get_user_access_token
       step :get_sources_from_spreadsheet
       step :cal_responses_from_sources
-      step :transform_sheet_items_to_html
 
       private
 
-      # input { visual_report_id:, spreadsheet_id:, access_token:, config: }
+      # input { visual_report_id:, spreadsheet_id:, access_token:, config:, redis:}
       def get_items_from_spreadsheet(input)
         sheets_report = GetVisualreportFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
-                                                                access_token: input[:access_token])
-
+                                                                access_token: input[:access_token],
+                                                                redis: input[:redis])
         if sheets_report.success?
           input[:sheets_report] = sheets_report.value! # table1=>[table1 data],table2=>[table2 data]...
           Success(input)
@@ -47,7 +46,8 @@ module SurveyMoonbear
       # input { ..., sheets_report, user_access_token}
       def get_sources_from_spreadsheet(input)
         sources = GetSourcesFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
-                                                     access_token: input[:access_token])
+                                                     access_token: input[:access_token],
+                                                     redis: input[:redis])
 
         other_sheet = {}
         sources.value!.each do |source|
@@ -55,9 +55,16 @@ module SurveyMoonbear
             url = source.source_name # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
             other_sheet_id = url.match('.*/(.*)/')[1]
             other_sheets_api = Google::Api::Sheets.new(input[:user_access_token])
-            other_sheet_title = other_sheets_api.survey_data(other_sheet_id)['sheets'][0]['properties']['title']
-            other_sheet[source.source_id] = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
-            input[:other_sheets] = other_sheet
+            other_sheet_key = 'other_sheet' + other_sheet_id
+            input[:other_sheets] =
+              if input[:redis].get(other_sheet_key)
+                input[:redis].get(other_sheet_key)
+              else
+                other_sheet_title = other_sheets_api.survey_data(other_sheet_id)['sheets'][0]['properties']['title']
+                other_sheet[source.source_id] = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
+                input[:redis].set(other_sheet_key, other_sheet)
+                other_sheet
+              end
           end
         end
 
@@ -94,22 +101,9 @@ module SurveyMoonbear
           end
         input[:all_graphs] = pages_val.to_h
 
-        Success(input)
+        Success(input[:all_graphs])
       rescue StandardError
         Failure('Failed to map responses and visual report items.')
-      end
-
-      # input { ..., all_graphs:}
-      def transform_sheet_items_to_html(input)
-        transform_result = TransformResponsesToHTMLWithChart.new.call(pages_charts: input[:all_graphs])
-        if transform_result.success?
-          Success(all_graphs: input[:all_graphs],
-                  nav_tab: transform_result.value![:nav_tab],
-                  nav_item: transform_result.value![:nav_item],
-                  pages_chart_val_hash: transform_result.value![:pages_chart_val_hash])
-        else
-          Failure(transform_result.failure)
-        end
       end
 
       def find_source(sources, item_data_source)

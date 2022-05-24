@@ -9,10 +9,17 @@ module SurveyMoonbear
         @gateway = gateway
       end
 
-      def load_several(spreadsheet_id, title)
-        sources_data = @gateway.items_data(spreadsheet_id, title)
-        sources_data = sources_data['values'].reject(&:empty?) # Remove empty rows
-        sources_data.shift # Remove the first row of spreadsheet (titles for users)
+      def load_several(spreadsheet_id, title, redis, key)
+        sources_data =
+          if redis.get(key)
+            redis.get(key)
+          else
+            google_sources_data = @gateway.items_data(spreadsheet_id, title)
+            google_sources_data = google_sources_data['values'].reject(&:empty?) # Remove empty rows
+            google_sources_data.shift # Remove the first row of spreadsheet (titles for users)
+            redis.set(key, google_sources_data)
+            google_sources_data
+          end
 
         return nil unless sources_data
 

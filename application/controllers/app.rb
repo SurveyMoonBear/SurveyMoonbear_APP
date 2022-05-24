@@ -415,10 +415,10 @@ module SurveyMoonbear
                             .find_id(visual_report_id)
 
             access_token = Google::Auth.new(config).refresh_access_token
-            responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
-                                                                      spreadsheet_id: spreadsheet_id,
-                                                                      config: config,
-                                                                      access_token: access_token)
+            responses = Service::GetPublicVisualReport.new.call(visual_report_id: visual_report_id,
+                                                                spreadsheet_id: spreadsheet_id,
+                                                                config: config,
+                                                                access_token: access_token)
 
             if responses.failure?
               flash[:error] = "#{responses.failure} Please try again :("

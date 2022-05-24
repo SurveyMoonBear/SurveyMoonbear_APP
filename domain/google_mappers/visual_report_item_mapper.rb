@@ -7,9 +7,16 @@ module SurveyMoonbear
         @gateway = gateway
       end
 
-      def load_several(spreadsheet_id)
-        pages_data = @gateway.survey_data(spreadsheet_id)
-        pages_data['sheets'].shift # remove the first page(source) of spreadsheet
+      def load_several(spreadsheet_id, redis, key)
+        pages_data =
+          if redis.get(key)
+            redis.get(key)
+          else
+            google_pages_data = @gateway.survey_data(spreadsheet_id)
+            google_pages_data['sheets'].shift # remove the first page(source) of spreadsheet
+            redis.set(key, google_pages_data)
+            google_pages_data
+          end
         pages_items = {}
         pages_data['sheets'].map do |page_data|
           title = page_data['properties']['title']

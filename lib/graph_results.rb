@@ -4,7 +4,7 @@ require_relative 'secure_message'
 # store graph results on redis
 class GraphResults
   def initialize(config)
-    @redis = Redis.new(url: config.REDISCLOUD_URL)
+    @redis = Redis.new(url: config.REDIS_URL + '/2')
   end
 
   # Only set the key if it does not already exist.

@@ -11,6 +11,7 @@ module SurveyMoonbear
 
       step :get_responses_from_spreadsheet
       step :map_identity_and_responses
+      step :generate_default_color
       step :map_individual_answer
 
       private
@@ -20,7 +21,8 @@ module SurveyMoonbear
         case_id = input[:spreadsheet_source].case_id # C3:C141
         question = input[:item_data].question # M3:M141
 
-        if !case_id.nil? && input[:item_data].self_marker == 'yes'
+        # if !case_id.nil? && input[:item_data].self_marker == 'yes'
+        if !case_id.nil?
           case_range = transform_anotation(case_id)
           input[:case_id_val] = get_range_val(input[:all_data], case_range)
         end
@@ -43,23 +45,32 @@ module SurveyMoonbear
         Failure('Failed to map identity and responses which the sources from spreadsheet.')
       end
 
+      def generate_default_color(input)
+        input[:chart_colors] = input[:count].transform_values { 'rgb(54, 162, 235)' }
+
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to generate default color.')
+      end
+
       def map_individual_answer(input)
-        chart_colors = input[:count].transform_values { 'rgb(54, 162, 235)' }
         unless input[:case_id_val].nil?
-          input[:case_id_val].each_with_index do |id, idx|
-            if id == input[:vis_identity]
-              chart_colors[input[:new_values][idx]] = 'rgb(255, 205, 86)'
+          pair = 
+            input[:case_id_val].each_with_index.map do |id, idx|
+              [id, input[:new_values][idx]]
             end
-          end
         end
-        # input[:chart_colors] = chart_colors
+
         Success([input[:item_data].page,
                  input[:item_data].graph_title,
                  input[:item_data].chart_type,
                  input[:count].values,
                  input[:count].keys,
-                 chart_colors.values,
-                 input[:item_data].legend])
+                 input[:chart_colors].values,
+                 input[:item_data].legend,
+                 input[:item_data].self_marker,
+                 pair.to_h])
       rescue StandardError => e
         puts e
         Failure('Failed to map individual answer which the sources from spreadsheet.')

@@ -12,6 +12,7 @@ module SurveyMoonbear
       step :get_survey_responses
       step :organize_all_responses
       step :generate_default_options_and_cal
+      step :get_pair_of_case_and_response
 
       private
 
@@ -59,23 +60,45 @@ module SurveyMoonbear
             response_cal_hash[option] = 0
             chart_colors[option] = 'rgb(54, 162, 235)'
           end
-
           input[:response_cal_hash], input[:chart_colors] = cal_individual_question(input[:item_responses],
                                                                                     options,
                                                                                     chart_colors,
                                                                                     response_cal_hash)
         end
 
-        Success([input[:item_data].page,
-                 input[:item_data].graph_title,
-                 input[:item_data].chart_type,
-                 input[:response_cal_hash].values,
-                 input[:chart_colors].keys,
-                 input[:chart_colors].values,
-                 input[:item_data].legend])
+        Success(input)
       rescue StandardError => e
         puts e
         Failure('Failed to generate default options or calculate reponses.')
+      end
+
+      # input{ item_responses:..., response_cal_hash: ..., chart_colors: ..., item_data: ..., source: ..., ...}
+      def get_pair_of_case_and_response(input)
+        if input[:source].case_id
+          temp_case_id = {}
+          temp_question = {}
+          input[:all_responses].map do |res_obj|
+            unless res_obj.item_data.nil?
+              question = JSON.parse(res_obj.item_data)
+              temp_case_id[res_obj.response] = res_obj.respondent_id if question['name'] == input[:source].case_id
+              temp_question[res_obj.respondent_id] = res_obj.response if question['name'] == input[:item_data].question
+            end
+          end
+          temp_case_id.each { |key, val| temp_case_id[key] = temp_question[val] }
+          input[:pair] = temp_case_id
+        end
+        Success([input[:item_data].page,
+                input[:item_data].graph_title,
+                input[:item_data].chart_type,
+                input[:response_cal_hash].values,
+                input[:chart_colors].keys,
+                input[:chart_colors].values,
+                input[:item_data].legend,
+                input[:item_data].self_marker,
+                input[:pair]])
+      rescue StandardError => e
+        puts e
+        Failure('Failed to get pair of case and response.')
       end
 
       def cal_individual_question(response_dic, options, chart_colors, response_cal_hash)
@@ -127,7 +150,6 @@ module SurveyMoonbear
         responses_hash.each_value { |val| response_cal_hash['other'] += val }
 
         chart_colors['other'] = 'rgb(54, 162, 235)'
-
         [response_cal_hash, chart_colors]
       end
 
