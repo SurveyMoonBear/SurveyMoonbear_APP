@@ -22,6 +22,7 @@ Users could follow the guide to make you own questionaire
 - [How to Insert an Image](user_guide/insert_image.md)
 - [How to Insert a Video](user_guide/insert_video.md)
 - [How to make similar/same surveys for different groups without duplicating](user_guide/survey_group.md)
+- [How to embedded variable into survey](user_guide/embedded_variable.md)
 
 
 ## Developer Guide
