@@ -3,9 +3,9 @@
 require 'sidekiq-scheduler'
 
 module SurveyMoonbear
-  module Session
+  module Messaging
     # Notification wrapper for AWS SNS
-    class Notification
+    class NotificationScheduler
       def initialize(input)
         @config = input[:config]
         @notification = input[:notification]
@@ -17,14 +17,14 @@ module SurveyMoonbear
       def fixed_timestamp
         enabled = @notification.fixed_timestamp > Time.now.utc
         { 'at' => [@notification.fixed_timestamp],
-          'class' => 'Schedulers::SendNotification',
+          'class' => 'Scheduler::SendNotification',
           'enabled' => enabled,
           'args' => [@topic, @message, @subscriber] }
       end
 
       def repeat_at_set_time
         { 'cron' => [@notification.repeat_set_time],
-          'class' => 'Schedulers::SendNotification',
+          'class' => 'Scheduler::SendNotification',
           'enabled' => true,
           'args' => [@topic, @message, @subscriber] }
       end
@@ -34,7 +34,7 @@ module SurveyMoonbear
         r_end = Time.parse(@notification.repeat_random_end) # "12:00"
         r_result = r_start + rand(r_end - r_start)
         { 'cron' => "#{r_result.min} #{r_result.hour} #{@notification.repeat_random_every}",
-          'class' => 'Schedulers::SendNotification',
+          'class' => 'Scheduler::SendNotification',
           'enabled' => true,
           'args' => [@topic, @message, @subscriber] }
       end

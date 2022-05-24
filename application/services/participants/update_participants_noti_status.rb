@@ -44,7 +44,7 @@ module SurveyMoonbear
 
       # input { config:, study_id:, study: }
       def get_updated_participants_arn(input)
-        input[:upd_arn] = Messaging::Notification.new(input[:config])
+        input[:upd_arn] = Messaging::NotificationSubscriber.new(input[:config])
                                                  .confirm_subscriptions(input[:study].aws_arn, input[:uuids])
         Success(input)
       rescue StandardError => e

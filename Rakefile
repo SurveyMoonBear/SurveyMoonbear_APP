@@ -84,12 +84,12 @@ namespace :scheduler do
   namespace :run do
     desc 'Run the background worker for scheduling job in development mode'
     task :dev => :config do
-      sh 'RACK_ENV=development bundle exec sidekiq -r ./schedulers/jobs_scheduler_dev.rb'
+      sh 'RACK_ENV=development bundle exec sidekiq -r ./schedulers/jobs_scheduler.rb'
     end
 
     desc 'Run the background worker for scheduling job in testing mode'
     task :test => :config do
-      sh 'RACK_ENV=test bundle exec sidekiq -r ./schedulers/jobs_scheduler_test.rb'
+      sh 'RACK_ENV=test bundle exec sidekiq -r ./schedulers/jobs_scheduler.rb'
     end
 
     desc 'Run the background worker for scheduling job in production mode'
@@ -175,7 +175,7 @@ namespace :session do
   task :wipe => :load_all do
     require 'redis'
     puts 'Deleting all sessions from Redis session store'
-    wiped = SessionSecure.wipe_radis_session
+    wiped = SecureSession.wipe_redis_sessions
     puts "#{wiped.count} sessions deleted"
   end
 end

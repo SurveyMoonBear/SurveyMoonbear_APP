@@ -19,7 +19,7 @@ module SurveyMoonbear
 
       # input { config:, study:, participant: }
       def get_participants_deleted_arn(input)
-        input[:arn] = Messaging::Notification.new(input[:config])
+        input[:arn] = Messaging::NotificationSubscriber.new(input[:config])
                                              .subscribe_topic(input[:study].aws_arn,
                                                               input[:participant].contact_type,
                                                               input[:participant].email)

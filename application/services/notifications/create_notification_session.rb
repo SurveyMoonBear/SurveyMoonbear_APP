@@ -19,7 +19,7 @@ module SurveyMoonbear
         input[:notifications].map do |notification|
           input[:participants].map do |participant|
             input_item = { config: input[:config], notification: notification, subscriber: participant.id }
-            Session::Notification.new(input_item).create_session
+            Messaging::NotificationScheduler.new(input_item).create_session
           end
         end
         Success(input)
