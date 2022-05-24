@@ -64,7 +64,6 @@ module SurveyMoonbear
                                                            case_email: input[:email],
                                                            redis: redis,
                                                            spreadsheet_id: input[:spreadsheet_id])
-        binding.irb
 
         if responses.success?
           input[:all_graphs] = responses.value!

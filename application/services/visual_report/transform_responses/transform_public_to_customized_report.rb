@@ -75,7 +75,8 @@ module SurveyMoonbear
               if graph[7] == 'yes'
                 split_response_answer_and_transform_colors(graph[4],
                                                            graph[5],
-                                                           graph[8][input[:case_id]])
+                                                           graph[8][input[:case_id]],
+                                                           graph[9])
               end
           end
         end
@@ -85,18 +86,15 @@ module SurveyMoonbear
         Failure('Failed to transform chart color.')
       end
 
-      def split_response_answer_and_transform_colors(labels, colors, case_response)
+      # return colors
+      def split_response_answer_and_transform_colors(labels, colors, case_response, survey_question_type)
         temp = labels.each_with_index.map { |label, idx| [label, colors[idx]] }
         temp = temp.to_h
-        if case_response.include? ','
-          new_case_response_arr = case_response.split(', ')
-          new_case_response_arr.each do |res|
-            temp[res].nil? ? temp['other'] = 'rgb(255, 205, 86)' : temp[res] = 'rgb(255, 205, 86)'
-          end
+        if survey_question_type
+          temp = deal_with_diff_question(temp, case_response, survey_question_type)
         else
-          temp[case_response].nil? ? temp['other'] = 'rgb(255, 205, 86)' : temp[case_response] = 'rgb(255, 205, 86)'
+          temp[case_response] = 'rgb(255, 205, 86)'
         end
-        # binding.irb
         temp.values
       end
 
@@ -130,6 +128,52 @@ module SurveyMoonbear
           new_val.append(row_value[case_range[:column]])
         end
         new_val
+      end
+
+      def deal_with_diff_question(response_dic, case_response, survey_question_type)
+        case survey_question_type
+        when 'Multiple choice (radio button)'
+          transform_multiple_choice_radio_color(response_dic, case_response)
+        when "Multiple choice with 'other' (radio button)"
+          transform_multiple_choice_radio_color(response_dic, case_response)
+        when 'Multiple choice (checkbox)'
+          transform_multiple_choice_checkbox_color(response_dic, case_response)
+        when "Multiple choice with 'other' (checkbox)"
+          transform_multiple_choice_checkbox_color(response_dic, case_response)
+        when 'Multiple choice grid (radio button)'
+          temp_option = {}
+          response_dic.keys.each_with_index do |option, i|
+            temp_option["#{i+1}"] = option # {'1'=>'Strongly Disagre', '2'=>'Disgree'...}
+          end
+          transform_choice_grid_color(response_dic, temp_option, case_response)
+        else
+          puts "Sorry, we are not yet able to support this question type: #{response_dic['type']}"
+        end
+      end
+
+      def transform_multiple_choice_radio_color(response_dic, case_response)
+        response_dic[case_response].nil? ? response_dic['other'] = 'rgb(255, 205, 86)' : response_dic[case_response] = 'rgb(255, 205, 86)'
+        response_dic
+      end
+
+      def transform_multiple_choice_checkbox_color(response_dic, case_response)
+        if case_response.include? ','
+          new_case_response_arr = case_response.split(', ')
+          new_case_response_arr.each_with_index do |res, i|
+            if res.include? 'I sometimes ask questions about the homework'
+              new_case_response_arr[i] = "I sometimes ask questions about the homework on MS Teams or read others' comments. 我有時會在微軟Teams上面發問或是瀏覽他人的討論串。"
+            end
+            response_dic[res].nil? ? response_dic['other'] = 'rgb(255, 205, 86)' : response_dic[res] = 'rgb(255, 205, 86)'
+          end
+        else
+          response_dic[case_response].nil? ? response_dic['other'] = 'rgb(255, 205, 86)' : response_dic[case_response] = 'rgb(255, 205, 86)'
+        end
+        response_dic
+      end
+
+      def transform_choice_grid_color(response_dic, temp_option, case_response)
+        response_dic[temp_option[case_response]] = 'rgb(255, 205, 86)'
+        response_dic
       end
     end
   end

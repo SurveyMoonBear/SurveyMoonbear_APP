@@ -88,14 +88,15 @@ module SurveyMoonbear
           input[:pair] = temp_case_id
         end
         Success([input[:item_data].page,
-                input[:item_data].graph_title,
-                input[:item_data].chart_type,
-                input[:response_cal_hash].values,
-                input[:chart_colors].keys,
-                input[:chart_colors].values,
-                input[:item_data].legend,
-                input[:item_data].self_marker,
-                input[:pair]])
+                 input[:item_data].graph_title,
+                 input[:item_data].chart_type,
+                 input[:response_cal_hash].values,
+                 input[:chart_colors].keys,
+                 input[:chart_colors].values,
+                 input[:item_data].legend,
+                 input[:item_data].self_marker,
+                 input[:pair],
+                 input[:item_responses]['type']])
       rescue StandardError => e
         puts e
         Failure('Failed to get pair of case and response.')
