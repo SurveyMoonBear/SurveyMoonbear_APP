@@ -450,10 +450,17 @@ module SurveyMoonbear
           # customized visual report
           # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
           routing.post do
-            case_id = routing.params['respondent']
-            case_id = SecureMessage.encrypt(case_id)
+            redis = GraphResults.new(config)
+            access_token = Google::Auth.new(config).refresh_access_token
+            update_visual_report = Service::UpdateVisualReport.new
+                                                              .call(redis: redis,
+                                                                    visual_report_id: visual_report_id,
+                                                                    spreadsheet_id: spreadsheet_id,
+                                                                    config: config,
+                                                                    access_token: access_token)
 
-            routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{case_id}"
+            flash[:error] = 'Failed to update visual report, please try again :(' if update_visual_report.failure?
+            routing.redirect '/analytics'
           end
 
           # customized visual report

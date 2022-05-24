@@ -51,6 +51,11 @@ div class="mb-3"
                 href="https://docs.google.com/spreadsheets/d/#{visual_report.origin_id}/edit"
               } 
                 <i class="fas fa-external-link-alt"></i> &nbsp;Edit in Google Sheets
+              button {
+                class="btn btn-outline-success mr-1 mt-1"
+                onclick="updateVisualReport('#{visual_report.id}', '#{visual_report.origin_id}')"
+              } 
+                <i class="fas fa-redo"></i> &nbsp;Update
           div class="row d-flex"
             div class="mb-3 pl-3"
               div class="input-group"
@@ -135,6 +140,18 @@ javascript:
       type: 'POST',
       data: { title: title },
       success: function(result) {
+        location.reload();
+      }
+    });
+  }
+
+  function updateVisualReport(visual_report_id, spreadsheet_id) {
+    $.ajax({
+      url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id,
+      dataType: 'text',
+      type: 'POST',
+      success: function(result) {
+        alert('The visual report is updated!');
         location.reload();
       }
     });
