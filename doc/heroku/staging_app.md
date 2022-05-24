@@ -1,4 +1,4 @@
-# Heroku staging
+# Heroku staging app
 
 1. Create a new heroku dyno name staging
     ```
