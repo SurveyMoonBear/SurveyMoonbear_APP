@@ -78,29 +78,35 @@ module SurveyMoonbear
 
       # input { ..., sheets_report, user_access_token, sources}
       def cal_responses_from_sources(input)
-        pages_val =
-          input[:sheets_report].map do |key, items_data|
-            graphs_val =
-              items_data.map do |item_data|
-                source = find_source(input[:sources], item_data.data_source)
-                case source.source_type
-                when 'surveymoonbear'
-                  MapSurveyResponsesAndItems.new.call(item_data: item_data,
-                                                      source: source).value!
+        key = 'all_graphs' + input[:spreadsheet_id]
+        input[:all_graphs] =
+          if input[:redis].get(key)
+            input[:redis].get(key)
+          else
+            pages_val =
+              input[:sheets_report].map do |k, items_data|
+                graphs_val =
+                  items_data.map do |item_data|
+                    source = find_source(input[:sources], item_data.data_source)
+                    case source.source_type
+                    when 'surveymoonbear'
+                      MapSurveyResponsesAndItems.new.call(item_data: item_data,
+                                                          source: source).value!
 
-                when 'spreadsheet'
-                  MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
-                                                           access_token: input[:user_access_token],
-                                                           spreadsheet_source: source,
-                                                           all_data: input[:other_sheets][source.source_id]).value!
-                else
-                  Failure('Source type is wrong!')
-                end
+                    when 'spreadsheet'
+                      MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
+                                                               access_token: input[:user_access_token],
+                                                               spreadsheet_source: source,
+                                                               all_data: input[:other_sheets][source.source_id]).value!
+                    else
+                      Failure('Source type is wrong!')
+                    end
+                  end
+                [k, graphs_val]
               end
-            [key, graphs_val]
+            input[:redis].set(key, pages_val.to_h)
+            pages_val.to_h
           end
-        input[:all_graphs] = pages_val.to_h
-
         Success(input[:all_graphs])
       rescue StandardError
         Failure('Failed to map responses and visual report items.')
