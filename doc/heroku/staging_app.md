@@ -50,7 +50,7 @@
     If git remove didn't remove, we can use the same staging app name and same git remote.
     Or to change staging app name and the git remote 
     ```
-    git remote rm staging
-    git remote add staging https://git.heroku.com/newappname-staging.git
-    git push staging master
+    git remote rm <staging>
+    git remote add <staging> https://git.heroku.com/<newappname-staging>.git
+    git push <staging> master
     ```
