@@ -2,46 +2,46 @@
 
 1. Create a new heroku dyno name staging
     ```
-    heroku create appname-staging --remote staging
+    heroku create <appname-staging> --remote <staging>
     ```
 2. Push master branch to remote git
     ```
-    git push staging master
+    git push <staging> master
     ```
     Push other branch to remote git
     ```
-    git push -f staging <branch name>:master
+    git push -f <staging> <branch name>:master
     ```
 3. Check a Postgres server
     ```
-    heroku pg:info --app appname-staging
+    heroku pg:info --app <appname-staging>
     ```
     If no Postgres server, add it
 
     ```
-    heroku addons:create heroku-postgresql --app appname-staging
+    heroku addons:create heroku-postgresql --app <appname-staging>
     ```
 4. Set ALL the config variables (following are just part of them)
     ```
-    heroku config:set BUNDLE_WITHOUT=development:test --app appname-staging
-    heroku config:set RACK_ENV=staging --remote staging
+    heroku config:set BUNDLE_WITHOUT=development:test --app <appname-staging>
+    heroku config:set RACK_ENV=production --app <appname-staging>
     ```
 5. DB migration
     ```
-    heroku run rake db:migrate --app appname-staging
+    heroku run rake db:migrate --app <appname-staging>
     ```
 
 6. Restart & Open
     ```
-    heroku restart --app appname-staging
+    heroku restart --app <appname-staging>
     ```
     Open
     ```
-    heroku open --app appname-staging
+    heroku open --app <appname-staging>
     ```
 7. Check staging app status
     ```
-    heroku ps --remote staging
+    heroku ps --app <appname-staging>
     ```
 
 ## Note
