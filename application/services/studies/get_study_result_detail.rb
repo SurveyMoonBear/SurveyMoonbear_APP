@@ -31,7 +31,7 @@ module SurveyMoonbear
             input[:waves].push({ survey_id: survey.id,
                                  survey_title: survey.title,
                                  launch_id: launch.id,
-                                 start_at: launch.started_at.strftime('%D %H:%M'),
+                                 start_at: launch.started_at.strftime('%Y-%m-%d %H:%M'),
                                  res_len: arr_responses.uniq!.length })
           end
         end

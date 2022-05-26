@@ -13,7 +13,6 @@ module SurveyMoonbear
       attribute :participant, Participant
       attribute :start_at, Strict::Time
       attribute :end_at, Strict::Time
-      # attribute :time_zone, Strict::String.optional
       attribute :created_at, Strict::Time.optional
       attribute :updated_at, Strict::Time.optional
     end

@@ -68,7 +68,7 @@ module SurveyMoonbear
 
         def activity_start_at
           if @study[:data]['activity_start_at'].empty?
-            Time.now
+            Time.parse(Date.today.to_s)
           else
             Time.parse(@study[:data]['activity_start_at'])
           end
@@ -76,9 +76,9 @@ module SurveyMoonbear
 
         def activity_end_at
           if @study[:data]['activity_end_at'].empty?
-            activity_start_at + 86_400 # default end at the next day
+            activity_start_at + 86_399 # default end at the next day
           else
-            Time.parse(@study[:data]['activity_end_at'])
+            Time.parse(@study[:data]['activity_end_at']) + 86_399
           end
         end
 

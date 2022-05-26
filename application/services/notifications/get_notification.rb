@@ -34,7 +34,6 @@ module SurveyMoonbear
         input[:date_time] = case notification.type
                             when 'fixed'
                               notification.fixed_timestamp.getlocal.strftime('%Y-%m-%d %H:%M')
-                              # local_running_sys(fixed_timestamp).getlocal.strftime('%Y-%m-%d %H:%M:%S')
                             when 'repeating'
                               case notification.repeat_at
                               when 'set_time'

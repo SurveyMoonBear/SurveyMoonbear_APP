@@ -32,7 +32,6 @@ module SurveyMoonbear
             participant: participant,
             start_at: start_at,
             end_at: end_at,
-            # time_zone: time_zone,
             created_at: nil,
             updated_at: nil
           )
@@ -53,10 +52,6 @@ module SurveyMoonbear
         def end_at
           Time.parse(@event[:data]['end'])
         end
-
-        # def time_zone
-        #   @event[:data]['start']['timeZone']
-        # end
       end
     end
   end

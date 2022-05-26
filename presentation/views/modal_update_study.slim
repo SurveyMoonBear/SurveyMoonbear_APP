@@ -20,12 +20,19 @@ div class="modal fade" id="modal_update_study"
               - else 
                 input class="form-check-input" type="checkbox" name="enable_notification" id="enable_notification" value="true"
               label class="form-check-label" for="enable_notification" Enable Notification
+            small
+              ul
+                li.text-muted Participant will receive a AWS Subscription Confirm email when the email address is input.
+                li.text-muted After participant confirmed to subscribe, participant could receive the notification email.
             div class="form-check mb-3"
               - if study.track_activity
                 input class="form-check-input" type="checkbox" name="track_activity" id="track_activity" value="true" checked=""
               - else 
                 input class="form-check-input" type="checkbox" name="track_activity" id="track_activity" value="true"
               label class="form-check-label" for="track_activity" Collect Calendar Data
+            small
+              ul
+                li.text-muted After participant open the authorization to you, you can subscribe the participant's Google calendar by their Gmail and start to collect calendar data.
             div class="mb-2 row d-none" id="period_start_at"
               div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"
                 label class="form-label" for="period_start_at" Period Start At 
