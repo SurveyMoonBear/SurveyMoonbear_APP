@@ -415,10 +415,10 @@ module SurveyMoonbear
                             .find_id(visual_report_id)
 
             access_token = Google::Auth.new(config).refresh_access_token
-            responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
-                                                                      spreadsheet_id: spreadsheet_id,
-                                                                      config: config,
-                                                                      access_token: access_token)
+            responses = Service::GetPublicVisualReport.new.call(visual_report_id: visual_report_id,
+                                                                spreadsheet_id: spreadsheet_id,
+                                                                config: config,
+                                                                access_token: access_token)
 
             if responses.failure?
               flash[:error] = "#{responses.failure} Please try again :("
@@ -430,35 +430,62 @@ module SurveyMoonbear
                                                            visual_report: visual_report }
           end
 
-          # visual_report/[visual_report_id]/online/[spreadsheet_id]/design
-          routing.on 'design' do
+          # visual_report/[visual_report_id]/online/[spreadsheet_id]/identify
+          routing.on 'identify' do
+            # write in service object?
+            url = 'https://accounts.google.com/o/oauth2/v2/auth'
+            scopes = ['https://www.googleapis.com/auth/userinfo.profile',
+                      'https://www.googleapis.com/auth/userinfo.email']
+            params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
+                      "redirect_uri=#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}",
+                      'response_type=code',
+                      "scope=#{scopes.join(' ')}"]
+            @google_sso_url = "#{url}?#{params.join('&')}"
+
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
-
-            access_token = Google::Auth.new(config).refresh_access_token
-            responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
-                                                                      spreadsheet_id: spreadsheet_id,
-                                                                      config: config,
-                                                                      access_token: access_token)
-
-            if responses.failure?
-              flash[:error] = "#{responses.failure} Please try again :("
-              routing.redirect '/analytics'
-            end
-
-            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
-
-            view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
-                                                           visual_report: visual_report }
+            view 'visual_report_identify', layout: false, locals: { google_sso_url: @google_sso_url, visual_report: visual_report }
           end
 
           # customized visual report
           # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
           routing.post do
-            student_id = routing.params['respondent']
-            student_id = SecureMessage.encrypt(student_id)
+            redis = GraphResults.new(config)
+            access_token = Google::Auth.new(config).refresh_access_token
+            update_visual_report = Service::UpdateVisualReport.new
+                                                              .call(redis: redis,
+                                                                    visual_report_id: visual_report_id,
+                                                                    spreadsheet_id: spreadsheet_id,
+                                                                    config: config,
+                                                                    access_token: access_token)
 
-            routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{student_id}"
+            flash[:error] = 'Failed to update visual report, please try again :(' if update_visual_report.failure?
+            routing.redirect '/analytics'
+          end
+
+          # customized visual report
+          # GET visual_report/[visual_report_id]/online/[spreadsheet_id]
+          routing.get do
+            code = routing.params['code']
+
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(visual_report_id)
+
+            access_token = Google::Auth.new(config).refresh_access_token
+            responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
+                                                                    visual_report_id: visual_report_id,
+                                                                    config: config,
+                                                                    code: code,
+                                                                    access_token: access_token)
+
+            if responses.failure?
+              flash[:error] = "#{responses.failure} Please try again :("
+              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"
+            end
+
+            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+            view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
+                                                           visual_report: visual_report }
           end
         end
 

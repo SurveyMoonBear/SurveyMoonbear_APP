@@ -51,13 +51,12 @@ module SurveyMoonbear
         else
           nav_item = "<div class='tab-content mb-4' id='nav-tabContent'>"
           input[:pages_charts].keys.each_with_index do |page_name, i|
-            if i == 0
+            if i.zero?
               nav_item += "<div class='tab-pane fade show active' id='nav-item-page#{i}' role='tabpanel' aria-labelledby='nav-tab-page#{i}'>"
-              nav_item += "<div id='chart_div_page#{i}' class='row justify-content-center'></div></div>"
             else
               nav_item += "<div class='tab-pane fade' id='nav-item-page#{i}' role='tabpanel' aria-labelledby='nav-tab-page#{i}'>"
-              nav_item += "<div id='chart_div_page#{i}' class='row justify-content-center'></div></div>"
             end
+            nav_item += "<div id='chart_div_page#{i}' class='row justify-content-center'></div></div>"
           end
           nav_item += '</div>'
         end
@@ -70,22 +69,22 @@ module SurveyMoonbear
 
       # input{pages_charts:, page_num:, nav_tab:, nav_item:}
       def build_html(input)
-        str_arr = []
-        input[:pages_charts].each do |page_name, charts|
-          str = ''
-          page_name = page_name.gsub(' ', '_')
-          charts.each_with_index.map do |chart, idx|
-            str += "<div class='form-group mt-5 grid-container' style='width: 80%'>"
-            str += "<div class='row justify-content-center' id='chart_#{page_name}_#{idx}' style='resize:both; overflow: auto'></div>"
-            str += '</div>'
-            legend_arr = is_legend_return_html(chart)
-            unless legend_arr.nil?
-              str += legend_arr[0]
-              chart[4] = legend_arr[1]
+        str_arr =
+          input[:pages_charts].map do |page_name, charts|
+            str = ''
+            page_name = page_name.gsub(' ', '_')
+            charts.each_with_index.map do |chart, idx|
+              str += "<div class='form-group mt-5 grid-container' style='width: 80%'>"
+              str += "<div class='row justify-content-center' id='chart_#{page_name}_#{idx}' style='resize:both; overflow: auto'></div>"
+              str += '</div>'
+              legend_arr = is_legend_return_html(chart)
+              unless legend_arr.nil?
+                str += legend_arr[0]
+                chart[4] = legend_arr[1]
+              end
             end
+            str
           end
-          str_arr.append(str)
-        end
         input[:pages_chart_val_hash] = str_arr
 
         Success(input)

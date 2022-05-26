@@ -28,10 +28,5 @@ module Views
     def nav_item
       @html[:nav_item]
     end
-
-    def show_enter_id
-      false
-    end
   end
 end
-# end
