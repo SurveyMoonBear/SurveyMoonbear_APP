@@ -54,7 +54,7 @@ module SurveyMoonbear
       Sidekiq.configure_server do |s_config|
         s_config.redis = SIDEKIQ_REDIS_CONFIGURATION
         s_config.on(:startup) do
-          Sidekiq.schedule = YAML.load_file(File.expand_path('./schedulers/sidekiq_scheduler.yml'))
+          Sidekiq.schedule = YAML.load_file(File.expand_path('./workers/sidekiq_scheduler.yml'))
           SidekiqScheduler::Scheduler.instance.reload_schedule!
         end
       end
@@ -80,7 +80,7 @@ module SurveyMoonbear
       Sidekiq.configure_server do |s_config|
         s_config.redis = SIDEKIQ_REDIS_CONFIGURATION
         s_config.on(:startup) do
-          Sidekiq.schedule = YAML.load_file(File.expand_path('./schedulers/sidekiq_scheduler.yml'))
+          Sidekiq.schedule = YAML.load_file(File.expand_path('./workers/sidekiq_scheduler.yml'))
           SidekiqScheduler::Scheduler.instance.reload_schedule!
         end
       end

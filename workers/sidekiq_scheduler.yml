@@ -1,0 +1,11 @@
+# define the cron, static, scheduler jobs here
+update_random_notification:
+  cron: '5 0 * * *'
+  class: Worker::UpdateRandomNotification
+  description: "update everydays random notification with a random time"
+  enabled: true
+polling_messages:
+  cron: '*/3 * * * *'
+  class: Worker::PollingMessages
+  description: 'polling SQS client to receive the sqs message'
+  enabled: true
