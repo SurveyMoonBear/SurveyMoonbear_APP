@@ -5,7 +5,7 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Return a visual report page entity from spreadsheet
-    # Usage: Service::GetVisualreportFromSpreadsheet.new.call(spreadsheet_id: "...", access_token: "...", redis: "...")
+    # Usage: Service::GetVisualreportFromSpreadsheet.new.call(spreadsheet_id: "...", access_token: "...", redis: "...", key: "...")
     class GetVisualreportFromSpreadsheet
       include Dry::Transaction
       include Dry::Monads
@@ -16,13 +16,11 @@ module SurveyMoonbear
 
       # input { spreadsheet_id:, access_token:, redis: }
       def read_spreadsheet(input)
-        key = 'visual_report' + input[:spreadsheet_id]
-
         sheets_api = Google::Api::Sheets.new(input[:access_token])
         spreadsheet = Google::VisualReportItemMapper.new(sheets_api)
                                                     .load_several(input[:spreadsheet_id],
                                                                   input[:redis],
-                                                                  key)
+                                                                  input[:key])
 
         Success(spreadsheet)
       rescue StandardError => e

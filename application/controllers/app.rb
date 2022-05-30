@@ -415,7 +415,7 @@ module SurveyMoonbear
                             .find_id(visual_report_id)
 
             access_token = Google::Auth.new(config).refresh_access_token
-            responses = Service::GetPublicVisualReport.new.call(visual_report_id: visual_report_id,
+            responses = Service::GetPublicVisualReport.new.call(visual_report: visual_report,
                                                                 spreadsheet_id: spreadsheet_id,
                                                                 config: config,
                                                                 access_token: access_token)
@@ -450,7 +450,7 @@ module SurveyMoonbear
           # customized visual report
           # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
           routing.post do
-            redis = GraphResults.new(config)
+            redis = RedisCloud.new(config)
             access_token = Google::Auth.new(config).refresh_access_token
             update_visual_report = Service::UpdateVisualReport.new
                                                               .call(redis: redis,
@@ -474,6 +474,7 @@ module SurveyMoonbear
             access_token = Google::Auth.new(config).refresh_access_token
             responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                     visual_report_id: visual_report_id,
+                                                                    visual_report: visual_report,
                                                                     config: config,
                                                                     code: code,
                                                                     access_token: access_token)

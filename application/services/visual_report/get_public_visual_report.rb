@@ -11,15 +11,25 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
+      step :get_visual_report_owner_name
       step :transform_responses
       step :transform_charts_to_html
 
       private
 
+      def get_visual_report_owner_name(input)
+        input[:user_key] = input[:visual_report].owner.username + input[:spreadsheet_id]
+
+        Success(input)
+      rescue StandardError
+        Failure('Failed to get visual report owner from db.')
+      end
+
       # input { visual_report_id:, spreadsheet_id:, access_token:, config: }
       def transform_responses(input)
-        redis = GraphResults.new(input[:config])
-        responses = TransformVisualSheetsToChart.new.call(visual_report_id: input[:visual_report_id],
+        redis = RedisCloud.new(input[:config])
+        responses = TransformVisualSheetsToChart.new.call(user_key: input[:user_key],
+                                                          visual_report: input[:visual_report],
                                                           spreadsheet_id: input[:spreadsheet_id],
                                                           config: input[:config],
                                                           redis: redis,
