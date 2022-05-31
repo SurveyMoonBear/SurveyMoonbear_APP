@@ -401,6 +401,16 @@ module SurveyMoonbear
         end
       end
 
+      # report/google_callback
+      routing.on 'report' do
+        routing.on 'google_callback' do
+          code = routing.params['code']
+          redirect_route = routing.params['state']
+
+          routing.redirect "#{redirect_route}?code=#{code}"
+        end
+      end
+
       # visual_report/[visual_report_id]
       routing.on 'visual_report', String do |visual_report_id|
         @current_account = SecureSession.new(session).get(:current_account)
@@ -437,9 +447,10 @@ module SurveyMoonbear
             scopes = ['https://www.googleapis.com/auth/userinfo.profile',
                       'https://www.googleapis.com/auth/userinfo.email']
             params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
-                      "redirect_uri=#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}",
+                      "redirect_uri=#{config.APP_URL}/report/google_callback",
                       'response_type=code',
-                      "scope=#{scopes.join(' ')}"]
+                      "scope=#{scopes.join(' ')}",
+                      "state=/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"]
             @google_sso_url = "#{url}?#{params.join('&')}"
 
             visual_report = Repository::For[Entity::VisualReport]

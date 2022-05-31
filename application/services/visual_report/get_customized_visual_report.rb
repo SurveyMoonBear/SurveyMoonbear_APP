@@ -23,7 +23,7 @@ module SurveyMoonbear
       # input { config:, code:}
       def get_refresh_and_access_token(input)
         input[:acc_access_token] = Google::Auth.new(input[:config])
-                                               .get_access_token(input[:code], input[:visual_report_id], input[:spreadsheet_id])
+                                               .get_access_token(input[:code])
 
         Success(input)
       rescue StandardError => e
