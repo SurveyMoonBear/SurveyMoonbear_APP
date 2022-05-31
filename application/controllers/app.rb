@@ -480,7 +480,6 @@ module SurveyMoonbear
                                                                     access_token: access_token)
 
             if responses.failure?
-              flash[:error] = "#{responses.failure} Please try again :("
               routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"
             end
 

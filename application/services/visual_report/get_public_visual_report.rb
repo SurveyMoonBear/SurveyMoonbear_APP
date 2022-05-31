@@ -25,7 +25,7 @@ module SurveyMoonbear
         Failure('Failed to get visual report owner from db.')
       end
 
-      # input { visual_report_id:, spreadsheet_id:, access_token:, config: }
+      # input { visual_report:, spreadsheet_id:, access_token:, config:, user_key: }
       def transform_responses(input)
         redis = RedisCloud.new(input[:config])
         responses = TransformVisualSheetsToChart.new.call(user_key: input[:user_key],

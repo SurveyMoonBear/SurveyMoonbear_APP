@@ -33,6 +33,31 @@ namespace :run do
   end
 end
 
+namespace :redis do
+  require 'redis'
+  require_relative 'lib/init'
+  require_relative 'config/environments'
+  redis = Redis.new
+  app = SurveyMoonbear::App
+
+  desc 'Get all keys from redis'
+  task :keys do
+    puts redis.keys
+  end
+
+  desc 'Delete all keys from redis'
+  task :delete_all do
+    if app.environment == :production
+      puts 'Cannot delete production redis!'
+      return
+    end
+
+    redis.keys.each do |key|
+      redis.del(key)
+    end
+  end
+end
+
 namespace :queues do
   task :config do
     require 'aws-sdk-sqs'

@@ -9,23 +9,25 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
-      step :delete_visual_report_in_redis
-      step :delete_source_in_redis
+      step :get_visual_report_owner_name
+      step :delete_keys_in_redis
+      step :transform_responses
 
       private
 
-      # input { redis:, visual_report_id:, spreadsheet_id: }
-      def delete_visual_report_in_redis(input)
-        input[:redis].delete("visual_report#{input[:spreadsheet_id]}")
-        input[:redis].delete("all_graphs#{input[:spreadsheet_id]}")
+      # input { redis:, visual_report_id:, spreadsheet_id:... }
+      def get_visual_report_owner_name(input)
+        input[:visual_report] = Repository::For[Entity::VisualReport].find_id(input[:visual_report_id])
+        input[:user_key] = input[:visual_report].owner.username + input[:spreadsheet_id]
+
         Success(input)
       rescue StandardError
-        Failure('Failed to delete visual report and graph results.')
+        Failure('Failed to get visual report owner from db.')
       end
 
-      # input { redis:, visual_report_id:, spreadsheet_id: }
-      def delete_source_in_redis(input)
-        sources = input[:redis].get("source#{input[:spreadsheet_id]}")
+      # input { redis:, user_key:, ... }
+      def delete_keys_in_redis(input)
+        sources = input[:redis].get(input[:user_key])['source']
         sources.each do |source|
           if source[0] == 'spreadsheet'
             url = source[1] # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
@@ -33,11 +35,27 @@ module SurveyMoonbear
             input[:redis].delete("other_sheet#{other_sheet_id}")
           end
         end
-        input[:redis].delete("source#{input[:spreadsheet_id]}")
+        input[:redis].delete(input[:user_key])
         Success(input)
       rescue StandardError => e
         puts e
         Failure('Failed to delete source in redis.')
+      end
+
+      # input { redis:, visual_report:, spreadsheet_id:, access_token:, config:, user_key: }
+      def transform_responses(input)
+        responses = TransformVisualSheetsToChart.new.call(user_key: input[:user_key],
+                                                          visual_report: input[:visual_report],
+                                                          spreadsheet_id: input[:spreadsheet_id],
+                                                          config: input[:config],
+                                                          redis: input[:redis],
+                                                          access_token: input[:access_token])
+        if responses.success?
+          input[:all_graphs] = responses.value!
+          Success(input)
+        else
+          Failure(responses.failure)
+        end
       end
     end
   end
