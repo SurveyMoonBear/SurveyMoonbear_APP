@@ -1,7 +1,7 @@
 # frozen_string_literal: false
 
 require_relative './../spec_helper'
-require_relative './../../workers/responses_store_worker'
+require_relative './../../workers/workers'
 
 describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
   # Execute before/after each 'describe'
@@ -25,8 +25,8 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
     end
 
     it 'HAPPY: should copy sample and create survey with provided title' do
-      @new_survey_res = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG, 
-                                                                       current_account: CURRENT_ACCOUNT, 
+      @new_survey_res = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG,
+                                                                       current_account: CURRENT_ACCOUNT,
                                                                        title: 'Survey for Testing Create Services')
       _(@new_survey_res.success?).must_equal true
       _(@new_survey_res.value!.owner.username).must_equal 'SurveyMoonbear Test'
@@ -38,8 +38,8 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
   describe 'Delete survey' do
     before do
       VcrHelper.build_cassette('happy_delete_gs_api')
-      @survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG, 
-                                                               current_account: CURRENT_ACCOUNT, 
+      @survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG,
+                                                               current_account: CURRENT_ACCOUNT,
                                                                title: 'Survey for Testing Delete Services').value!
     end
 
@@ -53,8 +53,8 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
   describe 'After survey created: retrieve surveys and make changes' do
     before(:all) do
       VcrHelper.build_cassette('happy_change_gs_api')
-      @survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG, 
-                                                               current_account: CURRENT_ACCOUNT, 
+      @survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG,
+                                                               current_account: CURRENT_ACCOUNT,
                                                                title: 'Survey for Testing Changes Services').value!
     end
 
@@ -165,13 +165,9 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
                             {:respondent_id=>respondent_id, :page_index=>2, :item_order=>0, :response=>"Wed Mar 27 2019 09:38:06 GMT+0800 (台北標準時間)", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
                             {:respondent_id=>respondent_id, :page_index=>2, :item_order=>1, :response=>"Wed Mar 27 2019 09:38:52 GMT+0800 (台北標準時間)", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
                             {:respondent_id=>respondent_id, :page_index=>2, :item_order=>2, :response=>"{}", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}]
-        worker = ResponsesStore::Worker.new()
-        sqs_msg = OpenStruct.new({ message_id: 'testtest-fake-msgg-idid-somethingggg',
-                                   body: response_hashes.to_json,
-                                   delete: nil })
-        success_msg = 'SQS MessageId: ' + sqs_msg.message_id + ' is completed'
-
-        assert_output(/#{success_msg}/) { worker.perform(sqs_msg, sqs_msg.body) }
+        worker = Worker::StoreResponses.new
+        success_msg = 'Storing survey response is completed'
+        assert_output(/#{success_msg}/) { worker.perform(response_hashes) }
       end
 
       it 'HAPPY: should be able to transform responses to csv correctly' do

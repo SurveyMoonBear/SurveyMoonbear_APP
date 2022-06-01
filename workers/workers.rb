@@ -51,37 +51,24 @@ module Worker
     def perform(topic_arn, message, participant_id)
       Messaging::NotificationSubscriber.new(App.config)
                                        .send_email_notification(topic_arn, message, participant_id)
-    end
-  end
-
-  # Polling messages from AWS SQS
-  class PollingMessages
-    include Sidekiq::Worker
-    include SurveyMoonbear
-
-    def perform
-      Messaging::Queue.new(App.config.RES_QUEUE_URL, App.config).poll do |msg|
-        puts "Processing SQS MessageId: #{msg.message_id}"
-        Worker::StoreResponses.perform_async(msg.message_id, msg.body) if msg
-      end
     rescue StandardError => e
-      puts 'Errors on receiving message from SQS'
+      puts 'Errors on sending notification'
       puts e
       raise
     end
   end
 
-  # Storing responses from AWS SQS message
+  # Usage: Worker::StoreResponses.perform_async(response_hashes)
+  # Storing survey responses
   class StoreResponses
-    include Sidekiq::Worker
+    include Sidekiq::Job
     include SurveyMoonbear
 
-    def perform(msg_id, msg_body)
-      response_hashes = JSON.parse(msg_body)
+    def perform(response_hashes)
       store_responses(response_hashes)
-      puts "SQS MessageId: #{msg_id} is completed"
+      puts 'Storing survey response is completed'
     rescue StandardError => e
-      puts "Errors on SQS MessageId: #{msg_id}"
+      puts 'Errors on storing survey response'
       puts e
       raise
     end

@@ -103,7 +103,8 @@ module SurveyMoonbear
         routing.post 'create' do
           new_survey = Service::CreateSurvey.new.call(config: config,
                                                       current_account: @current_account,
-                                                      params: routing.params)
+                                                      title: routing.params['title'],
+                                                      study_id: routing.params['study_id'])
           redirect_rout = routing.params['rerout']
 
           if new_survey.success?

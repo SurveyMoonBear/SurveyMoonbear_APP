@@ -2,6 +2,7 @@
 
 require 'dry/transaction'
 require 'json'
+require_relative './../../../workers/workers'
 
 module SurveyMoonbear
   module Service
@@ -38,11 +39,12 @@ module SurveyMoonbear
       # input { ..., pages: }
       def create_response_entities_arr(input)
         input[:response_entities_arr] = []
-        
+
         input[:pages].each do |page|
           page_index = page.index
           page.items.each do |item|
             next if item.type == 'Description' || item.type == 'Section Title' || item.type == 'Divider' || item.type == 'Jump to page'
+
             new_response = create_response_entity(page_index,
                                                   item,
                                                   input[:respondent_id],
@@ -122,7 +124,7 @@ module SurveyMoonbear
           res_hash = response_entity.to_h
           res_hash[:survey_id] = input[:survey_id]
           res_hash[:launch_id] = input[:launch_id]
-          res_hash.delete(:id)  # id was used for creating entities
+          res_hash.delete(:id) # id was used for creating entities
           res_hash
         end
 
@@ -135,8 +137,7 @@ module SurveyMoonbear
 
       # input { ..., responses_hash }
       def send_to_responses_storing_queues(input)
-        Messaging::Queue.new(input[:config].RES_QUEUE_URL, input[:config])
-                        .send(input[:responses_hash].to_json)
+        Worker::StoreResponses.perform_async(input[:responses_hash])
         Success(nil)
       rescue StandardError => e
         puts e
