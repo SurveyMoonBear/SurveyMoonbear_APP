@@ -47,7 +47,7 @@ module SurveyMoonbear
           entitystore: 'file:_cache/rack/body'
 
       SIDEKIQ_REDIS_CONFIGURATION = {
-        url: config.REDIS_URL + config.REDIS_SCHEDULER_STORE,
+        url: config.REDISCLOUD_STUDY_NOTIFICATIONS_URL + config.REDISCLOUD_STUDY_NOTIFICATIONS_STORE,
         ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
       }.freeze
 
@@ -73,7 +73,7 @@ module SurveyMoonbear
           entitystore: config.REDIS_URL + config.REDIS_RACK_CACHE_ENTITYTORE
 
       SIDEKIQ_REDIS_CONFIGURATION = {
-        url: config.REDIS_URL + config.REDIS_SCHEDULER_STORE,
+        url: config.REDISCLOUD_STUDY_NOTIFICATIONS_URL + config.REDISCLOUD_STUDY_NOTIFICATIONS_STORE,
         ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
       }.freeze
 

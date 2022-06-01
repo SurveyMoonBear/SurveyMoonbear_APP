@@ -1,6 +1,6 @@
 # define the cron, static, scheduler jobs here
-update_random_notification:
+update_random_time:
   cron: '5 0 * * *'
-  class: Worker::UpdateRandomNotification
-  description: "update everydays random notification with a random time"
+  class: Worker::UpdateRandomTime
+  description: "daily update random notification with a random time"
   enabled: true
