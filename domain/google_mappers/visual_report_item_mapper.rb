@@ -8,13 +8,15 @@ module SurveyMoonbear
       end
 
       def load_several(spreadsheet_id, redis, key)
+        redis_report = redis.get(key)
         pages_data =
-          if redis.get(key)
-            redis.get(key)
+          if redis_report['visual_report']
+            redis_report['visual_report']
           else
             google_pages_data = @gateway.survey_data(spreadsheet_id)
             google_pages_data['sheets'].shift # remove the first page(source) of spreadsheet
-            redis.set(key, google_pages_data)
+            redis_report['visual_report'] = google_pages_data
+            redis.update(key, redis_report)
             google_pages_data
           end
         pages_items = {}

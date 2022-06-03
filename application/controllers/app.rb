@@ -401,6 +401,16 @@ module SurveyMoonbear
         end
       end
 
+      # report/google_callback
+      routing.on 'report' do
+        routing.on 'google_callback' do
+          code = routing.params['code']
+          redirect_route = routing.params['state']
+
+          routing.redirect "#{redirect_route}?code=#{code}"
+        end
+      end
+
       # visual_report/[visual_report_id]
       routing.on 'visual_report', String do |visual_report_id|
         @current_account = SecureSession.new(session).get(:current_account)
@@ -415,7 +425,7 @@ module SurveyMoonbear
                             .find_id(visual_report_id)
 
             access_token = Google::Auth.new(config).refresh_access_token
-            responses = Service::GetPublicVisualReport.new.call(visual_report_id: visual_report_id,
+            responses = Service::GetPublicVisualReport.new.call(visual_report: visual_report,
                                                                 spreadsheet_id: spreadsheet_id,
                                                                 config: config,
                                                                 access_token: access_token)
@@ -437,9 +447,10 @@ module SurveyMoonbear
             scopes = ['https://www.googleapis.com/auth/userinfo.profile',
                       'https://www.googleapis.com/auth/userinfo.email']
             params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
-                      "redirect_uri=#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}",
+                      "redirect_uri=#{config.APP_URL}/report/google_callback",
                       'response_type=code',
-                      "scope=#{scopes.join(' ')}"]
+                      "scope=#{scopes.join(' ')}",
+                      "state=/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"]
             @google_sso_url = "#{url}?#{params.join('&')}"
 
             visual_report = Repository::For[Entity::VisualReport]
@@ -450,13 +461,15 @@ module SurveyMoonbear
           # customized visual report
           # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
           routing.post do
-            redis = GraphResults.new(config)
+            redis = RedisCloud.new(config)
             access_token = Google::Auth.new(config).refresh_access_token
+            cache_key = "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"
             update_visual_report = Service::UpdateVisualReport.new
                                                               .call(redis: redis,
                                                                     visual_report_id: visual_report_id,
                                                                     spreadsheet_id: spreadsheet_id,
                                                                     config: config,
+                                                                    cache_key: cache_key,
                                                                     access_token: access_token)
 
             flash[:error] = 'Failed to update visual report, please try again :(' if update_visual_report.failure?
@@ -474,12 +487,12 @@ module SurveyMoonbear
             access_token = Google::Auth.new(config).refresh_access_token
             responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                     visual_report_id: visual_report_id,
+                                                                    visual_report: visual_report,
                                                                     config: config,
                                                                     code: code,
                                                                     access_token: access_token)
 
             if responses.failure?
-              flash[:error] = "#{responses.failure} Please try again :("
               routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"
             end
 

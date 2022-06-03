@@ -6,7 +6,7 @@ require 'http'
 module SurveyMoonbear
   module Service
     # Return survey title & an array of page HTML strings
-    # Usage: Service::GetPublicVisualReport.new.call(all_graphs: ..., case_email:..., redis:..., spreadsheet_id:...)
+    # Usage: Service::GetPublicVisualReport.new.call(all_graphs: ..., case_email:..., redis:..., spreadsheet_id:..., user_key:...)
     class TransformPublicToCustomizedReport
       include Dry::Transaction
       include Dry::Monads
@@ -18,9 +18,9 @@ module SurveyMoonbear
 
       private
 
-      # input { all_graphs:, case_email:, redis:, spreadsheet_id}
+      # input { all_graphs:, case_email:, redis:, spreadsheet_id, user_key:}
       def get_sources_from_redis(input)
-        input[:sources] = input[:redis].get('source'+input[:spreadsheet_id])
+        input[:sources] = input[:redis].get(input[:user_key])['source']
 
         if input[:sources]
           Success(input)

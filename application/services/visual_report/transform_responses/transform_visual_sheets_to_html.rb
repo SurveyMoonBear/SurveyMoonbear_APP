@@ -5,11 +5,12 @@ require 'dry/transaction'
 module SurveyMoonbear
   module Service
     # Return an array of page HTML strings
-    # Usage: Service::TransformVisualSheetsToChart.new.call(survey_id: "...", spreadsheet_id: "...", config: "...", redis: "...", access_token: "...")
+    # Usage: Service::TransformVisualSheetsToChart.new.call(user_key: "...", visual_report: "...", spreadsheet_id: "...", config: "...", redis: "...", access_token: "...")
     class TransformVisualSheetsToChart
       include Dry::Transaction
       include Dry::Monads
 
+      step :create_redis_key_meta
       step :get_items_from_spreadsheet
       step :get_user_access_token
       step :get_sources_from_spreadsheet
@@ -17,11 +18,27 @@ module SurveyMoonbear
 
       private
 
-      # input { visual_report_id:, spreadsheet_id:, access_token:, config:, redis:}
+      # input { user_key:, visual_report:, spreadsheet_id:, access_token:, config:, redis:}
+      def create_redis_key_meta(input)
+        input[:redis_val] = input[:redis].get(input[:user_key])
+        unless input[:redis_val]
+          meta_data = { user_name: input[:visual_report].owner.username,
+                        report_title: input[:visual_report].title,
+                        key_id: input[:user_key] }
+          input[:redis].set(input[:user_key], { 'meta' => meta_data })
+        end
+
+        Success(input)
+      rescue StandardError
+        Failure('Failed to set redis key meta.')
+      end
+
+      # input { user_key:, visual_report:, spreadsheet_id:, access_token:, config:, redis:}
       def get_items_from_spreadsheet(input)
         sheets_report = GetVisualreportFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                                 access_token: input[:access_token],
-                                                                redis: input[:redis])
+                                                                redis: input[:redis],
+                                                                key: input[:user_key])
         if sheets_report.success?
           input[:sheets_report] = sheets_report.value! # table1=>[table1 data],table2=>[table2 data]...
           Success(input)
@@ -32,8 +49,7 @@ module SurveyMoonbear
 
       # input { ..., sheets_report}
       def get_user_access_token(input)
-        visual_report = Repository::For[Entity::VisualReport].find_origin_id(input[:spreadsheet_id])
-        refresh_token = visual_report.owner.refresh_token
+        refresh_token = input[:visual_report].owner.refresh_token
         input[:user_access_token] = Google::Auth.new(input[:config]).refresh_user_access_token(refresh_token)
 
         if input[:user_access_token]
@@ -47,7 +63,8 @@ module SurveyMoonbear
       def get_sources_from_spreadsheet(input)
         sources = GetSourcesFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                      access_token: input[:access_token],
-                                                     redis: input[:redis])
+                                                     redis: input[:redis],
+                                                     key: input[:user_key])
 
         other_sheet = {}
         sources.value!.each do |source|
@@ -76,12 +93,11 @@ module SurveyMoonbear
         end
       end
 
-      # input { ..., sheets_report, user_access_token, sources}
+      # input { ...,user_key, sheets_report, user_access_token, sources}
       def cal_responses_from_sources(input)
-        key = 'all_graphs' + input[:spreadsheet_id]
         input[:all_graphs] =
-          if input[:redis].get(key)
-            input[:redis].get(key)
+          if input[:redis_val]['all_graphs']
+            input[:redis_val]['all_graphs']
           else
             pages_val =
               input[:sheets_report].map do |k, items_data|
@@ -104,8 +120,10 @@ module SurveyMoonbear
                   end
                 [k, graphs_val]
               end
-            input[:redis].set(key, pages_val.to_h)
-            pages_val.to_h
+            temp_h = input[:redis_val]
+            temp_h['all_graphs'] = pages_val.to_h
+            input[:redis].update(input[:user_key], temp_h)
+            temp_h['all_graphs']
           end
         Success(input[:all_graphs])
       rescue StandardError

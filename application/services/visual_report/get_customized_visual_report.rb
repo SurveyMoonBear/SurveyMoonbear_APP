@@ -6,13 +6,14 @@ require 'http'
 module SurveyMoonbear
   module Service
     # Returns a new survey, or nil
-    # Usage: Service::GetCustomizedVisualReport.new.call(config: ..., visual_report_id:..., spreadsheet_id:..., code: ..., access_token:...)
+    # Usage: Service::GetCustomizedVisualReport.new.call(config: ..., visual_report_id:..., visual_repor:..., spreadsheet_id:..., code: ..., access_token:...)
     class GetCustomizedVisualReport
       include Dry::Transaction
       include Dry::Monads
 
       step :get_refresh_and_access_token
       step :get_google_account
+      step :get_visual_report_owner_name
       step :transform_responses
       step :self_comparison
       step :transform_charts_to_html
@@ -22,7 +23,7 @@ module SurveyMoonbear
       # input { config:, code:}
       def get_refresh_and_access_token(input)
         input[:acc_access_token] = Google::Auth.new(input[:config])
-                                               .get_access_token(input[:code], input[:visual_report_id], input[:spreadsheet_id])
+                                               .get_access_token(input[:code])
 
         Success(input)
       rescue StandardError => e
@@ -42,9 +43,18 @@ module SurveyMoonbear
         Failure('Failed to get google account.')
       end
 
+      def get_visual_report_owner_name(input)
+        input[:user_key] = input[:visual_report].owner.username + input[:spreadsheet_id]
+
+        Success(input)
+      rescue StandardError
+        Failure('Failed to get visual report owner from db.')
+      end
+
       def transform_responses(input)
-        redis = GraphResults.new(input[:config])
-        responses = TransformVisualSheetsToChart.new.call(visual_report_id: input[:visual_report_id],
+        redis = RedisCloud.new(input[:config])
+        responses = TransformVisualSheetsToChart.new.call(user_key: input[:user_key],
+                                                          visual_report: input[:visual_report],
                                                           spreadsheet_id: input[:spreadsheet_id],
                                                           config: input[:config],
                                                           redis: redis,
@@ -58,11 +68,12 @@ module SurveyMoonbear
       end
 
       def self_comparison(input)
-        redis = GraphResults.new(input[:config])
+        redis = RedisCloud.new(input[:config])
         responses = TransformPublicToCustomizedReport.new
                                                      .call(all_graphs: input[:origin_all_graphs],
                                                            case_email: input[:email],
                                                            redis: redis,
+                                                           user_key: input[:user_key],
                                                            spreadsheet_id: input[:spreadsheet_id])
 
         if responses.success?
