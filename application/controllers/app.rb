@@ -463,11 +463,13 @@ module SurveyMoonbear
           routing.post do
             redis = RedisCloud.new(config)
             access_token = Google::Auth.new(config).refresh_access_token
+            cache_key = "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"
             update_visual_report = Service::UpdateVisualReport.new
                                                               .call(redis: redis,
                                                                     visual_report_id: visual_report_id,
                                                                     spreadsheet_id: spreadsheet_id,
                                                                     config: config,
+                                                                    cache_key: cache_key,
                                                                     access_token: access_token)
 
             flash[:error] = 'Failed to update visual report, please try again :(' if update_visual_report.failure?

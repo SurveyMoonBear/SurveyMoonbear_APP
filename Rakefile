@@ -37,23 +37,27 @@ namespace :redis do
   require 'redis'
   require_relative 'lib/init'
   require_relative 'config/environments'
-  redis = Redis.new
+
   app = SurveyMoonbear::App
 
-  desc 'Get all keys from redis'
-  task :keys do
-    puts redis.keys
-  end
+  namespace :visual_report do
+    redis = Redis.new(url: app.config.REDISCLOUD_VISUALREPORTS_URL)
 
-  desc 'Delete all keys from redis'
-  task :delete_all do
-    if app.environment == :production
-      puts 'Cannot delete production redis!'
-      return
+    desc 'Get visual report cache from redis'
+    task :keys do
+      puts redis.keys
     end
 
-    redis.keys.each do |key|
-      redis.del(key)
+    desc 'Delete visual report cache from redis'
+    task :delete_all do
+      if app.environment == :production
+        puts 'Cannot delete production redis!'
+        return
+      end
+
+      redis.keys.each do |key|
+        redis.del(key)
+      end
     end
   end
 end
@@ -224,7 +228,7 @@ namespace :cache do
     desc 'Lists production cache'
     task :production => :config do
       puts 'Finding production cache'
-      keys = SurveyMoonbear::Cache::Client.new(@api.config).keys
+      keys = SurveyMoonbear::Cache::Client.new(@app.config).keys
       puts 'No keys found' if keys.none?
       keys.each { |key| puts "Key: #{key}" }
     end

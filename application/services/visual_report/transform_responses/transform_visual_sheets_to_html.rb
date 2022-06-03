@@ -10,12 +10,28 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
+      step :create_redis_key_meta
       step :get_items_from_spreadsheet
       step :get_user_access_token
       step :get_sources_from_spreadsheet
       step :cal_responses_from_sources
 
       private
+
+      # input { user_key:, visual_report:, spreadsheet_id:, access_token:, config:, redis:}
+      def create_redis_key_meta(input)
+        input[:redis_val] = input[:redis].get(input[:user_key])
+        unless input[:redis_val]
+          meta_data = { user_name: input[:visual_report].owner.username,
+                        report_title: input[:visual_report].title,
+                        key_id: input[:user_key] }
+          input[:redis].set(input[:user_key], { 'meta' => meta_data })
+        end
+
+        Success(input)
+      rescue StandardError
+        Failure('Failed to set redis key meta.')
+      end
 
       # input { user_key:, visual_report:, spreadsheet_id:, access_token:, config:, redis:}
       def get_items_from_spreadsheet(input)
@@ -80,8 +96,8 @@ module SurveyMoonbear
       # input { ...,user_key, sheets_report, user_access_token, sources}
       def cal_responses_from_sources(input)
         input[:all_graphs] =
-          if input[:redis].get(input[:user_key])['all_graphs']
-            input[:redis].get(input[:user_key])['all_graphs']
+          if input[:redis_val]['all_graphs']
+            input[:redis_val]['all_graphs']
           else
             pages_val =
               input[:sheets_report].map do |k, items_data|
@@ -104,7 +120,7 @@ module SurveyMoonbear
                   end
                 [k, graphs_val]
               end
-            temp_h = input[:redis].get(input[:user_key])
+            temp_h = input[:redis_val]
             temp_h['all_graphs'] = pages_val.to_h
             input[:redis].update(input[:user_key], temp_h)
             temp_h['all_graphs']

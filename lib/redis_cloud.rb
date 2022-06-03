@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'redis'
 require_relative 'secure_message'
 
 # store value on redis
 class RedisCloud
   def initialize(config)
-    @redis = Redis.new(url: config.REDIS_URL + config.REDIS_VISUAL_REPORT)
+    @redis = Redis.new(url: config.REDISCLOUD_VISUALREPORTS_URL)
   end
 
   # Only set the key if it does not already exist.
