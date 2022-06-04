@@ -103,7 +103,7 @@ div class="mb-3"
             class="btn btn-outline-info btn-sm ml-2"
             data-toggle="modal" data-target="#modal_unsubscribe_calendar" 
           }
-          i class="fas fa-calendar" &nbsp;Unsubscribe
+          i class="fas fa-calendar-times" &nbsp;Unsubscribe calendar
         div class="modal fade" id="modal_unsubscribe_calendar"
           div class="modal-dialog" role="document"
             div class="modal-content"
@@ -124,10 +124,10 @@ div class="mb-3"
                   button type="submit" class="btn btn-primary" id="btn-update" Unsubscribe
       - if participant.act_status == 'unsubscribed'
         button {
-            class="btn btn-outline-info btn-sm ml-2"
+            class="btn btn-outline-primary btn-sm ml-2"
             data-toggle="modal" data-target="#modal_subscribe_calendar" 
           }
-          i class="fas fa-calendar" &nbsp;Subscribe
+          i class="fas fa-calendar-check" &nbsp;Subscribe calendar
         div class="modal fade" id="modal_subscribe_calendar"
           div class="modal-dialog" role="document"
             div class="modal-content"
@@ -222,7 +222,7 @@ div class="mb-3"
         h4 Calendar Events
         - if participant.act_status == 'subscribed'
           form.d-inline-flex.align-middle role="form" action="/participants/#{participant.id}/refresh_events" method='get'
-            button type="submit" class="btn btn-outline-primary btn-sm ml-5"
+            button type="submit" class="btn btn-outline-dark btn-sm ml-5"
               i class="fas fa-sync" &nbsp;Refresh
         - if participant.act_status == 'unsubscribed'
           span {
@@ -236,7 +236,7 @@ div class="mb-3"
     div class="row justify-content-center mt-3"
       div class="col-12 col-sm-12 col-md-10" style="word-wrap:break-word;"
         div.mb-4
-          <b>#{busy_time}</b> total busy time between <b>#{participant.study.activity_start_at.strftime('%D')}</b> to <b>#{participant.study.activity_end_at.strftime('%D')}</b>
+          <b>#{busy_time}</b> total busy time between <b>#{participant.study.activity_start_at.strftime('%Y-%m-%d')}</b> to <b>#{participant.study.activity_end_at.strftime('%Y-%m-%d')}</b>
         - if events.any?
           table class="table"
             thead

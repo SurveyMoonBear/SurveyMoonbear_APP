@@ -14,7 +14,6 @@ Sequel.migration do
       String      :title, default: 'study_notification', null: false
       DateTime    :fixed_timestamp
       String      :content, default: 'This is a notification message'
-      String      :notification_tz # notification's timezone offset (seconds) eg. 32400 (+09:00 -> 9*60*60)
       String      :repeat_at, default: ''
       String      :repeat_set_time
       String      :repeat_random_every # random's time day or week on Mon, Tue... eg. '* * 1,2'

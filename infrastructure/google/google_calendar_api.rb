@@ -2,6 +2,7 @@
 
 require 'http'
 require 'uri'
+require 'date'
 
 module SurveyMoonbear
   module Google
@@ -39,9 +40,9 @@ module SurveyMoonbear
         def events_data(calendar_id, start_date, end_date)
           url = gcal_v3_path('/freeBusy')
           data = {
-            "timeMin": start_date.rfc3339,
-            "timeMax": end_date.rfc3339,
-            # "timeZone": string,
+            "timeMin": DateTime.parse(start_date.to_s).rfc3339,
+            "timeMax": DateTime.parse(end_date.to_s).rfc3339,
+            "timeZone": App.config.TZ,
             "items": [{ "id": calendar_id }]
           }
           Api.post_with_google_auth(url, @access_token, data).parse['calendars'][calendar_id]['busy']
@@ -54,9 +55,9 @@ module SurveyMoonbear
         def all_events_data(calendar_list, start_date, end_date)
           url = gcal_v3_path('/freeBusy')
           data = {
-            "timeMin": start_date.rfc3339,
-            "timeMax": end_date.rfc3339,
-            # "timeZone": string,
+            "timeMin": DateTime.parse(start_date.to_s).rfc3339,
+            "timeMax": DateTime.parse(end_date.to_s).rfc3339,
+            "timeZone": App.config.TZ,
             "items": parse_calendar_list(calendar_list)
           }
           Api.post_with_google_auth(url, @access_token, data).parse

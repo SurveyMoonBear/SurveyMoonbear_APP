@@ -48,7 +48,7 @@ div class="mb-3"
           - if study.track_activity
             div class="form-check study-details mb-3"
               input class="form-check-input" type="checkbox" id="disabledFieldsetCheck" checked="" disabled=""
-              label class="form-check-label" for="disabledFieldsetCheck" Collect Calendar Data: #{study.activity_start_at.strftime('%D')} ~ #{study.activity_end_at.strftime('%D')}
+              label class="form-check-label" for="disabledFieldsetCheck" Collect Calendar Data: #{study.activity_start_at.strftime('%Y-%m-%d')} ~ #{study.activity_end_at.strftime('%Y-%m-%d')}
           div class="row d-flex mt-3"
             div class="mb-3 pl-3"
               a {

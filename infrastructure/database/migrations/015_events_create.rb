@@ -11,7 +11,6 @@ Sequel.migration do
 
       DateTime    :start_at
       DateTime    :end_at
-      # String      :time_zone
 
       DateTime :created_at
       DateTime :updated_at

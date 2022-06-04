@@ -30,7 +30,7 @@ module SurveyMoonbear
       ## Poll queue, yielding each message
       # Usage:
       #   q = Messaging::Queue.new(config.RES_QUEUE_URL, config)
-      #   q.poll { |msg| message_body = JSON.parse(msg) }
+      #   q.poll { |msg| message_body = JSON.parse(msg.body) }
       def poll
         Aws.config.update({
           access_key_id: @config.AWS_ACCESS_KEY_ID,
@@ -39,7 +39,7 @@ module SurveyMoonbear
         })
         poller = Aws::SQS::QueuePoller.new(@queue_url)
         poller.poll(idle_timeout: IDLE_TIMEOUT) do |msg|
-          yield msg.body if block_given?
+          yield msg if block_given?
         end
       end
     end

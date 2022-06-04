@@ -38,7 +38,6 @@ module SurveyMoonbear
             title: title,
             fixed_timestamp: fixed_timestamp,
             content: content,
-            notification_tz: notification_tz,
             repeat_at: repeat_at,
             repeat_set_time: repeat_set_time,
             repeat_random_every: repeat_random_every,
@@ -85,10 +84,6 @@ module SurveyMoonbear
 
         def content
           @notification[:data]['content']
-        end
-
-        def notification_tz
-          @notification[:data]['notification_tz']
         end
 
         def repeat_at

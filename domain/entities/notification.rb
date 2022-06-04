@@ -16,7 +16,6 @@ module SurveyMoonbear
       attribute :title, Strict::String
       attribute :fixed_timestamp, Strict::Time.optional
       attribute :content, Strict::String
-      attribute :notification_tz, Strict::String.optional
       attribute :repeat_at, Strict::String.optional
       attribute :repeat_set_time, Strict::String.optional
       attribute :repeat_random_every, Strict::String.optional

@@ -54,9 +54,10 @@ div class="mb-3"
                   div class="modal-body"
                     div class="form-group"
                       div class="mb-2"
-                        i class="far fa-check-square" &nbsp;Make sure the participants are all confirmed notification
-                        i class="far fa-check-square" &nbsp;Make sure the notifications are all set
-                        i class="far fa-check-square" &nbsp;Make sure the surveys are all started
+                        ul
+                          li Did all <b>participants</b> <span class="badge badge-pill badge-info">confirm</span> notify status?
+                          li Are all <b>notifications</b> set up?
+                          li Are all <b>surveys</b> in <span class="badge badge-pill badge-info">started</span> status?
                   div class="modal-footer"
                     button type="button" class="btn btn-secondary" data-dismiss="modal" Close
                     button type="submit" class="btn btn-outline-primary" id="btn-submit" Start
@@ -75,12 +76,12 @@ div class="mb-3"
       - if study.track_activity
         div.mt-3 style="word-wrap:break-word;"
           b Collect Calendar Events:&nbsp;&nbsp;
-          span From #{study.activity_start_at.strftime('%D')} to #{study.activity_end_at.strftime('%D')}
+          span From #{study.activity_start_at.strftime('%Y-%m-%d')} to #{study.activity_end_at.strftime('%Y-%m-%d')}
   div class="row justify-content-center mt-3"
     div class="col-4 col-sm-12 col-md-3" 
       h4 Surveys
     div class="col-8 col-sm-12 col-md-7"
-      button class="btn btn-outline-dark btn-sm mr-1" aria-controls="collapseExample" aria-expanded="false" data-target="#collapseExample" data-toggle="collapse" type="button" 
+      button class="btn btn-dark btn-sm mr-1" aria-controls="collapseExample" aria-expanded="false" data-target="#collapseExample" data-toggle="collapse" type="button" 
         i class="fas fa-th-list" &nbsp;Detail list
       button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_add_exist_survey"
         i class="fas fa-plus" &nbsp;Add an exist survey
@@ -142,20 +143,20 @@ div class="mb-3"
     div class="col-4 col-sm-12 col-md-3" 
       h4 Registered Participants
     div class="col-8 col-sm-12 col-md-7"
-      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_participant"
+      button type="button" class="btn btn-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_participant"
         i class="fas fa-plus"
       == render :modal_create_participant, locals: { study: study }
       - if study.enable_notification
         form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/confirm_noti_status" method='post'
-          button type="submit" class="btn btn-outline-primary btn-sm"
-            i class="fas fa-check" &nbsp;Update Notify Status
+          button type="submit" class="btn btn-outline-dark btn-sm"
+            i class="fas fa-check" &nbsp;Confirm notify status
       - if study.track_activity
         form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/subscribe_all" method='post'
-          button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
-            i class="fas fa-calendar" &nbsp;Subscribe All
+          button type="submit" class="btn btn-outline-primary btn-sm" id="btn-submit"
+            i class="fas fa-calendar-check" &nbsp;Subscribe all calendars
         form.d-inline-flex.align-middle.mr-1 role="form" action="/studies/#{study.id}/unsubscribe_all" method='post'
           button type="submit" class="btn btn-outline-info btn-sm" id="btn-submit"
-            i class="fas fa-calendar" &nbsp;Unsubscribe All
+            i class="fas fa-calendar-times" &nbsp;Unsubscribe all calendars
       div class="dropdown-menu"
         a href="#" class="dropdown-item" onclick="confirmDeleteStudy('#{study.id}', '#{study.title}')" Delete
   div class="row justify-content-center mt-3"
@@ -208,10 +209,10 @@ div class="mb-3"
             data-toggle="tooltip" 
             title="Include the survey first."
           }
-            button type="button" class="btn btn-outline-dark btn-sm mr-1" disabled=""
+            button type="button" class="btn btn-dark btn-sm mr-1" disabled=""
               i class="fas fa-plus"
         - else
-          button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_notification"
+          button type="button" class="btn btn-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_create_notification"
             i class="fas fa-plus"
           == render :modal_create_notification, locals: { study: study, surveys: study.owned_surveys }
     div class="row justify-content-center mt-3"

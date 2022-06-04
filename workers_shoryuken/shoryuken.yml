@@ -1,0 +1,3 @@
+queues:
+  - https://sqs.us-east-1.amazonaws.com/799429637113/project-use-staging
+  # - https://sqs.us-east-1.amazonaws.com/503315808870/moonbear_responses_store
