@@ -42,11 +42,11 @@ gem 'rack-test'
 gem 'hirb'
 gem 'sequel'
 
-# Queues
-gem 'aws-sdk-sqs', '~> 1'
-
 # WORKERS
-gem 'shoryuken', '~> 4'
+gem 'cronex'
+gem 'nokogiri'
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
 
 # Data gems
 gem 'dry-struct'
@@ -54,30 +54,24 @@ gem 'dry-types'
 
 # Notification
 gem 'aws-sdk-sns'
-gem 'cronex'
-gem 'nokogiri'
-gem 'sidekiq'
-gem 'sidekiq-scheduler'
 
 group :test do
-  gem 'minitest'
-  gem 'minitest-rg'
-  gem 'minitest-hooks'
   gem 'database_cleaner'
-  
+  gem 'minitest'
+  gem 'minitest-hooks'
+  gem 'minitest-rg'
+
   gem 'simplecov'
   gem 'vcr'
   gem 'webmock'
 end
 
 group :development, :test do
-  gem 'sqlite3'
-  
-  gem 'rerun'
-  
   gem 'flog'
   gem 'reek'
+  gem 'rerun'
   gem 'rubocop'
+  gem 'sqlite3'
 end
 
 group :production do
