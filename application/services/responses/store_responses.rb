@@ -137,7 +137,7 @@ module SurveyMoonbear
 
       # input { ..., responses_hash }
       def send_to_responses_storing_queues(input)
-        Worker::StoreResponses.perform_async(input[:responses_hash])
+        Worker::StoreSurveyResponse.perform_async(input[:responses_hash])
         Success(nil)
       rescue StandardError => e
         puts e

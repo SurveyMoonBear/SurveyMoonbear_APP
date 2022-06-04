@@ -12,6 +12,7 @@ module Worker
   class UpdateRandomTime
     include Sidekiq::Worker
     include SurveyMoonbear
+    sidekiq_options queue: :study_notification_queue
 
     def perform
       list = Repository::For[Entity::Notification].find_random
@@ -45,6 +46,7 @@ module Worker
         title, { 'cron' => "#{r_result.min} #{r_result.hour} #{notification.repeat_random_every}",
                  'class' => 'Worker::SendNotification',
                  'enabled' => schedule['enabled'],
+                 'queue' => 'study_notification_queue',
                  'args' => schedule['args'] }
       )
     end
@@ -54,6 +56,7 @@ module Worker
   class SendNotification
     include Sidekiq::Worker
     include SurveyMoonbear
+    sidekiq_options queue: :study_notification_queue
 
     def perform(topic_arn, message, participant_id)
       Messaging::NotificationSubscriber.new(App.config)
@@ -65,11 +68,12 @@ module Worker
     end
   end
 
-  # Usage: Worker::StoreResponses.perform_async(response_hashes)
-  # Storing survey responses
-  class StoreResponses
+  # Usage: Worker::StoreSurveyResponse.perform_async(response_hashes)
+  # Storing survey response
+  class StoreSurveyResponse
     include Sidekiq::Job
     include SurveyMoonbear
+    sidekiq_options queue: :survey_response_queue
 
     def perform(response_hashes)
       store_responses(response_hashes)

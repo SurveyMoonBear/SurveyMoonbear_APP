@@ -165,7 +165,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
                             {:respondent_id=>respondent_id, :page_index=>2, :item_order=>0, :response=>"Wed Mar 27 2019 09:38:06 GMT+0800 (台北標準時間)", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
                             {:respondent_id=>respondent_id, :page_index=>2, :item_order=>1, :response=>"Wed Mar 27 2019 09:38:52 GMT+0800 (台北標準時間)", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
                             {:respondent_id=>respondent_id, :page_index=>2, :item_order=>2, :response=>"{}", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}]
-        worker = Worker::StoreResponses.new
+        worker = Worker::StoreSurveyResponse.new
         success_msg = 'Storing survey response is completed'
         assert_output(/#{success_msg}/) { worker.perform(response_hashes) }
       end

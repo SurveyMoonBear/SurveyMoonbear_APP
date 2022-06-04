@@ -46,13 +46,13 @@ module SurveyMoonbear
           metastore: 'file:_cache/rack/meta',
           entitystore: 'file:_cache/rack/body'
 
-      SIDEKIQ_REDIS_CONFIGURATION = {
-        url: config.REDISCLOUD_STUDY_NOTIFICATIONS_URL + config.REDISCLOUD_STUDY_NOTIFICATIONS_STORE,
+      sidekiq_redis_configuration = {
+        url: config.REDISCLOUD_SIDEKIQ_QUEUES_URL,
         ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
       }.freeze
 
       Sidekiq.configure_server do |s_config|
-        s_config.redis = SIDEKIQ_REDIS_CONFIGURATION
+        s_config.redis = sidekiq_redis_configuration
         s_config.on(:startup) do
           Sidekiq.schedule = YAML.load_file(File.expand_path('./workers/sidekiq_scheduler.yml'))
           SidekiqScheduler::Scheduler.instance.reload_schedule!
@@ -60,7 +60,7 @@ module SurveyMoonbear
       end
 
       Sidekiq.configure_client do |s_config|
-        s_config.redis = SIDEKIQ_REDIS_CONFIGURATION
+        s_config.redis = sidekiq_redis_configuration
       end
     end
 
@@ -72,13 +72,13 @@ module SurveyMoonbear
           metastore: config.REDIS_URL + config.REDIS_RACK_CACHE_METASTORE,
           entitystore: config.REDIS_URL + config.REDIS_RACK_CACHE_ENTITYTORE
 
-      SIDEKIQ_REDIS_CONFIGURATION = {
-        url: config.REDISCLOUD_STUDY_NOTIFICATIONS_URL + config.REDISCLOUD_STUDY_NOTIFICATIONS_STORE,
+      sidekiq_redis_configuration = {
+        url: config.REDISCLOUD_SIDEKIQ_QUEUES_URL,
         ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
       }.freeze
 
       Sidekiq.configure_server do |s_config|
-        s_config.redis = SIDEKIQ_REDIS_CONFIGURATION
+        s_config.redis = sidekiq_redis_configuration
         s_config.on(:startup) do
           Sidekiq.schedule = YAML.load_file(File.expand_path('./workers/sidekiq_scheduler.yml'))
           SidekiqScheduler::Scheduler.instance.reload_schedule!
@@ -86,7 +86,7 @@ module SurveyMoonbear
       end
 
       Sidekiq.configure_client do |s_config|
-        s_config.redis = SIDEKIQ_REDIS_CONFIGURATION
+        s_config.redis = sidekiq_redis_configuration
       end
     end
 

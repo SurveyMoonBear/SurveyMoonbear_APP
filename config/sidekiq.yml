@@ -1,4 +1,6 @@
 # Configuration options for sidekiq
 :dynamic: true
 queues:
-  - default
+  - study_notification_queue
+  - survey_response_queue
+

@@ -19,6 +19,7 @@ module SurveyMoonbear
         { 'at' => [@notification.fixed_timestamp],
           'class' => 'Worker::SendNotification',
           'enabled' => enabled,
+          'queue' => 'study_notification_queue',
           'args' => [@topic, @message, @subscriber] }
       end
 
@@ -26,6 +27,7 @@ module SurveyMoonbear
         { 'cron' => [@notification.repeat_set_time],
           'class' => 'Worker::SendNotification',
           'enabled' => true,
+          'queue' => 'study_notification_queue',
           'args' => [@topic, @message, @subscriber] }
       end
 
@@ -36,6 +38,7 @@ module SurveyMoonbear
         { 'cron' => "#{r_result.min} #{r_result.hour} #{@notification.repeat_random_every}",
           'class' => 'Worker::SendNotification',
           'enabled' => true,
+          'queue' => 'study_notification_queue',
           'args' => [@topic, @message, @subscriber] }
       end
 
