@@ -89,26 +89,6 @@ namespace :queues do
   end
 end
 
-# Make sure the queue of current env has been created before run the worker
-namespace :worker_shoryuken do
-  namespace :run do
-    desc 'Run the background response-store worker in development mode'
-    task :dev do
-      sh 'RACK_ENV=development bundle exec shoryuken -r ./workers_shoryuken/responses_store_worker.rb -C ./workers_shoryuken/shoryuken_dev.yml'
-    end
-
-    desc 'Run the background response-store worker in test mode'
-    task :test do
-      sh 'RACK_ENV=test bundle exec shoryuken -r ./workers_shoryuken/responses_store_worker.rb -C ./workers_shoryuken/shoryuken_test.yml'
-    end
-
-    desc 'Run the background response-store worker in production mode'
-    task :production do
-      sh 'RACK_ENV=production bundle exec shoryuken -r ./workers_shoryuken/responses_store_worker.rb -C ./workers_shoryuken/shoryuken.yml'
-    end
-  end
-end
-
 namespace :worker do
   namespace :run do
     desc 'Run the background worker for scheduling job in development mode'
