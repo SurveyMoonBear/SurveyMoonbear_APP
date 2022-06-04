@@ -12,6 +12,7 @@ Rake::TestTask.new(:spec) do |t|
   t.warning = false
 end
 
+# currently not use
 desc 'run no-cassetttes tests'
 Rake::TestTask.new("spec:novcr") do |t|
   t.pattern = 'spec/*_novcr_spec.rb'
