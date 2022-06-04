@@ -6,7 +6,11 @@ module SurveyMoonbear
       Entity::Account => Accounts,
       Entity::Survey  => Surveys,
       Entity::Launch  => Launches,
-      Entity::VisualReport => VisualReports
+      Entity::VisualReport => VisualReports,
+      Entity::Study => Studies,
+      Entity::Participant => Participants,
+      Entity::Notification => Notifications,
+      Entity::Event => Events
     }.freeze
   end
 end

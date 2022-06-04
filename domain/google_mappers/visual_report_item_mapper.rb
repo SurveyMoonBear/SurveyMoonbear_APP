@@ -7,9 +7,18 @@ module SurveyMoonbear
         @gateway = gateway
       end
 
-      def load_several(spreadsheet_id)
-        pages_data = @gateway.survey_data(spreadsheet_id)
-        pages_data['sheets'].shift # remove the first page(source) of spreadsheet
+      def load_several(spreadsheet_id, redis, key)
+        redis_report = redis.get(key)
+        pages_data =
+          if redis_report['visual_report']
+            redis_report['visual_report']
+          else
+            google_pages_data = @gateway.survey_data(spreadsheet_id)
+            google_pages_data['sheets'].shift # remove the first page(source) of spreadsheet
+            redis_report['visual_report'] = google_pages_data
+            redis.update(key, redis_report)
+            google_pages_data
+          end
         pages_items = {}
         pages_data['sheets'].map do |page_data|
           title = page_data['properties']['title']
@@ -49,7 +58,8 @@ module SurveyMoonbear
             data_source: data_source,
             question: question,
             chart_type: chart_type,
-            legend: legend
+            legend: legend,
+            self_marker: self_marker
           )
         end
 
@@ -73,7 +83,11 @@ module SurveyMoonbear
         end
 
         def legend
-          @item_data[4].nil? ? '' : @item_data[4]
+          @item_data[4]
+        end
+
+        def self_marker
+          @item_data[5]
         end
       end
     end

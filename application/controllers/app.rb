@@ -9,6 +9,8 @@ require 'json'
 require 'csv'
 
 module SurveyMoonbear
+  # rubocop: disable Metrics/ClassLength
+  # rubocop: disable Metrics/BlockLength
   # Web API
   class App < Roda
     plugin :render, engine: 'slim', views: 'presentation/views'
@@ -30,9 +32,11 @@ module SurveyMoonbear
       # GET / request
       routing.root do
         url = 'https://accounts.google.com/o/oauth2/v2/auth'
+        # TODO: request additional calendar scopes when user needs
         scopes = ['https://www.googleapis.com/auth/userinfo.profile',
                   'https://www.googleapis.com/auth/userinfo.email',
-                  'https://www.googleapis.com/auth/spreadsheets']
+                  'https://www.googleapis.com/auth/spreadsheets',
+                  'https://www.googleapis.com/auth/calendar']
         params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
                   "redirect_uri=#{config.APP_URL}/account/login/google_callback",
                   'response_type=code',
@@ -60,7 +64,7 @@ module SurveyMoonbear
         routing.on 'login' do
           # GET /account/login/google_callback request
           routing.get 'google_callback' do
-            logged_in_account_res = Service::FindAuthenticatedGoogleAccount.new.call(config: config, 
+            logged_in_account_res = Service::FindAuthenticatedGoogleAccount.new.call(config: config,
                                                                                      code: routing.params['code'])
             if logged_in_account_res.failure?
               puts logged_in_account_res.failure
@@ -99,18 +103,23 @@ module SurveyMoonbear
         routing.post 'create' do
           new_survey = Service::CreateSurvey.new.call(config: config,
                                                       current_account: @current_account,
-                                                      title: routing.params['title'])
+                                                      title: routing.params['title'],
+                                                      study_id: routing.params['study_id'])
+          redirect_rout = routing.params['rerout']
 
-          new_survey.success? ? flash[:notice] = "#{new_survey.value!.title} is created!" :
-                                flash[:error] = "Failed to create survey, please try again :("
+          if new_survey.success?
+            flash[:notice] = "#{new_survey.value!.title} is created!"
+          else
+            flash[:error] = 'Failed to create survey, please try again :('
+          end
 
-          routing.redirect '/survey_list'
+          routing.redirect redirect_rout
         end
 
         # POST /survey_list/copy/[spreadsheet_id]
         routing.post 'copy', String do |spreadsheet_id|
           new_survey = Service::CopySurvey.new.call(config: config,
-                                                    current_account: @current_account, 
+                                                    current_account: @current_account,
                                                     spreadsheet_id: spreadsheet_id,
                                                     title: routing.params['title'])
 
@@ -124,8 +133,8 @@ module SurveyMoonbear
         @current_account = SecureSession.new(session).get(:current_account)
 
         routing.post 'update_settings' do
-          Service::EditSurveyTitle.new.call(current_account: @current_account, 
-                                            survey_id: survey_id, 
+          Service::EditSurveyTitle.new.call(current_account: @current_account,
+                                            survey_id: survey_id,
                                             new_title: routing.params['title'])
 
           routing.redirect '/survey_list'
@@ -137,9 +146,7 @@ module SurveyMoonbear
                                                            option: routing.params['option'],
                                                            option_value: routing.params['option_value'])
 
-          if response.failure?
-            flash[:error] = response.failure + ' Please try again.'
-          end
+          flash[:error] = "#{response.failure} Please try again." if response.failure?
 
           routing.redirect '/survey_list'
         end
@@ -154,14 +161,14 @@ module SurveyMoonbear
                                                                      current_account: @current_account,
                                                                      random_seed: routing.params['seed'])
             if response.failure?
-              flash[:error] = response.failure + ' Please try again.'
+              flash[:error] = "#{response.failure} Please try again."
               routing.redirect '/survey_list'
             end
 
             preview_survey = response.value!
             view 'survey_preview',
-                  layout: false,
-                  locals: { title: preview_survey[:title], pages: preview_survey[:pages] }
+                 layout: false,
+                 locals: { title: preview_survey[:title], pages: preview_survey[:pages] }
           end
         end
 
@@ -177,7 +184,7 @@ module SurveyMoonbear
         routing.get 'close' do
           response = Service::CloseSurvey.new.call(survey_id: survey_id)
 
-          flash[:error] = response.failure + ' Please try again.' if response.failure?
+          flash[:error] = "#{response.failure} Please try again." if response.failure?
 
           routing.redirect '/survey_list'
         end
@@ -221,7 +228,7 @@ module SurveyMoonbear
           end
         end
 
-        routing.on 'download', String, String do |launch_id, file_name|
+        routing.on 'download', String, String do |launch_id|
           routing.get do
             response['Content-Type'] = 'application/csv'
 
@@ -319,7 +326,9 @@ module SurveyMoonbear
           end
 
           html_of_pages_arr = html_transform_res.value![:pages]
-          routing.params['seed'] = html_transform_res.value![:random_seed] unless html_transform_res.value![:random_seed].nil?
+          unless html_transform_res.value![:random_seed].nil?
+            routing.params['seed'] = html_transform_res.value![:random_seed]
+          end
 
           survey_url = "#{config.APP_URL}/onlinesurvey/#{survey.id}/#{survey.launch_id}"
           url_params = JSON.generate(routing.params)
@@ -393,6 +402,16 @@ module SurveyMoonbear
         end
       end
 
+      # report/google_callback
+      routing.on 'report' do
+        routing.on 'google_callback' do
+          code = routing.params['code']
+          redirect_route = routing.params['state']
+
+          routing.redirect "#{redirect_route}?code=#{code}"
+        end
+      end
+
       # visual_report/[visual_report_id]
       routing.on 'visual_report', String do |visual_report_id|
         @current_account = SecureSession.new(session).get(:current_account)
@@ -407,10 +426,10 @@ module SurveyMoonbear
                             .find_id(visual_report_id)
 
             access_token = Google::Auth.new(config).refresh_access_token
-            responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
-                                                                      spreadsheet_id: spreadsheet_id,
-                                                                      config: config,
-                                                                      access_token: access_token)
+            responses = Service::GetPublicVisualReport.new.call(visual_report: visual_report,
+                                                                spreadsheet_id: spreadsheet_id,
+                                                                config: config,
+                                                                access_token: access_token)
 
             if responses.failure?
               flash[:error] = "#{responses.failure} Please try again :("
@@ -422,35 +441,65 @@ module SurveyMoonbear
                                                            visual_report: visual_report }
           end
 
-          # visual_report/[visual_report_id]/online/[spreadsheet_id]/design
-          routing.on 'design' do
+          # visual_report/[visual_report_id]/online/[spreadsheet_id]/identify
+          routing.on 'identify' do
+            # write in service object?
+            url = 'https://accounts.google.com/o/oauth2/v2/auth'
+            scopes = ['https://www.googleapis.com/auth/userinfo.profile',
+                      'https://www.googleapis.com/auth/userinfo.email']
+            params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
+                      "redirect_uri=#{config.APP_URL}/report/google_callback",
+                      'response_type=code',
+                      "scope=#{scopes.join(' ')}",
+                      "state=/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"]
+            @google_sso_url = "#{url}?#{params.join('&')}"
+
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
-
-            access_token = Google::Auth.new(config).refresh_access_token
-            responses = Service::TransformVisualSheetsToHTML.new.call(visual_report_id: visual_report_id,
-                                                                      spreadsheet_id: spreadsheet_id,
-                                                                      config: config,
-                                                                      access_token: access_token)
-
-            if responses.failure?
-              flash[:error] = "#{responses.failure} Please try again :("
-              routing.redirect '/analytics'
-            end
-
-            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
-
-            view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
-                                                           visual_report: visual_report }
+            view 'visual_report_identify', layout: false, locals: { google_sso_url: @google_sso_url, visual_report: visual_report }
           end
 
           # customized visual report
           # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
           routing.post do
-            student_id = routing.params['respondent']
-            student_id = SecureMessage.encrypt(student_id)
+            redis = RedisCloud.new(config)
+            access_token = Google::Auth.new(config).refresh_access_token
+            cache_key = "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"
+            update_visual_report = Service::UpdateVisualReport.new
+                                                              .call(redis: redis,
+                                                                    visual_report_id: visual_report_id,
+                                                                    spreadsheet_id: spreadsheet_id,
+                                                                    config: config,
+                                                                    cache_key: cache_key,
+                                                                    access_token: access_token)
 
-            routing.redirect "/visual_report/#{visual_report_id}/online/#{spreadsheet_id}?respondent=#{student_id}"
+            flash[:error] = 'Failed to update visual report, please try again :(' if update_visual_report.failure?
+            routing.redirect '/analytics'
+          end
+
+          # customized visual report
+          # GET visual_report/[visual_report_id]/online/[spreadsheet_id]
+          routing.get do
+            code = routing.params['code']
+
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(visual_report_id)
+
+            access_token = Google::Auth.new(config).refresh_access_token
+            responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
+                                                                    visual_report_id: visual_report_id,
+                                                                    visual_report: visual_report,
+                                                                    config: config,
+                                                                    code: code,
+                                                                    access_token: access_token)
+
+            if responses.failure?
+              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"
+            end
+
+            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+            view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
+                                                           visual_report: visual_report }
           end
         end
 
@@ -472,6 +521,334 @@ module SurveyMoonbear
           routing.redirect '/analytics', 303
         end
       end
+
+      # /studies branch
+      routing.on 'studies' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        # POST studies/create
+        routing.post 'create' do
+          new_study = Service::CreateStudy.new.call(config: config,
+                                                    current_account: @current_account,
+                                                    params: routing.params)
+
+          if new_study.success?
+            flash[:notice] = "#{new_study.value!.title} is created!"
+          else
+            flash[:error] = 'Failed to create study, please try again :('
+          end
+          routing.redirect '/studies'
+        end
+
+        routing.on String do |study_id|
+          # POST studies/[study_id]/update_title
+          routing.post 'update_title' do
+            Service::UpdateStudyTitle.new.call(current_account: @current_account,
+                                               study_id: study_id,
+                                               new_title: routing.params['title'])
+            routing.redirect '/studies'
+          end
+
+          # POST studies/[study_id]/create_participant
+          routing.post 'create_participant' do
+            Service::CreateParticipant.new.call(config: config,
+                                                current_account: @current_account,
+                                                study_id: study_id,
+                                                params: routing.params)
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/confirm_noti_status
+          routing.post 'confirm_noti_status' do
+            res = Service::UpdateParticipantsNotiStatus.new.call(config: config, study_id: study_id)
+            if res.failure?
+              flash[:error] = 'Fail to update the confirmed participants. Please try again.'
+            else
+              flash[:notice] = 'Successfully update the confirmed participants!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/subscribe_all
+          routing.post 'subscribe_all' do
+            res = Service::SubscribeAllCalendars.new.call(config: config,
+                                                          current_account: @current_account,
+                                                          study_id: study_id)
+            if res.failure?
+              flash[:error] = 'Fail to subscribe all participants. Please try again.'
+            else
+              flash[:notice] = 'Successfully subscribe all participants\' calendars which is open to you!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/unsubscribe_all
+          routing.post 'unsubscribe_all' do
+            res = Service::UnsubscribeAllCalendars.new.call(config: config,
+                                                            current_account: @current_account,
+                                                            study_id: study_id)
+            if res.failure?
+              flash[:error] = 'Fail to unsubscribe all participants. Please try again.'
+            else
+              flash[:notice] = 'Successfully unsubscribe all participants!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/create_notification
+          routing.post 'create_notification' do
+            res = Service::CreateNotification.new.call(config: config,
+                                                       current_account: @current_account,
+                                                       study_id: study_id,
+                                                       params: routing.params)
+
+            flash[:error] = 'Fail to create notification. Please try again.' if res.failure?
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/add_exist_survey
+          routing.post 'add_exist_survey' do
+            Service::AddExistSurvey.new.call(study_id: study_id,
+                                             survey_id: routing.params['survey_id'])
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/remove_survey
+          routing.post 'remove_survey' do
+            Service::RemoveSurvey.new.call(config: config,
+                                           study_id: study_id,
+                                           survey_id: routing.params['survey_id'])
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/start_notification
+          routing.post 'start_notification' do
+            res = Service::StartNotification.new.call(config: config, study_id: study_id)
+
+            if res.failure?
+              flash[:error] = 'Cannot start the notificaiton. Please try again. :('
+            else
+              flash[:notice] = 'Successfully start the notificaiton!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/close_notification
+          routing.post 'close_notification' do
+            res = Service::CloseNotification.new.call(config: config, study_id: study_id)
+
+            if res.failure?
+              flash[:error] = 'Cannot close the notificaiton. Please try again. :('
+            else
+              flash[:notice] = 'Successfully close the notificaiton!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # POST studies/[study_id]/update
+          routing.post 'update' do
+            res = Service::UpdateStudy.new.call(config: config, study_id: study_id,
+                                                current_account: @current_account,
+                                                params: routing.params)
+
+            if res.failure?
+              flash[:error] = 'Cannot update the study. Please try again. :('
+            else
+              flash[:notice] = 'Successfully update the study!'
+            end
+            routing.redirect "/studies/#{study_id}"
+          end
+
+          # GET studies/[study_id]/study_result_detail
+          routing.on 'study_result_detail' do
+            routing.get do
+              result_detail = Service::GetStudyResultDetail.new.call(study_id: study_id)
+              if result_detail.failure?
+                puts result_detail.failure
+                []
+              else
+                result_detail.value!
+              end
+            end
+          end
+
+          # POST studies/[study_id]/download/[file_name]
+          routing.on 'download', String do |file_name|
+            routing.post do
+              response['Content-Type'] = 'application/csv'
+              params = routing.params
+              response = if params['result_type'] == 'responses'
+                           Service::TransformResponsesToCSV.new.call(launch_id: params['wave_id'],
+                                                                     participant_id: params['participant_id'])
+                         elsif params['info_details_or_events'] == 'events'
+                           Service::TransformEventsToCSV.new.call(study_id: study_id,
+                                                                  participant_id: params['participant_id'])
+                         else
+                           Service::TransformParticipantsToCSV.new.call(study_id: study_id,
+                                                                        participant_id: params['participant_id'])
+                         end
+
+              response.success? ? response.value! : response.failure
+            end
+          end
+
+          # DELETE studies/[study_id]
+          routing.delete do
+            response = Service::DeleteStudy.new.call(config: config,
+                                                     current_account: @current_account,
+                                                     study_id: study_id)
+            flash[:error] = 'Failed to delete the study. Please try again :(' if response.failure?
+            routing.redirect '/studies', 303
+          end
+
+          # GET /studies/[study_id]
+          routing.get do
+            routing.redirect '/' unless @current_account
+            study = Repository::For[Entity::Study].find_id(study_id)
+            alone_surveys = Repository::For[Entity::Survey].find_alone(@current_account['id'])
+            participants = Repository::For[Entity::Participant].find_study(study_id)
+            notifications = Service::GetNotifications.new.call(study_id: study_id).value!
+            view 'study', locals: { study: study,
+                                    participants: participants,
+                                    notifications: notifications,
+                                    alone_surveys: alone_surveys,
+                                    config: config }
+          end
+        end
+
+        # GET /studies
+        routing.get do
+          routing.redirect '/' unless @current_account
+          studies = Repository::For[Entity::Study].find_owner(@current_account['id'])
+          view 'studies', locals: { studies: studies, config: config }
+        end
+      end
+
+      # /participants branch
+      routing.on 'participants' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        routing.on String do |participant_id|
+          # POST /participants/[participant_id]/update
+          routing.post 'update' do
+            Service::UpdateParticipant.new.call(config: config,
+                                                current_account: @current_account,
+                                                participant_id: participant_id,
+                                                params: routing.params)
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # POST /participants/[participant_id]/turn_off_notify
+          routing.post 'turn_off_notify' do
+            Service::TurnOffNotify.new.call(config: config,
+                                            participant_id: participant_id)
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # POST /participants/[participant_id]/turn_on_notify
+          routing.post 'turn_on_notify' do
+            Service::TurnOnNotify.new.call(config: config,
+                                           participant_id: participant_id)
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # POST /participants/[participant_id]/subscribe_calendar
+          routing.post 'subscribe_calendar' do
+            res = Service::SubscribeCalendar.new.call(config: config,
+                                                      current_account: @current_account,
+                                                      participant_id: participant_id,
+                                                      calendar_id: routing.params['calendar_id'])
+            if res.failure?
+              flash[:error] = 'Participant doesn\'t open calendar to you or give a wrong gmail address.'
+            else
+              flash[:notice] = 'Successfully subscribe participant!'
+            end
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # POST /participants/[participant_id]/unsubscribe_calendar
+          routing.post 'unsubscribe_calendar' do
+            res = Service::UnsubscribeCalendar.new.call(config: config,
+                                                        current_account: @current_account,
+                                                        participant_id: participant_id,
+                                                        calendar_id: routing.params['calendar_id'])
+            if res.failure?
+              flash[:error] = 'Fail to unsubscribe. Please try again.'
+            else
+              flash[:notice] = 'Successfully unsubscribe participant!'
+            end
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # GET /participants/[participant_id]/refresh_events
+          routing.get 'refresh_events' do
+            res = Service::RefreshEvents.new.call(config: config,
+                                                  current_account: @current_account,
+                                                  participant_id: participant_id)
+            if res.failure?
+              flash[:error] = 'Fail to refresh paparticipant\'s events. Please try again. :('
+            else
+              flash[:notice] = 'Successfully refresh participant\'s events!'
+            end
+            routing.redirect "/participants/#{participant_id}"
+          end
+
+          # DELETE /participants/[participant_id]
+          routing.post 'deletion' do
+            response = Service::DeleteParticipant.new.call(config: config,
+                                                           current_account: @current_account,
+                                                           participant_id: participant_id)
+
+            flash[:error] = 'Failed to delete the participant. Please try again :(' if response.failure?
+            routing.redirect "/studies/#{response.value![:deleted_participant].study.id}", 303
+          end
+
+          # GET /participants/[participant_id]
+          routing.get do
+            routing.redirect '/' unless @current_account
+
+            participant = Service::GetParticipant.new.call(participant_id: participant_id)
+            events = Service::GetEvents.new.call(participant_id: participant_id)
+
+            if participant.failure? || events.failure?
+              flash[:error] = 'Failed to get the participant. Please try again :('
+              routing.redirect '/studies'
+            else
+              view 'participant', locals: { participant: participant.value![:participant],
+                                            details: participant.value![:details],
+                                            events: events.value![:events],
+                                            busy_time: events.value![:busy_time] }
+            end
+          end
+        end
+      end
+
+      # /notifications branch
+      routing.on 'notifications' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        routing.on String do |notification_id|
+          # DELETE /notifications/[notification_id]
+          routing.post 'deletion' do
+            response = Service::DeleteNotification.new.call(config: config, notification_id: notification_id)
+
+            flash[:error] = 'Failed to delete the notification. Please try again :(' if response.failure?
+            routing.redirect "/studies/#{response.value!.study.id}", 303
+          end
+
+          # GET /notifications/[notification_id]
+          routing.get do
+            routing.redirect '/' unless @current_account
+
+            notification = Service::GetNotification.new.call(notification_id: notification_id)
+            view 'notification', locals: { notification: notification.value![:notification],
+                                           date_time: notification.value![:date_time],
+                                           config: config }
+          end
+        end
+      end
     end
   end
+  # rubocop: enable Metrics/ClassLength
+  # rubocop: enable Metrics/BlockLength
 end

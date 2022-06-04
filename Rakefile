@@ -12,6 +12,7 @@ Rake::TestTask.new(:spec) do |t|
   t.warning = false
 end
 
+# currently not use
 desc 'run no-cassetttes tests'
 Rake::TestTask.new("spec:novcr") do |t|
   t.pattern = 'spec/*_novcr_spec.rb'
@@ -26,8 +27,6 @@ end
 namespace :run do
   task :dev do
     sh 'rerun -c "heroku local -f Procfile.dev -p 9090"'
-    sh 'rerun -c "rackup -p 9090"'
-    # sh 'rackup -p 9090'
   end
 
   task :test do
@@ -35,49 +34,50 @@ namespace :run do
   end
 end
 
-namespace :queues do
-  task :config do
-    require 'aws-sdk-sqs'
-    require_relative 'config/environments.rb'
-    @app = SurveyMoonbear::App
+namespace :redis do
+  require 'redis'
+  require_relative 'lib/init'
+  require_relative 'config/environments'
 
-    @sqs = Aws::SQS::Client.new(
-      access_key_id: @app.config.AWS_ACCESS_KEY_ID,
-      secret_access_key: @app.config.AWS_SECRET_ACCESS_KEY,
-      region: @app.config.AWS_REGION
-    )
-  end
+  app = SurveyMoonbear::App
 
-  desc 'Create SQS queue for Shoryuken'
-  task :create => :config do
-    puts "Environment: #{@app.environment}"
-    @sqs.create_queue(queue_name: @app.config.RES_QUEUE_NAME)
+  namespace :visual_report do
+    redis = Redis.new(url: app.config.REDISCLOUD_VISUALREPORTS_URL)
 
-    puts 'Queue created:'
-    puts "  Name: #{@app.config.RES_QUEUE_NAME}"
-    puts "  Region: #{@app.config.AWS_REGION}"
-    puts "  URL: #{@app.config.RES_QUEUE_URL}"
-  rescue StandardError => error
-    puts "Error creating queue: #{error}"
+    desc 'Get visual report cache from redis'
+    task :keys do
+      puts redis.keys
+    end
+
+    desc 'Delete visual report cache from redis'
+    task :delete_all do
+      if app.environment == :production
+        puts 'Cannot delete production redis!'
+        return
+      end
+
+      redis.keys.each do |key|
+        redis.del(key)
+      end
+    end
   end
 end
 
-# Make sure the queue of current env has been created before run the worker
 namespace :worker do
   namespace :run do
-    desc 'Run the background response-store worker in development mode'
-    task :dev do
-      sh 'RACK_ENV=development bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken_dev.yml'
+    desc 'Run the background worker for scheduling job in development mode'
+    task :dev => :config do
+      sh 'RACK_ENV=development bundle exec sidekiq -r ./workers/workers.rb'
     end
 
-    desc 'Run the background response-store worker in test mode'
-    task :test do
-      sh 'RACK_ENV=test bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken_test.yml'
+    desc 'Run the background worker for scheduling job in testing mode'
+    task :test => :config do
+      sh 'RACK_ENV=test bundle exec sidekiq -r ./workers/workers.rb'
     end
 
-    desc 'Run the background response-store worker in production mode'
-    task :production do
-      sh 'RACK_ENV=production bundle exec shoryuken -r ./workers/responses_store_worker.rb -C ./workers/shoryuken.yml'
+    desc 'Run the background worker for scheduling job in production mode'
+    task :production => :config do
+      sh 'RACK_ENV=production bundle exec sidekiq -r ./workers/workers.rb'
     end
   end
 end
@@ -158,7 +158,7 @@ namespace :session do
   task :wipe => :load_all do
     require 'redis'
     puts 'Deleting all sessions from Redis session store'
-    wiped = SessionSecure.wipe_radis_session
+    wiped = SecureSession.wipe_redis_sessions
     puts "#{wiped.count} sessions deleted"
   end
 end
@@ -182,7 +182,7 @@ namespace :cache do
     desc 'Lists production cache'
     task :production => :config do
       puts 'Finding production cache'
-      keys = SurveyMoonbear::Cache::Client.new(@api.config).keys
+      keys = SurveyMoonbear::Cache::Client.new(@app.config).keys
       puts 'No keys found' if keys.none?
       keys.each { |key| puts "Key: #{key}" }
     end

@@ -1,0 +1,127 @@
+div class="modal fade" id="modal_create_notification" tabindex="-1"
+  div class="modal-dialog" role="document"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Create a New Notification
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      form id="create_notification_form" action="/studies/#{study.id}/create_notification" method="post"
+        div class="modal-body"
+          div class="form-group"
+            div class="mb-2"
+              label for="notification_input" Title (unique)
+              input type="text" class="form-control" id="title" name="title" placeholder="morning_call"
+            div class="mb-2"
+              label for="reminder_type"Linked Survey
+              select class="form-control" id="survey_id" name="survey_id"
+                - if surveys.any?
+                  - surveys.each do |survey|
+                    option value="#{survey.id}" #{survey.title}
+            div class="mb-4"
+              label for="reminder_type" Type
+              select class="form-control" id="reminder_type" name="type"
+                option value="fixed" Fixed
+                option value="repeating" Repeating
+            div class="mb-2" id="fixed_timestamp"
+              label for="notification_input" Notification Date & Time
+              input type="datetime-local" class="form-control" id="fixed_timestamp" name="fixed_timestamp" 
+            div class="mb-2" id="reminder_schedule"
+              label.my-1 for='name_input' Notification Schedule 
+              .row.mb-1
+                .col-2
+                  label for='name_input' Every
+                .col
+                  select class="form-control form-control-sm" name="repeat_every" aria-label="Default select example" id="repeat_every"
+                    option value="day" Day
+                    option value="week" Week
+              .row.mb-1 id="repeat_on"
+                .col-2
+                  label for='name_input' On
+                .col
+                  input class='form-control form-control-sm' name="repeat_on" type="text" placeholder='Sun to Tue eg. 0,1,2'
+              .row.mb-1
+                .col-2
+                  label for='name_input' At
+                .col
+                  select class="form-control form-control-sm" name="repeat_at" aria-label="Default select example" id="repeat_at"
+                    option value="set_time" Set Time
+                    option value="random" Random
+              .row.mb-1 id="repeat_at_set_time"
+                .col-2
+                  label for='name_input' Time
+                .col
+                  input type="time" class="form-control form-control-sm" id="repeat_set_time" name="repeat_set_time" 
+              .row.mb-1.g-3.align-items-center id="repeat_at_random"
+                .col-2
+                  label for='name_input' Between
+                .col
+                  input type="time" class="form-control form-control-sm" id="repeat_random_start" name="repeat_random_start" 
+                .col-1
+                  label for='name_input' to
+                .col
+                  input type="time" class="form-control form-control-sm" id="repeat_random_end" name="repeat_random_end" 
+            / div class="mt-4 mb-2"
+            /   label for='name_input' Time Zone In
+            /   input class='form-control' name="notification_tz" type="text" placeholder='TZ database name eg. Asia/Taipei'
+            div class="mb-2"
+              label.my-1 for='name_input' Content (shown in notification message and combine with the survey link)
+              input class='form-control' name="content" type="text" placeholder='eg. please fill in this survey'
+        div class="modal-footer"
+          button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+          button type="submit" class="btn btn-primary" id="btn-create" Create
+javascript:
+  var reminder_type = $("#reminder_type").val();
+  var repeat_every = $("#repeat_every").val();
+  var repeat_at = $("#repeat_at").val();
+  
+  function check_reminder_type(reminder_type){
+    if(reminder_type == 'fixed'){
+      $('#fixed_timestamp').removeClass('d-none');
+      $('#reminder_schedule').addClass('d-none');
+    }
+    else{
+      $('#fixed_timestamp').addClass('d-none');
+      $('#reminder_schedule').removeClass('d-none');
+    }
+  };
+
+  function check_repeat_every(repeat_every){
+    if(repeat_every == 'day'){
+      $('#repeat_on').addClass('d-none');
+    }
+    else{
+      $('#repeat_on').removeClass('d-none');
+    }
+  };
+
+  function check_repeat_at(repeat_at){
+    if(repeat_at == 'set_time'){
+      $('#repeat_at_random').addClass('d-none');
+      $('#repeat_at_set_time').removeClass('d-none');
+    }
+    else{
+      $('#repeat_at_random').removeClass('d-none');
+      $('#repeat_at_set_time').addClass('d-none');
+    }
+  };
+
+  check_reminder_type(reminder_type);
+  check_repeat_every(repeat_every);
+  check_repeat_at(repeat_at);
+
+  $("#reminder_type").change(() => {
+    var reminder_type = $("#reminder_type").val();
+    check_reminder_type(reminder_type)
+  });
+
+  $("#repeat_every").change(() => {
+    var repeat_every = $("#repeat_every").val();
+    check_repeat_every(repeat_every)
+  });
+
+  $("#repeat_at").change(() => {
+    var repeat_at = $("#repeat_at").val();
+    check_repeat_at(repeat_at)
+  });
+
+  /*$("#reminder_form").serializeArray()*/

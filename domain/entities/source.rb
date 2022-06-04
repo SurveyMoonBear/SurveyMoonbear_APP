@@ -9,6 +9,7 @@ module SurveyMoonbear
       attribute :source_name, Strict::String
       attribute :source_id, Strict::String
       attribute :case_id, Strict::String.optional
+      attribute :sso_email, Strict::String.optional
     end
   end
 end

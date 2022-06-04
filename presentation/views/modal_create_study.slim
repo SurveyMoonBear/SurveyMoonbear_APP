@@ -1,0 +1,61 @@
+div class="modal fade" id="modal_create_study"
+  div class="modal-dialog" role="document"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" Create a New Study
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+      form id="create_study_form" action="/studies/create" method="post"
+        div class="modal-body"
+          div class="form-group"
+            div class="mb-3"
+              label for="title" Study Title
+              input type="text" class="form-control" id="title" name="title" placeholder="Enter study title"
+            div class="mb-3"
+              label for="description" Study Description
+              textarea class="form-control" id="desc" name="desc" rows="3" placeholder="Enter study description"
+            div class="form-check mb-2"
+              input class="form-check-input" type="checkbox" name="enable_notification" id="enable_notification" value="true"
+              label class="form-check-label" for="enable_notification" Enable Notification
+            small
+              ul
+                li.text-muted Participant will receive an <u><i>AWS Subscription Confirm</i></u> email when the email address is input.
+                li.text-muted Click the <u><i>confirm notify status</i></u> button to check participant confirmed or not
+                li.text-muted Participant can receive the notification after confirmed and started the notification.
+            div class="form-check mb-2"
+              input class="form-check-input" type="checkbox" name="track_activity" id="track_activity" value="true"
+              label class="form-check-label" for="track_activity" Collect Calendar Data
+            small
+              ul
+                li.text-muted Ask participant for their authorization to share Google calendar to you.
+                li.text-muted Click the <u><i>subscribe calendar</u></i> button to subscribe participant's Google calendar.
+                li.text-muted You can refresh and collect calendar data.
+            div class="mb-2 row d-none" id="period_start_at"
+              div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"
+                label class="form-label" for="period_start_at" Period Start At 
+              div class="col-lg-9 col-md-9 col-sm-9 col-xs-12"
+                input type="date" class="form-control form-control-sm" id="activity_start_at" name="activity_start_at" 
+            div class="mb-3 row d-none" id="period_end_at"
+              div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"
+                label class="form-label" for="period_end_at" Period End At 
+              div class="col-lg-9 col-md-9 col-sm-9 col-xs-12"
+                input type="date" class="form-control form-control-sm" id="activity_end_at" name="activity_end_at" 
+        div class="modal-footer"
+          button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+          button type="submit" class="btn btn-primary" id="btn-create" Create
+
+javascript:
+  function check_to_track(track_activity){
+    if(track_activity){
+      $('#period_start_at').removeClass('d-none');
+      $('#period_end_at').removeClass('d-none');
+    }
+    else{
+      $('#period_start_at').addClass('d-none');
+      $('#period_end_at').addClass('d-none');
+    }
+  };
+  $("#track_activity").change(() => {
+    var track_activity = $("#track_activity:checked").val();
+    check_to_track(track_activity);
+  });

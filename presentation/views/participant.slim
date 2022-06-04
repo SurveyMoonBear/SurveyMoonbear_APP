@@ -1,0 +1,256 @@
+div class="mb-3"
+  div class="row justify-content-center mt-3"
+    div class="col-10 col-sm-12 col-md-8 text-muted"
+      small.align-middle
+        a href="/studies" My Studies&nbsp;
+        i class="fas fa-angle-double-right"&nbsp;
+        a href="/studies/#{participant.study.id}" #{participant.study.title}&nbsp;
+        i class="fas fa-angle-double-right"&nbsp;#{participant.nickname}
+    div class="col-2 col-sm-2 col-md-2 text-right text-muted"
+      small Participant
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10"
+      div id="div-alert"
+        == render :flash_bar 
+  div class="row justify-content-center"
+    div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
+      h3.m-0 #{participant.nickname}
+      button {
+          class="btn btn-dark btn-sm ml-5"
+          data-toggle="modal" data-target="#modal_edit_participant" 
+        }
+        i class="fas fa-edit"
+      div class="modal fade" id="modal_edit_participant"
+        div class="modal-dialog" role="document"
+          div class="modal-content"
+            div class="modal-header"
+              h5 class="modal-title" Edit Participant
+              button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                span aria-hidden="true" &times;
+            form id="update_participant_form" action="/participants/#{participant.id}/update" method="post"
+              div class="modal-body"
+                div class="form-group"
+                  div class="mb-2"
+                    label for="nickname" Nickname
+                    input type="text" class="form-control" id="nickname" name="nickname" value="#{participant.nickname}"
+                  div class="mb-2"
+                    label for="contact_type"  Contact Type
+                    select class="form-control" id="contact_type" name="contact_type"
+                      - if participant.contact_type == 'email'
+                        option selected="" value="email" Email
+                        option value="sms" SMS
+                      - else
+                        option value="email" Email
+                        option selected="" value="sms" SMS
+                  div class="mb-2  form-group"
+                    label for="email" Email
+                    input type="email" class="form-control" id="email" name="email" value="#{participant.email}"
+                  div class="mb-2  form-group"
+                    label for="phone" Phone(optional)
+                    input type="text" class="form-control" id="phone" name="phone" value="#{participant.phone}"          
+                  div class="mb-2"
+                    label for="details" Participant Details
+                    input type="text" class="form-control" id="details" name="details" value="#{participant.details}"
+              div class="modal-footer"
+                button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                button type="submit" class="btn btn-primary" id="btn-save" Save
+      - if participant.noti_status == 'confirmed'
+        button {
+            class="btn btn-outline-info btn-sm ml-2"
+            data-toggle="modal" data-target="#modal_turnoff_notification" 
+          }
+          i class="fas fa-bell-slash" &nbsp;Turn off
+        div class="modal fade" id="modal_turnoff_notification"
+          div class="modal-dialog" role="document"
+            div class="modal-content"
+              div class="modal-header"
+                h5 class="modal-title" Turn off Participant's Notification
+                button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  span aria-hidden="true" &times;
+              form id="form_turnoff_notification" action="/participants/#{participant.id}/turn_off_notify" method="post"
+                div class="modal-body"
+                  div class="form-group"
+                    div class="mb-2"
+                      label for="form" 
+                        <b>#{participant.nickname}</b> will not receive any notifications.
+                div class="modal-footer"
+                  button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                  button type="submit" class="btn btn-primary" id="btn-update" Turn off
+      - if participant.noti_status == 'turn_off'
+        button {
+            class="btn btn-outline-info btn-sm ml-2"
+            data-toggle="modal" data-target="#modal_turnon_notification" 
+          }
+          i class="fas fa-bell" &nbsp;Turn on
+        div class="modal fade" id="modal_turnon_notification"
+          div class="modal-dialog" role="document"
+            div class="modal-content"
+              div class="modal-header"
+                h5 class="modal-title" Turn on Participant's Notification
+                button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  span aria-hidden="true" &times;
+              form id="form_turnon_notification" action="/participants/#{participant.id}/turn_on_notify" method="post"
+                div class="modal-body"
+                  div class="form-group"
+                    div class="mb-2"
+                      label for="form" 
+                        <b>#{participant.nickname}</b> will receive notifications.
+                div class="modal-footer"
+                  button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                  button type="submit" class="btn btn-primary" id="btn-update" Turn on
+      - if participant.act_status == 'subscribed'
+        button {
+            class="btn btn-outline-info btn-sm ml-2"
+            data-toggle="modal" data-target="#modal_unsubscribe_calendar" 
+          }
+          i class="fas fa-calendar-times" &nbsp;Unsubscribe calendar
+        div class="modal fade" id="modal_unsubscribe_calendar"
+          div class="modal-dialog" role="document"
+            div class="modal-content"
+              div class="modal-header"
+                h5 class="modal-title" Unsubscribe Participant's Calendar
+                button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  span aria-hidden="true" &times;
+              form id="form_unsubscribe_calendar" action="/participants/#{participant.id}/unsubscribe_calendar" method="post"
+                div class="modal-body"
+                  div class="form-group"
+                    div class="mb-2"
+                      label for="form" Remove subscription of
+                        <b>#{participant.email}</b> from your Google Calendar.
+                      input type="hidden" name="act_status" value="unsubscribed" 
+                      input type="hidden" name="calendar_id" value="#{participant.email}" 
+                div class="modal-footer"
+                  button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                  button type="submit" class="btn btn-primary" id="btn-update" Unsubscribe
+      - if participant.act_status == 'unsubscribed'
+        button {
+            class="btn btn-outline-primary btn-sm ml-2"
+            data-toggle="modal" data-target="#modal_subscribe_calendar" 
+          }
+          i class="fas fa-calendar-check" &nbsp;Subscribe calendar
+        div class="modal fade" id="modal_subscribe_calendar"
+          div class="modal-dialog" role="document"
+            div class="modal-content"
+              div class="modal-header"
+                h5 class="modal-title" Subscribe Participant's Calendar
+                button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  span aria-hidden="true" &times;
+              form id="form_subscribe_calendar" action="/participants/#{participant.id}/subscribe_calendar" method="post"
+                div class="modal-body"
+                  div class="form-group"
+                    div class="mb-2"
+                      label for="form" Add subscription of
+                        <b>#{participant.email}</b> into your Google Calendar.
+                      input type="hidden" name="act_status" value="subscribed" 
+                      input type="hidden" name="calendar_id" value="#{participant.email}" 
+                div class="modal-footer"
+                  button type="button" class="btn btn-secondary" data-dismiss="modal" Close
+                  button type="submit" class="btn btn-primary" id="btn-update" Subscribe
+      - if participant.noti_status == 'pending'
+        span {
+          class="d-inline-block" 
+          tabindex="0" 
+          data-toggle="tooltip" 
+          title="You can not delete #{participant.noti_status} participant"
+        }
+          button class="btn btn-outline-dark btn-sm ml-2" disabled=""
+            i class="fas fa-trash"
+      - else
+        button {
+          class="btn btn-outline-dark btn-sm ml-2"
+          data-toggle="modal" data-target="#modal_delete_#{participant.id}" 
+        }
+          i class="fas fa-trash"
+        == render :partial_delete, locals: { id:"modal_delete_#{participant.id}", action:"/participants/#{participant.id}", obj: "Participant: #{participant.nickname}" }
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 p-3 border"
+      .row
+        .col-md-3.col-sm-12
+          b Study
+        .col-md-9.col-sm-12 
+          a href="/studies/#{participant.study.id}" #{participant.study.title}
+      .row
+        .col-md-3.col-sm-12
+          b ID
+        .col-md-9.col-sm-12 #{participant.id}
+      - if participant.study.enable_notification
+        .row
+          .col-md-3.col-sm-12
+            b Notify Status
+          .col-md-9.col-sm-12 
+            - if participant.noti_status == 'turn_off' || participant.noti_status == 'pending'
+              span class="badge badge-pill badge-secondary"#{participant.noti_status}
+            - if participant.noti_status == 'confirmed'
+              span class="badge badge-pill badge-info" #{participant.noti_status}
+      - if participant.study.track_activity
+        .row
+          .col-md-3.col-sm-12
+            b Calendar Status
+          .col-md-9.col-sm-12
+            - if participant.act_status == 'unsubscribed'
+              span class="badge badge-pill badge-secondary" #{participant.act_status}
+            - if participant.act_status == 'subscribed'
+              span class="badge badge-pill badge-info" #{participant.act_status}
+      .row
+        .col-md-3.col-sm-12
+          b Contact Type
+        .col-md-9.col-sm-12 #{participant.contact_type}
+      .row
+        .col-md-3.col-sm-12
+          b Email
+        .col-md-9.col-sm-12 #{participant.email}
+      .row
+        .col-md-3.col-sm-12
+          b Phone
+        - unless participant.phone.empty?
+          .col-md-9.col-sm-12 #{participant.phone}
+  div class="row justify-content-center mt-3"
+    div class="col-4 col-sm-12 col-md-3" 
+      h4 Details
+    div class="col-8 col-sm-12 col-md-7"
+  - unless details.empty?
+    div class="row justify-content-center mt-3"
+      div class="col-12 col-sm-12 col-md-10 p-3 border"
+        - details.each do |key, value|    
+          .row
+            .col-md-3.col-sm-12
+              b #{key}
+            .col-md-9.col-sm-12 #{value}
+  - if participant.study.track_activity
+    div class="row justify-content-center mt-3"
+      div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
+        h4 Calendar Events
+        - if participant.act_status == 'subscribed'
+          form.d-inline-flex.align-middle role="form" action="/participants/#{participant.id}/refresh_events" method='get'
+            button type="submit" class="btn btn-outline-dark btn-sm ml-5"
+              i class="fas fa-sync" &nbsp;Refresh
+        - if participant.act_status == 'unsubscribed'
+          span {
+            class="d-inline-block"
+            tabindex="0"
+            data-toggle="tooltip"
+            title="You cannot refresh unsubscribed calendar"
+          }
+            button type="submit" class="btn btn-outline-dark btn-sm ml-5" disabled=""
+              i class="fas fa-sync" &nbsp;Refresh
+    div class="row justify-content-center mt-3"
+      div class="col-12 col-sm-12 col-md-10" style="word-wrap:break-word;"
+        div.mb-4
+          <b>#{busy_time}</b> total busy time between <b>#{participant.study.activity_start_at.strftime('%Y-%m-%d')}</b> to <b>#{participant.study.activity_end_at.strftime('%Y-%m-%d')}</b>
+        - if events.any?
+          table class="table"
+            thead
+              tr
+                th scope="col"  #
+                th scope="col"  Start at
+                th scope="col"  End at
+            tbody
+              - events.each.with_index do |event, index|
+                tr
+                  th scope="row" #{index+1}
+                  td #{event.start_at}
+                  td #{event.end_at}
+javascript: 
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  })

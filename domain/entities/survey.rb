@@ -18,6 +18,7 @@ module SurveyMoonbear
       attribute :options, Strict::String.optional
       attribute :pages, Strict::Array.of(Page)
       attribute :launches, Strict::Array.of(Launch).optional
+      attribute :study_id, String.optional
     end
   end
 end

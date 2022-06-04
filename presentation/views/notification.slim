@@ -1,0 +1,47 @@
+div class="mb-3"
+  div class="row justify-content-center mt-3"
+    div class="col-10 col-sm-12 col-md-8 text-muted"
+      small.align-middle
+        a href="/studies" My Studies&nbsp;
+        i class="fas fa-angle-double-right"&nbsp;
+        a href="/studies/#{notification.study.id}" #{notification.study.title}&nbsp;
+        i class="fas fa-angle-double-right"&nbsp;#{notification.title}
+    div class="col-2 col-sm-2 col-md-2 text-right text-muted"
+      small Notification
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 d-flex align-middle" 
+      h3.m-0 #{notification.title}
+      button {
+          class="btn btn-outline-dark btn-sm ml-5"
+          data-toggle="modal" data-target="#modal_delete_#{notification.id}" 
+        }
+        i class="fas fa-trash"
+      == render :partial_delete, locals: { id:"modal_delete_#{notification.id}", action:"/notifications/#{notification.id}", obj: "Notification: #{notification.title}" }
+  div class="row justify-content-center mt-3"
+    div class="col-12 col-sm-12 col-md-10 p-3 border"
+      .row
+        .col-md-3.col-sm-12
+          b Study
+        .col-md-9.col-sm-12 
+          a href="/studies/#{notification.study.id}" #{notification.study.title}
+      .row
+        .col-md-3.col-sm-12
+          b Title
+        .col-md-9.col-sm-12 #{notification.id}
+      .row
+        .col-md-3.col-sm-12
+          b Type
+        .col-md-9.col-sm-12 #{notification.type}
+      .row
+        .col-md-3.col-sm-12
+          b Date & Time
+        .col-md-9.col-sm-12 #{date_time}
+      .row
+        .col-md-3.col-sm-12
+          b Content
+        .col-md-9.col-sm-12 #{notification.content}
+  div class="row justify-content-center mt-3"
+    div class="col-4 col-sm-12 col-md-3" 
+      h4 Survey
+    div class="col-8 col-sm-12 col-md-7"
+  == render :surveys, locals: { surveys: [notification.survey], config: config }
