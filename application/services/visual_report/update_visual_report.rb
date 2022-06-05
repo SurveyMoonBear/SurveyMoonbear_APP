@@ -9,29 +9,11 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
-      step :wipe_visual_report_cache
       step :get_visual_report_owner_name
       step :delete_keys_in_redis
       step :transform_responses
 
       private
-
-      # input { cache_key:, redis:, visual_report_id:, spreadsheet_id:... }
-      def wipe_visual_report_cache(input)
-        if App.environment == :production
-          metastore_uri = input[:config].REDIS_URL + input[:config].REDIS_RACK_CACHE_METASTORE
-          entitystore_uri = input[:config].REDIS_URL + input[:config].REDIS_RACK_CACHE_ENTITYTORE
-          metastore = Rack::Cache::Storage.instance.resolve_metastore_uri(metastore_uri)
-          entitystore = Rack::Cache::Storage.instance.resolve_entitystore_uri(entitystore_uri)
-          stored_meta = metastore.read(input[:cache_key])
-          entitystore.purge(stored_meta[0][1]['X-Content-Digest'])
-          metastore.purge(input[:cache_key])
-        end
-
-        Success(input)
-      rescue StandardError
-        Failure('Failed to wipe visual report cache.')
-      end
 
       # input { redis:, visual_report_id:, spreadsheet_id:... }
       def get_visual_report_owner_name(input)
