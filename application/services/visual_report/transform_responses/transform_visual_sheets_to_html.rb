@@ -20,8 +20,8 @@ module SurveyMoonbear
 
       # input { user_key:, visual_report:, spreadsheet_id:, access_token:, config:, redis:}
       def create_redis_key_meta(input)
-        input[:redis_val] = input[:redis].get(input[:user_key])
-        unless input[:redis_val]
+        redis_val = input[:redis].get(input[:user_key])
+        unless redis_val
           meta_data = { user_name: input[:visual_report].owner.username,
                         report_title: input[:visual_report].title,
                         key_id: input[:user_key] }
@@ -95,9 +95,10 @@ module SurveyMoonbear
 
       # input { ...,user_key, sheets_report, user_access_token, sources}
       def cal_responses_from_sources(input)
+        redis_val = input[:redis].get(input[:user_key])
         input[:all_graphs] =
-          if input[:redis_val]['all_graphs']
-            input[:redis_val]['all_graphs']
+          if redis_val['all_graphs']
+            redis_val['all_graphs']
           else
             pages_val =
               input[:sheets_report].map do |k, items_data|
@@ -120,10 +121,9 @@ module SurveyMoonbear
                   end
                 [k, graphs_val]
               end
-            temp_h = input[:redis_val]
-            temp_h['all_graphs'] = pages_val.to_h
-            input[:redis].update(input[:user_key], temp_h)
-            temp_h['all_graphs']
+            redis_val['all_graphs'] = pages_val.to_h
+            input[:redis].update(input[:user_key], redis_val)
+            redis_val['all_graphs']
           end
         Success(input[:all_graphs])
       rescue StandardError

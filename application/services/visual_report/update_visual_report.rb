@@ -24,7 +24,7 @@ module SurveyMoonbear
           metastore = Rack::Cache::Storage.instance.resolve_metastore_uri(metastore_uri)
           entitystore = Rack::Cache::Storage.instance.resolve_entitystore_uri(entitystore_uri)
           stored_meta = metastore.read(input[:cache_key])
-          entitystore.purge(stored_meta[0][1]["X-Content-Digest"])
+          entitystore.purge(stored_meta[0][1]['X-Content-Digest'])
           metastore.purge(input[:cache_key])
         end
 
