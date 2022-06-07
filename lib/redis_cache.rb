@@ -4,7 +4,7 @@ require 'redis'
 require_relative 'secure_message'
 
 # store value on redis
-class RedisCloud
+class RedisCache
   def initialize(config)
     @redis = Redis.new(url: config.REDISCLOUD_VISUALREPORTS_URL)
   end

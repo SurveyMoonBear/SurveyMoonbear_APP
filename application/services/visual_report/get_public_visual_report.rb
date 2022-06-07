@@ -27,7 +27,7 @@ module SurveyMoonbear
 
       # input { visual_report:, spreadsheet_id:, access_token:, config:, user_key: }
       def transform_responses(input)
-        redis = RedisCloud.new(input[:config])
+        redis = RedisCache.new(input[:config])
         responses = TransformVisualSheetsToChart.new.call(user_key: input[:user_key],
                                                           visual_report: input[:visual_report],
                                                           spreadsheet_id: input[:spreadsheet_id],

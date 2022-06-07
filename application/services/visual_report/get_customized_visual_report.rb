@@ -52,7 +52,7 @@ module SurveyMoonbear
       end
 
       def transform_responses(input)
-        redis = RedisCloud.new(input[:config])
+        redis = RedisCache.new(input[:config])
         responses = TransformVisualSheetsToChart.new.call(user_key: input[:user_key],
                                                           visual_report: input[:visual_report],
                                                           spreadsheet_id: input[:spreadsheet_id],
@@ -68,7 +68,7 @@ module SurveyMoonbear
       end
 
       def self_comparison(input)
-        redis = RedisCloud.new(input[:config])
+        redis = RedisCache.new(input[:config])
         responses = TransformPublicToCustomizedReport.new
                                                      .call(all_graphs: input[:origin_all_graphs],
                                                            case_email: input[:email],
