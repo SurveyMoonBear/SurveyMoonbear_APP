@@ -56,7 +56,7 @@ module SurveyMoonbear
 
       def map_individual_answer(input)
         unless input[:case_id_val].nil?
-          pair = 
+          pair =
             input[:case_id_val].each_with_index.map do |id, idx|
               [id, input[:new_values][idx]]
             end
@@ -109,11 +109,14 @@ module SurveyMoonbear
 
       def get_range_val(all_data, case_range)
         data = all_data.drop(case_range[:shift_num])
+        new_val = []
+
         data.map.with_index do |row_value, idx|
           break if idx == case_range[:row_times]
 
-          row_value[case_range[:column]]
+          new_val.append(row_value[case_range[:column]])
         end
+        new_val
       end
     end
   end
