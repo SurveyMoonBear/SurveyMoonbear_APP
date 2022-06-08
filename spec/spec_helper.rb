@@ -36,9 +36,16 @@ CURRENT_ACCOUNT = {
   'refresh_token' => REFRESH_TOKEN
 }
 
-STUDY_PARAMS = {
+STUDY_WITHOUT_NOTIFY_PARAMS = {
   'title' => 'new test study',
   'desc' => 'new test study desc',
+  'activity_start_at' => '',
+  'activity_end_at' => ''
+}
+STUDY_WITH_NOTIFY_PARAMS = {
+  'title' => 'new test study',
+  'desc' => 'updated test study desc',
+  'enable_notification' => 'true',
   'activity_start_at' => '',
   'activity_end_at' => ''
 }

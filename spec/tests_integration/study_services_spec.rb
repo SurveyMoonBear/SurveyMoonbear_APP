@@ -28,9 +28,9 @@ describe 'HAPPY: Tests of Services Related to Study & Database' do
     it 'HAPPY: should create a new study' do
       @new_study = SurveyMoonbear::Service::CreateStudy.new.call(config: CONFIG,
                                                                  current_account: CURRENT_ACCOUNT,
-                                                                 params: STUDY_PARAMS)
+                                                                 params: STUDY_WITHOUT_NOTIFY_PARAMS)
       _(@new_study.success?).must_equal true
-      _(@new_study.value!.title).must_equal STUDY_PARAMS['title']
+      _(@new_study.value!.title).must_equal STUDY_WITHOUT_NOTIFY_PARAMS['title']
     end
   end
 
@@ -39,7 +39,7 @@ describe 'HAPPY: Tests of Services Related to Study & Database' do
       VcrHelper.build_cassette('happy_update_study_title')
       @study = SurveyMoonbear::Service::CreateStudy.new.call(config: CONFIG,
                                                              current_account: CURRENT_ACCOUNT,
-                                                             params: STUDY_PARAMS).value!
+                                                             params: STUDY_WITHOUT_NOTIFY_PARAMS).value!
     end
 
     after do
@@ -63,7 +63,7 @@ describe 'HAPPY: Tests of Services Related to Study & Database' do
       VcrHelper.build_cassette('happy_update_study_details')
       @study = SurveyMoonbear::Service::CreateStudy.new.call(config: CONFIG,
                                                              current_account: CURRENT_ACCOUNT,
-                                                             params: STUDY_PARAMS).value!
+                                                             params: STUDY_WITHOUT_NOTIFY_PARAMS).value!
     end
 
     after do
@@ -73,20 +73,13 @@ describe 'HAPPY: Tests of Services Related to Study & Database' do
     end
 
     it 'HAPPY: should update study new descripion and enable notification' do
-      new_params = {
-        'title' => 'new test study',
-        'desc' => 'updated test study desc',
-        'enable_notification' => 'true',
-        'activity_start_at' => '',
-        'activity_end_at' => ''
-      }
       @new_study = SurveyMoonbear::Service::UpdateStudy.new.call(config: CONFIG,
                                                                  current_account: CURRENT_ACCOUNT,
                                                                  study_id: @study.id,
-                                                                 params: new_params)
+                                                                 params: STUDY_WITH_NOTIFY_PARAMS)
       _(@new_study.success?).must_equal true
-      _(@new_study.value!.desc).must_equal new_params['desc']
-      _(@new_study.value!.enable_notification).must_equal new_params['enable_notification']
+      _(@new_study.value!.desc).must_equal STUDY_WITH_NOTIFY_PARAMS['desc']
+      _(@new_study.value!.enable_notification).must_equal STUDY_WITH_NOTIFY_PARAMS['enable_notification']
       _(@new_study.value!.aws_arn).must_include 'arn:aws:sns'
     end
   end
@@ -99,7 +92,7 @@ describe 'HAPPY: Tests of Services Related to Study & Database' do
                                                                title: 'Survey for Testing Delete Services').value!
       @study = SurveyMoonbear::Service::CreateStudy.new.call(config: CONFIG,
                                                              current_account: CURRENT_ACCOUNT,
-                                                             params: STUDY_PARAMS).value!
+                                                             params: STUDY_WITHOUT_NOTIFY_PARAMS).value!
     end
 
     after do
@@ -124,7 +117,7 @@ describe 'HAPPY: Tests of Services Related to Study & Database' do
                                                                title: 'Survey for Testing Delete Services').value!
       @study = SurveyMoonbear::Service::CreateStudy.new.call(config: CONFIG,
                                                              current_account: CURRENT_ACCOUNT,
-                                                             params: STUDY_PARAMS).value!
+                                                             params: STUDY_WITHOUT_NOTIFY_PARAMS).value!
       SurveyMoonbear::Service::AddExistSurvey.new.call(study_id: @study.id, survey_id: @survey.id)
     end
 
@@ -147,7 +140,7 @@ describe 'HAPPY: Tests of Services Related to Study & Database' do
       VcrHelper.build_cassette('happy_delete_study')
       @study = SurveyMoonbear::Service::CreateStudy.new.call(config: CONFIG,
                                                              current_account: CURRENT_ACCOUNT,
-                                                             params: STUDY_PARAMS).value!
+                                                             params: STUDY_WITHOUT_NOTIFY_PARAMS).value!
     end
 
     it 'HAPPY: should delete study' do

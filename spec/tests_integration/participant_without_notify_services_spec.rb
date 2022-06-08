@@ -9,7 +9,7 @@ describe 'HAPPY: Tests of Services Related to Participant without notify & Datab
     VcrHelper.configure_vcr_for_gs
     @study = SurveyMoonbear::Service::CreateStudy.new.call(config: CONFIG,
                                                            current_account: CURRENT_ACCOUNT,
-                                                           params: STUDY_PARAMS).value!
+                                                           params: STUDY_WITHOUT_NOTIFY_PARAMS).value!
   end
 
   after(:all) do
