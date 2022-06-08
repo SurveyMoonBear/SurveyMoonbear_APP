@@ -36,6 +36,13 @@ CURRENT_ACCOUNT = {
   'refresh_token' => REFRESH_TOKEN
 }
 
+STUDY_PARAMS = {
+  'title' => 'new test study',
+  'desc' => 'new test study desc',
+  'activity_start_at' => '',
+  'activity_end_at' => ''
+}
+
 CALENDAR_ID = CONFIG.GOOGLE_ACCOUNT
 CALENDAR_TEST_STUDY = {
   'title' => 'calendar test study',

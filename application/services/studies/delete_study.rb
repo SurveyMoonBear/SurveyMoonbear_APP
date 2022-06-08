@@ -81,7 +81,7 @@ module SurveyMoonbear
       # input { config:, study_id:, aws_arn: }
       def delete_record_in_database(input)
         input[:deleted_study] = Repository::For[Entity::Study].delete_from(input[:study_id])
-        Success(input)
+        Success(input[:deleted_study])
       rescue StandardError => e
         puts e
         Failure('Failed to delete record in database.')
