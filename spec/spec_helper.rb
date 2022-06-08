@@ -43,6 +43,16 @@ STUDY_PARAMS = {
   'activity_end_at' => ''
 }
 
+PARTICIPANT_WITHOUT_NOTIFY_PARAMS = {
+  'nickname' => 'new test participant',
+  'contact_type' => 'email',
+  'email' => CONFIG.GOOGLE_ACCOUNT,
+  'phone' => '',
+  'details' => '',
+  'aws_arn' => 'disable notification',
+  'noti_status' => 'disabled'
+}
+
 CALENDAR_ID = CONFIG.GOOGLE_ACCOUNT
 CALENDAR_TEST_STUDY = {
   'title' => 'calendar test study',
