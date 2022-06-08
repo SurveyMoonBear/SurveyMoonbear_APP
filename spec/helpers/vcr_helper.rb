@@ -23,13 +23,14 @@ class VcrHelper
       c.filter_sensitive_data('<REFRESH_TOKEN>') { REFRESH_TOKEN }
       c.filter_sensitive_data('<SAMPLE_FILE_ID>') { SAMPLE_FILE_ID }
       c.filter_sensitive_data('<VIZ_SAMPLE_FILE_ID>') { VIZ_SAMPLE_FILE_ID }
+      c.filter_sensitive_data('<CALENDAR_ID>') { CALENDAR_ID }
       c.filter_sensitive_data('<CURRENT_ACCOUNT>') { CURRENT_ACCOUNT }
       c.filter_sensitive_data('<ACCESS_TOKEN>') { ACCESS_TOKEN }
 
       # Filter refresh_token from request uri
       c.filter_sensitive_data('<REFRESH_TOKEN>') do |interaction|
         uri = interaction.request.uri.to_s
-        uri = uri.gsub('<SAMPLE_FILE_ID>/', '').gsub('<VIZ_SAMPLE_FILE_ID>/', '')
+        uri = uri.gsub('<SAMPLE_FILE_ID>/', '').gsub('<VIZ_SAMPLE_FILE_ID>/', '').gsub('<CALENDAR_ID>', '')
         uri_query_str = URI.parse(uri).query
 
         refresh_token_in_uri = URI.decode_www_form(uri_query_str).to_h['refresh_token'] unless uri_query_str.nil?
@@ -38,7 +39,7 @@ class VcrHelper
       # Filter access_token from request uri
       c.filter_sensitive_data('<ACCESS_TOKEN>') do |interaction|
         uri = interaction.request.uri.to_s
-        uri = uri.gsub('<SAMPLE_FILE_ID>/', '').gsub('<VIZ_SAMPLE_FILE_ID>/', '')
+        uri = uri.gsub('<SAMPLE_FILE_ID>/', '').gsub('<VIZ_SAMPLE_FILE_ID>/', '').gsub('<CALENDAR_ID>', '')
         uri_query_str = URI.parse(uri).query
 
         access_token_in_uri = URI.decode_www_form(uri_query_str).to_h['access_token'] unless uri_query_str.nil?

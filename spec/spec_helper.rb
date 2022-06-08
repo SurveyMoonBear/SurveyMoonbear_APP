@@ -35,3 +35,21 @@ CURRENT_ACCOUNT = {
   'access_token' => ACCESS_TOKEN,
   'refresh_token' => REFRESH_TOKEN
 }
+
+CALENDAR_ID = CONFIG.GOOGLE_ACCOUNT
+CALENDAR_TEST_STUDY = {
+  'title' => 'calendar test study',
+  'desc' => 'calendar test study desc',
+  'track_activity' => 'true',
+  'activity_start_at' => '2022-05-01',
+  'activity_end_at' => '2022-05-31'
+}.freeze
+CALENDAR_TEST_PARTICIPANT = {
+  'nickname' => 'test',
+  'contact_type' => 'email',
+  'email' => CALENDAR_ID,
+  'phone' => '',
+  'details' => '',
+  'aws_arn' => 'disable notification',
+  'noti_status' => 'disabled'
+}

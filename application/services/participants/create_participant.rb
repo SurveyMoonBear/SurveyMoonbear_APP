@@ -47,7 +47,7 @@ module SurveyMoonbear
         new_participant = Mapper::ParticipantMapper.new.load(input)
         input[:participant] = Repository::For[new_participant.class].find_or_create(new_participant)
 
-        Success(input)
+        Success(input[:participant])
       rescue
         Failure('Failed to store participant into database.')
       end
