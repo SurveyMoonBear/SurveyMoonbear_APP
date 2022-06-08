@@ -114,7 +114,7 @@ describe 'HAPPY: Tests of Services Related to Study & Database' do
       VcrHelper.build_cassette('happy_remove_survey_from_study')
       @survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG,
                                                                current_account: CURRENT_ACCOUNT,
-                                                               title: 'Survey for Testing Delete Services').value!
+                                                               title: 'Survey for Testing Remove from Study').value!
       @study = SurveyMoonbear::Service::CreateStudy.new.call(config: CONFIG,
                                                              current_account: CURRENT_ACCOUNT,
                                                              params: STUDY_WITHOUT_NOTIFY_PARAMS).value!
