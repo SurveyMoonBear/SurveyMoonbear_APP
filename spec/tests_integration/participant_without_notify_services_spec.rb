@@ -13,6 +13,9 @@ describe 'HAPPY: Tests of Services Related to Participant without notify & Datab
   end
 
   after(:all) do
+    SurveyMoonbear::Service::DeleteStudy.new.call(config: CONFIG,
+                                                    current_account: CURRENT_ACCOUNT,
+                                                    study_id: @study.id)
     DatabaseHelper.wipe_database
     VcrHelper.eject_vcr
   end
