@@ -551,10 +551,15 @@ module SurveyMoonbear
 
           # POST studies/[study_id]/create_participant
           routing.post 'create_participant' do
-            Service::CreateParticipant.new.call(config: config,
-                                                current_account: @current_account,
-                                                study_id: study_id,
-                                                params: routing.params)
+            res = Service::CreateParticipant.new.call(config: config,
+                                                      current_account: @current_account,
+                                                      study_id: study_id,
+                                                      params: routing.params)
+            if res.failure?
+              flash[:error] = res.failure
+            else
+              flash[:notice] = 'Create participants successfully!'
+            end
             routing.redirect "/studies/#{study_id}"
           end
 
@@ -800,7 +805,7 @@ module SurveyMoonbear
                                                            participant_id: participant_id)
 
             flash[:error] = 'Failed to delete the participant. Please try again :(' if response.failure?
-            routing.redirect "/studies/#{response.value![:deleted_participant].study.id}", 303
+            routing.redirect "/studies/#{response.value!.study.id}", 303
           end
 
           # GET /participants/[participant_id]

@@ -17,8 +17,8 @@ module SurveyMoonbear
 
       # input { study_id:, survey_id: }
       def add_exist_survey(input)
-        study = Repository::For[Entity::Study].add_survey(input[:study_id], input[:survey_id])
-        Success(study)
+        survey = Repository::For[Entity::Study].add_survey(input[:study_id], input[:survey_id])
+        Success(survey)
       rescue
         Failure('Failed to add an exist survey into study.')
       end

@@ -11,11 +11,21 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
+      step :check_parsable_participant_details
       step :get_study_arn
       step :get_participant_arn
       step :store_into_database
 
       private
+
+      # input { config:, current_account:, study_id:, params: }
+      def check_parsable_participant_details(input)
+        JSON.parse(input[:params]['details']) unless input[:params]['details'].empty?
+        Success(input)
+      rescue JSON::ParserError => e
+        puts e
+        Failure('Paticipant details input incorrect.')
+      end
 
       # input { config:, current_account:, study_id:, params: }
       def get_study_arn(input)
@@ -47,7 +57,7 @@ module SurveyMoonbear
         new_participant = Mapper::ParticipantMapper.new.load(input)
         input[:participant] = Repository::For[new_participant.class].find_or_create(new_participant)
 
-        Success(input)
+        Success(input[:participant])
       rescue
         Failure('Failed to store participant into database.')
       end
