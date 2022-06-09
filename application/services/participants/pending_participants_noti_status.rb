@@ -47,7 +47,7 @@ module SurveyMoonbear
                                              notifications: notifications,
                                              participants: [input[:participant]])
         end
-        Success(input)
+        Success(input[:participant])
       rescue StandardError => e
         puts e
         Failure('Failed to update participants deleted AWS arn.')

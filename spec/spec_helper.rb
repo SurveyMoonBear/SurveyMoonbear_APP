@@ -59,6 +59,15 @@ PARTICIPANT_WITHOUT_NOTIFY_PARAMS = {
   'aws_arn' => 'disable notification',
   'noti_status' => 'disabled'
 }
+PARTICIPANT_WITH_NOTIFY_PARAMS = {
+  'nickname' => 'test participant with notify nickname',
+  'contact_type' => 'email',
+  'email' => 'moonbear.survey.test@gmail.com'.freeze,
+  'phone' => '',
+  'details' => '{"Name":"test_participant_with_notify_details"}',
+  'aws_arn' => 'pending confirmation',
+  'noti_status' => 'pending'
+}
 
 CALENDAR_ID = CONFIG.GOOGLE_ACCOUNT
 CALENDAR_TEST_STUDY = {
