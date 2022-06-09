@@ -17,6 +17,9 @@ describe 'HAPPY: Tests of Services Related to GoogleCalendarAPI & Database' do
   end
 
   after(:all) do
+    SurveyMoonbear::Service::DeleteStudy.new.call(config: CONFIG,
+                                                  current_account: CURRENT_ACCOUNT,
+                                                  study_id: @study.id)
     DatabaseHelper.wipe_database
     VcrHelper.eject_vcr
   end
@@ -84,6 +87,30 @@ describe 'HAPPY: Tests of Services Related to GoogleCalendarAPI & Database' do
                                                                                    calendar_id: CALENDAR_ID)
       _(unsubscribe_calendar.success?).must_equal true
       _(unsubscribe_calendar.value!.act_status).must_equal 'unsubscribed'
+    end
+  end
+
+  describe 'Transform events into CSV' do
+    before do
+      VcrHelper.build_cassette('happy_transform_events_into_csv')
+      SurveyMoonbear::Service::SubscribeCalendar.new.call(config: CONFIG,
+                                                          current_account: CURRENT_ACCOUNT,
+                                                          participant_id: @participant.id,
+                                                          calendar_id: CALENDAR_ID)
+    end
+
+    after do
+      SurveyMoonbear::Service::UnsubscribeCalendar.new.call(config: CONFIG,
+                                                            current_account: CURRENT_ACCOUNT,
+                                                            participant_id: @participant.id,
+                                                            calendar_id: CALENDAR_ID)
+    end
+
+    it 'HAPPY: should transform events into CSV' do
+      @new_csv = SurveyMoonbear::Service::TransformEventsToCSV.new.call(study_id: @study.id,
+                                                                        participant_id: @participant.id)
+      _(@new_csv.success?).must_equal true
+      _(@new_csv.value!).must_be_instance_of String
     end
   end
 end

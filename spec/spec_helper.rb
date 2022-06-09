@@ -37,25 +37,25 @@ CURRENT_ACCOUNT = {
 }
 
 STUDY_WITHOUT_NOTIFY_PARAMS = {
-  'title' => 'new test study',
-  'desc' => 'new test study desc',
+  'title' => 'test study without notify title',
+  'desc' => 'test study without notify desc',
   'activity_start_at' => '',
   'activity_end_at' => ''
 }
 STUDY_WITH_NOTIFY_PARAMS = {
-  'title' => 'new test study',
-  'desc' => 'updated test study desc',
+  'title' => 'test study with notify title',
+  'desc' => 'test study with notify desc',
   'enable_notification' => 'true',
   'activity_start_at' => '',
   'activity_end_at' => ''
 }
 
 PARTICIPANT_WITHOUT_NOTIFY_PARAMS = {
-  'nickname' => 'new test participant',
+  'nickname' => 'test participant without notify nickname',
   'contact_type' => 'email',
   'email' => 'moonbear.survey.test@gmail.com'.freeze,
   'phone' => '',
-  'details' => '',
+  'details' => '{"Name":"test_participant_without_notify_details"}',
   'aws_arn' => 'disable notification',
   'noti_status' => 'disabled'
 }

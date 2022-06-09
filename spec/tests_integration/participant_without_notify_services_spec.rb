@@ -90,4 +90,27 @@ describe 'HAPPY: Tests of Services Related to Participant without notify & Datab
       _(deleted_participant.value!.id).must_equal @participant.id
     end
   end
+
+  describe 'Transform a participant data into CSV' do
+    before do
+      VcrHelper.build_cassette('happy_transform_participant_to_csv')
+      @parti = SurveyMoonbear::Service::CreateParticipant.new.call(config: CONFIG,
+                                                                   current_account: CURRENT_ACCOUNT,
+                                                                   study_id: @study.id,
+                                                                   params: PARTICIPANT_WITHOUT_NOTIFY_PARAMS).value!
+    end
+
+    after do
+      SurveyMoonbear::Service::DeleteParticipant.new.call(config: CONFIG,
+                                                          current_account: CURRENT_ACCOUNT,
+                                                          participant_id: @parti.id)
+    end
+
+    it 'HAPPY: should transform a participant data into CSV' do
+      @new_csv = SurveyMoonbear::Service::TransformParticipantsToCSV.new.call(study_id: @study.id,
+                                                                                participant_id: @parti.id)
+      _(@new_csv.success?).must_equal true
+      _(@new_csv.value!).must_be_instance_of String
+    end
+  end
 end
