@@ -86,12 +86,12 @@ module SurveyMoonbear
       def delete_record_in_database(input)
         participant = input[:participant]
 
-        input[:deleted_participant] = if participant.noti_status == 'pending'
-                                        participant
-                                      else
-                                        Repository::For[Entity::Participant].delete_from(participant.id)
-                                      end
-        Success(input)
+        deleted_participant = if participant.noti_status == 'pending'
+                                participant
+                              else
+                                Repository::For[Entity::Participant].delete_from(participant.id)
+                              end
+        Success(deleted_participant)
       rescue StandardError => e
         puts e
         Failure('Failed to delete record in database.')

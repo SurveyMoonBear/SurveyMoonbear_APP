@@ -87,7 +87,7 @@ module SurveyMoonbear
                                                        participant: participant)
           Failure('Failed to update participants deleted AWS arn.') if res.failure?
         end
-        Success(input)
+        Success(input[:participants])
       rescue StandardError => e
         puts e
         Failure('Failed to update participants deleted AWS arn.')

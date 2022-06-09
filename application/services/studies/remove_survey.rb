@@ -30,8 +30,8 @@ module SurveyMoonbear
 
       # input { config:, study_id:, survey_id: }
       def remove_survey(input)
-        study = Repository::For[Entity::Study].remove_survey(input[:study_id], input[:survey_id])
-        Success(study)
+        survey = Repository::For[Entity::Study].remove_survey(input[:study_id], input[:survey_id])
+        Success(survey)
       rescue StandardError => e
         puts e
         Failure('Failed to remove survey from study.')
