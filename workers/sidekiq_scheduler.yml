@@ -5,3 +5,9 @@ update_random_time:
   class: Worker::UpdateRandomTime
   description: "daily update random notification with a random time"
   enabled: true
+recreate_scheduler:
+  in: 1s
+  queue: study_notification_queue
+  class: Worker::RecreateScheduler
+  description: "recreating the scheduler when heroku state is restated"
+  enabled: true
