@@ -8,6 +8,27 @@ require_relative '../init'
 
 # Worker
 module Worker
+  # Recreating the scheduler when heroku state is restated
+  class RecreateScheduler
+    include Sidekiq::Job
+    include SurveyMoonbear
+    sidekiq_options queue: :study_notification_queue
+
+    def perform
+      puts 'recreating the scheduler when heroku state is restated'
+      studies = Repository::For[Entity::Study].find_started_notification
+      return if studies.empty?
+
+      studies.map do |study|
+        Service::StartNotification.new.call(config: App.config, study_id: study.id)
+      end
+    rescue StandardError => e
+      puts 'Errors on recreate scheduler'
+      puts e
+      raise
+    end
+  end
+
   # Daily updating random notification's time
   class UpdateRandomTime
     include Sidekiq::Worker
