@@ -24,6 +24,15 @@ module SurveyMoonbear
         rebuild_entity(db_record)
       end
 
+      def self.find_started_notification
+        db_records = Database::StudyOrm.where(state: 'started', enable_notification: true).all
+        return nil if db_records.nil?
+
+        db_records.map do |db_record|
+          rebuild_entity(db_record)
+        end
+      end
+
       def self.find_or_create(entity)
         find_id(entity.id) || create_from(entity)
       end
