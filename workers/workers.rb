@@ -15,11 +15,11 @@ module Worker
     sidekiq_options queue: :study_notification_queue
 
     def perform
-      puts 'recreating the scheduler when heroku state is restated'
+      puts 'Recreating the scheduler when heroku state is restated'
       studies = Repository::For[Entity::Study].find_started_notification
       return if studies.empty?
 
-      studies.map do |study|
+      studies.each do |study|
         Service::StartNotification.new.call(config: App.config, study_id: study.id)
       end
     rescue StandardError => e
