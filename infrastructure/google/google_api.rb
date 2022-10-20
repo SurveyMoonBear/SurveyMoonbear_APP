@@ -118,7 +118,6 @@ module SurveyMoonbear
 
         def copy_drive_file(file_id)
           file_copy_url = gdrive_v3_path("#{file_id}/copy?access_token=#{@access_token}")
-          
           copied_res = Api.post_with_google_auth(file_copy_url, @access_token).parse
         end
 
@@ -155,7 +154,6 @@ module SurveyMoonbear
       def self.post_with_google_auth(url, access_token, data={})
         response = HTTP.auth("Bearer #{access_token}")
                        .post(url, json: data)
-
         Response.new(response).response_or_error
       end
     end

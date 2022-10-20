@@ -32,6 +32,6 @@ class RedisCache
   end
 
   def delete(key)
-    @redis.del(key)
+    @redis.del(key) if get(key)
   end
 end
