@@ -375,7 +375,7 @@ module SurveyMoonbear
 
           view 'analytics', locals: { surveys: surveys,
                                       config: config,
-                                      visual_reports: visual_reports }
+                                    visual_reports: visual_reports }
         end
 
         routing.post 'create' do

@@ -23,7 +23,6 @@ module SurveyMoonbear
       def get_items_from_spreadsheet(input)
         sheets_report = GetVisualreportFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                                 access_token: input[:access_token])
-
         if sheets_report.success?
           input[:sheets_report] = sheets_report.value!
           Success(input)
@@ -49,7 +48,6 @@ module SurveyMoonbear
       def get_sources_from_spreadsheet(input)
         sources = GetSourcesFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                      access_token: input[:access_token])
-
         other_sheet = {}
         sources.value!.each do |source|
           if source.source_type == 'spreadsheet'
