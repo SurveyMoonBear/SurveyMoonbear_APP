@@ -11,37 +11,12 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
-      step :get_refresh_and_access_token
-      step :get_google_account
       step :get_visual_report_owner_name
       step :transform_responses
       step :self_comparison
       step :transform_charts_to_html
 
       private
-
-      # input { config:, code:}
-      def get_refresh_and_access_token(input)
-        input[:acc_access_token] = Google::Auth.new(input[:config])
-                                               .get_access_token(input[:code])
-
-        Success(input)
-      rescue StandardError => e
-        puts e
-        Failure('Failed to refresh GoogleSpreadsheetAPI access token.')
-      end
-
-      # input { config:, code:, tokens}
-      def get_google_account(input)
-        google_account = Google::Auth.new(input[:config])
-                                     .get_google_account(input[:acc_access_token]) # accunt access token
-        input[:email] = google_account['email']
-
-        Success(input)
-      rescue StandardError => e
-        puts e
-        Failure('Failed to get google account.')
-      end
 
       def get_visual_report_owner_name(input)
         input[:user_key] = input[:visual_report].owner.username + input[:spreadsheet_id]
@@ -75,7 +50,6 @@ module SurveyMoonbear
                                                            redis: redis,
                                                            user_key: input[:user_key],
                                                            spreadsheet_id: input[:spreadsheet_id])
-
         if responses.success?
           input[:all_graphs] = responses.value!
           Success(input)
