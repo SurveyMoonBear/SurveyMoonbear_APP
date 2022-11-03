@@ -54,13 +54,21 @@ html
         / - else
         div class='row justify-content-center'
           h1 class="col-md-10 my-4" #{vis_report_object.title}
-        div class='row justify-content-center'
-          div id="div_nav_tabs" class="col-md-10" style="padding-left: 0 ; padding-right: 0"
+        
           div class='bg-light col-md-10 shadow'
-            div class='container py-3' id="div_tab_item"
-
+            div class='flex'
+              div class="tab-content"
+                div role="tabpanel" class="tab-pane active" id="visual" 
+                  div class='container py-3' id="div_tab_item"
+                  div class='container'
+                    div class="card"
 
 javascript:
+    $('#myTabs a').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    })
+
     if ("#{{vis_report_object.nav_tab}}"){
       $('#div_nav_tabs').append("#{{vis_report_object.nav_tab}}");
       $('#div_tab_item').append("#{{vis_report_object.nav_item}}");
@@ -75,12 +83,22 @@ javascript:
     let chartLayout;
     let ctx;
     let config;
-    let page_title
+    let page_title;
+    let text_score;
 
     $.each(#{{vis_report_object.graphs}}, function(title, graph_arr){
+
       page_title = title.replace(' ', '_');
+      
       $.each(graph_arr, function(i, graph){
-        ctx = document.getElementById( 'chart_'+page_title+'_'+i );
+        // display title
+        score_div = document.getElementById( 'score_'+page_title+'_'+i );
+        var title_div = document.createElement("h3")
+        title_div.setAttribute("class", 'text-center m-4')
+        title_div.innerHTML = `${graph[1]}`
+        score_div.appendChild(title_div)
+
+        // graph
         if (graph[2]=='bar') {
           chartData = {
           x: graph[3],
@@ -91,6 +109,7 @@ javascript:
           },
           type: graph[2]
           };
+
         } else if (graph[2]=='histogram'){
           chartData = {
             x: graph[4],
@@ -112,7 +131,6 @@ javascript:
         }
 
         chartLayout = {
-          title: graph[1],
           width: 700,
           xaxis: {
             automargin: true
@@ -124,6 +142,20 @@ javascript:
           displayModeBar: true
         };
 
-        Plotly.newPlot(ctx, [chartData], chartLayout, config);
+        var chart_div = document.createElement("div")
+        chart_div.setAttribute("id", 'chart_'+page_title+'_'+i)
+        chart_div.setAttribute("class", 'row justify-content-center')
+        chart_div.setAttribute("style", 'resize:both; overflow: auto')
+        score_div.appendChild(chart_div)
+        
+        Plotly.newPlot(chart_div, [chartData], chartLayout, config);
+
+        // display score
+        var text_div = document.createElement("div")
+        text_div.innerHTML = `My score: ${#{{text_report_object}}[i].score}`
+        text_div.setAttribute("class", 'd-flex justify-content-center bg-white container text-center')
+        text_div.setAttribute("style",'width: 95%; font-size:32px; display:inline-block; padding:10px; color: orange')
+        
+        score_div.appendChild(text_div)
       });
     });

@@ -74,8 +74,8 @@ module SurveyMoonbear
             str = ''
             page_name = page_name.gsub(' ', '_')
             charts.each_with_index.map do |chart, idx|
-              str += "<div class='form-group mt-5 grid-container' style='width: 80%'>"
-              str += "<div class='row justify-content-center' id='chart_#{page_name}_#{idx}' style='resize:both; overflow: auto'></div>"
+              str += "<div class='form-group mt-5 grid-container text-center mb-2' id='score_#{page_name}_#{idx}' style='width: 80%'>"
+              # str += "<div class='row justify-content-center' id='chart_#{page_name}_#{idx}' style='resize:both; overflow: auto'></div>"
               str += '</div>'
               legend_arr = is_legend_return_html(chart)
               unless legend_arr.nil?
