@@ -431,6 +431,7 @@ module SurveyMoonbear
                                                                 config: config,
                                                                 access_token: access_token)
 
+            
             if responses.failure?
               flash[:error] = "#{responses.failure} Please try again :("
               routing.redirect '/analytics'
@@ -438,7 +439,7 @@ module SurveyMoonbear
 
             vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
             view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
-                                                           visual_report: visual_report }
+                                                           visual_report: visual_report}
           end
 
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/identify
@@ -485,21 +486,32 @@ module SurveyMoonbear
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
 
-            access_token = Google::Auth.new(config).refresh_access_token
+            # access_token = Google::Auth.new(config).refresh_access_token
             responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                     visual_report_id: visual_report_id,
                                                                     visual_report: visual_report,
                                                                     config: config,
                                                                     code: code,
-                                                                    access_token: access_token)
+                                                                    access_token: @current_account['access_token'],
+                                                                    email: @current_account['email'])
 
-            if responses.failure?
+            text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
+                                                             visual_report_id: visual_report_id,
+                                                             visual_report: visual_report,
+                                                             config: config,
+                                                             code: code,
+                                                             access_token: @current_account['access_token'],
+                                                             email: @current_account['email'])
+
+            if responses.failure? || text_responses.failure?
               routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"
             end
-
             vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+            text_report_object = text_responses.value!.to_json
+
             view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
-                                                           visual_report: visual_report }
+                                                           visual_report: visual_report,
+                                                           text_report_object: text_report_object }
           end
         end
 
@@ -522,6 +534,33 @@ module SurveyMoonbear
         end
       end
 
+      routing.on 'text_report', String do |text_report_id|
+        @current_account = SecureSession.new(session).get(:current_account)
+        routing.on 'online', String do |spreadsheet_id|
+          # customized text report
+          # GET text_report/[text_report_id]/online/[spreadsheet_id]
+          routing.get do
+            code = routing.params['code']
+
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(text_report_id)
+
+            responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
+                                                        visual_report_id: text_report_id,
+                                                        visual_report: visual_report,
+                                                        config: config,
+                                                        code: code,
+                                                        access_token: @current_account['access_token'],
+                                                        email: @current_account['email'])
+            if responses.failure?
+              routing.redirect "#{config.APP_URL}/text_report/#{text_report_id}/online/#{spreadsheet_id}/identify"
+            end
+
+            text_report_object = responses.value!
+            view 'text_report', layout: false, locals: { text_report_object: text_report_object}
+          end
+        end
+      end
       # /studies branch
       routing.on 'studies' do
         @current_account = SecureSession.new(session).get(:current_account)
