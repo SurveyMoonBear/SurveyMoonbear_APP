@@ -30,15 +30,13 @@ module SurveyMoonbear
         input[:res_val] = get_range_val(input[:all_data], question_range)
 
         Success(input)
-      rescue StandardError => e
-        puts e
+      rescue StandardError
         Failure('Failed to read source spreadsheet first sheet data.')
       end
 
       def map_identity_and_responses(input)
         input[:new_values] = transfom_sheet_val(input[:res_val])
         input[:count] = input[:new_values].tally.sort.to_h
-
         Success(input)
       rescue StandardError => e
         puts e
