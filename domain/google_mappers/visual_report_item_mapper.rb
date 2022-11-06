@@ -24,7 +24,6 @@ module SurveyMoonbear
           title = page_data['properties']['title']
           page_index = page_data['properties']['index']
           items_data = @gateway.items_data(spreadsheet_id, title)
-          
           items_data = items_data['values'].reject(&:empty?) # Remove empty rows
           items_data.shift # Remove the first row of spreadsheet (titles for users)
 
