@@ -39,8 +39,7 @@ module SurveyMoonbear
           input[:redis].delete(input[:user_key])
         end
         Success(input)
-      rescue StandardError => e
-        puts e.full_message
+      rescue StandardError
         Failure('Failed to delete source in redis.')
       end
 
