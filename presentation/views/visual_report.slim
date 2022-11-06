@@ -91,6 +91,7 @@ javascript:
       page_title = title.replace(' ', '_');
       
       $.each(graph_arr, function(i, graph){
+        console.log(graph[2])
         // display title
         score_div = document.getElementById( 'score_'+page_title+'_'+i );
         var title_div = document.createElement("h3")
@@ -110,7 +111,16 @@ javascript:
           type: graph[2]
           };
 
-        } else if (graph[2]=='histogram'){
+        } 
+        else if (graph[2]=='text') {
+          var text_div = document.createElement("div")
+          text_div.innerHTML = `Score: ${#{{text_report_object}}[i].score}`
+          text_div.setAttribute("class", 'd-flex justify-content-center bg-white container text-center')
+          text_div.setAttribute("style",'width: 95%; font-size:32px; display:inline-block; padding:10px; color: orange')
+          
+          score_div.appendChild(text_div)
+        } 
+        else if (graph[2]=='histogram'){
           chartData = {
             x: graph[4],
             y: graph[3],
@@ -142,20 +152,15 @@ javascript:
           displayModeBar: true
         };
 
-        var chart_div = document.createElement("div")
-        chart_div.setAttribute("id", 'chart_'+page_title+'_'+i)
-        chart_div.setAttribute("class", 'row justify-content-center')
-        chart_div.setAttribute("style", 'resize:both; overflow: auto')
-        score_div.appendChild(chart_div)
-        
-        Plotly.newPlot(chart_div, [chartData], chartLayout, config);
-
-        // display score
-        var text_div = document.createElement("div")
-        text_div.innerHTML = `My score: ${#{{text_report_object}}[i].score}`
-        text_div.setAttribute("class", 'd-flex justify-content-center bg-white container text-center')
-        text_div.setAttribute("style",'width: 95%; font-size:32px; display:inline-block; padding:10px; color: orange')
-        
-        score_div.appendChild(text_div)
+        // create chart_page_title_0 div
+        if (graph[2]!='text') {
+          var chart_div = document.createElement("div")
+          chart_div.setAttribute("id", 'chart_'+page_title+'_'+i)
+          chart_div.setAttribute("class", 'row justify-content-center')
+          chart_div.setAttribute("style", 'resize:both; overflow: auto')
+          score_div.appendChild(chart_div)
+          
+          Plotly.newPlot(chart_div, [chartData], chartLayout, config);
+        }
       });
     });
