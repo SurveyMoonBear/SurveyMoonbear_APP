@@ -23,7 +23,6 @@ module SurveyMoonbear
       def get_items_from_spreadsheet(input)
         sheets_report = GetVisualreportFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                                 access_token: input[:access_token])
-
         if sheets_report.success?
           input[:sheets_report] = sheets_report.value!
           Success(input)
@@ -49,7 +48,6 @@ module SurveyMoonbear
       def get_sources_from_spreadsheet(input)
         sources = GetSourcesFromSpreadsheet.new.call(spreadsheet_id: input[:spreadsheet_id],
                                                      access_token: input[:access_token])
-
         other_sheet = {}
         sources.value!.each do |source|
           if source.source_type == 'spreadsheet'
@@ -76,8 +74,8 @@ module SurveyMoonbear
           if source.sso_email && source.case_id
             email_col = source.sso_email #I3:I140
             case_id_col = source.case_id #C3:C140
-            email_range = transform_anotation(email_col)
-            case_range = transform_anotation(case_id_col)
+            email_range = transform_annotation(email_col)
+            case_range = transform_annotation(case_id_col)
             all_email = get_range_val(input[:other_sheets][source.source_id], email_range)
             all_case = get_range_val(input[:other_sheets][source.source_id], case_range)
             all_email.each_with_index do |email, idx|
@@ -203,7 +201,7 @@ module SurveyMoonbear
       end
 
       # C3:C141 shift(2) ;run 141-3+1 times;
-      def transform_anotation(range)
+      def transform_annotation(range)
         alphabet_table = { 'A' => 0, 'B' => 1, 'C' => 2, 'D' => 3, 'E' => 4, 'F' => 5, 'G' => 6, 'H' => 7, 'I' => 8, 'J' => 9,
                            'K' => 10, 'L' => 11, 'M' => 12, 'N' => 13, 'O' => 14, 'P' => 15, 'Q' => 16, 'R' => 17, 'S' => 18, 'T' => 19,
                            'U' => 20, 'V' => 21, 'W' => 22, 'X' => 23, 'Y' => 24, 'Z' => 25, 'AA' => 26, 'AB' => 27, 'AC' => 28, 'AD' => 29,

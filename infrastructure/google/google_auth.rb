@@ -102,7 +102,6 @@ module SurveyMoonbear
       def post_gs_url(url, data)
         response = HTTP.headers(accept: 'application/json')
                        .post(url, data)
-
         Response.new(response).response_or_error
       end
 

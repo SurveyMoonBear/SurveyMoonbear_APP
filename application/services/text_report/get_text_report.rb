@@ -6,15 +6,14 @@ require 'http'
 module SurveyMoonbear
   module Service
     # Returns a new survey, or nil
-    # Usage: Service::GetCustomizedVisualReport.new.call(config: ..., visual_report_id:..., visual_repor:..., spreadsheet_id:..., code: ..., access_token:...)
-    class GetCustomizedVisualReport
+    # Usage: Service::GetTextReport.new.call(config: ..., visual_report_id:..., visual_repor:..., spreadsheet_id:..., code: ..., access_token:...)
+    class GetTextReport
       include Dry::Transaction
       include Dry::Monads
 
       step :get_visual_report_owner_name
       step :transform_responses
-      step :self_comparison
-      step :transform_charts_to_html
+      step :self_comparison_text_score
 
       private
 
@@ -42,32 +41,17 @@ module SurveyMoonbear
         end
       end
 
-      def self_comparison(input)
+      def self_comparison_text_score(input)
         redis = RedisCache.new(input[:config])
-        responses = TransformPublicToCustomizedReport.new
-                                                     .call(all_graphs: input[:origin_all_graphs],
-                                                           case_email: input[:email],
-                                                           redis: redis,
-                                                           user_key: input[:user_key],
-                                                           spreadsheet_id: input[:spreadsheet_id])
+        responses = GetCustomizedScores.new
+                                       .call(all_graphs: input[:origin_all_graphs],
+                                             case_email: input[:email],
+                                             redis: redis,
+                                             user_key: input[:user_key])
         if responses.success?
-          input[:all_graphs] = responses.value!
-          Success(input)
+          Success(responses.value!)
         else
           Failure(responses.failure)
-        end
-      end
-
-      # input { all_graphs:, .... }
-      def transform_charts_to_html(input)
-        transform_result = TransformResponsesToHTMLWithChart.new.call(pages_charts: input[:all_graphs])
-        if transform_result.success?
-          Success(all_graphs: input[:all_graphs],
-                  nav_tab: transform_result.value![:nav_tab],
-                  nav_item: transform_result.value![:nav_item],
-                  pages_chart_val_hash: transform_result.value![:pages_chart_val_hash])
-        else
-          Failure(transform_result.failure)
         end
       end
     end

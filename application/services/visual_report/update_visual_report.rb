@@ -19,26 +19,27 @@ module SurveyMoonbear
       def get_visual_report_owner_name(input)
         input[:visual_report] = Repository::For[Entity::VisualReport].find_id(input[:visual_report_id])
         input[:user_key] = input[:visual_report].owner.username + input[:spreadsheet_id]
-
         Success(input)
-      rescue StandardError
+      rescue StandardError => e
+        puts e
         Failure('Failed to get visual report owner from db.')
       end
 
       # input { redis:, user_key:, ... }
       def delete_keys_in_redis(input)
-        sources = input[:redis].get(input[:user_key])['source']
-        sources.each do |source|
-          if source[0] == 'spreadsheet'
-            url = source[1] # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
-            other_sheet_id = url.match('.*/(.*)/')[1]
-            input[:redis].delete("other_sheet#{other_sheet_id}")
+        if input[:redis].get(input[:user_key])
+          sources = input[:redis].get(input[:user_key])['source']
+          sources.each do |source|
+            if source[0] == 'spreadsheet' && source[1] != 'please enter a google spreadsheet link'
+              url = source[1] # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
+              other_sheet_id = url.match('.*/(.*)/')[1]
+              input[:redis].delete("other_sheet#{other_sheet_id}")
+            end
           end
+          input[:redis].delete(input[:user_key])
         end
-        input[:redis].delete(input[:user_key])
         Success(input)
-      rescue StandardError => e
-        puts e
+      rescue StandardError
         Failure('Failed to delete source in redis.')
       end
 
