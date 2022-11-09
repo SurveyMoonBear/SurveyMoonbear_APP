@@ -41,14 +41,14 @@ module SurveyMoonbear
         call_gs_url(account_req_url, access_token).parse
       end
 
-      def get_refresh_and_access_token(code)
+      def get_refresh_and_access_token(code, redirect_uri)
         access_req_url = google_oauth_v4_path('token')
         data = {
           form: {
             client_id: @config.GOOGLE_CLIENT_ID,
             client_secret: @config.GOOGLE_CLIENT_SECRET,
             grant_type: 'authorization_code',
-            redirect_uri: "#{@config.APP_URL}/account/login/google_callback",
+            redirect_uri: redirect_uri,
             code: code
           }
         }
@@ -58,8 +58,8 @@ module SurveyMoonbear
       end
 
       # get moonbear's access token
-      def refresh_access_token
-        get_new_access_token(@config.REFRESH_TOKEN)
+      def refresh_access_token(refresh_token = @config.REFRESH_TOKEN)
+        get_new_access_token(refresh_token)
       end
 
       # get logged person's acess token
@@ -79,7 +79,7 @@ module SurveyMoonbear
           }
         }
         response = post_gs_url(access_req_url, data).parse
-        response['access_token']
+        { 'access_token': response['access_token'] }
       end
 
       private
@@ -115,7 +115,6 @@ module SurveyMoonbear
             grant_type: 'refresh_token'
           }
         }
-
         response = post_gs_url(refresh_req_url, data).parse
         response['access_token']
       end
