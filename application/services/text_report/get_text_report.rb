@@ -32,7 +32,7 @@ module SurveyMoonbear
                                                           spreadsheet_id: input[:spreadsheet_id],
                                                           config: input[:config],
                                                           redis: redis,
-                                                          access_token: input[:access_token])# moonbear access token
+                                                          access_token: input[:access_token]) # moonbear access token
         if responses.success?
           input[:origin_all_graphs] = responses.value!
           Success(input)
