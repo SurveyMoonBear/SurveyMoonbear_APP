@@ -38,8 +38,7 @@ module SurveyMoonbear
         input[:new_values] = transfom_sheet_val(input[:res_val])
         input[:count] = input[:new_values].tally.sort.to_h
         Success(input)
-      rescue StandardError => e
-        puts e
+      rescue StandardError
         Failure('Failed to map identity and responses which the sources from spreadsheet.')
       end
 
@@ -47,19 +46,17 @@ module SurveyMoonbear
         input[:chart_colors] = input[:count].transform_values { 'rgb(54, 162, 235)' }
 
         Success(input)
-      rescue StandardError => e
-        puts e
+      rescue StandardError
         Failure('Failed to generate default color.')
       end
 
       def map_individual_answer(input)
         unless input[:case_id_val].nil?
           pair =
-            input[:case_id_val].each_with_index.map do |id, idx|
-              [id, input[:new_values][idx]]
-            end
+          input[:case_id_val].each_with_index.map do |id, idx|
+            [id, input[:new_values][idx]]
+          end
         end
-
         Success([input[:item_data].page,
                  input[:item_data].graph_title,
                  input[:item_data].chart_type,

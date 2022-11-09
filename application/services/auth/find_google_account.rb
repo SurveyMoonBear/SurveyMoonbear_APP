@@ -20,8 +20,18 @@ module SurveyMoonbear
 
       # input { config:, code: }
       def get_refresh_and_access_token(input)
-        input[:tokens] = Google::Auth.new(input[:config])
-                                          .get_refresh_and_access_token(input[:code])
+        input[:tokens] =
+          if input[:login_type] == 'admin'
+            Google::Auth.new(input[:config])
+                        .get_refresh_and_access_token(input[:code], "#{input[:config].APP_URL}/account/login/google_callback")
+          elsif input[:login_type] == 'report'
+            Google::Auth.new(input[:config]).get_refresh_and_access_token(input[:code], "#{input[:config].APP_URL}/report/google_callback")
+          end
+
+        if input[:tokens][:refresh_token].equal? nil
+          redis = RedisCache.new(input[:config])
+          input[:tokens][:refresh_token] = redis.get('system_refresh_token')
+        end
         Success(input)
       rescue
         Failure('Failed to get access token')
