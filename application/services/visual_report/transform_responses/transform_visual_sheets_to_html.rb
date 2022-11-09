@@ -92,7 +92,6 @@ module SurveyMoonbear
               end
           end
         end
-
         if sources.success?
           input[:sources] = sources.value!
           Success(input)
@@ -116,7 +115,7 @@ module SurveyMoonbear
                     case source.source_type
                     when 'surveymoonbear'
                       MapSurveyResponsesAndItems.new.call(item_data: item_data,
-                                                          source: source).value!
+                      source: source).value!
 
                     when 'spreadsheet'
                       MapSpreadsheetResponsesAndItems.new.call(item_data: item_data,
