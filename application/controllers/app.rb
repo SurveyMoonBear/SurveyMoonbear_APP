@@ -65,7 +65,8 @@ module SurveyMoonbear
           # GET /account/login/google_callback request
           routing.get 'google_callback' do
             logged_in_account_res = Service::FindAuthenticatedGoogleAccount.new.call(config: config,
-                                                                                     code: routing.params['code'])
+                                                                                     code: routing.params['code'],
+                                                                                     login_type: 'admin')
             if logged_in_account_res.failure?
               puts logged_in_account_res.failure
 
@@ -75,6 +76,13 @@ module SurveyMoonbear
               logged_in_account = logged_in_account_res.value!.to_h
 
               SecureSession.new(session).set(:current_account, logged_in_account)
+              redis = RedisCache.new(config)
+              if redis.get('system_access_token').equal? nil
+                redis.set('system_access_token', logged_in_account[:access_token], 3000)
+              end
+              if redis.get('system_refresh_token').equal? nil
+                redis.set('system_refresh_token', logged_in_account[:refresh_token])
+              end
               routing.redirect '/survey_list'
             end
           end
@@ -408,13 +416,27 @@ module SurveyMoonbear
           code = routing.params['code']
           redirect_route = routing.params['state']
 
-          routing.redirect "#{redirect_route}?code=#{code}"
+          logged_in_account_res = Service::FindAuthenticatedGoogleAccount.new.call(config: config,
+                                                                                   code: code,
+                                                                                   login_type: 'report')
+            if logged_in_account_res.failure?
+              puts logged_in_account_res.failure
+
+              flash[:error] = 'Login failed. Please try again :('
+              routing.redirect '/'
+            else
+              logged_in_account = logged_in_account_res.value!.to_h
+
+              SecureSession.new(session).set(:report_account, logged_in_account)
+              routing.redirect "#{redirect_route}"
+            end
         end
       end
 
       # visual_report/[visual_report_id]
       routing.on 'visual_report', String do |visual_report_id|
         @current_account = SecureSession.new(session).get(:current_account)
+        @report_account = SecureSession.new(session).get(:report_account)
         # visual_report/[visual_report_id]/online/[spreadsheet_id]
         routing.on 'online', String do |spreadsheet_id|
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/public
@@ -431,7 +453,6 @@ module SurveyMoonbear
                                                                 config: config,
                                                                 access_token: access_token)
 
-            
             if responses.failure?
               flash[:error] = "#{responses.failure} Please try again :("
               routing.redirect '/analytics'
@@ -484,23 +505,29 @@ module SurveyMoonbear
 
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
-
             # access_token = Google::Auth.new(config).refresh_access_token
+            redis = RedisCache.new(config)
+            if redis.get('system_access_token').equal? nil
+              new_access_token = Google::Auth.new(config).refresh_access_token(redis.get('system_refresh_token'))
+              redis.set('system_access_token', new_access_token, 3000)
+            end
+            access_token = redis.get('system_access_token')
+
             responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                     visual_report_id: visual_report_id,
                                                                     visual_report: visual_report,
                                                                     config: config,
                                                                     code: code,
-                                                                    access_token: @current_account['access_token'],
-                                                                    email: @current_account['email'])
+                                                                    access_token: access_token,
+                                                                    email: @report_account['email'])
 
             text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
                                                              visual_report_id: visual_report_id,
                                                              visual_report: visual_report,
                                                              config: config,
                                                              code: code,
-                                                             access_token: @current_account['access_token'],
-                                                             email: @current_account['email'])
+                                                             access_token: access_token,
+                                                             email: @report_account['email'])
 
             if responses.failure? || text_responses.failure?
               routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"

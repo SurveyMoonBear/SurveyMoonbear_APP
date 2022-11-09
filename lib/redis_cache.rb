@@ -14,6 +14,7 @@ class RedisCache
     ex_time = 60 * 60 * 24 * 30 if ex_time.zero? # default is one month
 
     encrypted_value = SecureMessage.encrypt(value)
+
     @redis.set(key, encrypted_value, nx: true, ex: ex_time)
   end
 
