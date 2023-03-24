@@ -27,11 +27,17 @@
 ```
 $ git clone git@github.com:SurveyMoonBear/SurveyMoonbear_APP.git
 ```
+   
 
 2. Install gems
 ```
 $ bundle config set --local without 'production'
 $ bundle install
+```
+
+> The current project's version of ruby is 3.0.2 , if you don't have the version , you should install it first.
+``` 
+$ rbenv install 3.0.2
 ```
 
 > if it bumps into this problem 

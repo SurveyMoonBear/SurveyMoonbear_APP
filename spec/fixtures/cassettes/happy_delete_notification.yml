@@ -1126,17 +1126,26 @@ http_interactions:
     uri: https://sns.ap-northeast-1.amazonaws.com/
     body:
       encoding: UTF-8
+<<<<<<< HEAD
       string: Action=CreateTopic&Name=f6d9f50f-c82f-4596-8d9a-515ebf3d2ab3&Version=2010-03-31
+=======
+      string: Action=CreateTopic&Name=85b372fe-25dc-4433-8528-bda76934d60e&Version=2010-03-31
+>>>>>>> eec543e (try to fix getstrated_doc.md)
     headers:
       Accept-Encoding:
       - ''
       User-Agent:
+<<<<<<< HEAD
       - aws-sdk-ruby3/3.131.1 ruby/3.0.2 x86_64-linux aws-sdk-sns/1.53.0
+=======
+      - aws-sdk-ruby3/3.170.0 ruby/3.0.2 x86_64-darwin22 aws-sdk-sns/1.53.0
+>>>>>>> eec543e (try to fix getstrated_doc.md)
       Content-Type:
       - application/x-www-form-urlencoded; charset=utf-8
       Host:
       - sns.ap-northeast-1.amazonaws.com
       X-Amz-Date:
+<<<<<<< HEAD
       - 20230510T171121Z
       X-Amz-Content-Sha256:
       - be0d5a11170fb880c8069f24337a9bf69cf2a9653297bd0b73d969cd1a83e8dd
@@ -1194,6 +1203,14 @@ http_interactions:
       Authorization:
       - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
         Signature=4832f20f231f5b9283abf5fededea1672bc3b2c06171f2837d0adea1d6c9822c
+=======
+      - 20230324T081627Z
+      X-Amz-Content-Sha256:
+      - 1067053910ce080eaaba3f5a58dc1617e20a5deeeaab0681810e8e3873160666
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=0807279f37fe6a6aaba4183d8e2c2d45bafc64203035dbed8c2c784a8f391476
+>>>>>>> eec543e (try to fix getstrated_doc.md)
       Content-Length:
       - '79'
       Accept:
@@ -1204,13 +1221,21 @@ http_interactions:
       message: OK
     headers:
       X-Amzn-Requestid:
+<<<<<<< HEAD
       - e6c95c29-8794-57eb-905e-00fffa924d50
+=======
+      - 3992d913-034a-54c7-b965-85845dd67bfe
+>>>>>>> eec543e (try to fix getstrated_doc.md)
       Content-Type:
       - text/xml
       Content-Length:
       - '348'
       Date:
+<<<<<<< HEAD
       - Thu, 11 May 2023 05:19:01 GMT
+=======
+      - Fri, 24 Mar 2023 08:16:28 GMT
+>>>>>>> eec543e (try to fix getstrated_doc.md)
     body:
       encoding: UTF-8
       string: |
@@ -1219,10 +1244,17 @@ http_interactions:
             <TopicArn><AWS_TOPIC_ARN></TopicArn>
           </CreateTopicResult>
           <ResponseMetadata>
+<<<<<<< HEAD
             <RequestId>e6c95c29-8794-57eb-905e-00fffa924d50</RequestId>
           </ResponseMetadata>
         </CreateTopicResponse>
   recorded_at: Thu, 11 May 2023 05:19:01 GMT
+=======
+            <RequestId>3992d913-034a-54c7-b965-85845dd67bfe</RequestId>
+          </ResponseMetadata>
+        </CreateTopicResponse>
+  recorded_at: Fri, 24 Mar 2023 08:16:28 GMT
+>>>>>>> eec543e (try to fix getstrated_doc.md)
 - request:
     method: post
     uri: https://sns.ap-northeast-1.amazonaws.com/
@@ -1233,18 +1265,31 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
+<<<<<<< HEAD
       - aws-sdk-ruby3/3.131.1 ruby/3.0.2 x86_64-linux aws-sdk-sns/1.53.0
+=======
+      - aws-sdk-ruby3/3.170.0 ruby/3.0.2 x86_64-darwin22 aws-sdk-sns/1.53.0
+>>>>>>> eec543e (try to fix getstrated_doc.md)
       Content-Type:
       - application/x-www-form-urlencoded; charset=utf-8
       Host:
       - sns.ap-northeast-1.amazonaws.com
       X-Amz-Date:
+<<<<<<< HEAD
       - 20230511T051903Z
       X-Amz-Content-Sha256:
       - 874c988f312be7b92c3f3ba4c05aff57116519b6b6f932396c3f5b1eb9a116bb
       Authorization:
       - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
         Signature=7d8ce8cfeb4cbf78ba6191d9f9e8f25bf87fcb03cd420ee44a9ce485286dae9b
+=======
+      - 20230324T081629Z
+      X-Amz-Content-Sha256:
+      - 3f677033996884fbe754401837de524edcb7d07e2fe3e4cab5d37bce1bb544ae
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=64ef7b8aab43cb6e36a56adcacee5b5b0fb9eedc7937802b639ef8db2900b5a6
+>>>>>>> eec543e (try to fix getstrated_doc.md)
       Content-Length:
       - '146'
       Accept:
@@ -1255,13 +1300,21 @@ http_interactions:
       message: OK
     headers:
       X-Amzn-Requestid:
+<<<<<<< HEAD
       - cf92b493-4601-5a31-92dd-e8453b093c8c
+=======
+      - 711a832a-b076-5218-88d2-dfbdeee8d85b
+>>>>>>> eec543e (try to fix getstrated_doc.md)
       Content-Type:
       - text/xml
       Content-Length:
       - '319'
       Date:
+<<<<<<< HEAD
       - Thu, 11 May 2023 05:19:04 GMT
+=======
+      - Fri, 24 Mar 2023 08:16:29 GMT
+>>>>>>> eec543e (try to fix getstrated_doc.md)
     body:
       encoding: UTF-8
       string: |
@@ -1270,10 +1323,17 @@ http_interactions:
             <Subscriptions/>
           </ListSubscriptionsByTopicResult>
           <ResponseMetadata>
+<<<<<<< HEAD
             <RequestId>cf92b493-4601-5a31-92dd-e8453b093c8c</RequestId>
           </ResponseMetadata>
         </ListSubscriptionsByTopicResponse>
   recorded_at: Thu, 11 May 2023 05:19:04 GMT
+=======
+            <RequestId>711a832a-b076-5218-88d2-dfbdeee8d85b</RequestId>
+          </ResponseMetadata>
+        </ListSubscriptionsByTopicResponse>
+  recorded_at: Fri, 24 Mar 2023 08:16:30 GMT
+>>>>>>> eec543e (try to fix getstrated_doc.md)
 - request:
     method: post
     uri: https://sns.ap-northeast-1.amazonaws.com/
@@ -1284,18 +1344,31 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
+<<<<<<< HEAD
       - aws-sdk-ruby3/3.131.1 ruby/3.0.2 x86_64-linux aws-sdk-sns/1.53.0
+=======
+      - aws-sdk-ruby3/3.170.0 ruby/3.0.2 x86_64-darwin22 aws-sdk-sns/1.53.0
+>>>>>>> eec543e (try to fix getstrated_doc.md)
       Content-Type:
       - application/x-www-form-urlencoded; charset=utf-8
       Host:
       - sns.ap-northeast-1.amazonaws.com
       X-Amz-Date:
+<<<<<<< HEAD
       - 20230511T051904Z
       X-Amz-Content-Sha256:
       - 5e2df2a5722879e679d7c36fc572e99f46ea149783beddf6c71d1ab9fb66e978
       Authorization:
       - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
         Signature=72bd722b1b1eeb23ce12692aced2c0ffbbb6baef4634c367525a04d3b7e66a02
+=======
+      - 20230324T081630Z
+      X-Amz-Content-Sha256:
+      - 24d3b4aab55ccf25bc90afa430f1540ba8406c96ce4f17fa1a61114d64fde816
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=7ac0b9a38e3ee62294b2f926d490d443f612e5b0104274391d865190c991ff1e
+>>>>>>> eec543e (try to fix getstrated_doc.md)
       Content-Length:
       - '133'
       Accept:
@@ -1306,18 +1379,27 @@ http_interactions:
       message: OK
     headers:
       X-Amzn-Requestid:
+<<<<<<< HEAD
       - e2f4edad-f75c-5dbc-8d66-b17b8a54e5c0
+=======
+      - d93234c2-31b0-580d-b613-68556f2e7a72
+>>>>>>> eec543e (try to fix getstrated_doc.md)
       Content-Type:
       - text/xml
       Content-Length:
       - '201'
       Date:
+<<<<<<< HEAD
       - Thu, 11 May 2023 05:19:04 GMT
+=======
+      - Fri, 24 Mar 2023 08:16:30 GMT
+>>>>>>> eec543e (try to fix getstrated_doc.md)
     body:
       encoding: UTF-8
       string: |
         <DeleteTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
           <ResponseMetadata>
+<<<<<<< HEAD
             <RequestId>e2f4edad-f75c-5dbc-8d66-b17b8a54e5c0</RequestId>
           </ResponseMetadata>
         </DeleteTopicResponse>
@@ -1772,4 +1854,10 @@ http_interactions:
           </ResponseMetadata>
         </DeleteTopicResponse>
   recorded_at: Thu, 11 May 2023 06:22:25 GMT
+=======
+            <RequestId>d93234c2-31b0-580d-b613-68556f2e7a72</RequestId>
+          </ResponseMetadata>
+        </DeleteTopicResponse>
+  recorded_at: Fri, 24 Mar 2023 08:16:30 GMT
+>>>>>>> eec543e (try to fix getstrated_doc.md)
 recorded_with: VCR 6.1.0
