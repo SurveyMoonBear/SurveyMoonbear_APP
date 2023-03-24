@@ -12,7 +12,9 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 
 ### Step2: Create authorization credentials for a "Web application"
 
-1. [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/create-credentials#configure_the_oauth_consent_screen)
+1. [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/configure-oauth-consent)
+
+![](https://imgur.com/4aMKLxI.png)
 2. [Create a OAuth client ID credential](https://developers.google.com/workspace/guides/create-credentials#create_a_oauth_client_id_credential)
 3. The type of project/application's credential choose **[web application](https://developers.google.com/workspace/guides/create-credentials)**.
 
