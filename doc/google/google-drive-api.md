@@ -30,7 +30,7 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 2. click setting and check the checkbox:Use your own Oauth credentials
 3. copy/paste the Client ID and Client secret from step2
 4. select the scopes we used on the left side (in application/controller/app.rb file line 36)
-![image](https://imgur.com/jWnxFXz.png)
+<img src=https://imgur.com/jWnxFXz.png) width=50% height=50%>
 ![image](https://imgur.com/WQ8aJyY.png)
 ![image](https://imgur.com/IorJOG2.png)
 5. click the Authorize APIs
