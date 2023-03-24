@@ -8,6 +8,8 @@
 ### Credentials
 - Dev & Test:
   - Create config/secrets.yml on local [secrets_example.yml](../config/secrets_example.yml)
+    - VIZ_SAMPLE_FILE_ID: means the Default URL of the google sheet sample
+    - You can use the template you like or `1PExD1IKCzSxGXfyKxRiUPTxoTet1HxZLFoM76oBA4Fk`
   - Use your personal Google account and [apply for Google Drive API Token](google/google-drive-api.md)
   - Use your personal AWS account and [apply for AWS SQS Token](aws/sqs.md)
 - Production: 
