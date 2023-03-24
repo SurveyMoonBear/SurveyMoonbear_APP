@@ -27,7 +27,7 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 * For getting refresh token: `https://developers.google.com/oauthplayground`
 
 ### Step4: Get application refresh token
-1. go to [oauth play groung](https://developers.google.com/oauthplayground)
+1. go to [oauth play ground](https://developers.google.com/oauthplayground)
 2. click setting and check the checkbox:Use your own Oauth credentials
 3. copy/paste the Client ID and Client secret from step2
 4. select the scopes we used on the left side (in application/controller/app.rb file line 36)
