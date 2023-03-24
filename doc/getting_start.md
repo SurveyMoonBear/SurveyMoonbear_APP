@@ -23,7 +23,8 @@ $ git clone git@github.com:SurveyMoonBear/SurveyMoonbear_APP.git
 
 2. Install gems
 ```
-$ bundle install --without production
+$ bundle config set --local without 'production'
+$ bundle install
 ```
 
 > if it bumps into this problem 
@@ -35,7 +36,7 @@ $ bundle install --without production
 4. Run DB migrations
 ```
 $ rake db:migrate
-$ RACK_ENV=test db:migrate
+$ RACK_ENV=test rake db:migrate
 ```
 
 5. Run tests
