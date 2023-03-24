@@ -30,12 +30,12 @@ $ bundle install --without production
 > `Could not open library 'sodium' cannot load such file -- rbnacl`,
 > please [install libsodium](https://github.com/RubyCrypto/rbnacl/wiki/Installing-libsodium) first
 
-3. Add config/secret.yml file
+3. Add config/secrets.yml file
 
 4. Run DB migrations
 ```
 $ rake db:migrate
-$ RACK_ENV=test db:migrate
+$ RACK_ENV=test rake db:migrate
 ```
 
 5. Run tests
