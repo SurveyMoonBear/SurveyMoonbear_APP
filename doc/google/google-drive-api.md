@@ -5,16 +5,18 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 ### Step1: A GCP project with the API enabled
 
 1. [create GCP project](https://developers.google.com/workspace/guides/create-project#create_a_new_google_cloud_platform_gcp_project)
-![](https://i.imgur.com/qiTpYxr.png) （Should accept the Service Rule when first time using This）
-2. [enable Google Drive API and Google Calendar API](https://developers.google.com/workspace/guides/create-project#enable-api)
-3. Button of "Enable APIs and Services" is hard to find 
+![](https://i.imgur.com/qiTpYxr.png) （Should accept the Service Rule first.）
+1. [enable Google Drive API and Google Calendar API](https://developers.google.com/workspace/guides/create-project#enable-api)
+2. Button of "Enable APIs and Services" is hard to find 
 
 ![](https://i.imgur.com/TvlpLUG.png)
 
 ### Step2: Create authorization credentials for a "Web application"
 
 1. [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/create-credentials#configure_the_oauth_consent_screen)
+![https://i.imgur.com/EIAiE6B.png]
 2. [Create a OAuth client ID credential](https://developers.google.com/workspace/guides/create-credentials#create_a_oauth_client_id_credential)
+![https://i.imgur.com/Kh9upsX.png]
 3. The type of project/application's credential choose **[web application](https://developers.google.com/workspace/guides/create-credentials)**.
 
 ![](https://i.imgur.com/p32SJ7V.png)
