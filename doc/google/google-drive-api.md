@@ -14,7 +14,8 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 
 1. [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/configure-oauth-consent)
 
-![](https://imgur.com/4aMKLxI.png)
+<img src = https://imgur.com/4aMKLxI.png width=50% height=50%>
+
 2. [Create a OAuth client ID credential](https://developers.google.com/workspace/guides/create-credentials#create_a_oauth_client_id_credential)
 3. The type of project/application's credential choose **[web application](https://developers.google.com/workspace/guides/create-credentials)**.
 
@@ -30,9 +31,10 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 2. click setting and check the checkbox:Use your own Oauth credentials
 3. copy/paste the Client ID and Client secret from step2
 4. select the scopes we used on the left side (in application/controller/app.rb file line 36)
-<img src=https://imgur.com/jWnxFXz.png) width=50% height=50%>
-![image](https://imgur.com/WQ8aJyY.png)
-![image](https://imgur.com/IorJOG2.png)
+<img src = https://imgur.com/jWnxFXz.png) width=50% height=50%>
+<img src = https://imgur.com/WQ8aJyY.png) width=50% height=50%>
+<img src = https://imgur.com/IorJOG2.png) width=50% height=50%>
+
 5. click the Authorize APIs
   ![image](https://user-images.githubusercontent.com/44396169/170173450-5d96396c-9e67-419b-af54-670a615e2dc9.png)
 6. It will turn back following screen
