@@ -47,7 +47,10 @@ $ rake spec
 ```
 $ rake run:dev
 ```
-
+7. If you fail to run the app, please try to install heroku installer first! (this command is for macOS)
+```
+$ brew tap heroku/brew && brew install heroku
+```
 ### Get Remote Access
 Create a Heroku remote to existing Heroku repo
 ```
