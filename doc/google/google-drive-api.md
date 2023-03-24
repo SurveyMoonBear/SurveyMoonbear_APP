@@ -5,8 +5,7 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 ### Step1: A GCP project with the API enabled
 
 1. [create GCP project](https://developers.google.com/workspace/guides/create-project#create_a_new_google_cloud_platform_gcp_project)
-![](https://i.imgur.com/qiTpYxr.png) （Should accept the Service Rule first.）
-
+![](https://i.imgur.com/qiTpYxr.png) （Should accept the Service Rule when first time using This）
 2. [enable Google Drive API, Google Sheets API and Google Calendar API](https://developers.google.com/workspace/guides/create-project#enable-api)
 3. Button of "Enable APIs and Services" is hard to find
 ![](https://i.imgur.com/TvlpLUG.png)
