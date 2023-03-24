@@ -1,0 +1,782 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Date:
+      - Fri, 24 Mar 2023 11:33:42 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/calendar openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer",
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4NmVlOWEzYjc1MjBiNDk0ZGY1NGZlMzJlM2U1YzRjYTY4NWM4OWQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4Nzk4Mjg2NzI0NjEtbXZmaGZubnIyOWVrN2FhY3M3Y3Q0ODR0N3NnbG5jZ2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI4Nzk4Mjg2NzI0NjEtbXZmaGZubnIyOWVrN2FhY3M3Y3Q0ODR0N3NnbG5jZ2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTMzNjg3MzU3MzcwNzQ3NDkwNjMiLCJoZCI6Imlzcy5udGh1LmVkdS50dyIsImVtYWlsIjoidGlmZmFueS5saW5AaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJqYnJJRFVzbVNqOTlMTlJMeVVOX1hRIiwiaWF0IjoxNjc5NjU3NjIyLCJleHAiOjE2Nzk2NjEyMjJ9.gSag73NiA--rFFnR_DijpnZwHZD1PLViPbVO2P3xwzW8UD9tU1ky7PrcyF3PNoS6gsrwv3be6d0Y2NISd2R_wzdwUkkFVHPpqtHfpDHK6VZGKnDxqDwPjsl3l3SyaowfS4yB7mw67WV9biTe_RqdO70y8RXZI7SuJJ0kc6JdziYgizEGCfwjFRbg0l4u6fE8tDXtNvRY0HiwwVGZe7JvKVuK2DbAVwE-C1leVu77iBEbTEyWaGQoxZN0G-t-bpVFVgpn-MZTr2qeWnRKQEC2cY-1DQqoFEoa45YiWVwfu71iRPiaN5a3lG1dnTu2ppvcDMtM6zl9Sj5YTvkMKkKxOQ"
+        }
+  recorded_at: Fri, 24 Mar 2023 11:33:42 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: '{"id":"<CALENDAR_ID>"}'
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Fri, 24 Mar 2023 11:33:42 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '297'
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "error": {
+          "errors": [
+           {
+            "domain": "calendar",
+            "reason": "cannotChangeOwnPrimarySubscription",
+            "message": "Cannot change your subscription to your own primary calendar."
+           }
+          ],
+          "code": 403,
+          "message": "Cannot change your subscription to your own primary calendar."
+         }
+        }
+  recorded_at: Fri, 24 Mar 2023 11:33:43 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Fri, 24 Mar 2023 11:33:43 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer",
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4NmVlOWEzYjc1MjBiNDk0ZGY1NGZlMzJlM2U1YzRjYTY4NWM4OWQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4Nzk4Mjg2NzI0NjEtbXZmaGZubnIyOWVrN2FhY3M3Y3Q0ODR0N3NnbG5jZ2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI4Nzk4Mjg2NzI0NjEtbXZmaGZubnIyOWVrN2FhY3M3Y3Q0ODR0N3NnbG5jZ2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTMzNjg3MzU3MzcwNzQ3NDkwNjMiLCJoZCI6Imlzcy5udGh1LmVkdS50dyIsImVtYWlsIjoidGlmZmFueS5saW5AaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJjNndBMExPMUVhelBKUnBldHlvNzh3IiwiaWF0IjoxNjc5NjU3NjIzLCJleHAiOjE2Nzk2NjEyMjN9.czv_qk2BzqBltZC9i91HPJro7p9ylRs7XCm46DCUdpKTVF-qBHHBGErvRqtov14UhgzSv-sa32Zk8lR_gXDe-RrL6d9crykdvyildPsLopWeB4OcvM7f047EAxvZkMl4CYfIQT6nSgozwNSxVRpiVFwToq7xb_zNWUf-wbqSxCtzO-yUfeJQ3M98VNFp77-udxGTZxkNaZAon9kJRv7QZ4RbMkJEOZZNQwxgJsoMzsx4rXkEqyRQU9KpW6uNZ2IZWTbSAAmc57YADc3oh-aIqeNJrlO8-kOAfi3VmY5CP4zwFpccx7BiRXheN3DZ3BUNk4BA_gSesZiXAOfHwxJw9Q"
+        }
+  recorded_at: Fri, 24 Mar 2023 11:33:43 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 24 Mar 2023 11:33:43 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "openid https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer",
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4NmVlOWEzYjc1MjBiNDk0ZGY1NGZlMzJlM2U1YzRjYTY4NWM4OWQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4Nzk4Mjg2NzI0NjEtbXZmaGZubnIyOWVrN2FhY3M3Y3Q0ODR0N3NnbG5jZ2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI4Nzk4Mjg2NzI0NjEtbXZmaGZubnIyOWVrN2FhY3M3Y3Q0ODR0N3NnbG5jZ2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTMzNjg3MzU3MzcwNzQ3NDkwNjMiLCJoZCI6Imlzcy5udGh1LmVkdS50dyIsImVtYWlsIjoidGlmZmFueS5saW5AaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiIyOU84ckFQdVpXXzJsenBHclRfOXN3IiwiaWF0IjoxNjc5NjU3NjIzLCJleHAiOjE2Nzk2NjEyMjN9.Qs5s-95DpdwgXpILellbExqrWhbAh4o8O3cKM8UGXynTRe74wZrN6bDF-RnU_dMyaXdKUnEazUyxI3pAgX8GW_RlYGHby3S-qCfJYeVBC9w-hTy3Z02t-fcS443qtR6vPL-RFjpU3xt_SSkbSa2rzMtD9MV1lz1ceuTqlQliG76sOY-ayXaVdBlRHWf6cnq6esAracMvH-AtNcdDWoZVrkc4OmwbNwMR8TZ1gnuOKsIo2NLG91NuVjHtVRY0wiP9IXQ9trYfKqM0Vempwm0IZ1BBae7HsUGQLWYcmxFg03q_VNmz0IJc3Jg-1xLRGVpxCbkaGdGFabxxA-qkkNGn-g"
+        }
+  recorded_at: Fri, 24 Mar 2023 11:33:43 GMT
+- request:
+    method: get
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 24 Mar 2023 11:33:44 GMT
+      Cache-Control:
+      - private, max-age=0, must-revalidate, no-transform
+      Expires:
+      - Fri, 24 Mar 2023 11:33:44 GMT
+      Content-Length:
+      - '2127'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "kind": "calendar#calendarList",
+         "etag": "\"p32kcl051grmvq0g\"",
+         "nextSyncToken": "CKjKgKGG7f0CEht0aWZmYW55LmxpbkBpc3MubnRodS5lZHUudHc=",
+         "items": [
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1660549861136000\"",
+           "id": "<CALENDAR_ID>",
+           "summary": "<CALENDAR_ID>",
+           "timeZone": "Asia/Taipei",
+           "colorId": "14",
+           "backgroundColor": "#9fe1e7",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "owner",
+           "defaultReminders": [
+            {
+             "method": "popup",
+             "minutes": 10
+            }
+           ],
+           "notificationSettings": {
+            "notifications": [
+             {
+              "type": "eventCreation",
+              "method": "email"
+             },
+             {
+              "type": "eventChange",
+              "method": "email"
+             },
+             {
+              "type": "eventCancellation",
+              "method": "email"
+             },
+             {
+              "type": "eventResponse",
+              "method": "email"
+             }
+            ]
+           },
+           "primary": true,
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          },
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1665665578684000\"",
+           "id": "zh-tw.taiwan#holiday@group.v.calendar.google.com",
+           "summary": "台灣的節慶假日",
+           "description": "台灣假日節慶",
+           "timeZone": "Asia/Taipei",
+           "colorId": "8",
+           "backgroundColor": "#16a765",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "reader",
+           "defaultReminders": [],
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          },
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1665665590552000\"",
+           "id": "addressbook#contacts@group.v.calendar.google.com",
+           "summary": "生日",
+           "description": "顯示 Google 聯絡人中的聯絡人生日、週年紀念日和其他活動日期。",
+           "timeZone": "Asia/Taipei",
+           "colorId": "13",
+           "backgroundColor": "#92e1c0",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "reader",
+           "defaultReminders": [],
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          }
+         ]
+        }
+  recorded_at: Fri, 24 Mar 2023 11:33:44 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/calendar/v3/freeBusy
+    body:
+      encoding: UTF-8
+      string: '{"timeMin":"2022-05-01T00:00:00+08:00","timeMax":"2022-05-31T23:59:59+08:00","timeZone":"Asia/Taipei","items":[{"id":"<CALENDAR_ID>"}]}'
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '186'
+      Pragma:
+      - no-cache
+      Date:
+      - Fri, 24 Mar 2023 11:33:44 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "kind": "calendar#freeBusy",
+         "timeMin": "2022-04-30T16:00:00.000Z",
+         "timeMax": "2022-05-31T15:59:59.000Z",
+         "calendars": {
+          "<CALENDAR_ID>": {
+           "busy": []
+          }
+         }
+        }
+  recorded_at: Fri, 24 Mar 2023 11:33:44 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 24 Mar 2023 11:33:45 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/spreadsheets openid https://www.googleapis.com/auth/calendar",
+          "token_type": "Bearer",
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4NmVlOWEzYjc1MjBiNDk0ZGY1NGZlMzJlM2U1YzRjYTY4NWM4OWQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4Nzk4Mjg2NzI0NjEtbXZmaGZubnIyOWVrN2FhY3M3Y3Q0ODR0N3NnbG5jZ2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI4Nzk4Mjg2NzI0NjEtbXZmaGZubnIyOWVrN2FhY3M3Y3Q0ODR0N3NnbG5jZ2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTMzNjg3MzU3MzcwNzQ3NDkwNjMiLCJoZCI6Imlzcy5udGh1LmVkdS50dyIsImVtYWlsIjoidGlmZmFueS5saW5AaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJJa25WN1p0b3FrVHZqa2dFTHI4cWdnIiwiaWF0IjoxNjc5NjU3NjI1LCJleHAiOjE2Nzk2NjEyMjV9.l447ycgr-3sO-b5yjhMdL6bzriFvfI19PmVTmWVQ1HEWen98SSVAJ6DqK07XjN8MTfXx2gFCb2WNi-K3xdde4aOV-gFEOJxUYBe0WwVw4Bnxe_q-EK-HHkRq_XcgW0oHgAZju-7WRfRZsXUPdV2fhBNpt5TZx5_rHaRnruUstaekQvKIZmz7IbAxS-fbjEMjHDuHShrpIGlQtwnu_jblHUZuenMOu6B89s9Gop0OxHbzrcHAR_3ExMPMfU_9HK6MiHBl4yA6aWpXBVWXW4qgY3nrlA9xLwM_QAmtLDCmW0pIcBuEHX7dC5Sbqa8MDMmaWtdPhKIhBWr3nnZhYw7w4w"
+        }
+  recorded_at: Fri, 24 Mar 2023 11:33:45 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Fri, 24 Mar 2023 11:33:45 GMT
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "openid https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.email",
+          "token_type": "Bearer",
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk4NmVlOWEzYjc1MjBiNDk0ZGY1NGZlMzJlM2U1YzRjYTY4NWM4OWQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4Nzk4Mjg2NzI0NjEtbXZmaGZubnIyOWVrN2FhY3M3Y3Q0ODR0N3NnbG5jZ2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI4Nzk4Mjg2NzI0NjEtbXZmaGZubnIyOWVrN2FhY3M3Y3Q0ODR0N3NnbG5jZ2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTMzNjg3MzU3MzcwNzQ3NDkwNjMiLCJoZCI6Imlzcy5udGh1LmVkdS50dyIsImVtYWlsIjoidGlmZmFueS5saW5AaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiI4NkU1MDVMS0oxOWN1d0kycVRQWF9RIiwiaWF0IjoxNjc5NjU3NjI1LCJleHAiOjE2Nzk2NjEyMjV9.juzrBiA4vuANd7yBXodf-snNrrsAeTFUDNcWy4PkWHPuR1Av3yNboDjkvvz4QNqx2vhnmzT7NBkqzVZNdWv4fLaLgyGzcHvsb8avidrOjCXaD_qSRtW_3VDcAEnl9uaMG3TIPes6ioNX-A4BQtYUEK5UjvpQlVgcmb76R1u9jZ_FD6wCqjnOuXudIIsJ_L0EF-DY81T3SwQNhVfU2fQZmfu5v5M9hDKi0nP7xyIp4djc-MMfpyFxGP0vbKDh1FBs-TfI1bKSQPKtn6p4x85D3FadhY0Xgso2wuxfEv0G8puEk33qhmxWP62tiBLM1H7ZwXeIoMkkjgE00kPHkewsUQ"
+        }
+  recorded_at: Fri, 24 Mar 2023 11:33:45 GMT
+- request:
+    method: get
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '2127'
+      Cache-Control:
+      - private, max-age=0, must-revalidate, no-transform
+      Date:
+      - Fri, 24 Mar 2023 11:33:45 GMT
+      Expires:
+      - Fri, 24 Mar 2023 11:33:45 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "kind": "calendar#calendarList",
+         "etag": "\"p32kcl051grmvq0g\"",
+         "nextSyncToken": "CKjKgKGG7f0CEht0aWZmYW55LmxpbkBpc3MubnRodS5lZHUudHc=",
+         "items": [
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1660549861136000\"",
+           "id": "<CALENDAR_ID>",
+           "summary": "<CALENDAR_ID>",
+           "timeZone": "Asia/Taipei",
+           "colorId": "14",
+           "backgroundColor": "#9fe1e7",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "owner",
+           "defaultReminders": [
+            {
+             "method": "popup",
+             "minutes": 10
+            }
+           ],
+           "notificationSettings": {
+            "notifications": [
+             {
+              "type": "eventCreation",
+              "method": "email"
+             },
+             {
+              "type": "eventChange",
+              "method": "email"
+             },
+             {
+              "type": "eventCancellation",
+              "method": "email"
+             },
+             {
+              "type": "eventResponse",
+              "method": "email"
+             }
+            ]
+           },
+           "primary": true,
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          },
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1665665578684000\"",
+           "id": "zh-tw.taiwan#holiday@group.v.calendar.google.com",
+           "summary": "台灣的節慶假日",
+           "description": "台灣假日節慶",
+           "timeZone": "Asia/Taipei",
+           "colorId": "8",
+           "backgroundColor": "#16a765",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "reader",
+           "defaultReminders": [],
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          },
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1665665590552000\"",
+           "id": "addressbook#contacts@group.v.calendar.google.com",
+           "summary": "生日",
+           "description": "顯示 Google 聯絡人中的聯絡人生日、週年紀念日和其他活動日期。",
+           "timeZone": "Asia/Taipei",
+           "colorId": "13",
+           "backgroundColor": "#92e1c0",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "reader",
+           "defaultReminders": [],
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          }
+         ]
+        }
+  recorded_at: Fri, 24 Mar 2023 11:33:45 GMT
+- request:
+    method: delete
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList/<CALENDAR_ID>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '297'
+      Date:
+      - Fri, 24 Mar 2023 11:33:46 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "error": {
+          "errors": [
+           {
+            "domain": "calendar",
+            "reason": "cannotChangeOwnPrimarySubscription",
+            "message": "Cannot change your subscription to your own primary calendar."
+           }
+          ],
+          "code": 403,
+          "message": "Cannot change your subscription to your own primary calendar."
+         }
+        }
+  recorded_at: Fri, 24 Mar 2023 11:33:46 GMT
+recorded_with: VCR 6.1.0
