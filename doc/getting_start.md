@@ -10,6 +10,11 @@
   - Create config/secrets.yml on local [secrets_example.yml](../config/secrets_example.yml)
   - Use your personal Google account and [apply for Google Drive API Token](google/google-drive-api.md)
   - Use your personal AWS account and [apply for AWS SQS Token](aws/sqs.md)
+  - Get `DB_KEY` and `MSG_KEY` by run
+    ```
+    $ rake crypto:db_key  
+    $ rake crypto:msg_key
+    ```
 - Production: 
   - Survey Moonbear's Google Drive account & password
 
