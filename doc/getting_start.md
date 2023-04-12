@@ -54,6 +54,10 @@ $ rake spec
 $ rake run:dev
 ```
 
+> if it bumps into this problem 
+> `Error connecting to Redis on 127.0.0.1:6379 (Errno::ECONNREFUSED) (Redis::CannotConnectError)`,
+> please [install Redis](https://redis.io/docs/getting-started/installation/) first
+
 ### Get Remote Access
 Create a Heroku remote to existing Heroku repo
 ```
