@@ -47,10 +47,16 @@ $ rake spec
 ```
 $ rake run:dev
 ```
-7. If you fail to run the app, please try to install heroku installer first! (this command is for macOS)
+- If you fail to run the app, please try to install heroku installer first! (this command is for macOS)
 ```
 $ brew tap heroku/brew && brew install heroku
 ```
+- If you have the problem about redis after login to your account, plz run these commands:
+```
+$ brew install redis
+$ redis-server /usr/local/etc/redis.conf
+```
+- If you fail to open your redis server, plz find the directory of redis.conf in your computer. It may be in the same place of your homebrew file.
 ### Get Remote Access
 Create a Heroku remote to existing Heroku repo
 ```
