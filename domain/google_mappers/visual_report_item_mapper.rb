@@ -47,6 +47,7 @@ module SurveyMoonbear
           @spreadsheet_id = spreadsheet_id
           @page_index = page_index
           @item_data = item_data
+          binding.irb
         end
 
         def build_entity
@@ -59,7 +60,8 @@ module SurveyMoonbear
             question: question,
             chart_type: chart_type,
             legend: legend,
-            self_marker: self_marker
+            self_marker: self_marker,
+            score_type: score_type
           )
         end
 
@@ -88,6 +90,10 @@ module SurveyMoonbear
 
         def self_marker
           @item_data[5]
+        end
+
+        def score_type
+          @item_data[6]
         end
       end
     end
