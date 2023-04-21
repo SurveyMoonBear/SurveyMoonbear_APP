@@ -19,3 +19,11 @@
 .table > tbody > tr > td:nth-child(2) {
     padding-left: 50px !important;
 } */
+
+.right_arrow:hover {
+    fill: #DA4567;
+}
+
+.right_arrow:hover {
+    width:100px;
+}
