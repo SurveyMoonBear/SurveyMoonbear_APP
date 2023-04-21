@@ -47,7 +47,6 @@ module SurveyMoonbear
           @spreadsheet_id = spreadsheet_id
           @page_index = page_index
           @item_data = item_data
-          binding.irb
         end
 
         def build_entity
