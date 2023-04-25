@@ -35,7 +35,8 @@ module SurveyMoonbear
             owner: owner,
             origin_id: origin_id,
             title: title,
-            created_at: nil
+            created_at: nil,
+            is_owner: true
           )
         end
 

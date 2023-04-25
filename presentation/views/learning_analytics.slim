@@ -2,50 +2,57 @@ div class="mb-3"
   div class="row justify-content-center mt-3"
       div id="div-alert"
         == render :flash_bar
-      / span class="text-primary mb-5" style="font-size:1.5rem;" My Learning Analytics
       div class="d-flex flex-sm-row flex-column m-5 flex-sm-wrap"
-        div class="col-md-4 col-sm-6 col-12 shadow p-3 mb-5 bg-white rounded hover:bg-primary"
-          h5 class="text-dark hover:text-white font-weight-bold" My Assignments Report
-          p class="text-dark hover:text-white mb-4"  My weekly assignment score.
+        div class='la-test bg-white col-sm-4 col-12 shadow p-4 mb-4 m-auto border' data-toggle="modal" data-target="#assignment_report" style="border-radius:6px;"
+          h5 class="text-primary hover:text-white font-weight-bold" My Assignments Report
+          p class="text-primary hover:text-white mb-4"  My weekly assignment score.
           .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
             <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-        div class="col-md-4 col-sm-6 col-12 shadow p-3 mb-5 bg-white rounded"
-          h5 class="text-dark font-weight-bold" My Quizzes Report
-          p class="text-dark hover:text-white mb-4"  My weekly quiz score.
+        div class='la-test bg-white col-sm-4 col-12 shadow p-4 mb-4 m-auto border' style="border-radius:6px;"
+          h5 class="text-primary font-weight-bold" My Quizzes Report
+          p class="text-primary hover:text-white mb-4"  My weekly quiz score.
           .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
             <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-        div class="col-md-4 col-sm-6 col-12 shadow p-3 mb-5 bg-white rounded"
-          h5 class="text-dark font-weight-bold" My participation checklist
-          p class="text-dark hover:text-white mb-4"  My weekly quiz score.
+        div class='la-test bg-white col-sm-4 col-12 shadow p-4 mb-4 m-auto border' style="border-radius:6px;"
+          h5 class="text-primary font-weight-bold" My participation checklist
+          p class="text-primary hover:text-white mb-4"  My weekly quiz score.
           .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
             <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-        div class="col-md-4 col-sm-6 col-12 shadow p-3 mb-5 bg-white rounded"
-          h5 class="text-dark font-weight-bold" Participation on Teams
-          p class="text-dark hover:text-white mb-4"  Top 10 active students on Teams.
+        div class='la-test bg-white col-sm-4 col-12 shadow p-4 mb-4 m-auto border' style="border-radius:6px;"
+          h5 class="text-primary font-weight-bold" Participation on Teams
+          p class="text-primary hover:text-white mb-4"  Top 10 active students on Teams.
           .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
             <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-        div class="col-md-4 col-sm-6 col-12 shadow p-3 mb-5 bg-white rounded"
-          h5 class="text-dark font-weight-bold" Assignment Achievement
-          p class="text-dark hover:text-white mb-4"  See how far away for me to get all badges.
+        div class='la-test bg-white col-sm-4 col-12 shadow p-4 mb-4 m-auto border' style="border-radius:6px;"
+          h5 class="text-primary font-weight-bold" Assignment Achievement
+          p class="text-primary hover:text-white mb-4"  See how far away for me to get all badges.
           .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
             <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-        div class="col-md-4 col-sm-6 col-12 shadow p-3 mb-5 bg-white rounded"
-          h5 class="text-dark font-weight-bold" Help Count on Teams
-          p class="text-dark hover:text-white mb-4"  Present your standing in the class in percentile
+        div class='la-test bg-white col-sm-4 col-12 shadow p-4 mb-4 m-auto border' style="border-radius:6px;"
+          h5 class="text-primary font-weight-bold" Help Count on Teams
+          p class="text-primary hover:text-white mb-4"  Top 10 helpful students on Teams.
           .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
             <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-        div class="col-md-4 col-sm-6 col-12 shadow p-3 mb-5 bg-white rounded"
-          h5 class="text-dark font-weight-bold" Assignment Distribution
-          p class="text-dark hover:text-white mb-4"  My score compares with other students.
+        div class='la-test bg-white col-sm-4 col-12 shadow p-4 mb-4 m-auto border' style="border-radius:6px;"
+          h5 class="text-primary font-weight-bold" Assignment Distribution
+          p class="text-primary hover:text-white mb-4"  My score compares with other students.
           .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
             <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-        div class="col-md-4 col-sm-6 col-12 shadow p-3 mb-5 bg-white rounded"
-          h5 class="text-dark font-weight-bold" Current Score
-          p class="text-dark hover:text-white mb-4"  My current score.
+        div class='la-test bg-white col-sm-4 col-12 shadow p-4 mb-4 m-auto border' style="border-radius:6px;"
+          h5 class="text-primary font-weight-bold" Current Score
+          p class="text-primary hover:text-white mb-4"  My current score.
           .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
             <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-        div class="col-md-4 col-sm-6 col-12 shadow p-3 mb-5 bg-white rounded"
-          h5 class="text-dark font-weight-bold" Current Percentile
-          p class="text-dark hover:text-white mb-4"  My current standing in the class.
+        div class='la-test bg-white col-sm-4 col-12 shadow p-4 mb-4 m-auto border' style="border-radius:6px;"
+          h5 class="text-primary font-weight-bold" Current Percentile
+          p class="text-primary hover:text-white mb-4"  My current standing in the class.
           .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
             <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
+
+include :assignment_report
+
+javascript:
+  $('#btn-create').on('click', function (e) {
+    $('#assignment_report').modal('hide');
+    $('#modal_waiting').modal();
+  });

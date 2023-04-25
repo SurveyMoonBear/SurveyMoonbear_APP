@@ -20,63 +20,70 @@ div class="mb-3"
           div class="my-3 d-flex"
             div class="d-inline-flex align-middle "
               h3 class="mb-auto" #{visual_report.title}
-            button {
-                class="btn btn-outline-dark border-0 ml-2 d-inline-flex align-middle"
-                data-toggle="modal" data-target="#modal_visual_report_settings"
-                data-visual_report_id="#{visual_report.id}"
-                data-visual_report_title="#{visual_report.title}"
-            }
-              i class="fas fa-cog"
-            button {
-              class="btn btn-outline-dark border-0 ml-auto d-inline-flex align-middle"
-              data-toggle="dropdown"
-            }
-              i class="fas fa-chevron-down"
-            div class="dropdown-menu"
-              a href="#" class="dropdown-item" onclick="confirmDeleteVisualReport('#{visual_report.id}', '#{visual_report.title}')" Delete
-              a href="#" class="dropdown-item" data-origin_id="#{visual_report.origin_id}" data-toggle="modal" data-target="#modal_copy_visual_report" Copy
+            - if is_owner[index]
+              button {
+                  class="btn btn-outline-dark border-0 ml-2 d-inline-flex align-middle"
+                  data-toggle="modal" data-target="#modal_visual_report_settings"
+                  data-visual_report_id="#{visual_report.id}"
+                  data-visual_report_title="#{visual_report.title}"
+              }
+                i class="fas fa-cog"
+              button {
+                class="btn btn-outline-dark border-0 ml-auto d-inline-flex align-middle"
+                data-toggle="dropdown"
+              }
+                i class="fas fa-chevron-down"
+              div class="dropdown-menu"
+                a href="#" class="dropdown-item" onclick="confirmDeleteVisualReport('#{visual_report.id}', '#{visual_report.title}')" Delete
+                a href="#" class="dropdown-item" data-origin_id="#{visual_report.origin_id}" data-toggle="modal" data-target="#modal_copy_visual_report" Copy
           p class="text-muted" 
             small Created at: #{visual_report.created_at}
           div class="row d-flex"
-            div class="mb-3 pl-3"
-              button {
-                  class="btn btn-dark mr-1 mt-1" type="button"
-                  data-toggle="modal" data-target="#modal_survey_editor"
-                  data-origin_id="#{visual_report.origin_id}"
-              } 
-                <i class="fas fa-edit"></i> &nbsp;Edit
-              a {
-                class="btn btn-outline-dark mr-1 mt-1"
-                target="_blank"
-                href="https://docs.google.com/spreadsheets/d/#{visual_report.origin_id}/edit"
-              } 
-                <i class="fas fa-external-link-alt"></i> &nbsp;Edit in Google Sheets
-              button {
-                class="btn btn-outline-success mr-1 mt-1"
-                onclick="updateVisualReport('#{visual_report.id}', '#{visual_report.origin_id}')"
-              } 
-                <i class="fas fa-redo"></i> &nbsp;Update
-          div class="row d-flex"
-            div class="mb-3 pl-3"
-              div class="input-group"
-                div class="input-group-prepend"
-                span class="input-group-text" id="basic-addon3"Public:
-                input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/public"
-                div class="input-group-append"
-                  button class="btn btn-secondary" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
-                    i class="fas fa-copy"
-                  a class="btn btn-secondary" target="_blank" href="/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/public"
-                    i class="fas fa-external-link-alt"
-            div class="mb-3 pl-3"
-              div class="input-group"
-                div class="input-group-prepend"
-                span class="input-group-text" id="basic-addon3"Self-comparison:
-                input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/identify"
-                div class="input-group-append"
-                  button class="btn btn-secondary" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
-                    i class="fas fa-copy"
-                  a class="btn btn-secondary" target="_blank" href="/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/identify"
-                    i class="fas fa-external-link-alt"
+            - if is_owner[index]
+              div class="mb-3 pl-3"
+                button {
+                    class="btn btn-dark mr-1 mt-1" type="button"
+                    data-toggle="modal" data-target="#modal_survey_editor"
+                    data-origin_id="#{visual_report.origin_id}"
+                } 
+                  <i class="fas fa-edit"></i> &nbsp;Edit
+                a {
+                  class="btn btn-outline-dark mr-1 mt-1"
+                  target="_blank"
+                  href="https://docs.google.com/spreadsheets/d/#{visual_report.origin_id}/edit"
+                } 
+                  <i class="fas fa-external-link-alt"></i> &nbsp;Edit in Google Sheets
+                button {
+                  class="btn btn-outline-success mr-1 mt-1"
+                  onclick="updateVisualReport('#{visual_report.id}', '#{visual_report.origin_id}')"
+                } 
+                  <i class="fas fa-redo"></i> &nbsp;Update
+              div class="row d-flex"
+                div class="mb-3 pl-3"
+                  div class="input-group"
+                    div class="input-group-prepend"
+                    span class="input-group-text" id="basic-addon3"Public:
+                    input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/public"
+                    div class="input-group-append"
+                      button class="btn btn-secondary" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
+                        i class="fas fa-copy"
+                      a class="btn btn-secondary" target="_blank" href="/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/public"
+                        i class="fas fa-external-link-alt"
+                div class="mb-3 pl-3"
+                  div class="input-group"
+                    div class="input-group-prepend"
+                    span class="input-group-text" id="basic-addon3"Self-comparison:
+                    input type="text" class="form-control" id="input-#{index}" readonly="true" value="#{config.APP_URL}/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}/identify"
+                    div class="input-group-append"
+                      button class="btn btn-secondary" onclick="copyURL('input-#{index}')" data-toggle="tooltip" data-placement="top" title="Copy to Clipboard"
+                        i class="fas fa-copy"
+                      / a class="btn btn-secondary" target="_blank" href="/visual_report/#{visual_report.id}/dashboard/#{dashboard.id}/" title="View Grades"
+                        i class="fas fa-book"
+                      a class="btn btn-secondary" target="_blank" href="/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}"
+                        i class="fas fa-external-link-alt"
+            - else 
+              a class="btn btn-secondary" target="_blank" href="/visual_report/#{visual_report.id}/online/#{visual_report.origin_id}"
+                i class="fas fa-external-link-alt" See my grades
 
 div class="modal hide" id="modal_waiting" data-backdrop="static" data-keyboard="false" role="dialog"
   div class="modal-dialog modal-dialog-centered" role="document"
