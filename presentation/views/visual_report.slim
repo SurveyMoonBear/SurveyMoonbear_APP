@@ -37,8 +37,7 @@ html
     }
     script src="https://cdn.plot.ly/plotly-2.11.1.min.js"
 
-    == render :nav
-    .col-12.p-5 id='html_body'
+    .col-12 id='html_body'
       section class="mt-3 mb-5"
         / include :flash_bar
 
@@ -54,26 +53,26 @@ html
         /             button type="submit" class="btn btn-primary" id="btn-create" Enter
         / - else
         div class='justify-content-center'
-          h1 class="col-md-12 my-4 text-dark font-weight-bold" #{vis_report_object.title}
+          div class="col-md-10 m-auto"
+            h1 class="text-dark font-weight-bold" #{vis_report_object.title}
 
-          div class='col-md-12'
-            div class='flex'
-              div class="tab-content"
-                div role="tabpanel" class="tab-pane active" style="width:100%; overflow:auto" id="visual" 
-                div class='flex'
-                  div class="tab-content"
-                    div role="tabpanel" class="tab-pane active" id="visual"
-                    - if categorize_score_type
-                      - categorize_score_type.each do |key, value|
-                        h4 class="text-primary mb-3 font-weight-bold" #{title[key]}
-                        div class="d-flex m-2 mb-4" style="width:100%; overflow:auto"
-                          - for j in value
-                            div class='bg-white col-md-2 col-sm-6 col-12 shadow p-4 m-4 ml-0 border' style="border-radius:6px;"
-                              h4 #{j["title"]}
-                              h3 class="text-primary font-weight-bold d-flex justify-content-end" #{j["score"]} 
-                      
-                    - else
-                      div class='d-flex py-3' style="width:100%; overflow:auto" id="div_tab_item" 
+            div class='shadow m-auto p-5'
+              div class='flex'
+                div class="tab-content"
+                  div role="tabpanel" class="tab-pane active" style="width:100%; overflow:auto" id="visual" 
+                  div class='flex'
+                    div class="tab-content"
+                      div role="tabpanel" class="tab-pane active" id="visual"
+                      - if categorize_score_type
+                        - categorize_score_type.each do |key, value|
+                          h4 class="text-primary mb-3 font-weight-bold" #{title[key]}
+                          div class="d-flex m-2 mb-4" style="width:100%; overflow:auto"
+                            - for j in value
+                              div class='bg-white col-md-3 col-sm-6 col-12 shadow p-4 m-4 ml-0 border' style="border-radius:6px;"
+                                h4 #{j["title"]}
+                                h3 class="text-primary font-weight-bold d-flex justify-content-end" #{j["score"]} 
+                      - else
+                        div class='d-flex py-3' style="width:100%; overflow:auto" id="div_tab_item" 
                   
 
 javascript:
