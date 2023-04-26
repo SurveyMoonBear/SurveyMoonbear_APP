@@ -25,6 +25,7 @@ module SurveyMoonbear
           page_index = page_data['properties']['index']
           items_data = @gateway.items_data(spreadsheet_id, title)
           items_data = items_data['values'].reject(&:empty?) # Remove empty rows
+
           items_data.shift # Remove the first row of spreadsheet (titles for users)
 
           return nil unless items_data
@@ -59,7 +60,8 @@ module SurveyMoonbear
             question: question,
             chart_type: chart_type,
             legend: legend,
-            self_marker: self_marker
+            self_marker: self_marker,
+            score_type: score_type
           )
         end
 
@@ -88,6 +90,10 @@ module SurveyMoonbear
 
         def self_marker
           @item_data[5]
+        end
+
+        def score_type
+          @item_data[6]
         end
       end
     end

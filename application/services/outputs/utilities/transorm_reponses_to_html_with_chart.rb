@@ -47,7 +47,7 @@ module SurveyMoonbear
       def build_nav_item(input)
         nav_item = ''
         if input[:nav_tab].empty?
-          nav_item = "<div id='chart_div_page0' class='row justify-content-center'></div>"
+          nav_item = "<div id='chart_div_page0' class='row justify-content-center mb-2'></div>"
         else
           nav_item = "<div class='tab-content mb-4' id='nav-tabContent'>"
           input[:pages_charts].keys.each_with_index do |page_name, i|
@@ -56,7 +56,7 @@ module SurveyMoonbear
             else
               nav_item += "<div class='tab-pane fade' id='nav-item-page#{i}' role='tabpanel' aria-labelledby='nav-tab-page#{i}'>"
             end
-            nav_item += "<div id='chart_div_page#{i}' class='row justify-content-center'></div></div>"
+            nav_item += "<div id='chart_div_page#{i}' class='d-flex justify-content-center'></div></div>"
           end
           nav_item += '</div>'
         end
@@ -96,7 +96,7 @@ module SurveyMoonbear
       def is_legend_return_html(chart)
         alphabet = ('a'..'z').to_a
         if chart[6] == 'yes' # legend = yes
-          l_str = "<div class='container' style='width: 80%'><div class='row justify-content-center>"
+          l_str = "<div class='container' style='width: 80%'><div class='d-flex justify-content-center>"
           chart[4].each_with_index do |label, i|
             label = label.gsub('<br>', '')
             l_str += "<div class='row'><div class='col-12' style='padding-left=25px'><big>#{alphabet[i]}:  </big><small>#{label}</small></div></div>"

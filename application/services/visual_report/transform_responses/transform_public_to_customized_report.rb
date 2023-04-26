@@ -75,12 +75,11 @@ module SurveyMoonbear
               if graph[7] == 'yes'
                 split_response_answer_and_transform_colors(graph[4],
                                                            graph[5],
-                                                           graph[8][input[:case_id]],
-                                                           graph[9])
+                                                           graph[9][input[:case_id]],
+                                                           graph[10])
               end
           end
         end
-
         Success(input[:all_graphs])
       rescue StandardError
         Failure('Failed to transform chart color.')

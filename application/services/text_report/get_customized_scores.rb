@@ -21,7 +21,6 @@ module SurveyMoonbear
       # input { all_graphs:, case_email:, redis:, user_key:}
       def get_sources_from_redis(input)
         input[:sources] = input[:redis].get(input[:user_key])['source']
-
         if input[:sources]
           Success(input)
         else
@@ -72,8 +71,11 @@ module SurveyMoonbear
         scores = []
         input[:all_graphs].each do |page, graphs|
           graphs.each_with_index do |graph, idx|
+            begin
             # scores.append({ 'Title' => graph[1], 'Score' => graph[8][input[:case_id]] })
-            scores.append({ title: graph[1], score: graph[8][input[:case_id]] })
+              scores.append({ title: graph[1], score: graph[9][input[:case_id]], score_type: graph[8] })
+            rescue StandardError => e 
+            end
           end
         end
         Success(scores)

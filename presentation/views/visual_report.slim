@@ -18,7 +18,7 @@ html
     }
 
     == assets(:css)
-  body
+  body style="background-color: #FBFDFF;"
     / JQuery and Bootstrap JS
     script {
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
@@ -37,7 +37,7 @@ html
     }
     script src="https://cdn.plot.ly/plotly-2.11.1.min.js"
 
-    .container id='html_body'
+    .col-12 id='html_body'
       section class="mt-3 mb-5"
         / include :flash_bar
 
@@ -52,16 +52,28 @@ html
         /             br
         /             button type="submit" class="btn btn-primary" id="btn-create" Enter
         / - else
-        div class='row justify-content-center'
-          h1 class="col-md-10 my-4" #{vis_report_object.title}
-        
-          div class='bg-light col-md-10 shadow'
-            div class='flex'
-              div class="tab-content"
-                div role="tabpanel" class="tab-pane active" id="visual" 
-                  div class='container py-3' id="div_tab_item"
-                  div class='container'
-                    div class="card"
+        div class='justify-content-center'
+          div class="col-md-10 m-auto"
+            h1 class="text-dark font-weight-bold" #{vis_report_object.title}
+
+            div class='shadow m-auto p-5'
+              div class='flex'
+                div class="tab-content"
+                  div role="tabpanel" class="tab-pane active" style="width:100%; overflow:auto" id="visual" 
+                  div class='flex'
+                    div class="tab-content"
+                      div role="tabpanel" class="tab-pane active" id="visual"
+                      - if categorize_score_type
+                        - categorize_score_type.each do |key, value|
+                          h4 class="text-primary mb-3 font-weight-bold" #{title[key]}
+                          div class="d-flex m-2 mb-4" style="width:100%; overflow:auto"
+                            - for j in value
+                              div class='bg-white col-md-3 col-sm-6 col-12 shadow p-4 m-4 ml-0 border' style="border-radius:6px;"
+                                h4 #{j["title"]}
+                                h3 class="text-primary font-weight-bold d-flex justify-content-end" #{j["score"]} 
+                      - else
+                        div class='d-flex py-3' style="width:100%; overflow:auto" id="div_tab_item" 
+                  
 
 javascript:
     $('#myTabs a').click(function (e) {
@@ -94,8 +106,9 @@ javascript:
         console.log(graph[2])
         // display title
         score_div = document.getElementById( 'score_'+page_title+'_'+i );
+        score_div.setAttribute("class", 'bg-white m-2 ml-0')
         var title_div = document.createElement("h3")
-        title_div.setAttribute("class", 'text-center m-4')
+        title_div.setAttribute("class", 'text-center m-4 text-primary')
         title_div.innerHTML = `${graph[1]}`
         score_div.appendChild(title_div)
 
@@ -115,7 +128,7 @@ javascript:
         else if (graph[2]=='text') {
           var text_div = document.createElement("div")
           text_div.innerHTML = `Score: ${#{{text_report_object}}[i].score}`
-          text_div.setAttribute("class", 'd-flex justify-content-center bg-white container text-center')
+          text_div.setAttribute("class", 'text-center text-danger')
           text_div.setAttribute("style",'width: 95%; font-size:32px; display:inline-block; padding:10px; color: orange')
           
           score_div.appendChild(text_div)
@@ -152,6 +165,7 @@ javascript:
           displayModeBar: true
         };
 
+
         // create chart_page_title_0 div
         if (graph[2]!='text') {
           var chart_div = document.createElement("div")
@@ -162,5 +176,6 @@ javascript:
           
           Plotly.newPlot(chart_div, [chartData], chartLayout, config);
         }
+
       });
     });

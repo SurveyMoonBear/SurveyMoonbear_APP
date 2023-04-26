@@ -380,10 +380,15 @@ module SurveyMoonbear
                     .find_owner(@current_account['id'])
           visual_reports = Repository::For[Entity::VisualReport]
                            .find_owner(@current_account['id'])
+          is_owner = []
+          visual_reports.each do |visual_report|
+            is_owner.append(@current_account['email'] == visual_report.owner.email)
+          end
 
           view 'analytics', locals: { surveys: surveys,
                                       config: config,
-                                    visual_reports: visual_reports }
+                                      visual_reports: visual_reports,
+                                      is_owner: is_owner }
         end
 
         routing.post 'create' do
@@ -428,7 +433,7 @@ module SurveyMoonbear
               logged_in_account = logged_in_account_res.value!.to_h
 
               SecureSession.new(session).set(:report_account, logged_in_account)
-              routing.redirect "#{redirect_route}"
+              routing.redirect "#{redirect_route}?code=#{code}"
             end
         end
       end
@@ -460,7 +465,38 @@ module SurveyMoonbear
 
             vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
             view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
-                                                           visual_report: visual_report}
+                                                           visual_report: visual_report }
+          end
+
+          # visual_report/[visual_report_id]/online/[spreadsheet_id]/dashboard
+          routing.on 'dashboard' do
+            code = routing.params['code']
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(visual_report_id)
+
+            redis = RedisCache.new(config)
+            if redis.get('system_access_token').equal? nil
+              new_access_token = Google::Auth.new(config).refresh_access_token
+              redis.set('system_access_token', new_access_token, 3000)
+            end
+            access_token = redis.get('system_access_token')
+
+            responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
+                                                                    visual_report_id: visual_report_id,
+                                                                    visual_report: visual_report,
+                                                                    config: config,
+                                                                    code: code,
+                                                                    access_token: access_token,
+                                                                    email: visual_report.owner.email)
+
+            if responses.failure?
+              flash[:error] = "#{responses.failure} Please try again :("
+              routing.redirect '/analytics'
+            end
+
+            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+            view 'learning_analytics', layout: false, locals: { vis_report_object: vis_report_object,
+                                                                visual_report: visual_report }
           end
 
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/identify
@@ -487,7 +523,7 @@ module SurveyMoonbear
             redis = RedisCache.new(config)
             cache_key = "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"
             update_visual_report = Service::UpdateVisualReport.new
-                                                              .call(redis: redis,
+                                                               .call(redis: redis,
                                                                     visual_report_id: visual_report_id,
                                                                     spreadsheet_id: spreadsheet_id,
                                                                     config: config,
@@ -508,7 +544,7 @@ module SurveyMoonbear
             # access_token = Google::Auth.new(config).refresh_access_token
             redis = RedisCache.new(config)
             if redis.get('system_access_token').equal? nil
-              new_access_token = Google::Auth.new(config).refresh_access_token(redis.get('system_refresh_token'))
+              new_access_token = Google::Auth.new(config).refresh_access_token
               redis.set('system_access_token', new_access_token, 3000)
             end
             access_token = redis.get('system_access_token')
@@ -519,7 +555,7 @@ module SurveyMoonbear
                                                                     config: config,
                                                                     code: code,
                                                                     access_token: access_token,
-                                                                    email: @report_account['email'])
+                                                                    email: visual_report.owner.email)
 
             text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
                                                              visual_report_id: visual_report_id,
@@ -527,17 +563,36 @@ module SurveyMoonbear
                                                              config: config,
                                                              code: code,
                                                              access_token: access_token,
-                                                             email: @report_account['email'])
-
+                                                             email: visual_report.owner.email)
             if responses.failure? || text_responses.failure?
               routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"
             end
             vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+
             text_report_object = text_responses.value!.to_json
+            categorize_score_type = JSON.parse(text_report_object).group_by { |i| i['score_type'] }
+            title = {}
+
+            categorize_score_type.each_key do |key|
+              title[key] = case key
+                           when 'st'
+                             'Tutorial + Quiz (Total 2)'
+                           when 'pr'
+                             'Peer Review (Total 2)'
+                           when 'hw'
+                             'Homework (Total 5)'
+                           when 'qz'
+                             'Quiz (Total 2)'
+                           else
+                             'Others'
+                           end
+            end
 
             view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
                                                            visual_report: visual_report,
-                                                           text_report_object: text_report_object }
+                                                           title: title,
+                                                           categorize_score_type: categorize_score_type,
+                                                           text_report_object: text_report_object}
           end
         end
 
@@ -587,6 +642,22 @@ module SurveyMoonbear
           end
         end
       end
+
+
+      # /learning_analytics branch
+      routing.on 'learning_analytics' do
+        @current_account = SecureSession.new(session).get(:current_account)
+
+        # GET /learning_analytics
+        routing.get do
+          routing.redirect '/' unless @current_account
+          visual_reports = Repository::For[Entity::VisualReport]
+                           .find_owner(@current_account['id'])
+
+          view 'learning_analytics', locals: { visual_reports: visual_reports }
+        end
+      end
+
       # /studies branch
       routing.on 'studies' do
         @current_account = SecureSession.new(session).get(:current_account)
