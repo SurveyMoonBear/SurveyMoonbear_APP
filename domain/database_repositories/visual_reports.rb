@@ -22,19 +22,18 @@ module SurveyMoonbear
         end
       end
 
-      def self.find_or_create(entity, is_owner: true)
-        find_origin_id(entity.origin_id) || create_from(entity, is_owner)
+      def self.find_or_create(entity)
+        find_origin_id(entity.origin_id) || create_from(entity)
       end
 
-      def self.create_from(entity, is_owner)
+      def self.create_from(entity)
         new_owner = Accounts.find_or_create(entity.owner)
         db_owner = Database::AccountOrm.first(id: new_owner.id)
 
         db_report = Database::VisualReportOrm.create(
           owner: db_owner,
           origin_id: entity.origin_id,
-          title: entity.title,
-          is_owner: is_owner
+          title: entity.title
         )
 
         rebuild_entity(db_report)
@@ -60,8 +59,7 @@ module SurveyMoonbear
           owner: Accounts.rebuild_entity(db_record.owner),
           origin_id: db_record.origin_id,
           title: db_record.title,
-          created_at: db_record.created_at,
-          is_owner: db_record.is_owner
+          created_at: db_record.created_at
         )
       end
     end

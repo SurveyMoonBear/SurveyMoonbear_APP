@@ -8,8 +8,6 @@ Sequel.migration do
       String      :origin_id, unique: true
       String      :title
       Time        :created_at
-
-      TrueClass :is_owner, null: false, default: true
     end
   end
 end
