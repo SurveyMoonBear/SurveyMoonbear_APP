@@ -465,7 +465,38 @@ module SurveyMoonbear
 
             vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
             view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
-                                                           visual_report: visual_report}
+                                                           visual_report: visual_report }
+          end
+
+          # visual_report/[visual_report_id]/online/[spreadsheet_id]/dashboard
+          routing.on 'dashboard' do
+            code = routing.params['code']
+            visual_report = Repository::For[Entity::VisualReport]
+                            .find_id(visual_report_id)
+
+            redis = RedisCache.new(config)
+            if redis.get('system_access_token').equal? nil
+              new_access_token = Google::Auth.new(config).refresh_access_token
+              redis.set('system_access_token', new_access_token, 3000)
+            end
+            access_token = redis.get('system_access_token')
+
+            responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
+                                                                    visual_report_id: visual_report_id,
+                                                                    visual_report: visual_report,
+                                                                    config: config,
+                                                                    code: code,
+                                                                    access_token: access_token,
+                                                                    email: visual_report.owner.email)
+
+            if responses.failure?
+              flash[:error] = "#{responses.failure} Please try again :("
+              routing.redirect '/analytics'
+            end
+
+            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+            view 'learning_analytics', layout: false, locals: { vis_report_object: vis_report_object,
+                                                                visual_report: visual_report }
           end
 
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/identify
@@ -492,7 +523,7 @@ module SurveyMoonbear
             redis = RedisCache.new(config)
             cache_key = "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"
             update_visual_report = Service::UpdateVisualReport.new
-                                                              .call(redis: redis,
+                                                               .call(redis: redis,
                                                                     visual_report_id: visual_report_id,
                                                                     spreadsheet_id: spreadsheet_id,
                                                                     config: config,
@@ -540,7 +571,6 @@ module SurveyMoonbear
 
             text_report_object = text_responses.value!.to_json
             categorize_score_type = JSON.parse(text_report_object).group_by { |i| i['score_type'] }
-
             title = {}
 
             categorize_score_type.each_key do |key|
