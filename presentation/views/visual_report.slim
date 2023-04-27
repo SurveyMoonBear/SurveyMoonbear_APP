@@ -63,6 +63,10 @@ html
                   div class='flex'
                     div class="tab-content"
                       div role="tabpanel" class="tab-pane active" id="visual"
+                        h4 class="text-primary mb-3 font-weight-bold" Your TA
+                        div class='bg-white col-md-3 col-sm-6 col-12 shadow p-4 m-4 ml-0 border' style="border-radius:6px;"
+                          p Please contact your TA if you have any concern on grading.
+                          p class="text-primary font-weight-bold d-flex justify-content-end" #{text_report_ta}
                       - if categorize_score_type
                         - categorize_score_type.each do |key, value|
                           h4 class="text-primary mb-3 font-weight-bold" #{title[key]}
