@@ -51,11 +51,14 @@ module SurveyMoonbear
             case_id_col = source[3] #C3:C140 case_id
             email_range = transform_anotation(email_col)
             case_range = transform_anotation(case_id_col)
+            ta_range = transform_anotation("A3:A144")
             all_email = get_range_val(input[:other_sheets][source[2]], email_range)
             all_case = get_range_val(input[:other_sheets][source[2]], case_range)
+            all_ta = get_range_val(input[:other_sheets][source[2]], ta_range)
             all_email.each_with_index do |email, idx|
               if input[:case_email] == email
                 input[:case_id] = all_case[idx]
+                input[:ta] = all_ta[idx]
                 break
               end
             end
@@ -78,7 +81,9 @@ module SurveyMoonbear
             end
           end
         end
-        Success(scores)
+        result = { ta: input[:ta], scores: scores }
+
+        Success(result)
       rescue StandardError
         Failure('Failed to get all text scores.')
       end

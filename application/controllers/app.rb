@@ -555,7 +555,7 @@ module SurveyMoonbear
                                                                     config: config,
                                                                     code: code,
                                                                     access_token: access_token,
-                                                                    email: visual_report.owner.email)
+                                                                    email: @report_account["email"])
 
             text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
                                                              visual_report_id: visual_report_id,
@@ -563,14 +563,19 @@ module SurveyMoonbear
                                                              config: config,
                                                              code: code,
                                                              access_token: access_token,
-                                                             email: visual_report.owner.email)
+                                                             email: @report_account["email"])
+
             if responses.failure? || text_responses.failure?
               routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"
             end
             vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
 
-            text_report_object = text_responses.value!.to_json
-            categorize_score_type = JSON.parse(text_report_object).group_by { |i| i['score_type'] }
+            text_responses_result = text_responses.value!.to_json
+            text_responses_parse = JSON.parse(text_responses_result)
+            text_report_object = text_responses_parse['scores']
+            text_report_ta = text_responses_parse['ta']
+
+            categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
             title = {}
 
             categorize_score_type.each_key do |key|
@@ -592,7 +597,8 @@ module SurveyMoonbear
                                                            visual_report: visual_report,
                                                            title: title,
                                                            categorize_score_type: categorize_score_type,
-                                                           text_report_object: text_report_object}
+                                                           text_report_object: text_report_object,
+                                                           text_report_ta: text_report_ta }
           end
         end
 
