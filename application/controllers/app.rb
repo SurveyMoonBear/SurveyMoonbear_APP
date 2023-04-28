@@ -480,27 +480,39 @@ module SurveyMoonbear
               redis.set('system_access_token', new_access_token, 3000)
             end
             access_token = redis.get('system_access_token')
-
             responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                     visual_report_id: visual_report_id,
                                                                     visual_report: visual_report,
                                                                     config: config,
                                                                     code: code,
                                                                     access_token: access_token,
-                                                                    email: visual_report.owner.email)
-
+                                                                    email: @report_account['email'])
+            text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
+                                                             visual_report_id: visual_report_id,
+                                                             visual_report: visual_report,
+                                                             config: config,
+                                                             code: code,
+                                                             access_token: access_token,
+                                                             email: @report_account['email'])
             if responses.failure?
               flash[:error] = "#{responses.failure} Please try again :("
               routing.redirect '/analytics'
             end
 
+            text_responses_result = text_responses.value!.to_json
+            text_responses_parse = JSON.parse(text_responses_result)
+            text_report_help = text_responses_parse['help']
+            text_report_discuss = text_responses_parse['discuss']
+
             vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
             view 'learning_analytics', layout: false, locals: { vis_report_object: vis_report_object,
-                                                                visual_report: visual_report }
+                                                                visual_report: visual_report,
+                                                                text_report_help: text_report_help,
+                                                                text_report_discuss: text_report_discuss }
           end
 
-          # visual_report/[visual_report_id]/online/[spreadsheet_id]/identify
-          routing.on 'identify' do
+          # visual_report/[visual_report_id]/online/[spreadsheet_id]/identify/[report_type]
+          routing.on 'identify', String do |report_type|
             # write in service object?
             url = 'https://accounts.google.com/o/oauth2/v2/auth'
             scopes = ['https://www.googleapis.com/auth/userinfo.profile',
@@ -509,7 +521,7 @@ module SurveyMoonbear
                       "redirect_uri=#{config.APP_URL}/report/google_callback",
                       'response_type=code',
                       "scope=#{scopes.join(' ')}",
-                      "state=/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"]
+                      "state=/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/#{report_type}"]
             @google_sso_url = "#{url}?#{params.join('&')}"
 
             visual_report = Repository::For[Entity::VisualReport]
@@ -518,12 +530,81 @@ module SurveyMoonbear
           end
 
           # customized visual report
-          # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
+          routing.on 'score' do
+            # customized visual report
+            # GET visual_report/[visual_report_id]/online/[spreadsheet_id]/score
+            routing.get do
+              code = routing.params['code']
+
+              visual_report = Repository::For[Entity::VisualReport]
+                              .find_id(visual_report_id)
+              # access_token = Google::Auth.new(config).refresh_access_token
+              redis = RedisCache.new(config)
+              if redis.get('system_access_token').equal? nil
+                new_access_token = Google::Auth.new(config).refresh_access_token
+                redis.set('system_access_token', new_access_token, 3000)
+              end
+              access_token = redis.get('system_access_token')
+
+              responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
+                                                                      visual_report_id: visual_report_id,
+                                                                      visual_report: visual_report,
+                                                                      config: config,
+                                                                      code: code,
+                                                                      access_token: access_token,
+                                                                      email: @report_account["email"])
+
+              text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
+                                                              visual_report_id: visual_report_id,
+                                                              visual_report: visual_report,
+                                                              config: config,
+                                                              code: code,
+                                                              access_token: access_token,
+                                                              email: @report_account["email"])
+
+              if responses.failure? || text_responses.failure?
+                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"
+              end
+              vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+
+              text_responses_result = text_responses.value!.to_json
+              text_responses_parse = JSON.parse(text_responses_result)
+              text_report_object = text_responses_parse['scores']
+              text_report_ta = text_responses_parse['ta']
+
+              categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
+              title = {}
+
+              categorize_score_type.each_key do |key|
+                title[key] = case key
+                            when 'st'
+                              'Tutorial + Quiz (Total 2)'
+                            when 'pr'
+                              'Peer Review (Total 2)'
+                            when 'hw'
+                              'Homework (Total 5)'
+                            when 'qz'
+                              'Quiz (Total 2)'
+                            else
+                              'Others'
+                            end
+              end
+
+              view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
+                                                            visual_report: visual_report,
+                                                            title: title,
+                                                            categorize_score_type: categorize_score_type,
+                                                            text_report_object: text_report_object,
+                                                            text_report_ta: text_report_ta }
+            end
+          end
+
+           # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
           routing.post do
             redis = RedisCache.new(config)
             cache_key = "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"
             update_visual_report = Service::UpdateVisualReport.new
-                                                               .call(redis: redis,
+                                                              .call(redis: redis,
                                                                     visual_report_id: visual_report_id,
                                                                     spreadsheet_id: spreadsheet_id,
                                                                     config: config,
@@ -532,73 +613,6 @@ module SurveyMoonbear
 
             flash[:error] = 'Failed to update visual report, please try again :(' if update_visual_report.failure?
             routing.redirect '/analytics'
-          end
-
-          # customized visual report
-          # GET visual_report/[visual_report_id]/online/[spreadsheet_id]
-          routing.get do
-            code = routing.params['code']
-
-            visual_report = Repository::For[Entity::VisualReport]
-                            .find_id(visual_report_id)
-            # access_token = Google::Auth.new(config).refresh_access_token
-            redis = RedisCache.new(config)
-            if redis.get('system_access_token').equal? nil
-              new_access_token = Google::Auth.new(config).refresh_access_token
-              redis.set('system_access_token', new_access_token, 3000)
-            end
-            access_token = redis.get('system_access_token')
-
-            responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
-                                                                    visual_report_id: visual_report_id,
-                                                                    visual_report: visual_report,
-                                                                    config: config,
-                                                                    code: code,
-                                                                    access_token: access_token,
-                                                                    email: @report_account["email"])
-
-            text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
-                                                             visual_report_id: visual_report_id,
-                                                             visual_report: visual_report,
-                                                             config: config,
-                                                             code: code,
-                                                             access_token: access_token,
-                                                             email: @report_account["email"])
-
-            if responses.failure? || text_responses.failure?
-              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"
-            end
-            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
-
-            text_responses_result = text_responses.value!.to_json
-            text_responses_parse = JSON.parse(text_responses_result)
-            text_report_object = text_responses_parse['scores']
-            text_report_ta = text_responses_parse['ta']
-
-            categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
-            title = {}
-
-            categorize_score_type.each_key do |key|
-              title[key] = case key
-                           when 'st'
-                             'Tutorial + Quiz (Total 2)'
-                           when 'pr'
-                             'Peer Review (Total 2)'
-                           when 'hw'
-                             'Homework (Total 5)'
-                           when 'qz'
-                             'Quiz (Total 2)'
-                           else
-                             'Others'
-                           end
-            end
-
-            view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
-                                                           visual_report: visual_report,
-                                                           title: title,
-                                                           categorize_score_type: categorize_score_type,
-                                                           text_report_object: text_report_object,
-                                                           text_report_ta: text_report_ta }
           end
         end
 
@@ -648,7 +662,6 @@ module SurveyMoonbear
           end
         end
       end
-
 
       # /learning_analytics branch
       routing.on 'learning_analytics' do
