@@ -73,7 +73,7 @@ module SurveyMoonbear
             gid = url.match('#gid=([0-9]+)')[1]
             other_sheet_id = url.match('.*/(.*)/')[1]
             other_sheets_api = Google::Api::Sheets.new(input[:user_access_token])
-            other_sheet_key = 'other_sheet' + other_sheet_id
+            other_sheet_key = 'other_sheet' + other_sheet_id + 'gid' + gid
             input[:other_sheets] =
               if input[:redis].get(other_sheet_key)
                 input[:redis].get(other_sheet_key)
@@ -132,8 +132,8 @@ module SurveyMoonbear
             input[:redis].update(input[:user_key], redis_val)
             redis_val['all_graphs']
           end
-        Success(input[:all_graphs])
-      rescue StandardError
+          Success(input[:all_graphs])
+        rescue StandardError => e
         Failure('Failed to map responses and visual report items.')
       end
 
