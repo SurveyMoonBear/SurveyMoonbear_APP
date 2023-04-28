@@ -66,9 +66,9 @@ html
                         h4 class="text-primary mb-3 font-weight-bold" Your TA
                         div class='bg-white col-md-3 col-sm-6 col-12 shadow p-4 m-sm-4 my-3 mx-0 ml-0 border' style="border-radius:6px;"
                           p Please contact your TA if you have any concern on grading.
-                          p class="text-primary font-weight-bold d-flex justify-content-end" #{text_report_ta}
-                      - if categorize_score_type
-                        - categorize_score_type.each do |key, value|
+                          p class="text-primary font-weight-bold d-flex justify-content-end" #{ta["score"]}
+                      - if scores
+                        - scores.each do |key, value|
                           h4 class="text-primary my-3 font-weight-bold" #{title[key]}
                           div class="d-flex flex-sm-row flex-column m-2 mb-4" style="width:100%; overflow:auto"
                             - for j in value

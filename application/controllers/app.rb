@@ -494,9 +494,8 @@ module SurveyMoonbear
                                                              code: code,
                                                              access_token: access_token,
                                                              email: @report_account['email'])
-            if responses.failure?
-              flash[:error] = "#{responses.failure} Please try again :("
-              routing.redirect '/analytics'
+            if responses.failure? || text_responses.failure?
+              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
             end
 
             text_responses_result = text_responses.value!.to_json
@@ -555,47 +554,49 @@ module SurveyMoonbear
                                                                       email: @report_account["email"])
 
               text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
-                                                              visual_report_id: visual_report_id,
-                                                              visual_report: visual_report,
-                                                              config: config,
-                                                              code: code,
-                                                              access_token: access_token,
-                                                              email: @report_account["email"])
-
+                                                               visual_report_id: visual_report_id,
+                                                               visual_report: visual_report,
+                                                               config: config,
+                                                               code: code,
+                                                               access_token: access_token,
+                                                               email: @report_account["email"])
               if responses.failure? || text_responses.failure?
-                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify"
+                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
               end
               vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
 
               text_responses_result = text_responses.value!.to_json
               text_responses_parse = JSON.parse(text_responses_result)
               text_report_object = text_responses_parse['scores']
-              text_report_ta = text_responses_parse['ta']
+              # text_report_ta = text_responses_parse['ta']
 
+              score_type = ['st', 'pr', 'hw', 'qz']
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
+              scores = categorize_score_type.reject{|key, value| !score_type.include? key }
+              ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
               title = {}
 
-              categorize_score_type.each_key do |key|
+              scores.each_key do |key|
                 title[key] = case key
-                            when 'st'
+                             when 'st'
                               'Tutorial + Quiz (Total 2)'
-                            when 'pr'
+                             when 'pr'
                               'Peer Review (Total 2)'
-                            when 'hw'
+                             when 'hw'
                               'Homework (Total 5)'
-                            when 'qz'
+                             when 'qz'
                               'Quiz (Total 2)'
-                            else
+                             else
                               'Others'
-                            end
+                             end
               end
 
               view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
-                                                            visual_report: visual_report,
-                                                            title: title,
-                                                            categorize_score_type: categorize_score_type,
-                                                            text_report_object: text_report_object,
-                                                            text_report_ta: text_report_ta }
+                                                             visual_report: visual_report,
+                                                             text_report_object: text_report_object,
+                                                             title: title,
+                                                             scores: scores,
+                                                             ta: ta }
             end
           end
 
@@ -603,13 +604,21 @@ module SurveyMoonbear
           routing.post do
             redis = RedisCache.new(config)
             cache_key = "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"
+
+            # redis = RedisCache.new(config)
+            if redis.get('system_access_token').equal? nil
+              new_access_token = Google::Auth.new(config).refresh_access_token
+              redis.set('system_access_token', new_access_token, 3000)
+            end
+            access_token = redis.get('system_access_token')
+
             update_visual_report = Service::UpdateVisualReport.new
                                                               .call(redis: redis,
                                                                     visual_report_id: visual_report_id,
                                                                     spreadsheet_id: spreadsheet_id,
                                                                     config: config,
                                                                     cache_key: cache_key,
-                                                                    access_token: @current_account['access_token'])
+                                                                    access_token: access_token)
 
             flash[:error] = 'Failed to update visual report, please try again :(' if update_visual_report.failure?
             routing.redirect '/analytics'
@@ -654,7 +663,7 @@ module SurveyMoonbear
                                                         access_token: @current_account['access_token'],
                                                         email: @current_account['email'])
             if responses.failure?
-              routing.redirect "#{config.APP_URL}/text_report/#{text_report_id}/online/#{spreadsheet_id}/identify"
+              routing.redirect "#{config.APP_URL}/text_report/#{text_report_id}/online/#{spreadsheet_id}/identify/"
             end
 
             text_report_object = responses.value!

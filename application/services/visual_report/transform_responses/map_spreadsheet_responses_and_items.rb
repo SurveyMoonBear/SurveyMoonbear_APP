@@ -30,7 +30,7 @@ module SurveyMoonbear
         input[:res_val] = get_range_val(input[:all_data], question_range)
 
         Success(input)
-      rescue StandardError
+      rescue StandardError => e
         Failure('Failed to read source spreadsheet first sheet data.')
       end
 
