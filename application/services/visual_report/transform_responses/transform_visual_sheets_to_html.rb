@@ -74,24 +74,25 @@ module SurveyMoonbear
             other_sheet_id = url.match('.*/(.*)/')[1]
             other_sheets_api = Google::Api::Sheets.new(input[:user_access_token])
             other_sheet_key = 'other_sheet' + other_sheet_id + 'gid' + gid
-            input[:other_sheets] =
-              if input[:redis].get(other_sheet_key)
-                input[:redis].get(other_sheet_key)
-              else
-                all_sheets = other_sheets_api.survey_data(other_sheet_id)['sheets']
-                other_sheet_title = ''
-                all_sheets.each do |sheet|
-                  if sheet['properties']['sheetId'].to_s == gid
-                    other_sheet_title = sheet['properties']['title']
-                    break
-                  end
+            if input[:redis].get(other_sheet_key)
+              other_sheet[source.source_id] = input[:redis].get(other_sheet_key)
+            else
+              all_sheets = other_sheets_api.survey_data(other_sheet_id)['sheets']
+              other_sheet_title = ''
+              all_sheets.each do |sheet|
+                if sheet['properties']['sheetId'].to_s == gid
+                  other_sheet_title = sheet['properties']['title']
+                  break
                 end
-                other_sheet[source.source_id] = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
-                input[:redis].set(other_sheet_key, other_sheet)
-                other_sheet
               end
+              sheet = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
+
+              other_sheet[source.source_id] = sheet
+              input[:redis].set(other_sheet_key, sheet)
+            end
           end
         end
+        input[:other_sheets] = other_sheet
         if sources.success?
           input[:sources] = sources.value!
           Success(input)
@@ -134,6 +135,7 @@ module SurveyMoonbear
           end
           Success(input[:all_graphs])
         rescue StandardError => e
+          binding.irb
         Failure('Failed to map responses and visual report items.')
       end
 

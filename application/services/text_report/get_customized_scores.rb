@@ -49,14 +49,16 @@ module SurveyMoonbear
 
       # input{ sources:, ...}
       def get_other_sheets_from_redis(input)
+        other_sheet = {}
         input[:sources].each do |source|
           if source[0] == 'spreadsheet'
             url = source[1] # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
             gid = url.match('#gid=([0-9]+)')[1]
             other_sheet_id = url.match('.*/(.*)/')[1]
             other_sheet_key = 'other_sheet' + other_sheet_id + 'gid' + gid
-            input[:other_sheets] = input[:redis].get(other_sheet_key)
+            other_sheet[source[2]] = input[:redis].get(other_sheet_key)
           end
+          input[:other_sheets] = other_sheet
         end
         Success(input)
       rescue StandardError
@@ -89,15 +91,17 @@ module SurveyMoonbear
       # input{ case_id:, all_graphs:, ...}
       def get_all_scores(input)
         scores = []
+        binding.irb
         input[:all_graphs].each do |page, graphs|
           graphs.each_with_index do |graph, idx|
             begin
             # scores.append({ 'Title' => graph[1], 'Score' => graph[8][input[:case_id]] })
               scores.append({ title: graph[1], score: graph[9][input[:case_id]], score_type: graph[8] })
-            rescue StandardError => e 
+            rescue StandardError => e
             end
           end
         end
+        binding.irb
         result = { scores: scores }
         Success(result)
       rescue StandardError

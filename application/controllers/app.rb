@@ -494,20 +494,33 @@ module SurveyMoonbear
                                                              code: code,
                                                              access_token: access_token,
                                                              email: @report_account['email'])
+
             if responses.failure? || text_responses.failure?
-              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
+              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
             end
+            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
 
             text_responses_result = text_responses.value!.to_json
             text_responses_parse = JSON.parse(text_responses_result)
-            text_report_help = text_responses_parse['help']
-            text_report_discuss = text_responses_parse['discuss']
+            text_report_object = text_responses_parse['scores']
+            # text_report_ta = text_responses_parse['ta']
 
-            vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
-            view 'learning_analytics', layout: false, locals: { vis_report_object: vis_report_object,
-                                                                visual_report: visual_report,
-                                                                text_report_help: text_report_help,
-                                                                text_report_discuss: text_report_discuss }
+            score_type = ['st', 'pr', 'hw', 'qz']
+            categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
+            # scores = categorize_score_type.reject{|key, value| !score_type.include? key }
+            # ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
+            dashboard_url = 'visual_report/#{visual_report_id}/online/#{spreadsheet_id}/dashboard'
+            binding.irb
+
+            view 'learning_analytics', layout: false, locals: { visual_report_id: visual_report_id,
+                                                                spreadsheet_id: spreadsheet_id,
+                                                                vis_report_object: vis_report_object,
+                                                                dashboard_url: dashboard_url }
+
+            # view 'participation_checklist', layout: false, locals: { visual_report_id: visual_report_id,
+                                                                # spreadsheet_id: spreadsheet_id,
+                                                                # vis_report_object: vis_report_object,
+                                                                # dashboard_url: dashboard_url }
           end
 
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/identify/[report_type]
@@ -560,6 +573,7 @@ module SurveyMoonbear
                                                                code: code,
                                                                access_token: access_token,
                                                                email: @report_account["email"])
+              binding.irb
               if responses.failure? || text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
               end
@@ -572,6 +586,7 @@ module SurveyMoonbear
 
               score_type = ['st', 'pr', 'hw', 'qz']
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
+              binding.irb
               scores = categorize_score_type.reject{|key, value| !score_type.include? key }
               ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
               title = {}
