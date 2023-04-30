@@ -73,7 +73,7 @@ module SurveyMoonbear
             gid = url.match('#gid=([0-9]+)')[1]
             other_sheet_id = url.match('.*/(.*)/')[1]
             other_sheets_api = Google::Api::Sheets.new(input[:user_access_token])
-            other_sheet_key = 'other_sheet' + other_sheet_id + 'gid' + gid
+            other_sheet_key = source.source_id + '/other_sheet' + other_sheet_id + 'gid' + gid
             if input[:redis].get(other_sheet_key)
               other_sheet[source.source_id] = input[:redis].get(other_sheet_key)
             else
@@ -88,7 +88,11 @@ module SurveyMoonbear
               sheet = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
 
               other_sheet[source.source_id] = sheet
+              binding.irb
               input[:redis].set(other_sheet_key, sheet)
+
+              visual_report_id = input[:visual_report].id
+              input[:redis].add_to_set(visual_report_id, other_sheet_key)
             end
           end
         end

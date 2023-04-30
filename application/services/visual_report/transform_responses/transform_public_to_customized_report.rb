@@ -37,7 +37,7 @@ module SurveyMoonbear
             url = source[1] # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
             gid = url.match('#gid=([0-9]+)')[1]
             other_sheet_id = url.match('.*/(.*)/')[1]
-            other_sheet_key = 'other_sheet' + other_sheet_id + 'gid' + gid
+            other_sheet_key = source[2] + '/other_sheet' + other_sheet_id + 'gid' + gid
             other_sheet[source[2]] = input[:redis].get(other_sheet_key)
           end
           input[:other_sheets] = other_sheet

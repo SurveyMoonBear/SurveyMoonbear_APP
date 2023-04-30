@@ -163,7 +163,7 @@ javascript:
   function updateVisualReport(visual_report_id, spreadsheet_id) {
     $('#modal_waiting').modal();
     $.ajax({
-      url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/score/",
+      url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id,
       dataType: 'text',
       type: 'POST',
       success: function(result) {
