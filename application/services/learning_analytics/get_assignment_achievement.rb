@@ -78,7 +78,7 @@ module SurveyMoonbear
           else
             achievement_result['help'].append('0')
           end
-
+          binding.irb
         end
         Success(achievement_result)
       rescue StandardError => e

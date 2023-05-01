@@ -1,0 +1,8 @@
+- if @dashboard_result
+  div class="d-flex col-12 bg-primary text-white font-weight-bold justify-content-between" 
+    p Name
+    p Times
+  - @dashboard_result.each do |obj|
+    li class="d-flex col-12 justify-content-between border border-secondary font-weight-bold text-primary"
+      p #{obj[:name]}
+      p #{obj[:help_count]}
