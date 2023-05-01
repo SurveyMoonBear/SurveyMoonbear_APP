@@ -471,7 +471,6 @@ module SurveyMoonbear
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/dashboard
           routing.on 'dashboard' do
             routing.get String do |dashboard_type|
-              binding.irb
               redis = RedisCache.new(config)
               result = Service::GetDashboardData.new.call(redis:redis,
                                                           visual_report_id: visual_report_id,
@@ -479,7 +478,8 @@ module SurveyMoonbear
                                                           email: @report_account['email'])
 
               @dashboard_result = result.value!
-              view 'content', layout: false, locals: { visual_report_id: visual_report_id,
+
+              view dashboard_type, layout: false, locals: { visual_report_id: visual_report_id,
                                                                   spreadsheet_id: spreadsheet_id,
                                                                   dashboard_result: @dashboard_result}
             end
@@ -510,7 +510,6 @@ module SurveyMoonbear
                                                               access_token: access_token,
                                                               email: @report_account['email'])
 
-              binding.irb
 
               if responses.failure? || text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"

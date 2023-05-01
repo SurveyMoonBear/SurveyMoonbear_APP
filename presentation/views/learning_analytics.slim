@@ -54,17 +54,17 @@ html
                     p class="text-primary hover:text-white mb-4"  My weekly assignment score.
                     .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
                       <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  a class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" data-target="#dashboard_modal"
+                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" data-target="#dashboard_modal"
                     h5 class="text-primary font-weight-bold" Current score
                     p class="text-primary hover:text-white mb-4"  My current score.
                     .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
                       <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal"  onclick="openParticipationChecklist('#{visual_report_id}', '#{spreadsheet_id}')"
+                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'participation_checklist')"
                     h5 class="text-primary font-weight-bold" My Participation Checklist
                     p class="text-primary hover:text-white mb-4"  See if you participate on Teams every week.
                     .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
                       <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" data-target="#assignment_achievements"
+                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignment_achievement')"
                     h5 class="text-primary font-weight-bold" Assignment Achievement
                     p class="text-primary hover:text-white mb-4"  See how far away for me to get all badges.
                     .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
@@ -92,16 +92,13 @@ html
                     .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
                       <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
 
-include :teams_help_count
 include :dashboard_modal
-include :assignment_achievements
-include :modal_current_score
 
 javascript:
 
-  function openParticipationChecklist(visual_report_id, spreadsheet_id) {
+  function openModal(visual_report_id, spreadsheet_id, dashboard_type) {
     $.ajax({
-      url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/participation_checklist",
+      url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/" + dashboard_type,
       type: 'GET',
       success: function(result) {
         console.log(result)
@@ -110,32 +107,3 @@ javascript:
       }
     });
   }
-
-  function openParticipationCshecklist(visual_report_id, spreadsheet_id) {
-    var url = "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/participation_checklist"
-    $('#participation_checklist .modal-content').load(url, function(response, status, xhr) {
-      if (status == 'error') {
-        console.log(xhr.responseText);
-      } else {
-        console.log(response);
-        $('#participation_checklist').modal('show');
-      }
-    });
-  }
-
-  $('#btn_teams_help_count').on('click', function (e) {
-    $('#teams_help_count').modal('hide');
-    $('#modal_waiting').modal();
-  });
- $('#btn_participation_checklist').on('click', function (e) {
-    $('#participation_checklist').modal('hide');
-    $('#modal_waiting').modal();
-  });
- $('#btn_assignment_achievements').on('click', function (e) {
-    $('#assignment_achievements').modal('hide');
-    $('#modal_waiting').modal();
-  });
- $('#btn_modal_current_score').on('click', function (e) {
-    $('#modal_current_score').modal('hide');
-    $('#modal_waiting').modal();
-  });
