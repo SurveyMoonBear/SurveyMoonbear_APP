@@ -16,13 +16,13 @@ html
       integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" 
       crossorigin="anonymous"
     }
-
+   
     == assets(:css)
   body style="background-color: #FBFDFF;"
     / JQuery and Bootstrap JS
     script {
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
+      src="https://code.jquery.com/jquery-3.6.4.min.js" 
+      integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" 
       crossorigin="anonymous"
     }
     script {
@@ -54,16 +54,12 @@ html
                     p class="text-primary hover:text-white mb-4"  My weekly assignment score.
                     .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
                       <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  a class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" data-target="#modal_current_score"
+                  a class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" data-target="#dashboard_modal"
                     h5 class="text-primary font-weight-bold" Current score
                     p class="text-primary hover:text-white mb-4"  My current score.
                     .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
                       <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  / button {
-                  /   class="btn btn-outline-success mr-1 mt-1"
-                  /   onclick="openParticipationChecklist('#{visual_report_id}', '#{spreadsheet_id}')"
-                  / } 
-                  a class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" data-target="#participation_checklist"
+                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal"  onclick="openParticipationChecklist('#{visual_report_id}', '#{spreadsheet_id}')"
                     h5 class="text-primary font-weight-bold" My Participation Checklist
                     p class="text-primary hover:text-white mb-4"  See if you participate on Teams every week.
                     .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
@@ -97,22 +93,35 @@ html
                       <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
 
 include :teams_help_count
-include :participation_checklist
+include :dashboard_modal
 include :assignment_achievements
 include :modal_current_score
 
 javascript:
 
-  // function openParticipationChecklist(visual_report_id, spreadsheet_id) {
-  //   $('#modal_waiting').modal();
-  //   $.ajax({
-  //     url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/participation_checklist",
-  //     type: 'GET',
-  //     success: function(result) {
-  //       location.reload();
-  //     }
-  //   });
-  // }
+  function openParticipationChecklist(visual_report_id, spreadsheet_id) {
+    $.ajax({
+      url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/participation_checklist",
+      type: 'GET',
+      success: function(result) {
+        console.log(result)
+        $('#content_data').html(result);
+        $('#dashboard_modal').modal('show');
+      }
+    });
+  }
+
+  function openParticipationCshecklist(visual_report_id, spreadsheet_id) {
+    var url = "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/participation_checklist"
+    $('#participation_checklist .modal-content').load(url, function(response, status, xhr) {
+      if (status == 'error') {
+        console.log(xhr.responseText);
+      } else {
+        console.log(response);
+        $('#participation_checklist').modal('show');
+      }
+    });
+  }
 
   $('#btn_teams_help_count').on('click', function (e) {
     $('#teams_help_count').modal('hide');

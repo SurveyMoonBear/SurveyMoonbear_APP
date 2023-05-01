@@ -23,7 +23,14 @@ module SurveyMoonbear
           source = key.split('/')[0]
           values[source] = input[:redis].get(key)
         end
-        Success(values)
+        result = if input[:dashboard_type] == 'participation_checklist'
+                   Service::GetWeeklyParticipation.new.call(source: values['source2'], email: input[:email])
+                 elsif
+                   input[:dashboard_type] == 'assignment_achievement'
+                   Service::GetAssignmentAchievementData.new.call(source: values['source1'], email: input[:email]) 
+                 end
+        binding.irb
+        Success(result.value!)
       rescue StandardError => e
         Failure('Failed to get sources from redis.')
       end

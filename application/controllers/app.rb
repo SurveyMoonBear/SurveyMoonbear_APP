@@ -473,9 +473,15 @@ module SurveyMoonbear
             routing.get String do |dashboard_type|
               binding.irb
               redis = RedisCache.new(config)
-              Service::GetDashboardData.new.call(redis:redis,
-                                                 visual_report_id: visual_report_id,
-                                                 dashboard_type: dashboard_type)
+              result = Service::GetDashboardData.new.call(redis:redis,
+                                                          visual_report_id: visual_report_id,
+                                                          dashboard_type: dashboard_type,
+                                                          email: @report_account['email'])
+
+              @dashboard_result = result.value!
+              view 'content', layout: false, locals: { visual_report_id: visual_report_id,
+                                                                  spreadsheet_id: spreadsheet_id,
+                                                                  dashboard_result: @dashboard_result}
             end
 
             routing.get do
@@ -520,13 +526,10 @@ module SurveyMoonbear
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
               # scores = categorize_score_type.reject{|key, value| !score_type.include? key }
               # ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
-              dashboard_url = 'visual_report#{visual_report_id}/online/#{spreadsheet_id}/dashboard'
-              binding.irb
 
               view 'learning_analytics', layout: false, locals: { visual_report_id: visual_report_id,
                                                                   spreadsheet_id: spreadsheet_id,
-                                                                  vis_report_object: vis_report_object,
-                                                                  dashboard_url: dashboard_url }
+                                                                  vis_report_object: vis_report_object }
             end
           end
 
