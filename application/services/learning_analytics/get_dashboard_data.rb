@@ -29,6 +29,8 @@ module SurveyMoonbear
                    Service::GetAssignmentAchievementData.new.call(source1: values['source1'], source3: values['source3'], email: input[:email]) 
                  elsif input[:dashboard_type] == 'help_leaderboard'
                    Service::GetHelpLeaderboard.new.call(source1: values['source1'])
+                 elsif input[:dashboard_type] == 'discuss_leaderboard'
+                   Service::GetDiscussLeaderboard.new.call(source1: values['source1'])
                  end
         binding.irb
         Success(result.value!)
