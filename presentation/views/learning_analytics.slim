@@ -86,7 +86,7 @@ html
                     p class="text-primary hover:text-white mb-4"  My score compares with other students.
                     .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
                       <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;"
+                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_ranking')"
                     h5 class="text-primary font-weight-bold" Current Ranking
                     p class="text-primary hover:text-white mb-4"  My current standing in the class.
                     .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
@@ -95,7 +95,6 @@ html
 include :dashboard_modal
 
 javascript:
-
   function openModal(visual_report_id, spreadsheet_id, dashboard_type) {
     $.ajax({
       url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/" + dashboard_type,

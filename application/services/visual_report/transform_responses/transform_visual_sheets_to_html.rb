@@ -88,7 +88,6 @@ module SurveyMoonbear
               sheet = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
 
               other_sheet[source.source_id] = sheet
-              binding.irb
               input[:redis].set(other_sheet_key, sheet)
 
               visual_report_id = input[:visual_report].id

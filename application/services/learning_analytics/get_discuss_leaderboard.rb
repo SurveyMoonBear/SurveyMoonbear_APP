@@ -22,7 +22,7 @@ module SurveyMoonbear
           discuss_order.append({ "name": source[3], "discuss_count": source[54] })
         end
         sorted_discuss_order = discuss_order.sort_by { |sequence| sequence[:discuss_count].to_i }.reverse
-        top_active = sorted_discuss_order.take(25)
+        top_active = sorted_discuss_order.take(10)
         binding.irb
         Success(top_active)
       rescue StandardError => e
