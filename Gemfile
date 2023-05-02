@@ -55,6 +55,8 @@ gem 'dry-types'
 # Notification
 gem 'aws-sdk-sns'
 
+gem 'gruff'
+
 group :test do
   gem 'database_cleaner'
   gem 'minitest'
