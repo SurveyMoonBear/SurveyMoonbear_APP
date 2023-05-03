@@ -49,59 +49,67 @@ html
                 div id="div-alert"
                 h4 class="text-primary font-weight-bold my-4" My Learning Report
                 div class="d-flex flex-sm-row flex-column flex-sm-wrap"
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignments_report')"
+                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignments_report', 'Assignments Report')"
                     h5 class="text-primary hover:text-white font-weight-bold" My Assignments Report
                     p class="text-primary hover:text-white mb-4"  My weekly assignment score.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_score')"
+                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
+                      <i class="fas fa-arrow-right p-2 text-primary"></i>
+                  
+                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_score', 'Current Score')"
                     h5 class="text-primary font-weight-bold" Current score
                     p class="text-primary hover:text-white mb-4"  My current score.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'participation_checklist')"
+                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
+                      <i class="fas fa-arrow-right p-2 text-primary"></i>
+                  
+                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'participation_checklist', 'Participation Checklist')"
                     h5 class="text-primary font-weight-bold" My Participation Checklist
                     p class="text-primary hover:text-white mb-4"  See if you participate on Teams every week.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignment_achievement')"
+                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
+                      <i class="fas fa-arrow-right p-2 text-primary"></i>
+                  
+                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignment_achievement', 'Assignment Achievement')"
                     h5 class="text-primary font-weight-bold" Assignment Achievement
                     p class="text-primary hover:text-white mb-4"  See how far away for me to get all badges.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
+                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
+                      <i class="fas fa-arrow-right p-2 text-primary"></i>
+                
                 h4 class="text-primary font-weight-bold my-4" My Participation
                 div class="d-flex flex-sm-row flex-column flex-sm-wrap"
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'discuss_leaderboard')"
+                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'discuss_leaderboard', 'Discussion Leaderboard')"
                     h5 class="text-primary font-weight-bold" Teams Discussion Leaderboard
                     p class="text-primary hover:text-white mb-4"  Top 10 active students on Teams.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'help_leaderboard')"
+                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
+                      <i class="fas fa-arrow-right p-2 text-primary"></i>
+                 
+                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'help_leaderboard', 'Help Leaderboard')"
                     h5 class="text-primary font-weight-bold" Helping Learning
                     p class="text-primary hover:text-white mb-4"  Top 25 helpful students on Teams.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignments_report')"
+                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
+                      <i class="fas fa-arrow-right p-2 text-primary"></i>
+                  
+                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignments_distribution', 'Assignments Distribution')"
                     h5 class="text-primary font-weight-bold" Assignment Distribution
                     p class="text-primary hover:text-white mb-4"  My score compares with other students.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-4 mt-2 border' style="border-radius:6px;" data-toggle="modal"  onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_ranking')"
+                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
+                      <i class="fas fa-arrow-right p-2 text-primary"></i>
+                  
+                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal"  onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_ranking', 'Current Ranking')"
                     h5 class="text-primary font-weight-bold" Current Ranking
                     p class="text-primary hover:text-white mb-4"  My current standing in the class.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
+                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
+                      <i class="fas fa-arrow-right p-2 text-primary"></i>
 
 include :dashboard_modal
 
 javascript:
-  function openModal(visual_report_id, spreadsheet_id, dashboard_type) {
+  function openModal(visual_report_id, spreadsheet_id, dashboard_type, title) {
     $.ajax({
       url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/" + dashboard_type,
       type: 'GET',
       success: function(result) {
         console.log(result)
         $('#content_data').html(result);
+        $('#modal-title').text(title)
         $('#dashboard_modal').modal('show');
       }
     });
