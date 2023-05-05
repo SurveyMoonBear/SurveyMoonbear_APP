@@ -39,65 +39,77 @@ html
 
     .col-12 id='html_body'
     section class="mt-3 mb-5"
-      div class='justify-content-center'
-        div class="col-md-10 m-auto"
+      .justify-content-center
+        .col-md-11.m-auto
           h1 class="text-dark font-weight-bold" Welcome back, 
           p Offering tool to track your learning progress and class performance!
-          div class='shadow m-auto p-5'
-            div class="mb-3"
-              div class="mt-3"
-                div id="div-alert"
-                h4 class="text-primary font-weight-bold my-4" My Learning Report
-                div class="d-flex flex-sm-row flex-column flex-sm-wrap"
-                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignments_report', 'Assignments Report')"
-                    h5 class="text-primary hover:text-white font-weight-bold" My Assignments Report
-                    p class="text-primary hover:text-white mb-4"  My weekly assignment score.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
-                      <i class="fas fa-arrow-right p-2 text-primary"></i>
-                  
-                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_score', 'Current Score')"
-                    h5 class="text-primary font-weight-bold" Current score
-                    p class="text-primary hover:text-white mb-4"  My current score.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
-                      <i class="fas fa-arrow-right p-2 text-primary"></i>
-                  
-                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'participation_checklist', 'Participation Checklist')"
-                    h5 class="text-primary font-weight-bold" My Participation Checklist
-                    p class="text-primary hover:text-white mb-4"  See if you participate on Teams every week.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
-                      <i class="fas fa-arrow-right p-2 text-primary"></i>
-                  
-                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignment_achievement', 'Assignment Achievement')"
-                    h5 class="text-primary font-weight-bold" Assignment Achievement
-                    p class="text-primary hover:text-white mb-4"  See how far away for me to get all badges.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
-                      <i class="fas fa-arrow-right p-2 text-primary"></i>
-                
-                h4 class="text-primary font-weight-bold my-4" My Participation
-                div class="d-flex flex-sm-row flex-column flex-sm-wrap"
-                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'discuss_leaderboard', 'Discussion Leaderboard')"
-                    h5 class="text-primary font-weight-bold" Teams Discussion Leaderboard
-                    p class="text-primary hover:text-white mb-4"  Top 10 active students on Teams.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
-                      <i class="fas fa-arrow-right p-2 text-primary"></i>
-                 
-                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'help_leaderboard', 'Help Leaderboard')"
-                    h5 class="text-primary font-weight-bold" Helping Learning
-                    p class="text-primary hover:text-white mb-4"  Top 25 helpful students on Teams.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
-                      <i class="fas fa-arrow-right p-2 text-primary"></i>
-                  
-                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignments_distribution', 'Assignments Distribution')"
-                    h5 class="text-primary font-weight-bold" Assignment Distribution
-                    p class="text-primary hover:text-white mb-4"  My score compares with other students.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
-                      <i class="fas fa-arrow-right p-2 text-primary"></i>
-                  
-                  div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal"  onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_ranking', 'Current Ranking')"
-                    h5 class="text-primary font-weight-bold" Current Ranking
-                    p class="text-primary hover:text-white mb-4"  My current standing in the class.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:8%; border-radius:10px;"
-                      <i class="fas fa-arrow-right p-2 text-primary"></i>
+          <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              button class="nav-link active" id="nav-dashboard-tab" data-bs-toggle="tab" data-bs-target="#nav-dashboard" type="button" role="tab" aria-controls="nav-dashboard" aria-selected="true" Visualizations
+              button class="nav-link" id="nav-scores-tab" data-bs-toggle="tab" data-bs-target="#nav-scores" type="button" role="tab" aria-controls="nav-scores" aria-selected="false" Scores
+              / <a class='nav-item nav-link active' id='nav-tab-page-d' data-toggle='tab' href='#nav-dashboard-tab' role='tab' aria-controls='nav-dashboard-tab' aria-selected='true'>Dashboard</a>
+              / <a class='nav-item nav-link' id='nav-tab-page-s' data-toggle='tab' href='#nnav-scores-tab' role='tab' aria-controls='nav-scores-tab' aria-selected='false'>Score</a>
+          div class="tab-content" id="nav-tabContent"
+            .shadow.m-auto.p-4
+              div class="tab-pane fade show active" id="nav-dashboard" role="tabpanel" aria-labelledby="nav-dashboard-tab"
+                .d-flex.flex-md-row.flex-column 
+                  .d-flex.flex-column
+                    h4 class="text-primary font-weight-bold my-4" My Learning Report
+                    div class="d-flex flex-sm-row flex-column flex-sm-wrap"
+                      div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignments_report', 'Assignments Report')"
+                        h5 class="text-primary hover:text-white font-weight-bold" My Assignments Report
+                        p class="text-primary hover:text-white mb-4"  My weekly assignment score.
+                        <i class="border border-secondary rounded fas fa-arrow-right p-2 text-primary" style="border-radius: 6px;"></i>
+                        <i class="far fa-chart-line"></i>
+
+                      div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_score', 'Current Score')"
+                        h5 class="text-primary font-weight-bold" Current score
+                        p class="text-primary hover:text-white mb-4"  My current score.
+                        <i class="border border-secondary rounded fas fa-arrow-right p-2 text-primary" style="border-radius: 6px;"></i>
+                      
+                      div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'participation_checklist', 'Participation Checklist')"
+                        h5 class="text-primary font-weight-bold" My Participation Checklist
+                        p class="text-primary hover:text-white mb-4"  See if you participate on Teams every week.
+                        <i class="border border-secondary rounded fas fa-arrow-right p-2 text-primary" style="border-radius: 6px;"></i>
+                        <i class="fad fa-tasks"></i>
+
+                      div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignment_achievement', 'Assignment Achievement')"
+                        h5 class="text-primary font-weight-bold" Assignment Achievement
+                        p class="text-primary hover:text-white mb-4"  See how far away for me to get all badges.
+                        <i class="border border-secondary rounded fas fa-arrow-right p-2 text-primary" style="border-radius: 6px;"></i>
+                        <i class="far fa-badge"></i>
+                        <i class="fas fa-calendar-check"></i>
+                        <i class="far fa-file-certificate"></i>
+
+                  .d-flex.flex-column
+                    h4 class="text-primary font-weight-bold my-4" My Participation
+                    div class="d-flex flex-sm-row flex-column flex-sm-wrap"
+                      div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'discuss_leaderboard', 'Discussion Leaderboard')"
+                        h5 class="text-primary font-weight-bold" Teams Discussion Leaderboard
+                        p class="text-primary hover:text-white mb-4"  Top 10 active students on Teams.
+                        <i class="border border-secondary rounded fas fa-arrow-right p-2 text-primary" style="border-radius: 6px;"></i>
+                        <i class="fas fa-comments-alt"></i> 
+                        <i class="far fa-comments-alt"></i>
+
+                      div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'help_leaderboard', 'Help Leaderboard')"
+                        h5 class="text-primary font-weight-bold" Helping Learning
+                        p class="text-primary hover:text-white mb-4"  Top 25 helpful students on Teams.
+                        <i class="border border-secondary rounded fas fa-arrow-right p-2 text-primary" style="border-radius: 6px;"></i>
+                        <i class="fal fa-hands-helping"></i>
+
+                      div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignments_distribution', 'Assignments Distribution')"
+                        h5 class="text-primary font-weight-bold" Assignment Distribution
+                        p class="text-primary hover:text-white mb-4"  My score compares with other students.
+                        <i class="border border-secondary rounded fas fa-arrow-right p-2 text-primary" style="border-radius: 6px;"></i>
+                        <i class="fas fa-analytics"></i>
+                      div class='bg-white mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px;" data-toggle="modal"  onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_ranking', 'Current Ranking')"
+                        h5 class="text-primary font-weight-bold" Current Ranking
+                        p class="text-primary hover:text-white mb-4"  My current standing in the class.
+                        <i class="border border-secondary rounded fas fa-arrow-right p-2 text-primary" style="border-radius: 6px;"></i>
+                        <i class="fas fa-transporter-2"></i>
+                        <i class="fas fa-list-ol"></i>
+              div class="tab-pane fade" id="nav-scores" role="tabpanel" aria-labelledby="nav-scores-tab"
+                p ah
 
 include :dashboard_modal
 

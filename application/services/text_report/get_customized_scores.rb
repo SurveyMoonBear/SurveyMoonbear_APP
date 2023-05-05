@@ -92,7 +92,6 @@ module SurveyMoonbear
       def get_all_scores(input)
         scores = []
         input[:all_graphs].each do |page, graphs|
-          binding.irb
           graphs.each_with_index do |graph, idx|
             begin
             # scores.append({ 'Title' => graph[1], 'Score' => graph[8][input[:case_id]] })

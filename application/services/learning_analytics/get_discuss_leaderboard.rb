@@ -23,7 +23,6 @@ module SurveyMoonbear
         end
         sorted_discuss_order = discuss_order.sort_by { |sequence| sequence[:discuss_count].to_i }.reverse
         top_active = sorted_discuss_order.take(10)
-        binding.irb
         Success(top_active)
       rescue StandardError => e
         Failure('Failed to get discussion leaderboard data.')

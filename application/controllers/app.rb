@@ -15,6 +15,7 @@ module SurveyMoonbear
   class App < Roda
     plugin :render, engine: 'slim', views: 'presentation/views'
     plugin :assets, css: 'style.css', path: 'presentation/assets'
+    plugin :public, path: 'presentation/assets/public'
     plugin :json
     plugin :halt
     plugin :flash
@@ -23,6 +24,7 @@ module SurveyMoonbear
     plugin :caching
 
     route do |routing|
+      routing.public
       routing.assets
 
       config = App.config
@@ -476,7 +478,6 @@ module SurveyMoonbear
                                                           visual_report_id: visual_report_id,
                                                           dashboard_type: dashboard_type,
                                                           email: @report_account['email'])
-
               @dashboard_result = result.value!
 
               view dashboard_type, layout: false, locals: { visual_report_id: visual_report_id,
@@ -515,16 +516,6 @@ module SurveyMoonbear
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
               end
               vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
-
-              text_responses_result = text_responses.value!.to_json
-              text_responses_parse = JSON.parse(text_responses_result)
-              text_report_object = text_responses_parse['scores']
-              # text_report_ta = text_responses_parse['ta']
-
-              score_type = ['st', 'pr', 'hw', 'qz']
-              categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
-              # scores = categorize_score_type.reject{|key, value| !score_type.include? key }
-              # ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
 
               view 'learning_analytics', layout: false, locals: { visual_report_id: visual_report_id,
                                                                   spreadsheet_id: spreadsheet_id,
