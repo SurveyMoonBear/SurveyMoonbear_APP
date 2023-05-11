@@ -472,6 +472,12 @@ module SurveyMoonbear
 
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/dashboard
           routing.on 'dashboard' do
+            routing.is 'logout' do
+              SecureSession.new(session).delete(:report_account)
+              @report_account = nil
+              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
+            end
+
             routing.get String do |dashboard_type|
               redis = RedisCache.new(config)
               result = Service::GetDashboardData.new.call(redis:redis,
@@ -496,6 +502,10 @@ module SurveyMoonbear
                 redis.set('system_access_token', new_access_token, 3000)
               end
               access_token = redis.get('system_access_token')
+              result = Service::GetDashboardGroup.new.call(redis:redis,
+                                                           visual_report_id: visual_report_id,
+                                                           email: @report_account['email'])
+
               responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                       visual_report_id: visual_report_id,
                                                                       visual_report: visual_report,
@@ -516,6 +526,7 @@ module SurveyMoonbear
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
               end
               vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+              analytics_order = result.value!
               text_responses_result = text_responses.value!.to_json
               text_responses_parse = JSON.parse(text_responses_result)
               text_report_object = text_responses_parse['scores']
@@ -549,12 +560,8 @@ module SurveyMoonbear
                                                                   text_report_object: text_report_object,
                                                                   title: title,
                                                                   scores: scores,
-                                                                  ta: ta }
-            end
-
-            routing.get 'logout' do
-              SecureSession.new(session).delete(:report_account)
-              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
+                                                                  ta: ta,
+                                                                  analytics_order: analytics_order}
             end
           end
 

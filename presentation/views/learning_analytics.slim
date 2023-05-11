@@ -42,8 +42,8 @@ html
       .justify-content-center
         .col-md-10.m-auto 
           .d-flex.justify-content-between
-            h1 class="test font-weight-bold" Welcome back, 
-            a href='/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard' logout
+            h1 class="test font-weight-bold" Welcome back!
+            a href='/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/dashboard/logout' logout
               <i class="fas fa-sign-out-alt mr-2 text-primary"></i>
           div
             ul class="nav nav-tabs" role="tablist" id="displayType"
@@ -57,60 +57,23 @@ html
                 / .shadow.m-auto.p-4
                 .d-flex.flex-md-row.flex-column 
                   .d-flex.flex-column
-                    h4 class="text-primary font-weight-bold my-4" My Learning Report
+                    h4 class="text-primary font-weight-bold my-4" #{analytics_order[:category][0]}
                     div class="d-flex flex-sm-row flex-column flex-sm-wrap"
-                      div class="LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border" style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignments_report', 'Assignments Report')"
-                        h5 class="LA-title hover:text-white font-weight-bold" My Assignments Report
-                        p class="LA-description hover:text-white mb-4"  My weekly assignment score.
-                        <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
-                        <i class="fas fa-file-chart-line"></i>
-
-                      div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_score', 'Current Score')"
-                        h5 class="LA-title font-weight-bold" Current score
-                        p class="LA-description hover:text-white mb-4"  My current score.
-                        <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
-                      
-                      div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'participation_checklist', 'Participation Checklist')"
-                        h5 class="LA-title font-weight-bold" My Participation Checklist
-                        p class="LA-description hover:text-white mb-4"  See if you participate on Teams every week.
-                        <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
-                        <i class="fad fa-tasks"></i>
-
-                      div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignment_achievement', 'Assignment Achievement')"
-                        h5 class="LA-title font-weight-bold" Assignment Achievement
-                        p class="LA-description hover:text-white mb-4"  See how far away for me to get all badges.
-                        <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
-                        <i class="far fa-badge"></i>
-                        <i class="fas fa-calendar-check"></i>
-                        <i class="far fa-file-certificate"></i>
+                      - analytics_order[:dashboard][0].each do |analytic|
+                        div class="LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border" style="border-radius:6px; cursor:pointer; min-height: 230px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
+                          h5 class="LA-title hover:text-white font-weight-bold" #{analytic[0]}
+                          p class="LA-description hover:text-white mb-4"  #{analytic[1]}
+                          <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
 
                   .d-flex.flex-column
-                    h4 class="text-primary font-weight-bold my-4" My Participation
+                    h4 class="text-primary font-weight-bold my-4" #{analytics_order[:category][1]}
                     div class="d-flex flex-sm-row flex-column flex-sm-wrap"
-                      div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'discuss_leaderboard', 'Discussion Leaderboard')"
-                        h5 class="LA-title font-weight-bold" Teams Discussion Leaderboard
-                        p class="LA-description hover:text-white mb-4"  Top 10 active students on Teams.
-                        <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
-                        <i class="fas fa-comments-alt"></i> 
-                        <i class="far fa-comments-alt"></i>
+                      - analytics_order[:dashboard][1].each do |analytic|
+                        div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer; min-height: 230px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
+                          h5 class="LA-title font-weight-bold" #{analytic[0]}
+                          p class="LA-description hover:text-white mb-4"  #{analytic[1]}
+                          <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
 
-                      div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'help_leaderboard', 'Help Leaderboard')"
-                        h5 class="LA-title font-weight-bold" Helping Learning
-                        p class="LA-description hover:text-white mb-4"  Top 25 helpful students on Teams.
-                        <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
-                        <i class="fal fa-hands-helping"></i>
-
-                      div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'assignments_distribution', 'Assignments Distribution')"
-                        h5 class="LA-title font-weight-bold" Assignment Distribution
-                        p class="LA-description hover:text-white mb-4"  My score compares with other students.
-                        <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
-                        <i class="fas fa-analytics"></i>
-                      div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer;" data-toggle="modal"  onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', 'current_ranking', 'Current Ranking')"
-                        h5 class="LA-title font-weight-bold" Current Ranking
-                        p class="LA-description hover:text-white mb-4"  My current standing in the class.
-                        <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
-                        <i class="fas fa-transporter-2"></i>
-                        <i class="fas fa-list-ol"></i>
               div id="score_report" class="tab-pane fade"
                 == render :score_report, locals: { scores: scores, ta: ta, vis_report_object: vis_report_object, text_report_object: text_report_object, title: title }
                   
@@ -128,7 +91,6 @@ javascript:
       url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/" + dashboard_type,
       type: 'GET',
       success: function(result) {
-        console.log(result)
         $('#content_data').html(result);
         $('#modal-title').text(title)
         $('#dashboard_modal').modal('show');
