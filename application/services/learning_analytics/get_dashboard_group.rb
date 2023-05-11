@@ -23,10 +23,14 @@ module SurveyMoonbear
           values[source] = input[:redis].get(key)
         end
         source1 = values['source1']
-        student_index = 0
+        student_index = -1
 
         source1.each_with_index do |row, index|
           student_index = index - 2 if input[:email] == row[8]
+        end
+
+        if student_index == -1
+          return Failure('Can not find your email')
         end
 
         student_index %= 8
@@ -79,7 +83,6 @@ module SurveyMoonbear
         result = { "category": category, "dashboard": dashboard }
         Success(result)
       rescue StandardError => e
-        binding.irb
         Failure('Failed to get dashboard group.')
       end
     end

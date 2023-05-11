@@ -34,7 +34,8 @@ html
     .container id='body'
       section class="mt-3 mb-5"
         / include :flash_bar
-
+        div id="div-alert"
+          == render :flash_bar
         div class='row justify-content-center'
           div class="d-flex align-items-md-end" style="height: 200px;"
             h4 This is the report: <b> #{visual_report.title}</b>
