@@ -17,7 +17,6 @@ module SurveyMoonbear
 
       # input { all_graphs:, case_email:, redis:, user_key:}
       def get_sources_from_redis(input)
-        binding.irb
         other_sheets_keys = input[:redis].get_set(input[:visual_report_id])
         values = {}
         other_sheets_keys.each do |key|

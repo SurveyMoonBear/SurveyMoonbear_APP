@@ -15,7 +15,7 @@ module SurveyMoonbear
   class App < Roda
     plugin :render, engine: 'slim', views: 'presentation/views'
     plugin :assets, css: 'style.css', path: 'presentation/assets'
-    plugin :public, path: 'presentation/assets/public'
+    plugin :public, root: 'presentation/public'
     plugin :json
     plugin :halt
     plugin :flash
@@ -504,22 +504,57 @@ module SurveyMoonbear
                                                                       access_token: access_token,
                                                                       email: @report_account['email'])
               text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
-                                                              visual_report_id: visual_report_id,
-                                                              visual_report: visual_report,
-                                                              config: config,
-                                                              code: code,
-                                                              access_token: access_token,
-                                                              email: @report_account['email'])
+                                                               visual_report_id: visual_report_id,
+                                                               visual_report: visual_report,
+                                                               config: config,
+                                                               code: code,
+                                                               access_token: access_token,
+                                                               email: @report_account['email'])
 
 
               if responses.failure? || text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
               end
               vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
+              text_responses_result = text_responses.value!.to_json
+              text_responses_parse = JSON.parse(text_responses_result)
+              text_report_object = text_responses_parse['scores']
+              # text_report_ta = text_responses_parse['ta']
+
+              score_type = ['st', 'pr', 'hw', 'qz']
+              categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
+              scores = categorize_score_type.reject{|key, value| !score_type.include? key }
+              ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
+              title = {}
+
+              scores.each_key do |key|
+                title[key] = case key
+                             when 'st'
+                              'Tutorial + Quiz (Total 2)'
+                             when 'pr'
+                              'Peer Review (Total 2)'
+                             when 'hw'
+                              'Homework (Total 5)'
+                             when 'qz'
+                              'Quiz (Total 2)'
+                             else
+                              'Others'
+                             end
+              end
+
 
               view 'learning_analytics', layout: false, locals: { visual_report_id: visual_report_id,
                                                                   spreadsheet_id: spreadsheet_id,
-                                                                  vis_report_object: vis_report_object }
+                                                                  vis_report_object: vis_report_object,
+                                                                  text_report_object: text_report_object,
+                                                                  title: title,
+                                                                  scores: scores,
+                                                                  ta: ta }
+            end
+
+            routing.get 'logout' do
+              SecureSession.new(session).delete(:report_account)
+              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
             end
           end
 
@@ -573,7 +608,6 @@ module SurveyMoonbear
                                                                code: code,
                                                                access_token: access_token,
                                                                email: @report_account["email"])
-              binding.irb
               if responses.failure? || text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
               end
@@ -586,7 +620,6 @@ module SurveyMoonbear
 
               score_type = ['st', 'pr', 'hw', 'qz']
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
-              binding.irb
               scores = categorize_score_type.reject{|key, value| !score_type.include? key }
               ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
               title = {}
@@ -594,15 +627,15 @@ module SurveyMoonbear
               scores.each_key do |key|
                 title[key] = case key
                              when 'st'
-                              'Tutorial + Quiz (Total 2)'
+                               'Tutorial + Quiz (Total 2)'
                              when 'pr'
-                              'Peer Review (Total 2)'
+                               'Peer Review (Total 2)'
                              when 'hw'
-                              'Homework (Total 5)'
+                               'Homework (Total 5)'
                              when 'qz'
-                              'Quiz (Total 2)'
+                               'Quiz (Total 2)'
                              else
-                              'Others'
+                               'Others'
                              end
               end
 

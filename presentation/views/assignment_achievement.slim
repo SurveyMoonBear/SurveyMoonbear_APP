@@ -1,29 +1,30 @@
+== assets(:css)
 - if @dashboard_result
-  div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight border border-primary rounded"
-    p Homework Master
-    img alt="Homework" src="public/master_homework.png" style="max-width:100px;"
+  div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight achievement-border"
+    h5 class="font-weight-bold text-primary" Homework Master
+    img alt="Homework" src="/presentation/public/master_homework.png" style="max-width:100px;"
     .d-flex.justify-content-between
       - if @dashboard_result['hw']
         - @dashboard_result['hw'].each do |hw|
           - if hw == '1'
-            <i class="h2 fas fa-fire text-danger"></i>
+            <i class="h2 fas fa-fire text-danger fire-shadow"></i>
           - else
             <i class="h2 fas fa-fire text-secondary"></i>
-  div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight border border-primary rounded"
-    p Master Reviewer
+  div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight achievement-border"
+    h5 class="font-weight-bold text-primary" Master Reviewer
     .d-flex.justify-content-between
       - if @dashboard_result['pr']
         - @dashboard_result['pr'].each do |pr|
           - if pr == '1'
-            <i class="h2 fas fa-fire text-danger"></i>
+            <i class="h2 fas fa-fire text-danger fire-shadow"></i>
           - else
             <i class="h2 fas fa-fire text-secondary"></i>
-  div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight border border-primary rounded"
-    p Master Helper
+  div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight achievement-border"
+    h5 class="font-weight-bold text-primary" Master Helper
     .d-flex.justify-content-between
       - if @dashboard_result['help']
         - @dashboard_result['help'].each do |help|
           - if help == '1'
-            <i class="h2 fas fa-fire text-danger"></i>
+            <i class="h2 fas fa-fire text-danger fire-shadow"></i>
           - else
             <i class="h2 fas fa-fire text-secondary"></i>

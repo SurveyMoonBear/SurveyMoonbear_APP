@@ -138,7 +138,6 @@ module SurveyMoonbear
           end
           Success(input[:all_graphs])
         rescue StandardError => e
-          binding.irb
         Failure('Failed to map responses and visual report items.')
       end
 

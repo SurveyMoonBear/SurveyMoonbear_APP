@@ -25,3 +25,37 @@
   padding: 0;
   border: none;
 }
+
+.LA-card {
+    background-color: white;
+}
+
+.LA-card:hover {
+    background-color: #008cba;
+    color: white;
+}
+
+.LA-card:hover > .LA-title { color: white; }
+.LA-card:hover > .LA-description { color: white; }
+.LA-card:hover > .LA-icons { color: white; }
+
+.LA-title {
+    color: #6C6C6C;
+}
+
+.LA-description {
+    color: #9D9D9D;
+}
+
+.LA-icons {
+    color: #008cba;
+}
+
+.fire-shadow {
+    filter: drop-shadow(2px 2px 2px rgba(218, 13, 0, 0.25));
+}
+
+.achievement-border {
+    border: 2px solid #3D8AB7;
+    border-radius: 10px;
+}

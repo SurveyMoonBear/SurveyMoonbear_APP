@@ -110,7 +110,6 @@ module SurveyMoonbear
         data = [hw, pr, st, la, qz]
         Success(data)
       rescue StandardError => e
-        binding.irb
         Failure('Failed to get assignment report.')
       end
 
