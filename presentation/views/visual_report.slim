@@ -54,7 +54,10 @@ html
         / - else
         div class='justify-content-center'
           div class="col-md-10 m-auto"
-            h1 class="text-dark font-weight-bold" #{vis_report_object.title}
+            .d-flex.justify-content-between
+              h1 class="text-dark font-weight-bold" #{vis_report_object.title}
+              a href='/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/score/logout' logout
+                <i class="fas fa-sign-out-alt mr-2 text-primary"></i>
 
             div class='shadow m-auto p-5'
               == render :score_report, locals: { scores: scores, ta: ta, vis_report_object: vis_report_object, text_report_object: text_report_object, title: title }

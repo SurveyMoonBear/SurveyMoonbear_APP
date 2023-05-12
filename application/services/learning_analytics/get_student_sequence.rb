@@ -34,10 +34,8 @@ module SurveyMoonbear
         end
 
         result = student_index
-        binding.irb
         Success(result)
       rescue StandardError => e
-        binding.irb
         Failure('Failed to get student sequence.')
       end
     end

@@ -472,6 +472,8 @@ module SurveyMoonbear
 
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/dashboard
           routing.on 'dashboard' do
+            routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard" unless @report_account
+
             routing.is 'logout' do
               SecureSession.new(session).delete(:report_account)
               @report_account = nil
@@ -590,6 +592,14 @@ module SurveyMoonbear
 
           # customized visual report
           routing.on 'score' do
+            routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score" unless @report_account
+
+            routing.is 'logout' do
+              SecureSession.new(session).delete(:report_account)
+              @report_account = nil
+              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
+            end
+
             # customized visual report
             # GET visual_report/[visual_report_id]/online/[spreadsheet_id]/score
             routing.get do
@@ -660,7 +670,9 @@ module SurveyMoonbear
                              end
               end
 
-              view 'visual_report', layout: false, locals: { vis_report_object: vis_report_object,
+              view 'visual_report', layout: false, locals: { visual_report_id: visual_report_id,
+                                                             spreadsheet_id: spreadsheet_id,
+                                                             vis_report_object: vis_report_object,
                                                              visual_report: visual_report,
                                                              text_report_object: text_report_object,
                                                              title: title,

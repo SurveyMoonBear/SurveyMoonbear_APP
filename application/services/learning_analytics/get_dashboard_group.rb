@@ -16,7 +16,6 @@ module SurveyMoonbear
       private
 
       def get_dashboard_group(input)
-        binding.irb
         student_index = input[:student_sequence] % 8
         category_one = 'My Learning Report'
         category_two = 'My Participation'
