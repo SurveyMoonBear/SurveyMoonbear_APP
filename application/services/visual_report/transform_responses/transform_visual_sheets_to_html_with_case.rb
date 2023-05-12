@@ -114,6 +114,7 @@ module SurveyMoonbear
                                                                         all_data: input[:other_sheets][source.source_id],
                                                                         vis_identity: input[:case_id])
               graphs_val.append(graph_response.value![:graph_val])
+
             end
           end
           pages_val[key] = graphs_val

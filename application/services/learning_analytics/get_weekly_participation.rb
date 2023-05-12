@@ -17,11 +17,16 @@ module SurveyMoonbear
 
       # input { all_graphs:, case_email:, redis:, user_key:}
       def get_participation(input)
-        source = input[:source]
-        source.each do |row|
-          return Success(row[4...22]) if input[:email] == row[2].downcase
+        categorize_score_type = input[:categorize_score_type]
+
+        score_type = ['discuss']
+        data = categorize_score_type.select{|key, value| score_type.include? key }
+        binding.irb
+        result = []
+        data["discuss"].each do |discuss|
+          result.append(discuss["score"])
         end
-        Failure('Failed to find participation.')
+        Success(result)
       rescue StandardError => e
         Failure('Failed to get participation.')
       end
