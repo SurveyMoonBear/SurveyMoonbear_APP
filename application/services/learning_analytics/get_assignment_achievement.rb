@@ -29,7 +29,8 @@ module SurveyMoonbear
 
         individual_data = []
         source1.each do |row|
-          individual_data = row if input[:email] == row[8]
+          next unless Email.new().is_valid?(row[8])
+          individual_data = row if input[:email] == row[8].downcase
         end
 
         hw_excellent_count = 0
@@ -46,7 +47,7 @@ module SurveyMoonbear
         # Help
         help_count = 0
         source3.each do |row|
-          help_count = row[-1].to_i if input[:email] == row[2]
+          help_count = row[-1].to_i if input[:email] == row[2].downcase
         end
 
         achievement_result = {}

@@ -26,7 +26,7 @@ module SurveyMoonbear
         # sequence / total student
         rank = 0
         sorted_ranking.each_with_index do |row, idx|
-          rank = idx + 1 if input[:email] == row[:email]
+          rank = idx + 1 if input[:email] == row[:email].downcase
         end
 
         class_percentile = (rank.to_f / sorted_ranking.length * 100).ceil.to_i.to_s + '%'

@@ -60,7 +60,7 @@ module SurveyMoonbear
         my_qz_score = []
 
         source1.each do |row|
-          next unless valid_email?(row[8]) && input[:email] == row[8]
+          next unless valid_email?(row[8]) && input[:email] == row[8].downcase
 
           hw_title.each do |hw|
             if row[hw].nil? || row[hw].empty?

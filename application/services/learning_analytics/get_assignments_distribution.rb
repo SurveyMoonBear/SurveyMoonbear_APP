@@ -74,14 +74,14 @@ module SurveyMoonbear
             if hw_score.length < hw_title.length
               if row[hw].nil? || row[hw].empty?
                 hw_score.append(0)
-                my_hw_score.append(0) if input[:email] == row[8]
+                my_hw_score.append(0) if input[:email] == row[8].downcase
               else
                 hw_score.append(row[hw].to_f)
-                my_hw_score.append(row[hw].to_f) if input[:email] == row[8]
+                my_hw_score.append(row[hw].to_f) if input[:email] == row[8].downcase
               end
             elsif index < hw_score.length && !row[hw].nil? && !row[hw].empty?
               hw_score[index] += row[hw].to_f
-              my_hw_score.append(row[hw].to_f) if input[:email] == row[8]
+              my_hw_score.append(row[hw].to_f) if input[:email] == row[8].downcase
             end
           end
 
@@ -89,14 +89,14 @@ module SurveyMoonbear
             if pr_score.length < pr_title.length
               if row[pr].nil? || row[pr].empty?
                 pr_score.append(0)
-                my_pr_score.append(0) if input[:email] == row[8]
+                my_pr_score.append(0) if input[:email] == row[8].downcase
               else
                 pr_score.append(row[pr].to_f)
-                my_pr_score.append(row[pr].to_f) if input[:email] == row[8]
+                my_pr_score.append(row[pr].to_f) if input[:email] == row[8].downcase
               end
             elsif index < pr_score.length && !row[pr].nil? && !row[pr].empty?
               pr_score[index] += row[pr].to_f
-              my_pr_score.append(row[pr].to_f) if input[:email] == row[8]
+              my_pr_score.append(row[pr].to_f) if input[:email] == row[8].downcase
             end
           end
 
@@ -104,14 +104,14 @@ module SurveyMoonbear
             if st_score.length < st_title.length
               if row[st].nil? || row[st].empty?
                 st_score.append(0)
-                my_st_score.append(0) if input[:email] == row[8]
+                my_st_score.append(0) if input[:email] == row[8].downcase
               else
                 st_score.append(row[st].to_f)
-                my_st_score.append(row[st].to_f) if input[:email] == row[8]
+                my_st_score.append(row[st].to_f) if input[:email] == row[8].downcase
               end
             elsif index < st_score.length && !row[st].nil? && !row[st].empty?
               st_score[index] += row[st].to_f
-              my_st_score.append(row[st].to_f) if input[:email] == row[8]
+              my_st_score.append(row[st].to_f) if input[:email] == row[8].downcase
             end
           end
 
@@ -119,14 +119,14 @@ module SurveyMoonbear
             if la_score.length < la_title.length
               if row[la].nil? || row[la].empty?
                 la_score.append(0)
-                my_la_score.append(0) if input[:email] == row[8]
+                my_la_score.append(0) if input[:email] == row[8].downcase
               else
                 la_score.append(row[la].to_f)
-                my_la_score.append(row[la].to_f) if input[:email] == row[8]
+                my_la_score.append(row[la].to_f) if input[:email] == row[8].downcase
               end
             elsif index < la_score.length && !row[la].nil? && !row[la].empty?
               la_score[index] += row[la].to_f
-              my_la_score.append(row[la].to_f) if input[:email] == row[8]
+              my_la_score.append(row[la].to_f) if input[:email] == row[8].downcase
             end
           end
 
@@ -134,14 +134,14 @@ module SurveyMoonbear
             if qz_score.length < qz_title.length
               if row[qz].nil? || row[qz].empty?
                 qz_score.append(0)
-                my_qz_score.append(0) if input[:email] == row[8]
+                my_qz_score.append(0) if input[:email] == row[8].downcase
               else
                 qz_score.append(row[qz].to_f)
-                my_qz_score.append(row[qz].to_f) if input[:email] == row[8]
+                my_qz_score.append(row[qz].to_f) if input[:email] == row[8].downcase
               end
             elsif index < qz_score.length && !row[qz].nil? && !row[qz].empty?
               qz_score[index] += row[qz].to_f
-              my_qz_score.append(row[qz].to_f) if input[:email] == row[8]
+              my_qz_score.append(row[qz].to_f) if input[:email] == row[8].downcase
             end
           end
         end

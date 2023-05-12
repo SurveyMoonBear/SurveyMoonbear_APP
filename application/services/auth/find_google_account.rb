@@ -49,7 +49,7 @@ module SurveyMoonbear
       # input { ..., google_account: }
       def build_account_entity(input)
         input[:account_entity] = Entity::Account.new(id: nil,
-                                                     email: input[:google_account]['email'],
+                                                     email: input[:google_account]['email'].downcase,
                                                      username: input[:google_account]['name'],
                                                      access_token: input[:tokens][:access_token],
                                                      refresh_token: input[:tokens][:refresh_token])

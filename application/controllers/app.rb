@@ -505,8 +505,8 @@ module SurveyMoonbear
               end
               access_token = redis.get('system_access_token')
               sequence_result = Service::GetStudentSequence.new.call(redis: redis,
-                                                            visual_report_id: visual_report_id,
-                                                            email: @report_account['email'])
+                                                                     visual_report_id: visual_report_id,
+                                                                     email: @report_account['email'])
              
               if sequence_result.failure == 'Can not find your email'
                 flash[:error] = sequence_result.failure

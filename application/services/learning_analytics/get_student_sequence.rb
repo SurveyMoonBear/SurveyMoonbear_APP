@@ -26,7 +26,8 @@ module SurveyMoonbear
         student_index = -1
 
         source1.each_with_index do |row, index|
-          student_index = index - 2 if input[:email] == row[8]
+          next unless Email.new().is_valid?(row[8])
+          student_index = index - 2 if input[:email] == row[8].downcase
         end
 
         if student_index == -1

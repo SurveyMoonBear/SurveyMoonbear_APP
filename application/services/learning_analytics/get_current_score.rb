@@ -22,7 +22,8 @@ module SurveyMoonbear
         student = []
 
         source1.each do |row|
-          student = row if input[:email] == row[8]
+          next unless Email.new().is_valid?(row[8])
+          student = row if input[:email] == row[8].downcase
         end
 
         ss = []

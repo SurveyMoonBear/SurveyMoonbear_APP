@@ -19,7 +19,7 @@ module SurveyMoonbear
       def get_participation(input)
         source = input[:source]
         source.each do |row|
-          return Success(row[4...22]) if input[:email] == row[2]
+          return Success(row[4...22]) if input[:email] == row[2].downcase
         end
         Failure('Failed to find participation.')
       rescue StandardError => e
