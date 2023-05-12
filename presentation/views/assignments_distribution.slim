@@ -30,7 +30,7 @@ javascript:
     trace = dashboard_plot[0]
     chart_layout = dashboard_plot[1]
     
-    Plotly.newPlot("chart_" + i, trace, chart_layout);
+    Plotly.newPlot("chart_" + i, trace, chart_layout, {staticPlot: true});
   }
 
   function generate_dashboard_plot(x_values, y_values, layout, type) {
@@ -43,10 +43,10 @@ javascript:
       y = y_values[i]
       name = ''
       if (i == 0) {
-        name = 'me'
+        name = 'class'
       }
       else {
-        name = 'class'
+        name = 'me'
       }
       trace_tmp = { x: x_values, 
                     y: y, 

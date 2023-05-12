@@ -2,7 +2,7 @@
 - if @dashboard_result
   div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight achievement-border"
     img class="m-auto" alt="Homework" src="https://i.imgur.com/puZuz7L.png" style="max-width:80px;"
-    h5 class="font-weight-bold text-primary mb-3" Homework Master
+    h5 class="font-weight-bold text-center text-primary mb-3" Homework Mastery
     .d-flex.justify-content-between
       - if @dashboard_result['hw']
         - @dashboard_result['hw'].each do |hw|
@@ -12,7 +12,7 @@
             <i class="h2 fas fa-fire text-secondary"></i>
   div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight achievement-border"
     img class="m-auto" alt="Homework" src="https://i.imgur.com/nZCva1l.png" style="max-width:80px;"
-    h5 class="font-weight-bold text-primary" Master Reviewer
+    h5 class="font-weight-bold text-center text-primary" Reviewer Mastery
     .d-flex.justify-content-between
       - if @dashboard_result['pr']
         - @dashboard_result['pr'].each do |pr|
@@ -22,7 +22,7 @@
             <i class="h2 fas fa-fire text-secondary"></i>
   div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight achievement-border"
     img class="m-auto" alt="Homework" src="https://i.imgur.com/ZDPjeUC.png" style="max-width:80px;"
-    h5 class="font-weight-bold text-primary" Master Helper
+    h5 class="font-weight-bold text-center text-primary" Helper Mastery
     .d-flex.justify-content-between
       - if @dashboard_result['help']
         - @dashboard_result['help'].each do |help|

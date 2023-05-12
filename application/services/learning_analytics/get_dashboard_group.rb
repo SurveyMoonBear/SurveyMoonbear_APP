@@ -22,14 +22,14 @@ module SurveyMoonbear
 
         category = []
         dashboard = []
-        my_assignments_report = ['My Assignments Report', 'My weekly assignment score', 'assignments_report', 'Assignments Report']
-        current_score = ['Current score', 'My current score', 'current_score', 'Current Score']
-        my_participation_checklist = ['My Participation Checklist', 'See if you participate on Teams every week', 'participation_checklist', 'Participation Checklist']
-        assignment_achievement = ['Assignment Achievement', 'Achievements of homework, peer review, and help', 'assignment_achievement', 'Assignment Achievement']
-        teams_discussion_leaderboard = ['Teams Discussion Leaderboard', 'Top 10 active students on Teams', 'discuss_leaderboard', 'Discussion Leaderboard']
-        teams_help_leaderboard = ['Teams Help Leaderboard', 'Top 25 helpful students on Teams', 'help_leaderboard', 'Help Leaderboard']
-        assignment_distribution = ['Assignment Distribution', 'My score compares with other students', 'assignments_distribution', 'Assignments Distribution']
-        current_ranking = ['Current Ranking', 'My current standing in the class', 'current_ranking', 'Current Ranking']
+        my_assignments_report = ['My Assignments Report', 'My weekly assignment score', 'assignments_report', 'My Assignments Report']
+        current_score = ['Current score', 'My total score so far', 'current_score', 'Current Score']
+        my_participation_checklist = ['My Participation on MS Teams', 'Which week you participate on MS Teams', 'participation_checklist', 'My Participation on MS Teams']
+        assignment_achievement = ['Class Achievement', 'How well are your assignments, and how regular you submit review and help others', 'assignment_achievement', 'Class Achievement']
+        teams_discussion_leaderboard = ['Teams Discussion Leaderboard', 'Top participants on MS Teams', 'discuss_leaderboard', 'Teams Discussion Leaderboard']
+        teams_help_leaderboard = ['Teams Help Leaderboard', 'Most often credited on help assignment', 'help_leaderboard', 'Teams Help Leaderboard']
+        assignment_distribution = ['Assignments Distribution', 'My score compares with other students', 'assignments_distribution', 'Assignments Distribution']
+        current_ranking = ['Performance Percentile', 'My Class Standing in the Percentile', 'current_ranking', 'Performance Percentile']
 
         if student_index < 4 
           category = [category_one, category_two]
