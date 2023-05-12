@@ -1,8 +1,8 @@
 == assets(:css)
 - if @dashboard_result
   div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight achievement-border"
-    h5 class="font-weight-bold text-primary" Homework Master
-    img alt="Homework" src="https://plus.unsplash.com/premium_photo-1664367986079-dd9933917ff1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" style="max-width:100px;"
+    img class="m-auto" alt="Homework" src="https://i.imgur.com/puZuz7L.png" style="max-width:80px;"
+    h5 class="font-weight-bold text-primary mb-3" Homework Master
     .d-flex.justify-content-between
       - if @dashboard_result['hw']
         - @dashboard_result['hw'].each do |hw|
@@ -11,6 +11,7 @@
           - else
             <i class="h2 fas fa-fire text-secondary"></i>
   div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight achievement-border"
+    img class="m-auto" alt="Homework" src="https://i.imgur.com/nZCva1l.png" style="max-width:80px;"
     h5 class="font-weight-bold text-primary" Master Reviewer
     .d-flex.justify-content-between
       - if @dashboard_result['pr']
@@ -20,6 +21,7 @@
           - else
             <i class="h2 fas fa-fire text-secondary"></i>
   div class="d-sm-flex flex-column justify-content-center row p-3 m-auto bd-highlight achievement-border"
+    img class="m-auto" alt="Homework" src="https://i.imgur.com/ZDPjeUC.png" style="max-width:80px;"
     h5 class="font-weight-bold text-primary" Master Helper
     .d-flex.justify-content-between
       - if @dashboard_result['help']

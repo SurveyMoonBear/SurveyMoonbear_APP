@@ -16,24 +16,8 @@ module SurveyMoonbear
       private
 
       def get_dashboard_group(input)
-        other_sheets_keys = input[:redis].get_set(input[:visual_report_id])
-        values = {}
-        other_sheets_keys.each do |key|
-          source = key.split('/')[0]
-          values[source] = input[:redis].get(key)
-        end
-        source1 = values['source1']
-        student_index = -1
-
-        source1.each_with_index do |row, index|
-          student_index = index - 2 if input[:email] == row[8]
-        end
-
-        if student_index == -1
-          return Failure('Can not find your email')
-        end
-
-        student_index %= 8
+        binding.irb
+        student_index = input[:student_sequence] % 8
         category_one = 'My Learning Report'
         category_two = 'My Participation'
 

@@ -502,14 +502,16 @@ module SurveyMoonbear
                 redis.set('system_access_token', new_access_token, 3000)
               end
               access_token = redis.get('system_access_token')
-              result = Service::GetDashboardGroup.new.call(redis: redis,
-                                                           visual_report_id: visual_report_id,
-                                                           email: @report_account['email'])
-
-              if result.failure == 'Can not find your email'
-                flash[:error] = result.failure
+              sequence_result = Service::GetStudentSequence.new.call(redis: redis,
+                                                            visual_report_id: visual_report_id,
+                                                            email: @report_account['email'])
+             
+              if sequence_result.failure == 'Can not find your email'
+                flash[:error] = sequence_result.failure
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
               end
+
+              result = Service::GetDashboardGroup.new.call(student_sequence: sequence_result.value!)
 
               responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                       visual_report_id: visual_report_id,
@@ -526,7 +528,7 @@ module SurveyMoonbear
                                                                access_token: access_token,
                                                                email: @report_account['email'])
 
-              if responses.failure? || text_responses.failure?
+              if result.failure? || responses.failure? || text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
               end
               vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
@@ -534,7 +536,6 @@ module SurveyMoonbear
               text_responses_result = text_responses.value!.to_json
               text_responses_parse = JSON.parse(text_responses_result)
               text_report_object = text_responses_parse['scores']
-              # text_report_ta = text_responses_parse['ta']
 
               score_type = ['st', 'pr', 'hw', 'qz']
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
@@ -603,6 +604,15 @@ module SurveyMoonbear
                 redis.set('system_access_token', new_access_token, 3000)
               end
               access_token = redis.get('system_access_token')
+
+              sequence_result = Service::GetStudentSequence.new.call(redis: redis,
+                                                            visual_report_id: visual_report_id,
+                                                            email: @report_account['email'])
+
+              if sequence_result.failure == 'Can not find your email'
+                flash[:error] = sequence_result.failure
+                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
+              end
 
               responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                       visual_report_id: visual_report_id,
