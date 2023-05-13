@@ -16,21 +16,11 @@ module SurveyMoonbear
       private
 
       def get_ranking(input)
-        source1 = input[:source1]
-        ranking = []
-        source1.each do |source|
-          ranking.append({ "name": source[3], "email": source[8], "score": source[56].delete('%').to_f }) unless source[1].nil? || source[1].empty? || !source[56].include?('%')
-        end
-        sorted_ranking = ranking.sort_by { |sequence| sequence[:score] }.reverse
+        categorize_score_type = input[:categorize_score_type]
 
-        # sequence / total student
-        rank = 0
-        sorted_ranking.each_with_index do |row, idx|
-          rank = idx + 1 if input[:email] == row[:email].downcase
-        end
-
-        class_percentile = (rank.to_f / sorted_ranking.length * 100).ceil.to_i.to_s + '%'
-        Success(class_percentile)
+        score_type = ['percentile']
+        data = categorize_score_type.select{|key, value| score_type.include? key }
+        Success(data["percentile"][0]["score"])
       rescue StandardError => e
         Failure('Failed to get ranking.')
       end

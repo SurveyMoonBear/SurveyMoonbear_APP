@@ -473,7 +473,7 @@ module SurveyMoonbear
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/dashboard
           routing.on 'dashboard' do
             routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard" unless @report_account
-            
+
             routing.is 'logout' do
               SecureSession.new(session).delete(:report_account)
               @report_account = nil
