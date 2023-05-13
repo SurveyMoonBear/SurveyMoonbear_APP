@@ -95,7 +95,7 @@ module SurveyMoonbear
           graphs.each_with_index do |graph, idx|
             begin
             # scores.append({ 'Title' => graph[1], 'Score' => graph[8][input[:case_id]] })
-              scores.append({ title: graph[1], score: graph[9][input[:case_id]], score_type: graph[8] })
+              scores.append({ title: graph[1], score: graph[10][input[:case_id]], score_type: graph[8], all_scores: graph[10], params: graph[9]})
             rescue StandardError => e
             end
           end

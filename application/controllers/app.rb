@@ -489,10 +489,9 @@ module SurveyMoonbear
                                                           email: @report_account['email'],
                                                           categorize_score_type: categorize_score_type)
               @dashboard_result = result.value!
-
               view dashboard_type, layout: false, locals: { visual_report_id: visual_report_id,
-                                                                  spreadsheet_id: spreadsheet_id,
-                                                                  dashboard_result: @dashboard_result}
+                                                            spreadsheet_id: spreadsheet_id,
+                                                            dashboard_result: @dashboard_result}
             end
 
             routing.get do

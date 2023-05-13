@@ -21,7 +21,6 @@ module SurveyMoonbear
 
         score_type = ['discuss']
         data = categorize_score_type.select{|key, value| score_type.include? key }
-        binding.irb
         result = []
         data["discuss"].each do |discuss|
           result.append(discuss["score"])

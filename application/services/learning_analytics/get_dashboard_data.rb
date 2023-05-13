@@ -22,10 +22,8 @@ module SurveyMoonbear
                    Service::GetWeeklyParticipation.new.call(email: input[:email], categorize_score_type: categorize_score_type)
                  elsif input[:dashboard_type] == 'assignment_achievement'
                    Service::GetAssignmentAchievementData.new.call(email: input[:email], categorize_score_type: categorize_score_type) 
-                 elsif input[:dashboard_type] == 'help_leaderboard'
-                   Service::GetHelpLeaderboard.new.call(categorize_score_type: categorize_score_type)
-                 elsif input[:dashboard_type] == 'discuss_leaderboard'
-                   Service::GetDiscussLeaderboard.new.call(categorize_score_type: categorize_score_type)
+                 elsif input[:dashboard_type].include?('leaderboard')
+                   Service::GetHelpLeaderboard.new.call(categorize_score_type: categorize_score_type, dashboard_type: input[:dashboard_type])
                  elsif input[:dashboard_type] == 'current_ranking'
                    Service::GetCurrentRanking.new.call(email: input[:email], categorize_score_type: categorize_score_type)
                  elsif input[:dashboard_type] == 'current_score'

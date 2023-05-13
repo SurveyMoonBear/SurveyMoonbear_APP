@@ -66,6 +66,7 @@ module SurveyMoonbear
                  input[:item_data].legend,
                  input[:item_data].self_marker,
                  input[:item_data].score_type,
+                 input[:item_data].params,
                  pair.to_h])
       rescue StandardError => e
         puts e
