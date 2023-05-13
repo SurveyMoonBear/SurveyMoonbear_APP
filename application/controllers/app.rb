@@ -509,7 +509,7 @@ module SurveyMoonbear
               sequence_result = Service::GetStudentSequence.new.call(redis: redis,
                                                                      visual_report_id: visual_report_id,
                                                                      email: @report_account['email'])
-             
+
               if sequence_result.failure == 'Can not find your email'
                 flash[:error] = sequence_result.failure
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"

@@ -63,7 +63,6 @@
 }
 
 .section-border {
-    background: #FFFFFF;
-    box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: 3px 2px 3px rgba(0, 0, 0, 0.25);
     border-radius: 6px;
 }
