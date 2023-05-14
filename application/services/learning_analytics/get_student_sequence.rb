@@ -16,18 +16,15 @@ module SurveyMoonbear
       private
 
       def get_student_sequence(input)
-        other_sheets_keys = input[:redis].get_set(input[:visual_report_id])
-        values = {}
-        other_sheets_keys.each do |key|
-          source = key.split('/')[0]
-          values[source] = input[:redis].get(key)
-        end
-        source1 = values['source1']
+        categorize_score_type = input[:categorize_score_type]
+        binding.irb
+        my_student_id = categorize_score_type["achievement"][0]["student_id"]
         student_index = -1
 
-        source1.each_with_index do |row, index|
-          next unless Email.new().is_valid?(row[8])
-          student_index = index - 2 if input[:email] == row[8].downcase
+        categorize_score_type["achievement"][0]["all_name"].keys.each_with_index do |student_id, index|
+          if student_id == my_student_id
+            student_index = index
+          end
         end
 
         if student_index == -1

@@ -16,10 +16,9 @@ module SurveyMoonbear
       private
 
       def get_dashboard_group(input)
-        student_index = 0
-        # student_index = input[:student_sequence] % 8
+        student_index = input[:student_sequence] % 8
         category_one = 'My Learning Report'
-        category_two = 'My Participation'
+        category_two = 'Participation'
 
         category = []
         dashboard = []

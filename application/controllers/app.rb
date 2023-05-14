@@ -513,16 +513,18 @@ module SurveyMoonbear
                 redis.set('system_access_token', new_access_token, 3000)
               end
               access_token = redis.get('system_access_token')
-              # sequence_result = Service::GetStudentSequence.new.call(redis: redis,
-              #                                                        visual_report_id: visual_report_id,
-              #                                                        email: @report_account['email'])
+              categorize_score_type = redis.get('categorize_score_type')
+              sequence_result = Service::GetStudentSequence.new.call(redis: redis,
+                                                                     visual_report_id: visual_report_id,
+                                                                     email: @report_account['email'],
+                                                                     categorize_score_type: categorize_score_type)
 
-              # if sequence_result.failure == 'Can not find your email'
-              #   flash[:error] = sequence_result.failure
-              #   routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
-              # end
+              if sequence_result.failure == 'Can not find your email'
+                flash[:error] = sequence_result.failure
+                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
+              end
 
-              result = Service::GetDashboardGroup.new.call(student_sequence: nil)
+              result = Service::GetDashboardGroup.new.call(student_sequence: sequence_result.value!)
 
               responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                       visual_report_id: visual_report_id,
@@ -538,7 +540,7 @@ module SurveyMoonbear
                                                                code: code,
                                                                access_token: access_token,
                                                                email: @report_account['email'])
-              if responses.failure? || text_responses.failure?
+              if result.failure? || responses.failure? || text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
               end
               vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
