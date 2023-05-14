@@ -71,12 +71,19 @@ module SurveyMoonbear
           if source[4] && source[3]
             email_col = source[4] # I3:I140 sso_email
             case_id_col = source[3] #C3:C140 case_id
+            name_col = source[5] #D3:D140 name
             email_range = transform_anotation(email_col)
             case_range = transform_anotation(case_id_col)
+            name_range = transform_anotation(name_col)
             all_email = get_range_val(input[:other_sheets][source[2]], email_range)
             all_case = get_range_val(input[:other_sheets][source[2]], case_range)
+            all_name = get_range_val(input[:other_sheets][source[2]], name_range)
+            input[:all_name] = {}
+            all_case.each_with_index do |case_id, idx|
+              input[:all_name][case_id]= all_name[idx]
+            end
             all_email.each_with_index do |email, idx|
-              if input[:case_email] == email
+              if input[:case_email].downcase == email.downcase
                 input[:case_id] = all_case[idx]
                 break
               end
@@ -94,8 +101,8 @@ module SurveyMoonbear
         input[:all_graphs].each do |page, graphs|
           graphs.each_with_index do |graph, idx|
             begin
-            # scores.append({ 'Title' => graph[1], 'Score' => graph[8][input[:case_id]] })
-              scores.append({ title: graph[1], score: graph[10][input[:case_id]], score_type: graph[8], all_scores: graph[10], params: graph[9]})
+              # scores.append({ 'Title' => graph[1], 'Score' => graph[8][input[:case_id]] })
+              scores.append({ title: graph[1], score: graph[10][input[:case_id]], score_type: graph[8], all_scores: graph[10], params: graph[9], all_name: input[:all_name]})
             rescue StandardError => e
             end
           end

@@ -107,6 +107,8 @@ module SurveyMoonbear
       # input { ...,user_key, sheets_report, user_access_token, sources}
       def cal_responses_from_sources(input)
         redis_val = input[:redis].get(input[:user_key])
+        tmp = nil
+        test = nil
         input[:all_graphs] =
           if redis_val['all_graphs']
             redis_val['all_graphs']
@@ -116,6 +118,8 @@ module SurveyMoonbear
                 graphs_val =
                   items_data.map do |item_data|
                     source = find_source(input[:sources], item_data.data_source)
+                    test = item_data
+                    tmp = source
                     case source.source_type
                     when 'surveymoonbear'
                       MapSurveyResponsesAndItems.new.call(item_data: item_data,

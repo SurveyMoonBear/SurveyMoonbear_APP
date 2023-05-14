@@ -7,16 +7,16 @@ module SurveyMoonbear
   module Service
     # Return text score for customized report
 
-    class GetHelpLeaderboard
+    class GetLeaderboard
       include Dry::Transaction
       include Dry::Monads
 
-      step :get_all_help_count
+      step :get_leaderboard
 
       private
 
       # TODO: get number of "5" assignment
-      def get_all_help_count(input)
+      def get_leaderboard(input)
         categorize_score_type = input[:categorize_score_type]
         dashboard_type = input[:dashboard_type]
 
@@ -26,9 +26,16 @@ module SurveyMoonbear
         sorted_order = data[dashboard_type][0]["all_scores"].sort_by {|k, v| v.to_i}.reverse
         # return an array with the name and count
         params = data[dashboard_type][0]["params"].to_i
-        top_helpful = sorted_order.take(params)
+        top_scores = sorted_order.take(params)
 
-        Success(top_helpful)
+        all_name = data.first[1][0]["all_name"]
+        top = []
+        top_scores.each do |score|
+          id = score[0]
+          name = all_name[id]
+          top.append([name, score[1]])
+        end
+        Success(top)
       rescue StandardError => e
         Failure('Failed to get help leaderboard data.')
       end
