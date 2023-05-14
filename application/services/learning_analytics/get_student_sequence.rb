@@ -17,7 +17,6 @@ module SurveyMoonbear
 
       def get_student_sequence(input)
         categorize_score_type = input[:categorize_score_type]
-        binding.irb
         my_student_id = categorize_score_type["achievement"][0]["student_id"]
         student_index = -1
 
