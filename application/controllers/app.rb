@@ -613,8 +613,10 @@ module SurveyMoonbear
                               .find_id(visual_report_id)
               # access_token = Google::Auth.new(config).refresh_access_token
               redis = RedisCache.new(config)
+              puts "log[trace]: system_access_token = #{redis.get('system_access_token')}"
               if redis.get('system_access_token').equal? nil
                 new_access_token = Google::Auth.new(config).refresh_access_token
+                puts "log[trace]: new_access_token = #{new_access_token}"
                 redis.set('system_access_token', new_access_token, 3000)
               end
               access_token = redis.get('system_access_token')
