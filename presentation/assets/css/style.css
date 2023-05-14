@@ -70,3 +70,15 @@
     border-radius: 6px;
 }
 
+
+.modal {
+    text-align: center;
+}
+
+.modal-dialog {
+    /* text-align: left;  */
+    /* max-width: 650px; */
+    /* min-width: 400px; */
+    /* width: auto !important; */
+    /* display: inline-block; */
+}

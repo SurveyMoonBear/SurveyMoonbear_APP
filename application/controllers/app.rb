@@ -116,7 +116,6 @@ module SurveyMoonbear
                                                       title: routing.params['title'],
                                                       study_id: routing.params['study_id'])
           redirect_rout = routing.params['rerout']
-          binding.irb
           if new_survey.success?
             flash[:notice] = "#{new_survey.value!.title} is created!"
           else
@@ -501,7 +500,6 @@ module SurveyMoonbear
                                                             spreadsheet_id: spreadsheet_id,
                                                             dashboard_result: @dashboard_result}
             end
-
             routing.get do
               code = routing.params['code']
               visual_report = Repository::For[Entity::VisualReport]

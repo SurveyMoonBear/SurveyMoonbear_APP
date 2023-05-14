@@ -91,6 +91,7 @@ javascript:
       url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/" + dashboard_type,
       type: 'GET',
       success: function(result) {
+        console.log(result)
         $('#content_data').html(result);
         $('#modal-title').text(title)
         $('#dashboard_modal').modal('show');
