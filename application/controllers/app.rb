@@ -435,6 +435,7 @@ module SurveyMoonbear
               logged_in_account = logged_in_account_res.value!.to_h
 
               SecureSession.new(session).set(:report_account, logged_in_account)
+             
               routing.redirect "#{redirect_route}?code=#{code}"
             end
         end
@@ -539,7 +540,7 @@ module SurveyMoonbear
               text_responses_parse = JSON.parse(text_responses_result)
               text_report_object = text_responses_parse['scores']
 
-              score_type = ['st', 'pr', 'hw', 'qz']
+              score_type = ['score_st', 'score_pr', 'score_hw', 'score_qz', 'score_la']
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
               redis.delete('categorize_score_type') if redis.get('categorize_score_type')
               redis.set('categorize_score_type', categorize_score_type)
@@ -549,14 +550,16 @@ module SurveyMoonbear
 
               scores.each_key do |key|
                 title[key] = case key
-                             when 'st'
+                             when 'score_st'
                               'Tutorial + Quiz (Total 2)'
-                             when 'pr'
+                             when 'score_pr'
                               'Peer Review (Total 2)'
-                             when 'hw'
+                             when 'score_hw'
                               'Homework (Total 5)'
-                             when 'qz'
+                             when 'score_qz'
                               'Quiz (Total 2)'
+                            when 'score_la'
+                              'LA'
                              else
                               'Others'
                              end
@@ -650,7 +653,7 @@ module SurveyMoonbear
               text_report_object = text_responses_parse['scores']
               # text_report_ta = text_responses_parse['ta']
 
-              score_type = ['st', 'pr', 'hw', 'qz']
+              score_type = ['score_st', 'score_pr', 'score_hw', 'score_qz', 'score_la']
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
               scores = categorize_score_type.reject{|key, value| !score_type.include? key }
               ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
@@ -658,14 +661,16 @@ module SurveyMoonbear
 
               scores.each_key do |key|
                 title[key] = case key
-                             when 'st'
+                             when 'score_st'
                                'Tutorial + Quiz (Total 2)'
-                             when 'pr'
+                             when 'score_pr'
                                'Peer Review (Total 2)'
-                             when 'hw'
+                             when 'score_hw'
                                'Homework (Total 5)'
-                             when 'qz'
+                             when 'score_qz'
                                'Quiz (Total 2)'
+                              when 'score_la'
+                                'LA'
                              else
                                'Others'
                              end
