@@ -116,7 +116,7 @@ module SurveyMoonbear
                                                       title: routing.params['title'],
                                                       study_id: routing.params['study_id'])
           redirect_rout = routing.params['rerout']
-
+          binding.irb
           if new_survey.success?
             flash[:notice] = "#{new_survey.value!.title} is created!"
           else
@@ -185,6 +185,7 @@ module SurveyMoonbear
         # GET survey/[survey_id]/start
         routing.get 'start' do
           response = Service::StartSurvey.new.call(survey_id: survey_id, current_account: @current_account)
+          binding.irb
           flash[:error] = "#{response.failure} Please try again." if response.failure?
 
           routing.redirect '/survey_list'
@@ -561,6 +562,7 @@ module SurveyMoonbear
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
               redis.delete('categorize_score_type') if redis.get('categorize_score_type')
               redis.set('categorize_score_type', categorize_score_type)
+              # issue: 別人會存取到我的分數?
               scores = categorize_score_type.reject{|key, value| !score_type.include? key }
               ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
               title = {}
