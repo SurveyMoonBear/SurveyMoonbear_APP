@@ -13,29 +13,29 @@ html
     div#chart_4
     
 javascript:
-  var data = #{@dashboard_result}
-  var layouts = [['Homework', 'Assignment', 'Grade'],
-                 ['Peer Review', 'Assignment', 'Grade'],
-                 ['Swirl and Tutorial', 'Assignment', 'Grade'],
-                 ['LA', 'Assignment', 'Grade'],
-                 ['Quiz', 'Assignment', 'Grade']]
-  var types = ['HW', 'PR', 'ST', 'LA', 'QZ']
+  var str = "#{@dashboard_result}"
+  var text_area = document.createElement('text_area')
+  text_area.innerHTML = str
+  var result = JSON.parse(text_area.innerHTML)
+  var title = result[0]
+  var data = result[1]
 
   for (let i = 0; i < data.length; i++) {
     console.log(data.length, i)
     var x = data[i][0]
     var y = data[i][1]
 
-    dashboard_plot = generate_dashboard_plot(x, y, layouts[i], types[i])
+    dashboard_plot = generate_dashboard_plot(x, y, title[i])
     trace = dashboard_plot[0]
     chart_layout = dashboard_plot[1]
     
     Plotly.newPlot("chart_" + i, trace, chart_layout, {staticPlot: true});
   }
 
-  function generate_dashboard_plot(x_values, y_values, layout, type) {
+  function generate_dashboard_plot(x_values, y_values, layout) {
     for (let i = 0; i < x_values.length; i++) {
-      x_values[i] = type + x_values[i].toString()
+      console.log(x_values[i])
+      x_values[i] = x_values[i].toString()
     }
 
     trace = []
@@ -57,12 +57,10 @@ javascript:
     }
 
     chart_layout = { 
-      title: layout[0], 
-      xaxis: { 
-        title: layout[1] 
-      }, 
+      title: layout, 
       yaxis: { 
-        title: layout[2] 
+        title: 'Grade',
+        rangemode: 'tozero'
       } 
     }
 

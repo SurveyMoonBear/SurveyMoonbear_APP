@@ -28,10 +28,8 @@ module SurveyMoonbear
                    Service::GetCurrentRanking.new.call(email: input[:email], categorize_score_type: categorize_score_type)
                  elsif input[:dashboard_type] == 'current_score'
                    Service::GetCurrentScore.new.call(email: input[:email], categorize_score_type: categorize_score_type)
-                 elsif input[:dashboard_type] == 'assignments_distribution'
+                 elsif input[:dashboard_type] == 'assignments_distribution' || input[:dashboard_type] == 'assignments_report'
                    Service::GetAssignmentsDistribution.new.call(email: input[:email], categorize_score_type: categorize_score_type)
-                 elsif input[:dashboard_type] == 'assignments_report'
-                   Service::GetAssignmentsReport.new.call(email: input[:email], categorize_score_type: categorize_score_type)
                  end
         Success(result.value!)
       rescue StandardError => e
