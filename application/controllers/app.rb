@@ -435,7 +435,13 @@ module SurveyMoonbear
               logged_in_account = logged_in_account_res.value!.to_h
 
               SecureSession.new(session).set(:report_account, logged_in_account)
-             
+              redis = RedisCache.new(config)
+              if redis.get('system_access_token').equal? nil
+                redis.set('system_access_token', logged_in_account[:access_token], 3000)
+              end
+              if redis.get('system_refresh_token').equal? nil
+                redis.set('system_refresh_token', logged_in_account[:refresh_token])
+              end
               routing.redirect "#{redirect_route}?code=#{code}"
             end
         end
@@ -582,11 +588,14 @@ module SurveyMoonbear
             # write in service object?
             url = 'https://accounts.google.com/o/oauth2/v2/auth'
             scopes = ['https://www.googleapis.com/auth/userinfo.profile',
-                      'https://www.googleapis.com/auth/userinfo.email']
+                      'https://www.googleapis.com/auth/userinfo.email',
+                      'https://www.googleapis.com/auth/spreadsheets']
             params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
                       "redirect_uri=#{config.APP_URL}/report/google_callback",
                       'response_type=code',
                       "scope=#{scopes.join(' ')}",
+                      'access_type=offline',
+                      'prompt=consent',
                       "state=/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/#{report_type}"]
             @google_sso_url = "#{url}?#{params.join('&')}"
 

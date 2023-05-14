@@ -99,6 +99,12 @@ module SurveyMoonbear
         Response.new(response).response_or_error
       end
 
+      def post_gs_url_refresh(url, data)
+        response = HTTP.headers({'accept': 'application/json', 'content-type': 'application/x-www-form-urlencoded; charset=utf-8'})
+                       .post(url, form:data[:params])
+        Response.new(response).response_or_error
+      end
+
       def post_gs_url(url, data)
         response = HTTP.headers({'accept': 'application/json', 'content-type': 'application/x-www-form-urlencoded; charset=utf-8'})
                        .post(url, data)
@@ -115,7 +121,7 @@ module SurveyMoonbear
             grant_type: 'refresh_token'
           }
         }
-        response = post_gs_url(refresh_req_url, data).parse
+        response = post_gs_url_refresh(refresh_req_url, data).parse
         response['access_token']
       end
     end
