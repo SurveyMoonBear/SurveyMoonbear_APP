@@ -20,10 +20,12 @@
     padding-left: 50px !important;
 } */
 .te{
-  background: linear-gradient(0deg, rgba(255,151,0,1) 0%, rgba(251,75,2,1) 100%);
-  line-height: 42px;
-  padding: 0;
-  border: none;
+    background: linear-gradient(0deg, rgb(80, 226, 255) 0%, rgb(0, 91, 183) 100%);
+    line-height: 42px;
+    padding: 0;
+    border-top-left-radius: 8px 8px;
+    border-top-right-radius: 8px 8px;
+    height:50px;
 }
 
 .LA-card {
@@ -66,4 +68,11 @@
     background: #FFFFFF;
     border: 1px solid #E2E2E2;
     border-radius: 6px;
+}
+
+.trophy-index {
+    /* background: #00b1dd; */
+    /* border-radius: 50%;
+    height: 40px;
+    width: 40px; */
 }
