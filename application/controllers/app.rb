@@ -513,7 +513,21 @@ module SurveyMoonbear
                 redis.set('system_access_token', new_access_token, 3000)
               end
               access_token = redis.get('system_access_token')
-              categorize_score_type = redis.get('categorize_score_type')
+              text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
+                                                               visual_report_id: visual_report_id,
+                                                               visual_report: visual_report,
+                                                               config: config,
+                                                               code: code,
+                                                               access_token: access_token,
+                                                               email: @report_account['email'])
+
+              text_responses_result = text_responses.value!.to_json
+              text_responses_parse = JSON.parse(text_responses_result)
+              text_report_object = text_responses_parse['scores']
+
+              score_type = ['score_st', 'score_pr', 'score_hw', 'score_qz', 'score_la']
+              categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
+
               sequence_result = Service::GetStudentSequence.new.call(redis: redis,
                                                                      visual_report_id: visual_report_id,
                                                                      email: @report_account['email'],
@@ -533,13 +547,7 @@ module SurveyMoonbear
                                                                       code: code,
                                                                       access_token: access_token,
                                                                       email: @report_account['email'])
-              text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
-                                                               visual_report_id: visual_report_id,
-                                                               visual_report: visual_report,
-                                                               config: config,
-                                                               code: code,
-                                                               access_token: access_token,
-                                                               email: @report_account['email'])
+              
               if result.failure? || responses.failure? || text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
               end
