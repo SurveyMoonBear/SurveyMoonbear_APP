@@ -60,7 +60,7 @@ html
                     h4 class="text-primary font-weight-bold my-4 mx-4" #{analytics_order[:category][0]}
                     div class="d-flex flex-sm-row flex-column flex-sm-wrap"
                       - analytics_order[:dashboard][0].each do |analytic|
-                        div class="LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border" style="border-radius:6px; cursor:pointer; min-height: 230px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
+                        div class="LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border" style="border-radius:6px; cursor:pointer; min-height: 15vh;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
                           h5 class="LA-title hover:text-white font-weight-bold" #{analytic[0]}
                           p class="LA-description hover:text-white mb-4"  #{analytic[1]}
                           <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
@@ -69,7 +69,7 @@ html
                     h4 class="text-primary font-weight-bold my-4 mx-4" #{analytics_order[:category][1]}
                     div class="d-flex flex-sm-row flex-column flex-sm-wrap"
                       - analytics_order[:dashboard][1].each do |analytic|
-                        div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer; min-height: 230px;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
+                        div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer; min-height: 15vh;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
                           h5 class="LA-title font-weight-bold" #{analytic[0]}
                           p class="LA-description hover:text-white mb-4"  #{analytic[1]}
                           <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>

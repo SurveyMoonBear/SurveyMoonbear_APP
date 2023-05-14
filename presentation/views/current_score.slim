@@ -1,5 +1,6 @@
 - if @dashboard_result
   .d-flex.justify-content-center.flex-col
     img class="m-auto" alt="Homework" src="https://i.imgur.com/F7HZNKk.png" style="max-width:80px;"
-    h2 class="text-primary font-weight-bold text-center" #{@dashboard_result} 
-      span is my current score.
+    div class="d-flex flex-column ml-4"
+      h2 class="text-primary font-weight-bold" #{@dashboard_result} 
+      span class="text-gray" is my current score.

@@ -54,7 +54,7 @@
 }
 
 .fire-shadow {
-    filter: drop-shadow(2px 2px 2px rgba(218, 13, 0, 0.25));
+    filter: drop-shadow(2px 2px 2px rgba(218, 160, 0, 0.25));
 }
 
 .achievement-border {
@@ -69,3 +69,4 @@
     border: 1px solid #E2E2E2;
     border-radius: 6px;
 }
+
