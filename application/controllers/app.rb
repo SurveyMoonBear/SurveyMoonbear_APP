@@ -7,6 +7,7 @@ require 'slim/include'
 require 'google/api_client/client_secrets'
 require 'json'
 require 'csv'
+require 'digest'
 
 module SurveyMoonbear
   # rubocop: disable Metrics/ClassLength
@@ -493,6 +494,7 @@ module SurveyMoonbear
             end
 
             routing.get String do |dashboard_type|
+              puts "log[trace]: user:#{Digest::SHA256.hexdigest(@report_account['email'])}, dashboard_type: #{dashboard_type}"
               redis = RedisCache.new(config)
               categorize_score_type = redis.get("categorize_score_type_#{@report_account['email']}")
               result = Service::GetDashboardData.new.call(redis:redis,
@@ -512,7 +514,6 @@ module SurveyMoonbear
 
               report_account_system_access_key = "report_account_access_token_#{@report_account['email']}"
               redis = RedisCache.new(config)
-              puts "log[trace]: report_account_access_token = #{redis.get(report_account_system_access_key)}"
 
               if redis.get(report_account_system_access_key).equal? nil
                 flash[:error] = 'Identify failed.'
