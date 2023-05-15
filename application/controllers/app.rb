@@ -115,6 +115,7 @@ module SurveyMoonbear
                                                       current_account: @current_account,
                                                       title: routing.params['title'],
                                                       study_id: routing.params['study_id'])
+          binding.irb
           redirect_rout = routing.params['rerout']
           if new_survey.success?
             flash[:notice] = "#{new_survey.value!.title} is created!"
@@ -489,7 +490,7 @@ module SurveyMoonbear
 
             routing.get String do |dashboard_type|
               redis = RedisCache.new(config)
-              categorize_score_type = redis.get('categorize_score_type')
+              categorize_score_type = redis.get("categorize_score_type_#{@report_account['email']}")
               result = Service::GetDashboardData.new.call(redis:redis,
                                                           visual_report_id: visual_report_id,
                                                           dashboard_type: dashboard_type,
@@ -519,6 +520,9 @@ module SurveyMoonbear
                                                                code: code,
                                                                access_token: access_token,
                                                                email: @report_account['email'])
+              if text_responses.failure?
+                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
+              end
 
               text_responses_result = text_responses.value!.to_json
               text_responses_parse = JSON.parse(text_responses_result)
@@ -546,21 +550,15 @@ module SurveyMoonbear
                                                                       code: code,
                                                                       access_token: access_token,
                                                                       email: @report_account['email'])
-              
+
               if result.failure? || responses.failure? || text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
               end
               vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
               analytics_order = result.value!
-              text_responses_result = text_responses.value!.to_json
-              text_responses_parse = JSON.parse(text_responses_result)
-              text_report_object = text_responses_parse['scores']
+              redis.delete("categorize_score_type_#{@report_account['email']}") if redis.get("categorize_score_type_#{@report_account['email']}")
+              redis.set("categorize_score_type_#{@report_account['email']}", categorize_score_type)
 
-              score_type = ['score_st', 'score_pr', 'score_hw', 'score_qz', 'score_la']
-              categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
-              redis.delete('categorize_score_type') if redis.get('categorize_score_type')
-              redis.set('categorize_score_type', categorize_score_type)
-              # issue: 別人會存取到我的分數?
               scores = categorize_score_type.reject{|key, value| !score_type.include? key }
               ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
               title = {}
