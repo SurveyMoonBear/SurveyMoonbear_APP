@@ -33,6 +33,7 @@ module SurveyMoonbear
                  end
         Success(result.value!)
       rescue StandardError => e
+        puts "log[error]: #{e.full_message}"
         Failure('Failed to get sources from redis.')
       end
     end
