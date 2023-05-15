@@ -29,9 +29,11 @@ module SurveyMoonbear
           key = i["title"]
           achievement_result[key] = Array.new(star, 1) + Array.new(3 - star, 0)
         end
+
         Success(achievement_result)
       rescue StandardError => e
         puts "log[error]:achievement: #{e.full_message}"
+        puts "log[error]:star: #{star}"
         Failure('Failed to get achievement data.')
       end
     end

@@ -605,7 +605,7 @@ module SurveyMoonbear
             url = 'https://accounts.google.com/o/oauth2/v2/auth'
             scopes = ['https://www.googleapis.com/auth/userinfo.profile',
                       'https://www.googleapis.com/auth/userinfo.email',
-                      'https://www.googleapis.com/auth/spreadsheets']
+                      'https://www.googleapis.com/auth/spreadsheets.readonly']
             params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
                       "redirect_uri=#{config.APP_URL}/report/google_callback",
                       'response_type=code',
