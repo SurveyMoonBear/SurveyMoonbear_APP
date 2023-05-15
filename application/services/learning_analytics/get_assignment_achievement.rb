@@ -31,6 +31,7 @@ module SurveyMoonbear
         end
         Success(achievement_result)
       rescue StandardError => e
+        puts "log[error]:achievement: #{e.full_message}"
         Failure('Failed to get achievement data.')
       end
     end
