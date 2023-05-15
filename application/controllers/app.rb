@@ -444,9 +444,9 @@ module SurveyMoonbear
               if redis.get("report_account_access_token_#{logged_in_account[:email]}").equal? nil
                 redis.set("report_account_access_token_#{logged_in_account[:email]}", logged_in_account[:access_token], 3000)
               end
-              if redis.get("report_account_refresh_token_#{logged_in_account[:email]}").equal? nil
-                redis.set("report_account_refresh_token_#{logged_in_account[:email]}", logged_in_account[:refresh_token])
-              end
+              # if redis.get("report_account_refresh_token_#{logged_in_account[:email]}").equal? nil
+              #   redis.set("report_account_refresh_token_#{logged_in_account[:email]}", logged_in_account[:refresh_token])
+              # end
 
               routing.redirect "#{redirect_route}?code=#{code}"
             end
@@ -512,15 +512,16 @@ module SurveyMoonbear
               visual_report = Repository::For[Entity::VisualReport]
                               .find_id(visual_report_id)
 
-              report_account_system_access_key = "report_account_access_token_#{@report_account['email']}"
+              # report_account_system_access_key = "report_account_access_token_#{@report_account['email']}"
               redis = RedisCache.new(config)
 
-              if redis.get(report_account_system_access_key).equal? nil
-                flash[:error] = 'Identify failed.'
-                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
-              end
+              # if redis.get(report_account_system_access_key).equal? nil
+              #   flash[:error] = 'Identify failed.'
+              #   routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
+              # end
 
-              access_token = redis.get(report_account_system_access_key)
+              # access_token = redis.get(report_account_system_access_key)
+              access_token = Google::Auth.new(config).refresh_access_token
               text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                visual_report_id: visual_report_id,
                                                                visual_report: visual_report,
@@ -604,14 +605,11 @@ module SurveyMoonbear
             # write in service object?
             url = 'https://accounts.google.com/o/oauth2/v2/auth'
             scopes = ['https://www.googleapis.com/auth/userinfo.profile',
-                      'https://www.googleapis.com/auth/userinfo.email',
-                      'https://www.googleapis.com/auth/spreadsheets.readonly']
+                      'https://www.googleapis.com/auth/userinfo.email']
             params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
                       "redirect_uri=#{config.APP_URL}/report/google_callback",
                       'response_type=code',
                       "scope=#{scopes.join(' ')}",
-                      'access_type=offline',
-                      'prompt=consent',
                       "state=/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/#{report_type}"]
             @google_sso_url = "#{url}?#{params.join('&')}"
 
@@ -638,16 +636,17 @@ module SurveyMoonbear
               visual_report = Repository::For[Entity::VisualReport]
                               .find_id(visual_report_id)
 
-              report_account_system_access_key = "report_account_access_token_#{@report_account['email']}"
+              # report_account_system_access_key = "report_account_access_token_#{@report_account['email']}"
 
               redis = RedisCache.new(config)
-              if redis.get(report_account_system_access_key).equal? nil
-                flash[:error] = 'Identify failed.'
-                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
-              end
+              # if redis.get(report_account_system_access_key).equal? nil
+              #   flash[:error] = 'Identify failed.'
+              #   routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
+              # end
 
 
-              access_token = redis.get(report_account_system_access_key)
+              # access_token = redis.get(report_account_system_access_key)
+              access_token = Google::Auth.new(config).refresh_access_token
 
               sequence_result = Service::GetStudentSequence.new.call(redis: redis,
                                                                       visual_report_id: visual_report_id,
