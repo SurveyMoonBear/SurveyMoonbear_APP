@@ -80,7 +80,7 @@ module SurveyMoonbear
             all_name = get_range_val(input[:other_sheets][source[2]], name_range)
             input[:all_name] = {}
 
-            puts "log[trace]: case_email = #{case_email}"
+            puts "log[trace]: case_email = #{input[:case_email]}"
             all_case.each_with_index do |case_id, idx|
               input[:all_name][case_id]= all_name[idx]
             end
