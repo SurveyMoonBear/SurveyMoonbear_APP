@@ -27,6 +27,7 @@ module SurveyMoonbear
         end
         Success(result)
       rescue StandardError => e
+        puts "log[error]:weekly_participation: #{e.full_message}"
         Failure('Failed to get participation.')
       end
     end

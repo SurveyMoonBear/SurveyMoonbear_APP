@@ -22,6 +22,7 @@ module SurveyMoonbear
         data = categorize_score_type.select{|key, value| score_type.include? key }
         Success(data["percentile"][0]["score"])
       rescue StandardError => e
+        puts "log[error]:percentile_ranking: #{e.full_message}"
         Failure('Failed to get ranking.')
       end
     end

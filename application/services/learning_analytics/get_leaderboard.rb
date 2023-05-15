@@ -37,7 +37,8 @@ module SurveyMoonbear
         end
         Success(top)
       rescue StandardError => e
-        Failure('Failed to get help leaderboard data.')
+        puts "log[error]:leaderboard: #{e.full_message}"
+        Failure('Failed to get leaderboard data.')
       end
     end
   end

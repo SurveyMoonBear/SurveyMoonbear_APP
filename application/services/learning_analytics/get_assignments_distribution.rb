@@ -39,6 +39,7 @@ module SurveyMoonbear
         data = [title, [hw, pr, st, la, qz]].to_json
         Success(data)
       rescue StandardError => e
+        puts "log[error]:assignment_distribution: #{e.full_message}"
         Failure('Failed to get assignment distribution.')
       end
 

@@ -22,6 +22,7 @@ module SurveyMoonbear
         data = categorize_score_type.select{|key, value| score_type.include? key }
         Success(data["total_score"][0]["score"])
       rescue StandardError => e
+        puts "log[error]:current_score: #{e.full_message}"
         Failure('Failed to get current score.')
       end
     end
