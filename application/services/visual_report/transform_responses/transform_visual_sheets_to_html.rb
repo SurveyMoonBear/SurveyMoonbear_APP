@@ -140,8 +140,9 @@ module SurveyMoonbear
             input[:redis].update(input[:user_key], redis_val)
             redis_val['all_graphs']
           end
-          Success(input[:all_graphs])
-        rescue StandardError => e
+        Success(input[:all_graphs])
+      rescue StandardError => e
+        puts "log[error]: #{e.full_message}"
         Failure('Failed to map responses and visual report items.')
       end
 
