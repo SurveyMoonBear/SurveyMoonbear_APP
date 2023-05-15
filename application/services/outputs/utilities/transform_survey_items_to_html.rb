@@ -125,6 +125,8 @@ module SurveyMoonbear
         case grids_group_arr[0].type
         when 'Multiple choice grid (radio button)'
           build_grid_questions_radio(grids_group_arr)
+        when 'Multiple choice grid (RAM)'
+          build_grid_questions_ram(grids_group_arr)
         when 'Multiple choice grid (slider)'
           build_grid_questions_slider(grids_group_arr)
         when 'Multiple choice grid (VAS)'
@@ -350,6 +352,45 @@ module SurveyMoonbear
         end
         str += '</tbody></table>'
         str += '</div>'
+        str += '</fieldset>'
+      end
+
+      def build_grid_questions_ram(items)
+        str = '<fieldset>'
+        str += "<table class='table'>"
+
+        min = 0, max = 100, start_point =0
+        word_min = '', word_max = ''
+        items.each do |item|
+          if !item.options.nil?
+            values = item.options.split(',').map(&:strip)
+            min = values[0]
+            max = values[1]
+            word_min = values[2] if values[2]
+            word_max = values[3] if values[3]
+            start_point = values[4] if values[4]
+            break
+          end
+        end
+
+        str += '<thead><tr>'
+        str += "<th scope='col' class='w-50'></th>"
+        str += "<th scope='col' class='w-50'><div class='w-100 row mx-auto'>"
+        str += "<div class='col-4 col-sm-2 text-left px-0'>#{word_min}</div>"
+        str += "<div class='col-4 offset-4 col-sm-2 offset-sm-8 text-right px-0'>#{word_max}</div>"
+        str += '</div></th></tr></thead>'
+
+        items.each do |item|
+          str += "<tr id='#{item.name}'>"
+          if item.required == 1
+            str += "<td class='w-50 lead'>#{item.description}<span class='text-danger'>*</span></td>"
+          else
+            str += "<td class='w-50 lead'>#{item.description}</td>"
+          end
+          str += "<td class='w-50 align-middle'><input type='range' class='custom-range ram-slider' id='#{item.name}' name='#{item.name}' value='#{start_point}' min='#{min}' max='#{max}'></td>"
+          str += '</tr>'
+        end
+        str += '</table>'
         str += '</fieldset>'
       end
 

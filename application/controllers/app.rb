@@ -118,7 +118,7 @@ module SurveyMoonbear
           if new_survey.success?
             flash[:notice] = "#{new_survey.value!.title} is created!"
           else
-            flash[:error] = 'Failed to create survey, please try again :('
+            flash[:error] = "Failed to create survey, please try again :("
           end
 
           routing.redirect redirect_rout

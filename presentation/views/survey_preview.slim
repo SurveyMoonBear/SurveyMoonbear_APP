@@ -129,3 +129,15 @@ css:
   .vas-unclicked::-webkit-slider-thumb {
     background: rgba(0, 0, 0, 0);
   }
+  .ram-slider{
+  pointer-events: none;
+  } 
+   .ram-slider::-webkit-slider-thumb{/*Webkit Browsers like Chrome and Safari*/
+    pointer-events: auto;
+   }
+  .ram-slider::-moz-range-thumb{/*Firefox*/
+    pointer-events: auto;
+  }
+  .ram-slider::-ms-thumb{/*Internet Explorer*/
+    pointer-events: auto;
+  }
