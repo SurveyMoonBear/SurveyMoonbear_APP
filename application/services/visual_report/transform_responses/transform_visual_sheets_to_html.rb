@@ -49,10 +49,10 @@ module SurveyMoonbear
 
       # input { ..., sheets_report}
       def get_user_access_token(input)
-        if redis.get('user_access_token').nil?
+        if input[:redis].get('user_access_token').nil?
           refresh_token = input[:visual_report].owner.refresh_token
           user_access_token = Google::Auth.new(input[:config]).refresh_user_access_token(refresh_token)
-          redis.set('user_access_token', user_access_token)
+          input[:redis].set('user_access_token', user_access_token)
         end
         input[:user_access_token] = input[:redis].get('user_access_token')
 
