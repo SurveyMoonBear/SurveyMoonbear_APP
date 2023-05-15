@@ -79,10 +79,13 @@ module SurveyMoonbear
             all_case = get_range_val(input[:other_sheets][source[2]], case_range)
             all_name = get_range_val(input[:other_sheets][source[2]], name_range)
             input[:all_name] = {}
+
+            puts "log[trace]: case_email = #{case_email}"
             all_case.each_with_index do |case_id, idx|
               input[:all_name][case_id]= all_name[idx]
             end
             all_email.each_with_index do |email, idx|
+              puts "log[trace]: all_email = #{email}"
               if input[:case_email].downcase == email.downcase
                 input[:case_id] = all_case[idx]
                 break
