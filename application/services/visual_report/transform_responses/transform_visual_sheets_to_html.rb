@@ -49,8 +49,9 @@ module SurveyMoonbear
 
       # input { ..., sheets_report}
       def get_user_access_token(input)
-        refresh_token = input[:visual_report].owner.refresh_token
-        input[:user_access_token] = Google::Auth.new(input[:config]).refresh_user_access_token(refresh_token)
+        # refresh_token = input[:visual_report].owner.refresh_token
+        # input[:user_access_token] = Google::Auth.new(input[:config]).refresh_user_access_token(refresh_token)
+        input[:user_access_token] = input[:redis].get('system_access_key')
 
         if input[:user_access_token]
           Success(input)

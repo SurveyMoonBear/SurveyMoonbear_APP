@@ -100,8 +100,7 @@ module SurveyMoonbear
       end
 
       def post_gs_url_refresh(url, data)
-        response = HTTP.headers({'accept': 'application/json', 'content-type': 'application/x-www-form-urlencoded; charset=utf-8'})
-                       .post(url, form:data[:params])
+        response = HTTP.headers(accept: 'application/json').post(url, params: data)
         Response.new(response).response_or_error
       end
 
@@ -112,14 +111,12 @@ module SurveyMoonbear
       end
 
       def get_new_access_token(role_access_token)
-        refresh_req_url = google_oauth_v4_path('token')
+        refresh_req_url = 'https://oauth2.googleapis.com/token'
         data = {
-          params: {
-            refresh_token: role_access_token,
-            client_id: @config.GOOGLE_CLIENT_ID,
-            client_secret: @config.GOOGLE_CLIENT_SECRET,
-            grant_type: 'refresh_token'
-          }
+          refresh_token: role_access_token,
+          client_id: @config.GOOGLE_CLIENT_ID,
+          client_secret: @config.GOOGLE_CLIENT_SECRET,
+          grant_type: 'refresh_token'
         }
         response = post_gs_url_refresh(refresh_req_url, data).parse
         response['access_token']

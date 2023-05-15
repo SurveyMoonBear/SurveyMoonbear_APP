@@ -521,7 +521,13 @@ module SurveyMoonbear
               # end
 
               # access_token = redis.get(report_account_system_access_key)
-              access_token = Google::Auth.new(config).refresh_access_token
+
+              if redis.get('system_access_key').equal? nil
+                new_access_token = Google::Auth.new(config).refresh_access_token
+                redis.set('system_access_key', new_access_token)
+              end
+              access_token = redis.get('system_access_key')
+
               puts "log[trace]: access_token: #{access_token}"
               text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                visual_report_id: visual_report_id,
