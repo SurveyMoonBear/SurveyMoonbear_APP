@@ -38,7 +38,8 @@ module SurveyMoonbear
         scopes = ['https://www.googleapis.com/auth/userinfo.profile',
                   'https://www.googleapis.com/auth/userinfo.email',
                   'https://www.googleapis.com/auth/spreadsheets',
-                  'https://www.googleapis.com/auth/calendar']
+                  'https://www.googleapis.com/auth/calendar',
+                  'https://www.googleapis.com/auth/drive']
         params = ["client_id=#{config.GOOGLE_CLIENT_ID}",
                   "redirect_uri=#{config.APP_URL}/account/login/google_callback",
                   'response_type=code',
@@ -79,12 +80,16 @@ module SurveyMoonbear
 
               SecureSession.new(session).set(:current_account, logged_in_account)
               redis = RedisCache.new(config)
-              if redis.get("current_account_access_token_#{logged_in_account[:email]}").equal? nil
-                redis.set("current_account_access_token_#{logged_in_account[:email]}", logged_in_account[:access_token], 3000)
+              if redis.get("current_account_access_token_#{logged_in_account[:email]}")
+                redis.delete("current_account_access_token_#{logged_in_account[:email]}")
               end
-              if redis.get("current_account_refresh_token_#{logged_in_account[:email]}").equal? nil
-                redis.set("current_account_refresh_token_#{logged_in_account[:email]}", logged_in_account[:refresh_token])
+              redis.set("current_account_access_token_#{logged_in_account[:email]}", logged_in_account[:access_token], 3000)
+
+              if redis.get("current_account_refresh_token_#{logged_in_account[:email]}")
+                redis.delete("current_account_refresh_token_#{logged_in_account[:email]}")
               end
+              redis.set("current_account_refresh_token_#{logged_in_account[:email]}", logged_in_account[:refresh_token])
+
               routing.redirect '/survey_list'
             end
           end
@@ -115,7 +120,6 @@ module SurveyMoonbear
                                                       current_account: @current_account,
                                                       title: routing.params['title'],
                                                       study_id: routing.params['study_id'])
-          binding.irb
           redirect_rout = routing.params['rerout']
           if new_survey.success?
             flash[:notice] = "#{new_survey.value!.title} is created!"
@@ -185,7 +189,6 @@ module SurveyMoonbear
         # GET survey/[survey_id]/start
         routing.get 'start' do
           response = Service::StartSurvey.new.call(survey_id: survey_id, current_account: @current_account)
-          binding.irb
           flash[:error] = "#{response.failure} Please try again." if response.failure?
 
           routing.redirect '/survey_list'
