@@ -79,11 +79,11 @@ module SurveyMoonbear
 
               SecureSession.new(session).set(:current_account, logged_in_account)
               redis = RedisCache.new(config)
-              if redis.get('system_access_token').equal? nil
-                redis.set('system_access_token', logged_in_account[:access_token], 3000)
+              if redis.get("current_account_access_token_#{logged_in_account[:email]}").equal? nil
+                redis.set("current_account_access_token_#{logged_in_account[:email]}", logged_in_account[:access_token], 3000)
               end
-              if redis.get('system_refresh_token').equal? nil
-                redis.set('system_refresh_token', logged_in_account[:refresh_token])
+              if redis.get("current_account_refresh_token_#{logged_in_account[:email]}").equal? nil
+                redis.set("current_account_refresh_token_#{logged_in_account[:email]}", logged_in_account[:refresh_token])
               end
               routing.redirect '/survey_list'
             end
@@ -437,12 +437,13 @@ module SurveyMoonbear
 
               SecureSession.new(session).set(:report_account, logged_in_account)
               redis = RedisCache.new(config)
-              if redis.get('system_access_token').equal? nil
-                redis.set('system_access_token', logged_in_account[:access_token], 3000)
+              if redis.get("report_account_access_token_#{logged_in_account[:email]}").equal? nil
+                redis.set("report_account_access_token_#{logged_in_account[:email]}", logged_in_account[:access_token], 3000)
               end
-              if redis.get('system_refresh_token').equal? nil
-                redis.set('system_refresh_token', logged_in_account[:refresh_token])
+              if redis.get("report_account_refresh_token_#{logged_in_account[:email]}").equal? nil
+                redis.set("report_account_refresh_token_#{logged_in_account[:email]}", logged_in_account[:refresh_token])
               end
+
               routing.redirect "#{redirect_route}?code=#{code}"
             end
         end
@@ -506,13 +507,16 @@ module SurveyMoonbear
               visual_report = Repository::For[Entity::VisualReport]
                               .find_id(visual_report_id)
 
+              report_account_system_access_key = "report_account_access_token_#{@report_account['email']}"
               redis = RedisCache.new(config)
-              puts "log[trace]: system_access_token = #{redis.get('system_access_token')}"
-              if redis.get('system_access_token').equal? nil
-                new_access_token = Google::Auth.new(config).refresh_access_token
-                redis.set('system_access_token', new_access_token, 3000)
+              puts "log[trace]: report_account_access_token = #{redis.get(report_account_system_access_key)}"
+
+              if redis.get(report_account_system_access_key).equal? nil
+                flash[:error] = 'Identify failed.'
+                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
               end
-              access_token = redis.get('system_access_token')
+
+              access_token = redis.get(report_account_system_access_key)
               text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                visual_report_id: visual_report_id,
                                                                visual_report: visual_report,
@@ -629,22 +633,25 @@ module SurveyMoonbear
 
               visual_report = Repository::For[Entity::VisualReport]
                               .find_id(visual_report_id)
-              # access_token = Google::Auth.new(config).refresh_access_token
+
+              report_account_system_access_key = "report_account_access_token_#{@report_account['email']}"
+
               redis = RedisCache.new(config)
-              if redis.get('system_access_token').equal? nil
-                new_access_token = Google::Auth.new(config).refresh_access_token
-                puts "log[trace]: new_access_token = #{new_access_token}"
-                redis.set('system_access_token', new_access_token, 3000)
+              if redis.get(report_account_system_access_key).equal? nil
+                flash[:error] = 'Identify failed.'
+                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
               end
-              access_token = redis.get('system_access_token')
+
+
+              access_token = redis.get(report_account_system_access_key)
 
               sequence_result = Service::GetStudentSequence.new.call(redis: redis,
-                                                            visual_report_id: visual_report_id,
-                                                            email: @report_account['email'])
+                                                                      visual_report_id: visual_report_id,
+                                                                      email: @report_account['email'])
 
               if sequence_result.failure == 'Can not find your email'
                 flash[:error] = sequence_result.failure
-                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
+                routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
               end
 
               responses = Service::GetCustomizedVisualReport.new.call(spreadsheet_id: spreadsheet_id,
@@ -712,11 +719,11 @@ module SurveyMoonbear
             cache_key = "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"
 
             # redis = RedisCache.new(config)
-            if redis.get('system_access_token').equal? nil
-              new_access_token = Google::Auth.new(config).refresh_access_token
-              redis.set('system_access_token', new_access_token, 3000)
+            if redis.get("current_account_access_token_#{@current_account["email"]}").equal? nil
+              routing.redirect '/account/logout'
             end
-            access_token = redis.get('system_access_token')
+
+            access_token = redis.get("current_account_access_token_#{@current_account["email"]}")
 
             update_visual_report = Service::UpdateVisualReport.new
                                                               .call(redis: redis,
