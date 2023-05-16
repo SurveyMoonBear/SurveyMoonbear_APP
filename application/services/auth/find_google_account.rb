@@ -61,7 +61,12 @@ module SurveyMoonbear
 
       # input { ..., account_entity: }
       def load_from_db(input)
-        account = Repository::For[ input[:account_entity].class ].find_or_create(input[:account_entity])
+        account = if input[:login_type] == 'admin'
+          Repository::For[ input[:account_entity].class ].find_or_create(input[:account_entity])
+        elsif input[:login_type] == 'report'
+          input[:account_entity]
+        end
+
         Success(account)
       rescue StandardError => e
         puts e

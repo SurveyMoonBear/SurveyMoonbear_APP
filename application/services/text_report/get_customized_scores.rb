@@ -23,11 +23,7 @@ module SurveyMoonbear
         input[:sources] = input[:redis].get(input[:user_key])['source']
 
         unless input[:sources]
-          if redis.get('system_access_token').equal? nil
-            new_access_token = Google::Auth.new(config).refresh_access_token
-            redis.set('system_access_token', new_access_token, 3000)
-          end
-          access_token = redis.get('system_access_token')
+          access_token = input[:access_token]
 
           update_visual_report = Service::UpdateVisualReport.new
                                                             .call(redis: redis,
