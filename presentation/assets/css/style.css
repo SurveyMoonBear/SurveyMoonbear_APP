@@ -78,7 +78,6 @@
 .modal-dialog {
     /* text-align: left;  */
     max-width: 720px;
-    min-width: 300px; 
     width: auto !important;
     /* display: inline-block; */
 }

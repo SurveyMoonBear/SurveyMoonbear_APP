@@ -56,7 +56,7 @@ html
               div id="dashboard" class="tab-pane active"
                 / .shadow.m-auto.p-4
                 .d-flex.flex-md-row.flex-column 
-                  .d-flex.flex-column.section-border.mr-1
+                  .d-flex.flex-column.section-border.mr-1.col-12.col-md-6
                     h4 class="text-primary font-weight-bold my-4 mx-4" #{analytics_order[:category][0]}
                     div class="d-flex flex-sm-row flex-column flex-sm-wrap"
                       - analytics_order[:dashboard][0].each do |analytic|
@@ -65,7 +65,7 @@ html
                           p class="LA-description hover:text-white mb-4"  #{analytic[1]}
                           <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
 
-                  .d-flex.flex-column.section-border.ml-1
+                  .d-flex.flex-column.section-border.ml-1.col-12.col-md-6
                     h4 class="text-primary font-weight-bold my-4 mx-4" #{analytics_order[:category][1]}
                     div class="d-flex flex-sm-row flex-column flex-sm-wrap"
                       - analytics_order[:dashboard][1].each do |analytic|
@@ -91,7 +91,6 @@ javascript:
       url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/" + dashboard_type,
       type: 'GET',
       success: function(result) {
-        console.log(result)
         $('#content_data').html(result);
         $('#modal-title').text(title)
         $('#dashboard_modal').modal('show');
