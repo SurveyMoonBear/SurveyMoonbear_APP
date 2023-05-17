@@ -125,8 +125,8 @@ module SurveyMoonbear
         case grids_group_arr[0].type
         when 'Multiple choice grid (radio button)'
           build_grid_questions_radio(grids_group_arr)
-        when 'Multiple choice grid (RAM)'
-          build_grid_questions_ram(grids_group_arr)
+        # when 'Multiple choice grid (RAM)'
+        #   build_grid_questions_ram(grids_group_arr)
         when 'Multiple choice grid (slider)'
           build_grid_questions_slider(grids_group_arr)
         when 'Multiple choice grid (VAS)'
@@ -139,7 +139,7 @@ module SurveyMoonbear
       end
 
       def build_individual_question(item)
-        build_interact_var(item)        
+        build_interact_var(item)              
         case item.type
         when 'Section Title'
           build_section_title(item)
@@ -151,6 +151,8 @@ module SurveyMoonbear
           build_divider
         when 'Paragraph Answer'
           build_paragraph_answer(item)
+        when 'Single RAM Slider'
+          build_single_questions_ram(item)
         when 'Multiple choice (radio button)'
           build_multiple_choice_radio(item)
         when "Multiple choice with 'other' (radio button)"
@@ -169,10 +171,32 @@ module SurveyMoonbear
       end
 
       def build_interact_var(item)
-        if (!item.description.nil?) && (item.description.include? '{{') && (item.description.include? '}}')
+        
+        if (!item.description.nil?)&&(item.description.include? '{{') && (item.description.include? '}}')
           var_name = item.description.split('{{')[1].split('}}')[0]
           replace_str = "{{#{var_name}}}"
           var_str = "<span class='#{var_name}__{}' id='#{var_name}__{}'>#{var_name}</span>"
+          puts(var_str)
+          item.description.gsub!(replace_str, var_str)
+          build_interact_var(item)
+        elsif (!item.description.nil?)&& (item.description.include? '[[') && (item.description.include? ']]')
+          puts (item.name)
+          puts (item.description)
+          puts (item)
+          var_name = item.description.split('[[')[1].split(']]')[0]
+          puts(var_name)
+          replace_str = "[[#{var_name}]]"
+          slider_ids = var_name.split(",")
+          sum = 0
+          slider_ids.each do |id|
+            var_str = "<span class='#{id}__[]' id='#{id}__[]'>#{id}</span>"
+            puts(id)
+            puts(var_str)
+            value = var_str.to_i
+            puts(value)
+            sum += value
+          end
+          var_str = "<span>#{sum}</span>"
           item.description.gsub!(replace_str, var_str)
           build_interact_var(item)
         else
@@ -353,6 +377,36 @@ module SurveyMoonbear
         str += '</tbody></table>'
         str += '</div>'
         str += '</fieldset>'
+      end
+
+      def build_single_questions_ram(item)
+        str = '<fieldset>'
+        str += "<table class='table'>"
+
+        min = 0, max = 100, start_point =0
+        word_min = '', word_max = ''
+        if !item.options.nil?
+          values = item.options.split(',').map(&:strip)
+          min = values[0]
+          max = values[1]
+          word_min = values[2] if values[2]
+          word_max = values[3] if values[3]
+          start_point = values[4] if values[4]
+        end
+      
+
+        str += '<thead><tr>'
+        str += "<th scope='col' class='w-50'></th>"
+        str += "<th scope='col' class='w-50'><div class='w-100 row mx-auto'>"
+        str += "<div class='col-4 col-sm-2 text-left px-0'>#{word_min}</div>"
+        str += "<div class='col-4 offset-4 col-sm-2 offset-sm-8 text-right px-0'>#{word_max}</div>"
+        str += '</div></th></tr></thead>'
+        str += "<td class='w-50 lead'>#{item.description}<span class='text-danger'>*</span></td>"
+        str += "<td class='w-50 align-middle'><input type='range' class='custom-range ram-slider' id='#{item.name}' name='#{item.name}' value='#{start_point}' min='#{min}' max='#{max}'></td>"
+        str += '</tr>'
+        str += '</table>'
+        str += '</fieldset>'
+
       end
 
       def build_grid_questions_ram(items)
