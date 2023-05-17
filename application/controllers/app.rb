@@ -819,6 +819,15 @@ module SurveyMoonbear
             end
           end
 
+          # GET /studies/[study_id]/random
+          routing.on 'random' do
+            routing.get do
+              url = (Service::CreateRandomUrl.new.call(study_id: study_id).value!)[:survey_url]
+              survey_url ="#{config.APP_URL}#{url}"
+              routing.redirect survey_url
+            end
+          end
+
           # POST studies/[study_id]/download/[file_name]
           routing.on 'download', String do |file_name|
             routing.post do
@@ -870,26 +879,6 @@ module SurveyMoonbear
           studies = Repository::For[Entity::Study].find_owner(@current_account['id'])
           view 'studies', locals: { studies: studies, config: config }
         end
-
-        # # GET /studies/[study_id]/create_new_url
-        # routing.get do
-
-        #   new_url = "#{config.APP_URL}/study/#{survey.id}/random"
-        #   routing.redirect '/' unless @current_account
-        #   study = Repository::For[Entity::Study].find_id(study_id)
-        #   alone_surveys = Repository::For[Entity::Survey].find_alone(@current_account['id'])
-        #   participants = Repository::For[Entity::Participant].find_study(study_id)
-        #   notifications = Service::GetNotifications.new.call(study_id: study_id).value!
-
-        #   view 'study',locals: {study: study,
-        #                         participants: participants,
-        #                         notifications: notifications,
-        #                         alone_surveys: alone_surveys,
-        #                         config: config,
-        #                         new_url:new_url }
-        # end
-
-
       end
 
       # /participants branch
