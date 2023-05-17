@@ -91,24 +91,16 @@ div class="mb-3"
       == render :modal_create_survey, locals: { rerout: "/studies/#{study.id}", study_id: study.id }
   div class="row justify-content-center mt-3"
     div class="col-4 col-sm-12 col-md-3" 
-      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_random_survey"
-        i class="fas fa-plus" Random Survey 
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_random_survey" Random Survey 
       div class="modal fade" id="modal_random_survey"
         div class="modal-dialog" role="document"
           div class="modal-content"
             div class="modal-header"
               h5 class="modal-title" Random #{study.title} 
-              form action="/studies/#{study.id}/remove_survey" method="post" id="form_remove_survey"
-                div class="modal-body"
-                  div class="form-group"
-                    div class="mb-2"
-                      label for="title" System will generate a single URL that combines all of your surveys, and your users will be randomly assigned to one of the surveys each time they access the URL.
-                div class="modal-footer"
-                  button type="button" class="btn btn-outline-info" data-dismiss="modal" Close
-                  button type="submit" class="btn btn-outline-danger" id="btn-add-exist-survey" Generate
-    // 出現url
-    div class="col-8 col-sm-12 col-md-7"
-
+            div class="modal-body"
+              input type="text" class="form-control" id="input" readonly="true" value="#{config.APP_URL}/study/#{study.id}/random"
+            div class="modal-footer"
+              button type="button" class="btn btn-outline-info" data-dismiss="modal" Close
   div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10"
       - unless study.owned_surveys.empty?
@@ -267,3 +259,4 @@ javascript:
   $('#btn-submit').on('click', function (e) {
     $('#modal_waiting').modal();
   });
+

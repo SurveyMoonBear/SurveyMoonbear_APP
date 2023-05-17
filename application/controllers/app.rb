@@ -847,6 +847,7 @@ module SurveyMoonbear
             flash[:error] = 'Failed to delete the study. Please try again :(' if response.failure?
             routing.redirect '/studies', 303
           end
+          
 
           # GET /studies/[study_id]
           routing.get do
@@ -869,6 +870,26 @@ module SurveyMoonbear
           studies = Repository::For[Entity::Study].find_owner(@current_account['id'])
           view 'studies', locals: { studies: studies, config: config }
         end
+
+        # # GET /studies/[study_id]/create_new_url
+        # routing.get do
+
+        #   new_url = "#{config.APP_URL}/study/#{survey.id}/random"
+        #   routing.redirect '/' unless @current_account
+        #   study = Repository::For[Entity::Study].find_id(study_id)
+        #   alone_surveys = Repository::For[Entity::Survey].find_alone(@current_account['id'])
+        #   participants = Repository::For[Entity::Participant].find_study(study_id)
+        #   notifications = Service::GetNotifications.new.call(study_id: study_id).value!
+
+        #   view 'study',locals: {study: study,
+        #                         participants: participants,
+        #                         notifications: notifications,
+        #                         alone_surveys: alone_surveys,
+        #                         config: config,
+        #                         new_url:new_url }
+        # end
+
+
       end
 
       # /participants branch
