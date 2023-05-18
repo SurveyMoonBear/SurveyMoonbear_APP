@@ -396,14 +396,17 @@ module SurveyMoonbear
       
 
         str += '<thead><tr>'
-        str += "<th scope='col' class='w-50'></th>"
-        str += "<th scope='col' class='w-50'><div class='w-100 row mx-auto'>"
+        if item.required == 1
+          str += "<td class='w-50 lead'>#{item.description}<span class='text-danger'>*</span></td>"
+        else
+          str += "<td class='w-50 lead'>#{item.description}</td>"
+        end
+        str += '</tr>'
+        str += "<tr><div class='w-100 row mx-auto'>"
         str += "<div class='col-4 col-sm-2 text-left px-0'>#{word_min}</div>"
         str += "<div class='col-4 offset-4 col-sm-2 offset-sm-8 text-right px-0'>#{word_max}</div>"
-        str += '</div></th></tr></thead>'
-        str += "<td class='w-50 lead'>#{item.description}<span class='text-danger'>*</span></td>"
-        str += "<td class='w-50 align-middle'><input type='range' class='custom-range ram-slider' id='#{item.name}' name='#{item.name}' value='#{start_point}' min='#{min}' max='#{max}'></td>"
-        str += '</tr>'
+        str += '</div></tr></thead>'
+        str += "<tr><td class='w-100 align-middle'><input type='range' class='custom-range ram-slider' id='#{item.name}' name='#{item.name}' value='#{start_point}' min='#{min}' max='#{max}'></td></tr>"
         str += '</table>'
         str += '</fieldset>'
 
