@@ -68,6 +68,11 @@ html
 javascript:
   /* Build the whole survey html with created page htmls */
   var current_page_str = '';
+
+  // store ram time
+  var ram_slider_timearrays =[];
+  var ram_slider_timearray = []; 
+
   $.each(#{{pages}}, function(i, page){
     // Create page-div for the page (only 1st page visible)
     if (i > 0) {
@@ -157,6 +162,9 @@ javascript:
     $(this).removeClass('vas-unclicked');
   });
 
+
+
+
   $('input[type=checkbox]').click(function (e) {
     var type_name = $(this).prop('name');
     updateCheckboxHiddenInput(type_name);
@@ -191,6 +199,16 @@ javascript:
     $('input[name='+input_name+']').val(value);
   }
 
+  $('input.ram-slider').on('mousedown', function(event) {
+      var type_name = $(this).prop('name');
+      console.log(type_name);
+      puts('Drag start time:',  new Date().getTime());
+    });
+
+  $('input.ram-slider').on('mouseup', function(event) {
+      console.log('Drag end time:', new Date().getTime());
+    });
+
   $('input.vas-unclicked').click(function (e) {
     var type_name = $(this).prop('name');
     var input_name = type_name.substr(4, type_name.length);
@@ -212,6 +230,8 @@ javascript:
   });
 
   $('#form').on('submit', function(e) {
+
+    $('input[name=moonbear_end_time]').val(new Date());
     $('#btn-submit').prop('disabled', true);
     $('<input />').attr('type', 'hidden')
                   .attr('name', "moonbear_url_params")
