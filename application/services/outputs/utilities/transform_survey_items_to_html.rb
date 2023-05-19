@@ -405,7 +405,13 @@ module SurveyMoonbear
         str += "<div class='col-4 col-sm-2 text-left px-0'>#{word_min}</div>"
         str += "<div class='col-4 offset-4 col-sm-2 offset-sm-8 text-right px-0'>#{word_max}</div>"
         str += '</div></tr></thead>'       
-        str += "<tr><td class='w-100 align-middle'><input type='range' class='custom-range ram-slider'  name='ram-#{item.name}' value='#{start_point}' min='#{min}' max='#{max}'></td></tr>"
+        str += "<tr><td class='w-100 align-middle'><input type='range' class='custom-range ram-slider'  name='ram-#{item.name}' value='#{start_point}' min='#{min}' max='#{max}'></td>"
+        str +=  if item.required == 1
+                  "<input type='hidden' class='required' name='#{item.name}'>"
+                else
+                "<input type='hidden' name='#{item.name}'>"
+                end
+        str += '</tr>'
         str += '</table>'
         str += '</fieldset>'
 
@@ -444,6 +450,11 @@ module SurveyMoonbear
             str += "<td class='w-50 lead'>#{item.description}</td>"
           end
           str += "<td class='w-50 align-middle'><input type='range' class='custom-range ram-slider' id='#{item.name}' name='#{item.name}' value='#{start_point}' min='#{min}' max='#{max}'></td>"
+          str +=  if item.required == 1
+                    "<input type='hidden' class='required' name='#{item.name}'>"
+                  else
+                  "<input type='hidden' name='#{item.name}'>"
+                  end
           str += '</tr>'
         end
         str += '</table>'

@@ -70,8 +70,10 @@ javascript:
   var current_page_str = '';
 
   // store ram time
-  var ram_slider_timearrays =[];
-  var ram_slider_timearray = []; 
+  var ram_starttime = 0;
+  var ram_endtime = 0; 
+  var ram_duration = 0; 
+
 
   $.each(#{{pages}}, function(i, page){
     // Create page-div for the page (only 1st page visible)
@@ -199,20 +201,26 @@ javascript:
     $('input[name='+input_name+']').val(value);
   }
 
-  $('input.ram-slider').on('mousedown', function(event) {
-      var type_name = $(this).prop('name');
-      console.log(type_name);
-      puts('Drag start time:',  new Date().getTime());
-    });
 
-  $('input.ram-slider').on('mouseup', function(event) {
-      console.log('Drag end time:', new Date().getTime());
-    });
+  $('input.ram-slider').on('touchstart', function(event) {
+      ram_starttime =new Date().getTime();
+  });
+
+  $('input.ram-slider').on('touchend', function(event) {
+        var type_name = $(this).prop('name');
+        var input_name = type_name.substr(4, type_name.length);
+        ram_endtime =new Date().getTime();
+        ram_duration = ram_endtime-ram_starttime;
+        alert(this.value);
+        //會改變
+        $('input[name='+input_name+']').val(this.value+";"+ram_duration);
+  });
+
 
   $('input.vas-unclicked').click(function (e) {
     var type_name = $(this).prop('name');
     var input_name = type_name.substr(4, type_name.length);
-    $('input[name='+input_name+']').val(this.value);
+    $('input[name='+input_name+']').val("5");
   });
 
   $('.other-text').on('keyup', function(e) { 

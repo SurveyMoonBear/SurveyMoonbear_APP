@@ -269,7 +269,7 @@ module SurveyMoonbear
               respondent = surveys_started.find do |survey_started|
                 survey_started['survey_id'] == survey_id
               end
-
+              puts(routing.params)
               Service::StoreResponses.new.call(survey_id: survey_id,
                                                launch_id: launch_id,
                                                respondent_id: respondent['respondent_id'],
