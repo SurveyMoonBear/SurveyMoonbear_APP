@@ -165,6 +165,8 @@ module SurveyMoonbear
           build_random_code(item)
         when 'Jump to page'
           build_jump_page(item)
+        when 'Disable previous page'
+          build_disable_previous_page(item)
         else
           puts "Sorry, there's no such individual question type: #{item.type}"
         end
@@ -324,6 +326,10 @@ module SurveyMoonbear
       def build_jump_page(item)
         str = "<span hidden name='jump_page_#{item.options}' id='jump_page_#{item.options}'>#{item.options}</span>"
       end
+
+      def build_disable_previous_page(item)
+        str = "<span hidden name='disable_previous' id='disable_previous'></span>"
+      end 
 
       def build_grid_questions_radio(items)
         str = '<fieldset>'

@@ -118,8 +118,15 @@ javascript:
       if (record[page_idx] >= #{{pages}}.length) {
         $('#page_next').addClass('disabled');
       }
-      $('#page_pre').removeClass('disabled');
 
+      //測試是否有下disable需求      
+      var previous_page_disable = document.querySelectorAll("span[name='disable_previous'][id='disable_previous']");
+      
+      if(!previous_page_disable){
+        $('#page_pre').removeClass('disabled');
+      }
+        
+      
       // get all the span elements with interactive variable
       var interact_variables = document.querySelectorAll('span[class*="__{}"]');
       for(let interact_variable of interact_variables){
