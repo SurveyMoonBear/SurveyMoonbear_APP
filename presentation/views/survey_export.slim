@@ -230,7 +230,6 @@ javascript:
         var input_name = type_name.substr(4, type_name.length);
         ram_endtime =new Date().getTime();
         ram_duration = ram_endtime-ram_starttime;
-        alert(this.value);
         //會改變
         $('input[name='+input_name+']').val(this.value+";"+ram_duration);
   });
