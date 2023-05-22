@@ -70,9 +70,7 @@ javascript:
   var current_page_str = '';
 
   // store ram time
-  var ram_starttime = 0;
-  var ram_endtime = 0; 
-  var ram_duration = 0; 
+  var ram_time = {}; 
 
 
   $.each(#{{pages}}, function(i, page){
@@ -120,8 +118,15 @@ javascript:
       if (record[page_idx] >= #{{pages}}.length) {
         $('#page_next').addClass('disabled');
       }
-      $('#page_pre').removeClass('disabled');
 
+      //測試是否有下disable需求      
+      var previous_page_disable = document.querySelectorAll("span[name='disable_previous'][id='disable_previous']");
+      
+      if(!previous_page_disable){
+        $('#page_pre').removeClass('disabled');
+      }
+        
+      
       // get all the span elements with interactive variable
       var interact_variables = document.querySelectorAll('span[class*="__{}"]');
       for(let interact_variable of interact_variables){
@@ -217,21 +222,28 @@ javascript:
 
   function updateRadioHiddenInput(type_name, value) {
     var input_name = type_name.substr(6, type_name.length);
-    $('input[name='+input_name+']').val(value);
   }
 
 
   $('input.ram-slider').on('touchstart', function(event) {
-      ram_starttime =new Date().getTime();
+      var type_name = $(this).prop('name');
+      var input_name = type_name.substr(4, type_name.length);
+
+      if (!ram_time[input_name]) {
+        ram_time[input_name] = [];
+      }
+      ram_time[input_name].push(new Date().getTime());
   });
 
   $('input.ram-slider').on('touchend', function(event) {
         var type_name = $(this).prop('name');
         var input_name = type_name.substr(4, type_name.length);
-        ram_endtime =new Date().getTime();
-        ram_duration = ram_endtime-ram_starttime;
-        //會改變
-        $('input[name='+input_name+']').val(this.value+";"+ram_duration);
+
+        var end_time = new Date().getTime();
+        var ram_duration = end_time - ram_time[input_name][0];
+        var ram_duration_second = ram_duration/1000;
+
+        $('input[name='+input_name+']').val(this.value+";"+ram_duration_second);
   });
 
 
