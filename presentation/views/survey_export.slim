@@ -133,6 +133,25 @@ javascript:
           interact_variable.innerHTML = $('textarea[name='+set_var+']').val();
         };
       };
+
+      // get all the span elements with interactive slider variable
+      // 要寫選擇的類別小寫(ram-XXX), 一個表單只能有一個
+      var interact_variable_sliders = document.querySelectorAll('span[class*="__[]"]');
+      var total_slider = 0;
+      for(let interact_variable of interact_variable_sliders){
+        var set_var = interact_variable.id.split('__[]')[0];
+        // get the input value and insert in the span elements
+        if($('input[name='+set_var+']').val()){
+           total_slider += parseInt($('input[name='+set_var+']').val());
+        }else{
+          interact_variable.innerHTML = $('textarea[name='+set_var+']').val();
+        };
+      };
+      interact_variable_sliders[0].innerHTML = total_slider;
+
+
+
+
       location.href = '#page_' + record[page_idx];
       next_page_num = record[record.length-1]+1;
     } else {
