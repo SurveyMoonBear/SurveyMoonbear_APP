@@ -819,6 +819,15 @@ module SurveyMoonbear
             end
           end
 
+          # GET /studies/[study_id]/random
+          routing.on 'random' do
+            routing.get do
+              url = (Service::CreateRandomUrl.new.call(study_id: study_id).value!)[:survey_url]
+              survey_url ="#{config.APP_URL}#{url}"
+              routing.redirect survey_url
+            end
+          end
+
           # POST studies/[study_id]/download/[file_name]
           routing.on 'download', String do |file_name|
             routing.post do
@@ -847,6 +856,7 @@ module SurveyMoonbear
             flash[:error] = 'Failed to delete the study. Please try again :(' if response.failure?
             routing.redirect '/studies', 303
           end
+          
 
           # GET /studies/[study_id]
           routing.get do
