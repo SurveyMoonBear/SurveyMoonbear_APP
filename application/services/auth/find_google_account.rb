@@ -49,7 +49,7 @@ module SurveyMoonbear
       # input { ..., google_account: }
       def build_account_entity(input)
         input[:account_entity] = Entity::Account.new(id: nil,
-                                                     email: input[:google_account]['email'],
+                                                     email: input[:google_account]['email'].downcase,
                                                      username: input[:google_account]['name'],
                                                      access_token: input[:tokens][:access_token],
                                                      refresh_token: input[:tokens][:refresh_token])
@@ -61,7 +61,12 @@ module SurveyMoonbear
 
       # input { ..., account_entity: }
       def load_from_db(input)
-        account = Repository::For[ input[:account_entity].class ].find_or_create(input[:account_entity])
+        account = if input[:login_type] == 'admin'
+          Repository::For[ input[:account_entity].class ].find_or_create(input[:account_entity])
+        elsif input[:login_type] == 'report'
+          input[:account_entity]
+        end
+
         Success(account)
       rescue StandardError => e
         puts e

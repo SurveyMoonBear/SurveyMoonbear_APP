@@ -24,6 +24,25 @@ class RedisCache
     SecureMessage.decrypt(@redis.get(key))
   end
 
+  def add_to_set(key, value)
+    encrypted_value = SecureMessage.encrypt(value)
+
+    @redis.sadd(key, encrypted_value)
+  end
+
+  def exists_in_set?(key, value)
+    encrypted_value = SecureMessage.encrypt(value)
+
+    @redis.sismember(key, encrypted_value)
+  end
+
+  def get_set(key)
+    encrypt_values = @redis.smembers(key)
+    encrypt_values.map do |value|
+      SecureMessage.decrypt(value)
+    end
+  end
+
   # Only set the key if it already exist.
   def update(key, value, ex_time = 0)
     ex_time = 60 * 60 * 24 * 30 if ex_time.zero? # default is one month
@@ -33,6 +52,10 @@ class RedisCache
   end
 
   def delete(key)
-    @redis.del(key) if get(key)
+    @redis.del(key) if get(key) 
+  end
+
+  def delete_set(key)
+    @redis.del(key) if get_set(key)
   end
 end

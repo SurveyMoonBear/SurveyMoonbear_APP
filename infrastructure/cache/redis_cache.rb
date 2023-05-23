@@ -17,6 +17,18 @@ module SurveyMoonbear
       def wipe
         keys.each { |key| @redis.del(key) }
       end
+
+      def add_to_set(key, value)
+        @redis.sadd?(key, value)
+      end
+
+      def exists_in_set?(key, value)
+        @redis.sismember(key, value)
+      end
+
+      def get_set(key)
+        @redis.smembers(key)
+      end
     end
   end
 end

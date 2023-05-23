@@ -32,8 +32,10 @@ module SurveyMoonbear
           sources.each do |source|
             if source[0] == 'spreadsheet' && source[1] != 'please enter a google spreadsheet link'
               url = source[1] # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
+              gid = url.match('#gid=([0-9]+)')[1]
               other_sheet_id = url.match('.*/(.*)/')[1]
-              input[:redis].delete("other_sheet#{other_sheet_id}")
+              other_sheet_key = source[2] + '/other_sheet' + other_sheet_id + 'gid' + gid
+              input[:redis].delete(other_sheet_key)
             end
           end
           input[:redis].delete(input[:user_key])

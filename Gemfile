@@ -52,6 +52,8 @@ gem 'sidekiq-scheduler'
 gem 'dry-struct'
 gem 'dry-types'
 
+gem 'plotly'
+
 # Notification
 gem 'aws-sdk-sns'
 

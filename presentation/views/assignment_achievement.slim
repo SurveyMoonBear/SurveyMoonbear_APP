@@ -1,0 +1,42 @@
+== assets(:css)
+- if @dashboard_result
+  div class="d-sm-flex justify-content-center row col-12 px-1 py-2 bd-highlight achievement-border mb-3"
+    .col-4 style="max-height:17vh;"
+      img class="m-auto pt-4" alt="Homework" src="https://i.imgur.com/puZuz7L.png" style="height:90%;"
+    .col-8.flex-column.text-left
+      h5 class="font-weight-bold text-primary mb-3" Homework Mastery
+      p style="color: darkgrey;" The number of a score of 5 on homework assignments you have earned.
+      .d-flex.justify-content-between.w-50
+        - if @dashboard_result['Homework Mastery']
+          - @dashboard_result['Homework Mastery'].each do |hw|
+            - if hw == 1
+              <i class="h2 fas fa-star text-warning star-shadow"></i>
+            - else
+              <i class="h2 fas fa-star text-secondary"></i>
+  div class="d-sm-flex justify-content-center row col-12 px-1 py-2 bd-highlight achievement-border mb-3"
+    .col-4 style="max-height:17vh;"
+      img class="m-auto pt-4" alt="pr" src="https://i.imgur.com/nZCva1l.png" style="height:83%;"
+    .col-8.flex-column.text-left
+      h5 class="font-weight-bold text-primary mb-3" Reviewer Mastery
+      p style="color: darkgrey;"  1 star will be deducted when failing to complete a peer review.
+      .d-flex.justify-content-between.w-50
+        - if @dashboard_result['Peer Review Mastery']
+          - @dashboard_result['Peer Review Mastery'].each do |pr|
+            - if pr == 1
+              <i class="h2 fas fa-star text-warning star-shadow"></i>
+            - else
+              <i class="h2 fas fa-star text-secondary"></i>
+  div class="d-sm-flex justify-content-center row col-12 px-1 py-2 bd-highlight achievement-border mb-3"
+    .col-4 style="max-height:17vh;"
+      img class="m-auto pt-4" alt="Homework" src="https://i.imgur.com/ZDPjeUC.png" style="height:84%;"
+    .col-8.flex-column.text-left
+      h5 class="font-weight-bold text-primary mb-3" Helper Mastery
+      p style="color: darkgrey;" Your level of engagement in assisting others.
+      .d-flex.justify-content-between.w-50
+        - if @dashboard_result['Help Mastery']
+          - @dashboard_result['Help Mastery'].each do |help|
+            - if help == 1
+              <i class="h2 fas fa-star text-warning star-shadow"></i>
+            - else
+              <i class="h2 fas fa-star text-secondary"></i>
+            

@@ -73,25 +73,29 @@ module SurveyMoonbear
             gid = url.match('#gid=([0-9]+)')[1]
             other_sheet_id = url.match('.*/(.*)/')[1]
             other_sheets_api = Google::Api::Sheets.new(input[:user_access_token])
-            other_sheet_key = 'other_sheet' + other_sheet_id
-            input[:other_sheets] =
-              if input[:redis].get(other_sheet_key)
-                input[:redis].get(other_sheet_key)
-              else
-                all_sheets = other_sheets_api.survey_data(other_sheet_id)['sheets']
-                other_sheet_title = ''
-                all_sheets.each do |sheet|
-                  if sheet['properties']['sheetId'].to_s == gid
-                    other_sheet_title = sheet['properties']['title']
-                    break
-                  end
+            other_sheet_key = source.source_id + '/other_sheet' + other_sheet_id + 'gid' + gid
+            if input[:redis].get(other_sheet_key)
+              other_sheet[source.source_id] = input[:redis].get(other_sheet_key)
+            else
+              all_sheets = other_sheets_api.survey_data(other_sheet_id)['sheets']
+              other_sheet_title = ''
+              all_sheets.each do |sheet|
+                if sheet['properties']['sheetId'].to_s == gid
+                  other_sheet_title = sheet['properties']['title']
+                  break
                 end
-                other_sheet[source.source_id] = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
-                input[:redis].set(other_sheet_key, other_sheet)
-                other_sheet
               end
+              sheet = other_sheets_api.items_data(other_sheet_id, other_sheet_title)['values'].reject(&:empty?)
+
+              other_sheet[source.source_id] = sheet
+              input[:redis].set(other_sheet_key, sheet)
+
+              visual_report_id = input[:visual_report].id
+              input[:redis].add_to_set(visual_report_id, other_sheet_key)
+            end
           end
         end
+        input[:other_sheets] = other_sheet
         if sources.success?
           input[:sources] = sources.value!
           Success(input)
@@ -103,6 +107,8 @@ module SurveyMoonbear
       # input { ...,user_key, sheets_report, user_access_token, sources}
       def cal_responses_from_sources(input)
         redis_val = input[:redis].get(input[:user_key])
+        tmp = nil
+        test = nil
         input[:all_graphs] =
           if redis_val['all_graphs']
             redis_val['all_graphs']
@@ -112,6 +118,8 @@ module SurveyMoonbear
                 graphs_val =
                   items_data.map do |item_data|
                     source = find_source(input[:sources], item_data.data_source)
+                    test = item_data
+                    tmp = source
                     case source.source_type
                     when 'surveymoonbear'
                       MapSurveyResponsesAndItems.new.call(item_data: item_data,
@@ -133,7 +141,8 @@ module SurveyMoonbear
             redis_val['all_graphs']
           end
         Success(input[:all_graphs])
-      rescue StandardError
+      rescue StandardError => e
+        puts "log[error]: #{e.full_message}"
         Failure('Failed to map responses and visual report items.')
       end
 

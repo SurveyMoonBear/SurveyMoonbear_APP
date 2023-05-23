@@ -47,7 +47,8 @@ module SurveyMoonbear
                                        .call(all_graphs: input[:origin_all_graphs],
                                              case_email: input[:email],
                                              redis: redis,
-                                             user_key: input[:user_key])
+                                             user_key: input[:user_key],
+                                             access_token: input[:access_token])
         if responses.success?
           Success(responses.value!)
         else

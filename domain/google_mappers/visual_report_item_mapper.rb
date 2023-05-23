@@ -61,7 +61,8 @@ module SurveyMoonbear
             chart_type: chart_type,
             legend: legend,
             self_marker: self_marker,
-            score_type: score_type
+            score_type: score_type,
+            params: params
           )
         end
 
@@ -94,6 +95,10 @@ module SurveyMoonbear
 
         def score_type
           @item_data[6]
+        end
+
+        def params
+          @item_data[7]
         end
       end
     end

@@ -1,0 +1,68 @@
+- require 'plotly'
+doctype html
+html
+  head
+    title Fruit Quantity Chart
+    script src="https://cdn.plot.ly/plotly-latest.min.js"
+  body
+    script src="https://cdn.plot.ly/plotly-2.11.1.min.js"
+    div#chart_0
+    div#chart_1
+    div#chart_2
+    div#chart_3
+    div#chart_4
+    
+javascript:
+  var str = "#{@dashboard_result}"
+  var text_area = document.createElement('text_area')
+  text_area.innerHTML = str
+  var result = JSON.parse(text_area.innerHTML)
+  var title = result[0]
+  var data = result[1]
+
+  for (let i = 0; i < data.length; i++) {
+    var x = data[i][0]
+    var y = data[i][1]
+
+    dashboard_plot = generate_dashboard_plot(x, y, title[i])
+    trace = dashboard_plot[0]
+    chart_layout = dashboard_plot[1]
+    
+    Plotly.newPlot("chart_" + i, trace, chart_layout, {staticPlot: true});
+  }
+
+  function generate_dashboard_plot(x_values, y_values, layout) {
+    for (let i = 0; i < x_values.length; i++) {
+      x_values[i] = x_values[i].toString()
+    }
+
+    trace = []
+    for (i = 0; i < y_values.length; i++) {
+      y = y_values[i]
+      name = ''
+      if (i == 0) {
+        name = 'class'
+      }
+      else {
+        name = 'me'
+      }
+      trace_tmp = { x: x_values, 
+                    y: y, 
+                    type: 'lines',
+                    name: name
+                  }
+      trace.push(trace_tmp)
+    }
+
+    chart_layout = { 
+      title: layout, 
+      yaxis: { 
+        title: 'Grade',
+        rangemode: 'tozero'
+      } 
+    }
+
+    return [trace, chart_layout]
+  }
+
+

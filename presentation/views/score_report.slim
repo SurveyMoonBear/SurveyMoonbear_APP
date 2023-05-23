@@ -1,0 +1,120 @@
+div class='flex'
+  div class="tab-content"
+    div role="tabpanel" class="tab-pane active" style="width:100%; overflow:auto" id="visual" 
+    div class='flex my-4'
+      div class="tab-content"
+        div role="tabpanel" class="tab-pane active" id="visual"
+          h4 class="text-primary mb-3 font-weight-bold" Your TA
+          div class='bg-white col-md-3 col-sm-6 col-12 shadow p-4 m-sm-4 my-3 mx-0 ml-0 border' style="border-radius:6px;"
+            p Please contact your TA if you have any concern on grading.
+            p class="text-primary font-weight-bold d-flex justify-content-end" #{ta["score"]}
+        - if scores
+          - scores.each do |key, value|
+            h4 class="text-primary my-3 font-weight-bold" #{title[key]}
+            div class="d-flex flex-sm-row flex-column m-2 mb-4" style="width:100%; overflow:auto"
+              - for j in value
+                div class='bg-white col-md-3 col-sm-6 col-12 shadow p-4 m-sm-4 my-3 mx-0 ml-0 border' style="border-radius:6px;"
+                  h4 #{j["title"]}
+                  h3 class="text-primary font-weight-bold d-flex justify-content-end" #{j["score"]} 
+        - else
+          div class='d-flex py-3' style="width:100%; overflow:auto" id="div_tab_item" 
+
+javascript:
+    if ("#{{vis_report_object.nav_tab}}"){
+      $('#div_nav_tabs').append("#{{vis_report_object.nav_tab}}");
+      $('#div_tab_item').append("#{{vis_report_object.nav_item}}");
+    } else {
+      $('#div_tab_item').append("#{{vis_report_object.nav_item}}");
+    }
+    $.each(#{{vis_report_object.html_arr}}, function(i, canva){
+      $('#chart_div_page' + i).append(canva);
+    });
+
+    let chartData;
+    let chartLayout;
+    let ctx;
+    let config;
+    let page_title;
+    let text_score;
+
+    $.each(#{{vis_report_object.graphs}}, function(title, graph_arr){
+
+      page_title = title.replace(' ', '_');
+      
+      $.each(graph_arr, function(i, graph){
+        console.log(graph[2])
+        // display title
+        score_div = document.getElementById( 'score_'+page_title+'_'+i );
+        score_div.setAttribute("class", 'bg-white m-2 ml-0')
+        var title_div = document.createElement("h3")
+        title_div.setAttribute("class", 'text-center m-4 text-primary')
+        title_div.innerHTML = `${graph[1]}`
+        score_div.appendChild(title_div)
+
+        // graph
+        if (graph[2]=='bar') {
+          chartData = {
+          x: graph[3],
+          y: graph[4],
+          orientation: 'h',
+          marker:{
+            color: graph[5]
+          },
+          type: graph[2]
+          };
+
+        } 
+        else if (graph[2]=='text') {
+          var text_div = document.createElement("div")
+          text_div.innerHTML = `Score: ${#{{text_report_object}}[i].score}`
+          text_div.setAttribute("class", 'text-center text-danger')
+          text_div.setAttribute("style",'width: 95%; font-size:32px; display:inline-block; padding:10px; color: orange')
+          
+          score_div.appendChild(text_div)
+        } 
+        else if (graph[2]=='histogram'){
+          chartData = {
+            x: graph[4],
+            y: graph[3],
+            marker:{
+              color: graph[5]
+            },
+            type: 'bar'
+          };
+        } else {
+          chartData = {
+          x: graph[4],
+          y: graph[3],
+          marker:{
+            color: graph[5]
+          },
+          type: graph[2]
+          };
+        }
+
+        chartLayout = {
+          width: 700,
+          xaxis: {
+            automargin: true
+          }
+        };
+
+        config = {
+          responsive: true,
+          displayModeBar: true
+        };
+
+
+        // create chart_page_title_0 div
+        if (graph[2]!='text') {
+          var chart_div = document.createElement("div")
+          chart_div.setAttribute("id", 'chart_'+page_title+'_'+i)
+          chart_div.setAttribute("class", 'row justify-content-center')
+          chart_div.setAttribute("style", 'resize:both; overflow: auto')
+          score_div.appendChild(chart_div)
+          
+          Plotly.newPlot(chart_div, [chartData], chartLayout, config);
+        }
+
+      });
+    });
