@@ -151,7 +151,7 @@ module SurveyMoonbear
           build_divider
         when 'Paragraph Answer'
           build_paragraph_answer(item)
-        when 'Single RAM Slider'
+        when 'Slider(RAM)'
           build_single_questions_ram(item)
         when 'Multiple choice (radio button)'
           build_multiple_choice_radio(item)
