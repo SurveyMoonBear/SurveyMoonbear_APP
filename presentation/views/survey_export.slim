@@ -242,12 +242,18 @@ javascript:
     var input_name = type_name.substr(4);
 
     // Get the end time and calculate the duration
-    var end_time = Date.now();
-    var ram_duration = end_time - ram_time[input_name][0];
-    var ram_duration_second = ram_duration / 1000;
+    try {
+      var end_time = Date.now();
+      var ram_duration = end_time - ram_time[input_name][0];
+      var ram_duration_second = ram_duration / 1000;
 
-    // Set the value of the input element with the slider value, duration, and touch device information
-    $('input[name=' + input_name + ']').val(this.value + ";" + ram_duration_second + "; touch: " + isTouchDevice());
+      // Set the value of the input element with the slider value, duration, and touch device information
+      $('input[name=' + input_name + ']').val(this.value + ";" + ram_duration_second + "; touch: " + isTouchDevice());
+    } catch (error) {
+      // Set ram_duration_second to 0 in case an error occurs
+      $('input[name=' + input_name + ']').val(this.value + ";" + "0" + "; touch: " + isTouchDevice());
+      console.error('An error occurred while handling slider end:', error);
+    }
   }
 
   // Function to check if the device is a touch device
