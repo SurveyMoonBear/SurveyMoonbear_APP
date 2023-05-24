@@ -224,27 +224,47 @@ javascript:
     var input_name = type_name.substr(6, type_name.length);
   }
 
+  // Function to handle the start of slider interaction
+  function handleSliderStart(event) {
+    var type_name = $(this).prop('name');
+    var input_name = type_name.substr(4);
 
-  $('input.ram-slider').on('touchstart', function(event) {
-      var type_name = $(this).prop('name');
-      var input_name = type_name.substr(4, type_name.length);
+    if (!ram_time[input_name]) {
+      ram_time[input_name] = [];
+    }
 
-      if (!ram_time[input_name]) {
-        ram_time[input_name] = [];
-      }
-      ram_time[input_name].push(new Date().getTime());
-  });
+    ram_time[input_name].push(Date.now());
+  }
 
-  $('input.ram-slider').on('touchend', function(event) {
-        var type_name = $(this).prop('name');
-        var input_name = type_name.substr(4, type_name.length);
+  // Function to handle the end of slider interaction
+  function handleSliderEnd(event) {
+    var type_name = $(this).prop('name');
+    var input_name = type_name.substr(4);
 
-        var end_time = new Date().getTime();
-        var ram_duration = end_time - ram_time[input_name][0];
-        var ram_duration_second = ram_duration/1000;
+    // Get the end time and calculate the duration
+    var end_time = Date.now();
+    var ram_duration = end_time - ram_time[input_name][0];
+    var ram_duration_second = ram_duration / 1000;
 
-        $('input[name='+input_name+']').val(this.value+";"+ram_duration_second);
-  });
+    // Set the value of the input element with the slider value, duration, and touch device information
+    $('input[name=' + input_name + ']').val(this.value + ";" + ram_duration_second + "; touch: " + isTouchDevice());
+  }
+
+  // Function to check if the device is a touch device
+  function isTouchDevice() {
+    return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+  }
+
+  var sliderElement = $('input.ram-slider');
+
+  // Attach the appropriate event listeners based on the device type
+  if (isTouchDevice()) {
+    sliderElement.on('touchstart', handleSliderStart);
+    sliderElement.on('touchend', handleSliderEnd);
+  } else {
+    sliderElement.on('mousedown', handleSliderStart);
+    sliderElement.on('mouseup', handleSliderEnd);
+  }
 
 
   $('input.vas-unclicked').click(function (e) {
