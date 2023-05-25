@@ -139,7 +139,8 @@ module SurveyMoonbear
       end
 
       def build_individual_question(item)
-        build_interact_var(item)              
+        build_interact_var(item) 
+        build_interact_var2(item)              
         case item.type
         when 'Section Title'
           build_section_title(item)
@@ -151,7 +152,7 @@ module SurveyMoonbear
           build_divider
         when 'Paragraph Answer'
           build_paragraph_answer(item)
-        when 'Single RAM Slider'
+        when 'Slider(RAM)'
           build_single_questions_ram(item)
         when 'Multiple choice (radio button)'
           build_multiple_choice_radio(item)
@@ -172,6 +173,7 @@ module SurveyMoonbear
         end
       end
 
+    
       def build_interact_var(item)
         
         if (!item.description.nil?)&&(item.description.include? '{{') && (item.description.include? '}}')
@@ -180,21 +182,17 @@ module SurveyMoonbear
           var_str = "<span class='#{var_name}__{}' id='#{var_name}__{}'>#{var_name}</span>"
           item.description.gsub!(replace_str, var_str)
           build_interact_var(item)
-        elsif (!item.description.nil?)&& (item.description.include? '[[') && (item.description.include? ']]')
-          var_name = item.description.split('[[')[1].split(']]')[0]
-          
-          replace_str = "[[#{var_name}]]"
-          slider_ids = var_name.split(",")
-          var_str = '';
-          slider_ids.each do |id,index|
-            if index == 0
-              var_str += "<span class='#{id}__[]' id='#{id}__[]'></span>"
-            else
-              var_str += "<span class='#{id}__[]' id='#{id}__[]' type='hidden'></span>"
-            end
-          end
-          item.description.gsub!(replace_str, var_str)
-          build_interact_var(item)
+        else
+          item
+        end
+      end
+
+      # 可以改成動態
+      def build_interact_var2(item)
+        if(!item.description.nil?)&& (item.description.include? '[[') && (item.description.include? ']]')
+          item.description.gsub!('[[', "<span class='calculate__[]' id='calculate__[]'>")
+          item.description.gsub!(']]', "</span>")
+          build_interact_var2(item)
         else
           item
         end
