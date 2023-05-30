@@ -379,7 +379,7 @@ module SurveyMoonbear
 
       def build_single_questions_ram(item)
         str = '<fieldset>'
-        str += "<table class='table'>"
+        str += "<table class='table' border='0'>"
 
         min = 0, max = 100, start_point =0
         word_min = '', word_max = ''
@@ -394,25 +394,32 @@ module SurveyMoonbear
       
 
         str += '<thead><tr>'
+        str += '<tr>'
         if item.required == 1
           str += "<td class='w-50 lead'>#{item.description}<span class='text-danger'>*</span></td>"
         else
           str += "<td class='w-50 lead'>#{item.description}</td>"
         end
         str += '</tr>'
-        str += "<tr><div class='w-100 row mx-auto'>"
+        str += '</thead>'
+        str += '<tbody>'
+        str += '<tr>'
+        str += "<td class='w-100 row mx-auto'>"
         str += "<div class='col-4 col-sm-2 text-left px-0'>#{word_min}</div>"
         str += "<div class='col-4 offset-4 col-sm-2 offset-sm-8 text-right px-0'>#{word_max}</div>"
-        str += '</div></tr></thead>'       
+        str += '</div></td>'
+        str += '</tr>'
         str += "<tr><td class='w-100 align-middle'><input type='range' class='custom-range ram-slider'  name='ram-#{item.name}' value='#{start_point}' min='#{min}' max='#{max}'></td>"
-        str +=  if item.required == 1
+        str += if item.required == 1
                   "<input type='hidden' class='required' name='#{item.name}'>"
                 else
-                "<input type='hidden' name='#{item.name}'>"
+                  "<input type='hidden' name='#{item.name}'>"
                 end
         str += '</tr>'
+        str += '</tbody>'
         str += '</table>'
         str += '</fieldset>'
+        
 
       end
 
