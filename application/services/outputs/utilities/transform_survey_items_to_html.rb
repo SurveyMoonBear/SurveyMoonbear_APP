@@ -190,7 +190,8 @@ module SurveyMoonbear
       # 可以改成動態
       def build_interact_var2(item)
         if(!item.description.nil?)&& (item.description.include? '[[') && (item.description.include? ']]')
-          item.description.gsub!('[[', "<span class='calculate__[]' id='calculate__[]'>")
+          cal_name = rand();
+          item.description.gsub!('[[', "<span class='cal#{cal_name}__[]' id='cal#{cal_name}__[]'>")
           item.description.gsub!(']]', "</span>")
           build_interact_var2(item)
         else
