@@ -68,9 +68,13 @@ html
 javascript:
   /* Build the whole survey html with created page htmls */
   var current_page_str = '';
+  
 
   // store ram time
   var ram_time = {}; 
+
+  
+  var  previous_page_disable = '';
 
 
   $.each(#{{pages}}, function(i, page){
@@ -118,15 +122,10 @@ javascript:
       if (record[page_idx] >= #{{pages}}.length) {
         $('#page_next').addClass('disabled');
       }
-       $('#page_pre').removeClass('disabled');
-
-      //測試是否有下disable需求      
-      var previous_page_disable = document.querySelectorAll("span[name='disable_previous'][id='disable_previous']");
-    
-      
-      //if(!previous_page_disable){
-      //  $('#page_pre').removeClass('disabled');
-      //}
+ 
+      if(!previous_page_disable){
+        $('#page_pre').removeClass('disabled');
+      }
         
       
       // Function to set value in the interact variable spans
@@ -328,6 +327,7 @@ javascript:
   /* Survey document init with start time */
   $(document).ready(function() {
     $('input[name=moonbear_start_time]').val(new Date());
+    previous_page_disable = document.getElementById('disable_previous').innerHTML;
   });
 
 css:

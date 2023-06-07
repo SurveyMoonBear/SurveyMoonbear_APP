@@ -326,7 +326,7 @@ module SurveyMoonbear
       end
 
       def build_disable_previous_page(item)
-        str = "<span hidden name='disable_previous' id='disable_previous'></span>"
+        str = "<span hidden name='disable_previous' id='disable_previous'>disable_previous</span>"
       end 
 
       def build_grid_questions_radio(items)
