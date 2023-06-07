@@ -19,6 +19,16 @@ module SurveyMoonbear
 
       private
 
+      # input { config:, current_account:, spreadsheet_id:, title: }
+      def refresh_access_token(input)
+        
+        input[:current_account]['access_token'] = Google::Auth.new(input[:config]).refresh_access_token
+
+        Success(input)
+      rescue
+        Failure('Failed to refresh GoogleSpreadsheetAPI access token ddd.')
+      end
+
       # input { ... }
       def create_spreadsheet(input)
         redis = RedisCache.new(input[:config])
@@ -51,7 +61,7 @@ module SurveyMoonbear
                           .create_permission(input[:new_spreadsheet_id], 'reader', 'anyone')
         Success(input)
       rescue StandardError => e
-        put e
+        puts e
         Failure('Failed to create reader-anyone permission.')
       end
 
@@ -73,9 +83,11 @@ module SurveyMoonbear
         new_survey = Google::SurveyMapper.new(sheets_api)
                                          .load(input[:new_spreadsheet_id], input[:current_account])
         survey = Repository::For[new_survey.class].find_or_create(new_survey)
+
         Success(survey)
-      rescue
-        Failure('Failed to store the new survey into database.')
+      rescue StandardError => e
+        puts e.backtrace
+        Failure("Failed to store the new survey into database.")
       end
     end
   end

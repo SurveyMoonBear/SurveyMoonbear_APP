@@ -70,6 +70,7 @@ module SurveyMoonbear
       # input { ..., response_hashes: }
       def sort_responses_by_item_name(input)
         input[:sorted_response_hashes] = input[:response_hashes].map do |respondent, item_name|
+
           sorted_res_hash = { respondent => item_name.sort().to_h }
 
           # Move additional data to the last elements of the hash

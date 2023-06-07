@@ -125,6 +125,8 @@ module SurveyMoonbear
         case grids_group_arr[0].type
         when 'Multiple choice grid (radio button)'
           build_grid_questions_radio(grids_group_arr)
+        # when 'Multiple choice grid (RAM)'
+        #   build_grid_questions_ram(grids_group_arr)
         when 'Multiple choice grid (slider)'
           build_grid_questions_slider(grids_group_arr)
         when 'Multiple choice grid (VAS)'
@@ -137,7 +139,8 @@ module SurveyMoonbear
       end
 
       def build_individual_question(item)
-        build_interact_var(item)        
+        build_interact_var(item) 
+        build_interact_var2(item)              
         case item.type
         when 'Section Title'
           build_section_title(item)
@@ -149,6 +152,8 @@ module SurveyMoonbear
           build_divider
         when 'Paragraph Answer'
           build_paragraph_answer(item)
+        when 'Slider(RAM)'
+          build_single_questions_ram(item)
         when 'Multiple choice (radio button)'
           build_multiple_choice_radio(item)
         when "Multiple choice with 'other' (radio button)"
@@ -161,18 +166,34 @@ module SurveyMoonbear
           build_random_code(item)
         when 'Jump to page'
           build_jump_page(item)
+        when 'Disable previous page'
+          build_disable_previous_page(item)
         else
           puts "Sorry, there's no such individual question type: #{item.type}"
         end
       end
 
+    
       def build_interact_var(item)
-        if (!item.description.nil?) && (item.description.include? '{{') && (item.description.include? '}}')
+        
+        if (!item.description.nil?)&&(item.description.include? '{{') && (item.description.include? '}}')
           var_name = item.description.split('{{')[1].split('}}')[0]
           replace_str = "{{#{var_name}}}"
           var_str = "<span class='#{var_name}__{}' id='#{var_name}__{}'>#{var_name}</span>"
           item.description.gsub!(replace_str, var_str)
           build_interact_var(item)
+        else
+          item
+        end
+      end
+
+      # 可以改成動態
+      def build_interact_var2(item)
+        if(!item.description.nil?)&& (item.description.include? '[[') && (item.description.include? ']]')
+          cal_name = rand();
+          item.description.gsub!('[[', "<span class='cal#{cal_name}__[]' id='cal#{cal_name}__[]'>")
+          item.description.gsub!(']]', "</span>")
+          build_interact_var2(item)
         else
           item
         end
@@ -305,6 +326,10 @@ module SurveyMoonbear
         str = "<span hidden name='jump_page_#{item.options}' id='jump_page_#{item.options}'>#{item.options}</span>"
       end
 
+      def build_disable_previous_page(item)
+        str = "<span hidden name='disable_previous' id='disable_previous'>disable_previous</span>"
+      end 
+
       def build_grid_questions_radio(items)
         str = '<fieldset>'
         str += "<div class='table-responsive'>"
@@ -350,6 +375,95 @@ module SurveyMoonbear
         end
         str += '</tbody></table>'
         str += '</div>'
+        str += '</fieldset>'
+      end
+
+      def build_single_questions_ram(item)
+        str = '<fieldset>'
+        str += "<table class='table' border='0'>"
+
+        min = 0, max = 100, start_point =0
+        word_min = '', word_max = ''
+        if !item.options.nil?
+          values = item.options.split(',').map(&:strip)
+          min = values[0]
+          max = values[1]
+          word_min = values[2] if values[2]
+          word_max = values[3] if values[3]
+          start_point = values[4] if values[4]
+        end
+      
+
+        str += '<thead><tr>'
+        str += '<tr>'
+        if item.required == 1
+          str += "<td class='w-50 lead'>#{item.description}<span class='text-danger'>*</span></td>"
+        else
+          str += "<td class='w-50 lead'>#{item.description}</td>"
+        end
+        str += '</tr>'
+        str += '</thead>'
+        str += '<tbody>'
+        str += '<tr>'
+        str += "<td class='w-100 row mx-auto'>"
+        str += "<div class='col-4 col-sm-2 text-left px-0'>#{word_min}</div>"
+        str += "<div class='col-4 offset-4 col-sm-2 offset-sm-8 text-right px-0'>#{word_max}</div>"
+        str += '</div></td>'
+        str += '</tr>'
+        str += "<tr><td class='w-100 align-middle'><input type='range' class='custom-range ram-slider'  name='ram-#{item.name}' value='#{start_point}' min='#{min}' max='#{max}'></td>"
+        str += if item.required == 1
+                  "<input type='hidden' class='required' name='#{item.name}'>"
+                else
+                  "<input type='hidden' name='#{item.name}'>"
+                end
+        str += '</tr>'
+        str += '</tbody>'
+        str += '</table>'
+        str += '</fieldset>'
+        
+
+      end
+
+      def build_grid_questions_slider(items)
+        str = '<fieldset>'
+        str += "<table class='table'>"
+
+        min = 0, max = 100
+        word_min = '', word_max = ''
+        items.each do |item|
+          if !item.options.nil?
+            values = item.options.split(',').map(&:strip)
+            min = values[0]
+            max = values[1]
+            word_min = values[2] if values[2]
+            word_max = values[3] if values[3]
+            break
+          end
+        end
+
+        str += '<thead><tr>'
+        str += "<th scope='col' class='w-50'></th>"
+        str += "<th scope='col' class='w-50'><div class='w-100 row mx-auto'>"
+        str += "<div class='col-4 col-sm-2 text-left px-0'>#{word_min}</div>"
+        str += "<div class='col-4 offset-4 col-sm-2 offset-sm-8 text-right px-0'>#{word_max}</div>"
+        str += '</div></th></tr></thead>'
+
+        items.each do |item|
+          str += "<tr id='#{item.name}'>"
+          if item.required == 1
+            str += "<td class='w-50 lead'>#{item.description}<span class='text-danger'>*</span></td>"
+          else
+            str += "<td class='w-50 lead'>#{item.description}</td>"
+          end
+          str += "<td class='w-50 align-middle'><input type='range' class='custom-range ram-slider' id='#{item.name}' name='#{item.name}' value='#{start_point}' min='#{min}' max='#{max}'></td>"
+          str +=  if item.required == 1
+                    "<input type='hidden' class='required' name='#{item.name}'>"
+                  else
+                  "<input type='hidden' name='#{item.name}'>"
+                  end
+          str += '</tr>'
+        end
+        str += '</table>'
         str += '</fieldset>'
       end
 

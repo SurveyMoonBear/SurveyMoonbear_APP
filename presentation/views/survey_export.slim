@@ -3,6 +3,7 @@ html
   head
     title SurveyMoonbear
     meta charset="UTF-8"
+    / meta http-equiv="Content-Type" content="text/html;charset=big5"
     meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
     / Bootstrap CSS and theme (Yeti Theme)
     link {
@@ -68,6 +69,16 @@ html
 javascript:
   /* Build the whole survey html with created page htmls */
   var current_page_str = '';
+  
+
+  // store ram time
+  var ram_time = {}; 
+  var ram_flag = false;
+
+  
+  var  previous_page_disable = '';
+
+
   $.each(#{{pages}}, function(i, page){
     // Create page-div for the page (only 1st page visible)
     if (i > 0) {
@@ -113,19 +124,40 @@ javascript:
       if (record[page_idx] >= #{{pages}}.length) {
         $('#page_next').addClass('disabled');
       }
-      $('#page_pre').removeClass('disabled');
+ 
+      if(!previous_page_disable){
+        $('#page_pre').removeClass('disabled');
+      }
+        
+      
+      // Function to set value in the interact variable spans
+      function setInteractVariableValues(selector, variableType) {
+        $(selector).each(function() {
+          var setVar = this.id.split(variableType)[0];
+          var inputValue = $('input[name=' + setVar + ']').val() || $('textarea[name=' + setVar + ']').val();
+          $(this).html(inputValue);
+        });
+      }
 
-      // get all the span elements with interactive variable
-      var interact_variables = document.querySelectorAll('span[class*="__{}"]');
-      for(let interact_variable of interact_variables){
-        var set_var = interact_variable.id.split('__{}')[0];
-        // get the input value and insert in the span elements
-        if($('input[name='+set_var+']').val()){
-          interact_variable.innerHTML = $('input[name='+set_var+']').val();
-        }else{
-          interact_variable.innerHTML = $('textarea[name='+set_var+']').val();
-        };
-      };
+      // Function to evaluate and update calculate spans
+      function updateCalculateSpans(selector) {
+        $(selector).each(function() {
+          var htmlContent = $(this).text();
+          var expression = htmlContent.trim();
+          var answer = eval(expression);
+          $(this).html(answer);
+        });
+      }
+      
+      // Set values for regular interact variables
+      setInteractVariableValues('span[class*="__{}"]', '__{}');
+
+      // Update calculate spans
+      if(ram_flag){
+        updateCalculateSpans('span[class*="__[]"]');
+      }
+      
+
       location.href = '#page_' + record[page_idx];
       next_page_num = record[record.length-1]+1;
     } else {
@@ -156,6 +188,9 @@ javascript:
   $('.vas-unclicked').click(function (e) {
     $(this).removeClass('vas-unclicked');
   });
+
+
+
 
   $('input[type=checkbox]').click(function (e) {
     var type_name = $(this).prop('name');
@@ -188,8 +223,59 @@ javascript:
 
   function updateRadioHiddenInput(type_name, value) {
     var input_name = type_name.substr(6, type_name.length);
-    $('input[name='+input_name+']').val(value);
+     $('input[name='+input_name+']').val(value);
   }
+
+  // Function to handle the start of slider interaction
+  function handleSliderStart(event) {
+    var type_name = $(this).prop('name');
+    var input_name = type_name.substr(4);
+
+    if (!ram_time[input_name]) {
+      ram_time[input_name] = [];
+    }
+
+    ram_time[input_name].push(Date.now());
+  }
+
+  // Function to handle the end of slider interaction
+  function handleSliderEnd(event) {
+    var type_name = $(this).prop('name');
+    var input_name = type_name.substr(4);
+
+    // Get the end time and calculate the duration
+    try {
+      // make them calculate after finish type
+      ram_flag = true;
+      var end_time = Date.now();
+      var ram_duration = end_time - ram_time[input_name][0];
+      var ram_duration_second = ram_duration / 1000;
+
+      // Set the value of the input element with the slider value, duration, and touch device information
+      $('input[name=' + input_name + ']').val(this.value + ";" + ram_duration_second + "; touch: " + isTouchDevice());
+    } catch (error) {
+      // Set ram_duration_second to 0 in case an error occurs
+      $('input[name=' + input_name + ']').val(this.value + ";" + "0" + "; touch: " + isTouchDevice());
+      console.error('An error occurred while handling slider end:', error);
+    }
+  }
+
+  // Function to check if the device is a touch device
+  function isTouchDevice() {
+    return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+  }
+
+  var sliderElement = $('input.ram-slider');
+
+  // Attach the appropriate event listeners based on the device type
+  if (isTouchDevice()) {
+    sliderElement.on('touchstart', handleSliderStart);
+    sliderElement.on('touchend', handleSliderEnd);
+  } else {
+    sliderElement.on('mousedown', handleSliderStart);
+    sliderElement.on('mouseup', handleSliderEnd);
+  }
+
 
   $('input.vas-unclicked').click(function (e) {
     var type_name = $(this).prop('name');
@@ -212,6 +298,8 @@ javascript:
   });
 
   $('#form').on('submit', function(e) {
+
+    $('input[name=moonbear_end_time]').val(new Date());
     $('#btn-submit').prop('disabled', true);
     $('<input />').attr('type', 'hidden')
                   .attr('name', "moonbear_url_params")
@@ -246,9 +334,25 @@ javascript:
   /* Survey document init with start time */
   $(document).ready(function() {
     $('input[name=moonbear_start_time]').val(new Date());
+    if(document.getElementById('disable_previous').innerHTML){
+      previous_page_disable = document.getElementById('disable_previous').innerHTML;
+    }
+    
   });
 
 css:
   .vas-unclicked::-webkit-slider-thumb {
     background: rgba(0, 0, 0, 0);
+  }
+   .ram-slider{
+  pointer-events: none;
+  } 
+   .ram-slider::-webkit-slider-thumb{/*Webkit Browsers like Chrome and Safari*/
+    pointer-events: auto;
+   }
+  .ram-slider::-moz-range-thumb{/*Firefox*/
+    pointer-events: auto;
+  }
+  .ram-slider::-ms-thumb{/*Internet Explorer*/
+    pointer-events: auto;
   }

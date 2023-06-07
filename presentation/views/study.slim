@@ -90,6 +90,18 @@ div class="mb-3"
         i class="fas fa-plus" &nbsp;Create a new survey
       == render :modal_create_survey, locals: { rerout: "/studies/#{study.id}", study_id: study.id }
   div class="row justify-content-center mt-3"
+    div class="col-4 col-sm-12 col-md-3" 
+      button type="button" class="btn btn-outline-dark btn-sm mr-1" data-toggle="modal" data-target="#modal_random_survey" Random Survey 
+      div class="modal fade" id="modal_random_survey"
+        div class="modal-dialog" role="document"
+          div class="modal-content"
+            div class="modal-header"
+              h5 class="modal-title" Random #{study.title} 
+            div class="modal-body"
+              input type="text" class="form-control" id="input" readonly="true" value="#{config.APP_URL}/studies/#{study.id}/random"
+            div class="modal-footer"
+              button type="button" class="btn btn-outline-info" data-dismiss="modal" Close
+  div class="row justify-content-center mt-3"
     div class="col-12 col-sm-12 col-md-10"
       - unless study.owned_surveys.empty?
         table class="table"
@@ -247,3 +259,4 @@ javascript:
   $('#btn-submit').on('click', function (e) {
     $('#modal_waiting').modal();
   });
+

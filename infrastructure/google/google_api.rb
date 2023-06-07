@@ -147,7 +147,7 @@ module SurveyMoonbear
       def self.get_with_google_auth(url, access_token)
         response = HTTP.auth("Bearer #{access_token}")
                        .get(url)
-        puts "log[trace]: response: #{response}, url: #{url}, access_token: #{access_token}"
+        # puts "log[trace]: response: #{response}, url: #{url}, access_token: #{access_token}"
         Response.new(response).response_or_error
       end
 

@@ -1,0 +1,360 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Date:
+      - Wed, 10 May 2023 17:11:09 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+          "token_type": "Bearer",
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijc3NzBiMDg1YmY2NDliNzI2YjM1NzQ3NjQwMzBlMWJkZTlhMTBhZTYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI3NzY4MTYzOTAxODYtMDJhb3Q5dHJkZ2V1aXRsZXY3cjN1MXQwN2UyY2hzaTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI3NzY4MTYzOTAxODYtMDJhb3Q5dHJkZ2V1aXRsZXY3cjN1MXQwN2UyY2hzaTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDk2ODg1MDU2NTQzMjk0ODQyNTkiLCJlbWFpbCI6InJ1Ynl5dTI4MDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJQTmZmX1NQU2FwODhMLXdXYWl6NV93IiwiaWF0IjoxNjgzNzM4NjY5LCJleHAiOjE2ODM3NDIyNjl9.jP9N7FS3uTjvpEK0WT4-lCPM81LS1432znjI6vkZXAicPf8YY5rzFsKmokV8L87OzaHXl9EHWvDbDZyZXCJUE6Gvl9BLdjuvsbQ8mUOZ-LT-XWq-lbb9yO_PuetM-xTixZOKYiKIfCxx4NJGD9gXEc2v6mPMr_mnCTlLkEyYCRa4c3Ugs3gNp_zOQl_7_gMousq4x1F915-uT4GYZ_i7yfFnlsGnGVaEh81ZfvI18V4EIhzItzlN64dEyFLTu4Zv0C4Ql2Xtp1Wr0-6gk_IugMQpL4S3qfbKivdOmM2Vi6cxcRfSBJCeG3fey3cEWFuCFQ8UVebQvUeW7MwiuHwIEw"
+        }
+  recorded_at: Wed, 10 May 2023 17:11:09 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: '{"id":"<CALENDAR_ID>"}'
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=UTF-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Pragma:
+      - no-cache
+      Content-Length:
+      - '165'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Wed, 10 May 2023 17:11:10 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "error": {
+          "errors": [
+           {
+            "domain": "global",
+            "reason": "notFound",
+            "message": "Not Found"
+           }
+          ],
+          "code": 404,
+          "message": "Not Found"
+         }
+        }
+  recorded_at: Wed, 10 May 2023 17:11:09 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Date:
+      - Wed, 10 May 2023 17:11:10 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+          "token_type": "Bearer",
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijc3NzBiMDg1YmY2NDliNzI2YjM1NzQ3NjQwMzBlMWJkZTlhMTBhZTYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI3NzY4MTYzOTAxODYtMDJhb3Q5dHJkZ2V1aXRsZXY3cjN1MXQwN2UyY2hzaTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI3NzY4MTYzOTAxODYtMDJhb3Q5dHJkZ2V1aXRsZXY3cjN1MXQwN2UyY2hzaTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDk2ODg1MDU2NTQzMjk0ODQyNTkiLCJlbWFpbCI6InJ1Ynl5dTI4MDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJ1cGhzUU5rYXVPYmNKVXNUTkhGaXlBIiwiaWF0IjoxNjgzNzM4NjcwLCJleHAiOjE2ODM3NDIyNzB9.J17vVa_0kOF_-W74BJAJXkWUiZhl3DSpDAYkCLfg0WpqRseXTRwlOkccNfpvwwlgJAOzqug3grG0CCvalqPQTS5p9hlmNMpwH2vkSjnAVF6Pplv2skYcXYNwcg66K19bjbhwTMphdQWdyTGDFDc31u5ijvz5eK1_6WuabG3BFuSN2frxKP4XcfuA08zCq3td_mRLjZ6ckxJ1Cnlvc2SnBJZLRHS8nfeHHtDpckn9scfu7TEt6QLPN7u1QWgdvauc2TAAOMS5AqyGWalPH9dURgmiKWGVXWMZJ2rKqHCprtC1LN_3DfuvswmxCe2y-pdw3EK6xcs2-yGRfq5ZP1mUAQ"
+        }
+  recorded_at: Wed, 10 May 2023 17:11:10 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Wed, 10 May 2023 17:11:10 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/calendar openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer",
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijc3NzBiMDg1YmY2NDliNzI2YjM1NzQ3NjQwMzBlMWJkZTlhMTBhZTYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI3NzY4MTYzOTAxODYtMDJhb3Q5dHJkZ2V1aXRsZXY3cjN1MXQwN2UyY2hzaTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI3NzY4MTYzOTAxODYtMDJhb3Q5dHJkZ2V1aXRsZXY3cjN1MXQwN2UyY2hzaTQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDk2ODg1MDU2NTQzMjk0ODQyNTkiLCJlbWFpbCI6InJ1Ynl5dTI4MDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJ1M1diR200TW1xNmVxRVVDOWJQNW9BIiwiaWF0IjoxNjgzNzM4NjcwLCJleHAiOjE2ODM3NDIyNzB9.RXtkCTlmZqhdxZ7VvihrLyam0j_63mcPZGPId-az6uKH-FSCxcoY0oQDeJrGJDTQXCfqG_W0gU3xBL6hPIE880nzmsKpo_mI7nRMXgvRLPozxCjgHI3oIXFSik_hwl6ECi1YL1hTnIey3hMETl_E1XdYOvgiliSVG5XE_zqaUAYtLtOZgoHH4WuvtzgeT-T4K1GKeVTwcEk-xo62tUOEZdqpUNbhNybVhndkQM8zk_4_Qdz1Z-FySVwUJFa0spkeLWPVsoWslIPs0BRhrx56WqhPk0MSCz4x49ZL_SR-I80YDuF9dc1FNGOTcO864KTr_UL2JdUq7oBaZ7h-FL04Dw"
+        }
+  recorded_at: Wed, 10 May 2023 17:11:10 GMT
+- request:
+    method: get
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 10 May 2023 17:11:11 GMT
+      Cache-Control:
+      - private, max-age=0, must-revalidate, no-transform
+      Expires:
+      - Wed, 10 May 2023 17:11:11 GMT
+      Content-Length:
+      - '4539'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: "{\n \"kind\": \"calendar#calendarList\",\n \"etag\": \"\\\"p328b9rs8tf6fs0g\\\"\",\n
+        \"nextSyncToken\": \"CJC074jrzP4CEhRydWJ5eXUyODAwQGdtYWlsLmNvbQ==\",\n \"items\":
+        [\n  {\n   \"kind\": \"calendar#calendarListEntry\",\n   \"etag\": \"\\\"1593231252102000\\\"\",\n
+        \  \"id\": \"tuq60d3hu8fbdkknk5rmlv7km4@group.calendar.google.com\",\n   \"summary\":
+        \"起飛活動日程\",\n   \"timeZone\": \"Asia/Taipei\",\n   \"colorId\": \"4\",\n   \"backgroundColor\":
+        \"#fa573c\",\n   \"foregroundColor\": \"#000000\",\n   \"selected\": true,\n
+        \  \"accessRole\": \"owner\",\n   \"defaultReminders\": [],\n   \"conferenceProperties\":
+        {\n    \"allowedConferenceSolutionTypes\": [\n     \"hangoutsMeet\"\n    ]\n
+        \  }\n  },\n  {\n   \"kind\": \"calendar#calendarListEntry\",\n   \"etag\":
+        \"\\\"1594609276253000\\\"\",\n   \"id\": \"rubyyu2800@gmail.com\",\n   \"summary\":
+        \"rubyyu2800@gmail.com\",\n   \"timeZone\": \"Asia/Taipei\",\n   \"colorId\":
+        \"17\",\n   \"backgroundColor\": \"#9a9cff\",\n   \"foregroundColor\": \"#000000\",\n
+        \  \"selected\": true,\n   \"accessRole\": \"owner\",\n   \"defaultReminders\":
+        [\n    {\n     \"method\": \"email\",\n     \"minutes\": 30\n    },\n    {\n
+        \    \"method\": \"popup\",\n     \"minutes\": 30\n    }\n   ],\n   \"notificationSettings\":
+        {\n    \"notifications\": [\n     {\n      \"type\": \"eventCreation\",\n
+        \     \"method\": \"email\"\n     },\n     {\n      \"type\": \"eventChange\",\n
+        \     \"method\": \"email\"\n     },\n     {\n      \"type\": \"eventCancellation\",\n
+        \     \"method\": \"email\"\n     },\n     {\n      \"type\": \"eventResponse\",\n
+        \     \"method\": \"email\"\n     }\n    ]\n   },\n   \"primary\": true,\n
+        \  \"conferenceProperties\": {\n    \"allowedConferenceSolutionTypes\": [\n
+        \    \"hangoutsMeet\"\n    ]\n   }\n  },\n  {\n   \"kind\": \"calendar#calendarListEntry\",\n
+        \  \"etag\": \"\\\"1633338483954000\\\"\",\n   \"id\": \"c_classroom86e04d44@group.calendar.google.com\",\n
+        \  \"summary\": \"數位安康 2021\",\n   \"timeZone\": \"UTC\",\n   \"colorId\":
+        \"16\",\n   \"backgroundColor\": \"#1967d2\",\n   \"foregroundColor\": \"#ffffff\",\n
+        \  \"selected\": true,\n   \"accessRole\": \"reader\",\n   \"defaultReminders\":
+        [],\n   \"conferenceProperties\": {\n    \"allowedConferenceSolutionTypes\":
+        [\n     \"hangoutsMeet\"\n    ]\n   }\n  },\n  {\n   \"kind\": \"calendar#calendarListEntry\",\n
+        \  \"etag\": \"\\\"1653233297346000\\\"\",\n   \"id\": \"family05793586444726725367@group.calendar.google.com\",\n
+        \  \"summary\": \"家庭\",\n   \"timeZone\": \"UTC\",\n   \"colorId\": \"20\",\n
+        \  \"backgroundColor\": \"#cabdbf\",\n   \"foregroundColor\": \"#000000\",\n
+        \  \"selected\": true,\n   \"accessRole\": \"writer\",\n   \"defaultReminders\":
+        [\n    {\n     \"method\": \"email\",\n     \"minutes\": 30\n    },\n    {\n
+        \    \"method\": \"popup\",\n     \"minutes\": 30\n    }\n   ],\n   \"conferenceProperties\":
+        {\n    \"allowedConferenceSolutionTypes\": [\n     \"hangoutsMeet\"\n    ]\n
+        \  }\n  },\n  {\n   \"kind\": \"calendar#calendarListEntry\",\n   \"etag\":
+        \"\\\"1662652919006000\\\"\",\n   \"id\": \"niqf5tlubu8vsck0rqrnalukd8@group.calendar.google.com\",\n
+        \  \"summary\": \"\U0001F440 ARTOGO 看展月曆\",\n   \"description\": \"黛尼不藏私，與你分享每月精選的十檔展覽，一起增加生活中的閱歷。\\n-\\n\U0001F449
+        展覽 / 看展分享：看展後歡迎在照片上 @artogotw 或貼文中 #artogo ，與我們分享你的看展心得 \U0001F440\\n-\\nARTOGO
+        線上展覽，將美感與靈感打包，讓藝術體驗的享用，隨時都能開動。\",\n   \"timeZone\": \"Asia/Taipei\",\n   \"colorId\":
+        \"19\",\n   \"backgroundColor\": \"#c2c2c2\",\n   \"foregroundColor\": \"#000000\",\n
+        \  \"selected\": true,\n   \"accessRole\": \"reader\",\n   \"defaultReminders\":
+        [],\n   \"conferenceProperties\": {\n    \"allowedConferenceSolutionTypes\":
+        [\n     \"hangoutsMeet\"\n    ]\n   }\n  },\n  {\n   \"kind\": \"calendar#calendarListEntry\",\n
+        \  \"etag\": \"\\\"1681458710071000\\\"\",\n   \"id\": \"addressbook#contacts@group.v.calendar.google.com\",\n
+        \  \"summary\": \"生日\",\n   \"description\": \"顯示 Google 聯絡人中的聯絡人生日、週年紀念日和其他活動日期。\",\n
+        \  \"timeZone\": \"Asia/Taipei\",\n   \"summaryOverride\": \"Contacts\",\n
+        \  \"colorId\": \"13\",\n   \"backgroundColor\": \"#92e1c0\",\n   \"foregroundColor\":
+        \"#000000\",\n   \"accessRole\": \"reader\",\n   \"defaultReminders\": [],\n
+        \  \"conferenceProperties\": {\n    \"allowedConferenceSolutionTypes\": [\n
+        \    \"hangoutsMeet\"\n    ]\n   }\n  },\n  {\n   \"kind\": \"calendar#calendarListEntry\",\n
+        \  \"etag\": \"\\\"1681458710935000\\\"\",\n   \"id\": \"zh-tw.taiwan#holiday@group.v.calendar.google.com\",\n
+        \  \"summary\": \"台灣的節慶假日\",\n   \"description\": \"台灣假日節慶\",\n   \"timeZone\":
+        \"Asia/Taipei\",\n   \"summaryOverride\": \"Holidays in Taiwan\",\n   \"colorId\":
+        \"8\",\n   \"backgroundColor\": \"#16a765\",\n   \"foregroundColor\": \"#000000\",\n
+        \  \"accessRole\": \"reader\",\n   \"defaultReminders\": [],\n   \"conferenceProperties\":
+        {\n    \"allowedConferenceSolutionTypes\": [\n     \"hangoutsMeet\"\n    ]\n
+        \  }\n  }\n ]\n}\n"
+  recorded_at: Wed, 10 May 2023 17:11:11 GMT
+recorded_with: VCR 6.1.0
