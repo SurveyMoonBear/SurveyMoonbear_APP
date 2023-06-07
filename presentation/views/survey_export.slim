@@ -219,6 +219,7 @@ javascript:
 
   function updateRadioHiddenInput(type_name, value) {
     var input_name = type_name.substr(6, type_name.length);
+     $('input[name='+input_name+']').val(value);
   }
 
   // Function to handle the start of slider interaction
@@ -273,7 +274,7 @@ javascript:
   $('input.vas-unclicked').click(function (e) {
     var type_name = $(this).prop('name');
     var input_name = type_name.substr(4, type_name.length);
-    $('input[name='+input_name+']').val("5");
+    $('input[name='+input_name+']').val(this.value);
   });
 
   $('.other-text').on('keyup', function(e) { 
