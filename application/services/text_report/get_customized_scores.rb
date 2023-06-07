@@ -21,22 +21,40 @@ module SurveyMoonbear
       # input { all_graphs:, case_email:, redis:, user_key:}
       def get_sources_from_redis(input)
         input[:sources] = input[:redis].get(input[:user_key])['source']
-        if input[:sources]
-          Success(input)
-        else
-          Failure('Failed to get sources from redis.')
+
+        unless input[:sources]
+          access_token = input[:access_token]
+
+          update_visual_report = Service::UpdateVisualReport.new
+                                                            .call(redis: redis,
+                                                                  visual_report_id: visual_report_id,
+                                                                  spreadsheet_id: spreadsheet_id,
+                                                                  config: config,
+                                                                  cache_key: cache_key,
+                                                                  access_token: access_token)
+          raise 'Failed to update visual report, please try again :(' if update_visual_report.failure?
+
+          input[:sources] = input[:redis].get(input[:user_key])['source']
+          raise('Failed to get sources from redis.') unless input[:sources]
         end
+
+        Success(input)
+      rescue StandardError => e
+        Failure('Failed to get sources from redis.')
       end
 
       # input{ sources:, ...}
       def get_other_sheets_from_redis(input)
+        other_sheet = {}
         input[:sources].each do |source|
           if source[0] == 'spreadsheet'
             url = source[1] # https://docs.google.com/spreadsheets/d/<spreadsheet_id>/edit#gid=789293273
+            gid = url.match('#gid=([0-9]+)')[1]
             other_sheet_id = url.match('.*/(.*)/')[1]
-            other_sheet_key = 'other_sheet' + other_sheet_id
-            input[:other_sheets] = input[:redis].get(other_sheet_key)
+            other_sheet_key = source[2] + '/other_sheet' + other_sheet_id + 'gid' + gid
+            other_sheet[source[2]] = input[:redis].get(other_sheet_key)
           end
+          input[:other_sheets] = other_sheet
         end
         Success(input)
       rescue StandardError
@@ -49,23 +67,28 @@ module SurveyMoonbear
           if source[4] && source[3]
             email_col = source[4] # I3:I140 sso_email
             case_id_col = source[3] #C3:C140 case_id
+            name_col = source[5] #D3:D140 name
             email_range = transform_anotation(email_col)
             case_range = transform_anotation(case_id_col)
-            ta_range = transform_anotation("A3:A144")
+            name_range = transform_anotation(name_col)
             all_email = get_range_val(input[:other_sheets][source[2]], email_range)
             all_case = get_range_val(input[:other_sheets][source[2]], case_range)
-            all_ta = get_range_val(input[:other_sheets][source[2]], ta_range)
+            all_name = get_range_val(input[:other_sheets][source[2]], name_range)
+            input[:all_name] = {}
+
+            all_case.each_with_index do |case_id, idx|
+              input[:all_name][case_id]= all_name[idx]
+            end
             all_email.each_with_index do |email, idx|
-              if input[:case_email] == email
+              if input[:case_email].strip.downcase == email.strip.downcase
                 input[:case_id] = all_case[idx]
-                input[:ta] = all_ta[idx]
                 break
               end
             end
           end
         end
         Success(input)
-      rescue StandardError
+      rescue StandardError => e 
         Failure('Failed to map google account and spreadsheet case_id.')
       end
 
@@ -75,14 +98,13 @@ module SurveyMoonbear
         input[:all_graphs].each do |page, graphs|
           graphs.each_with_index do |graph, idx|
             begin
-            # scores.append({ 'Title' => graph[1], 'Score' => graph[8][input[:case_id]] })
-              scores.append({ title: graph[1], score: graph[9][input[:case_id]], score_type: graph[8] })
-            rescue StandardError => e 
+              # scores.append({ 'Title' => graph[1], 'Score' => graph[8][input[:case_id]] })
+              scores.append({ title: graph[1], score: graph[10][input[:case_id]], score_type: graph[8], all_scores: graph[10], params: graph[9], all_name: input[:all_name], student_id: input[:case_id]})
+            rescue StandardError => e
             end
           end
         end
-        result = { ta: input[:ta], scores: scores }
-
+        result = { scores: scores }
         Success(result)
       rescue StandardError
         Failure('Failed to get all text scores.')

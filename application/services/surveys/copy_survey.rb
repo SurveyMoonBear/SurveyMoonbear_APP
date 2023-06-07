@@ -11,7 +11,6 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
-      step :refresh_access_token
       step :create_spreadsheet
       step :add_editor
       step :create_permission_reader_anyone
@@ -32,7 +31,10 @@ module SurveyMoonbear
 
       # input { ... }
       def create_spreadsheet(input)
-        response = Google::Api::Drive.new(input[:current_account]['access_token'])
+        redis = RedisCache.new(input[:config])
+        current_account_access_token = redis.get("current_account_access_token_#{input[:current_account]["email"]}")
+        input[:current_account_access_token] = current_account_access_token
+        response = Google::Api::Drive.new(current_account_access_token)
                                      .copy_drive_file(input[:spreadsheet_id])
         input[:new_spreadsheet_id] = response['id']
 
@@ -45,7 +47,7 @@ module SurveyMoonbear
       # input { ..., new_spreadsheet_id: }
       def add_editor(input)
         sleep(1)
-        GoogleSpreadsheet.new(input[:current_account]['access_token'])
+        GoogleSpreadsheet.new(input[:current_account_access_token])
                          .add_editor(input[:new_spreadsheet_id], input[:current_account]['email'])
         Success(input)
       rescue StandardError => e
@@ -55,7 +57,7 @@ module SurveyMoonbear
 
       # input { ... }
       def create_permission_reader_anyone(input)
-        Google::Api::Drive.new(input[:current_account]['access_token'])
+        Google::Api::Drive.new(input[:current_account_access_token])
                           .create_permission(input[:new_spreadsheet_id], 'reader', 'anyone')
         Success(input)
       rescue StandardError => e
@@ -66,7 +68,7 @@ module SurveyMoonbear
       # input { ... }
       def set_survey_title(input)
         unless input[:title].nil? || input[:title].empty?
-          Google::Api::Sheets.new(input[:current_account]['access_token'])
+          Google::Api::Sheets.new(input[:current_account_access_token])
                             .update_gs_title(input[:new_spreadsheet_id], input[:title])
         end
 
@@ -77,7 +79,7 @@ module SurveyMoonbear
 
       # input { ... }
       def store_into_database(input)
-        sheets_api = Google::Api::Sheets.new(input[:current_account]['access_token'])
+        sheets_api = Google::Api::Sheets.new(input[:current_account_access_token])
         new_survey = Google::SurveyMapper.new(sheets_api)
                                          .load(input[:new_spreadsheet_id], input[:current_account])
         survey = Repository::For[new_survey.class].find_or_create(new_survey)

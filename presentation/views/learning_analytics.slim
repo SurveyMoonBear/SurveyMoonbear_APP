@@ -16,13 +16,13 @@ html
       integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" 
       crossorigin="anonymous"
     }
-
+   
     == assets(:css)
   body style="background-color: #FBFDFF;"
     / JQuery and Bootstrap JS
     script {
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
+      src="https://code.jquery.com/jquery-3.6.4.min.js" 
+      integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" 
       crossorigin="anonymous"
     }
     script {
@@ -39,74 +39,61 @@ html
 
     .col-12 id='html_body'
     section class="mt-3 mb-5"
-      div class='justify-content-center'
-        div class="col-md-10 m-auto"
-          h1 class="text-dark font-weight-bold" Welcome back, 
-          p Offering tool to track your learning progress and class performance!
-          div class='shadow m-auto p-5'
-            div class="mb-3"
-              div class="mt-3"
-                div id="div-alert"
-                h4 class="text-primary font-weight-bold my-4" My Learning Report
-                div class="d-flex flex-sm-row flex-column flex-sm-wrap"
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-5 mt-2 border' style="border-radius:6px;"
-                    h5 class="text-primary hover:text-white font-weight-bold" My Assignments Report
-                    p class="text-primary hover:text-white mb-4"  My weekly assignment score.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-5 mt-2 border' style="border-radius:6px;"
-                    h5 class="text-primary font-weight-bold" Current score
-                    p class="text-primary hover:text-white mb-4"  My current score.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-5 mt-2 border' style="border-radius:6px;" data-toggle="modal" data-target="#participation_checklist"
-                    h5 class="text-primary font-weight-bold" My Participation Checklist
-                    p class="text-primary hover:text-white mb-4"  See if you participate on Teams every week.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-5 mt-2 border' style="border-radius:6px;" data-toggle="modal" data-target="#assignment_achievements"
-                    h5 class="text-primary font-weight-bold" Assignment Achievement
-                    p class="text-primary hover:text-white mb-4"  See how far away for me to get all badges.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                h4 class="text-primary font-weight-bold my-4" My Participation
-                div class="d-flex flex-sm-row flex-column flex-sm-wrap"
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-5 mt-2 border' style="border-radius:6px;"
-                    h5 class="text-primary font-weight-bold" Teams Discussion Leaderboard
-                    p class="text-primary hover:text-white mb-4"  Top 10 active students on Teams.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-5 mt-2 border' style="border-radius:6px;" data-toggle="modal" data-target="#teams_help_count" 
-                    h5 class="text-primary font-weight-bold" Helping Learning
-                    p class="text-primary hover:text-white mb-4"  Top 25 helpful students on Teams.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-5 mt-2 border' style="border-radius:6px;"
-                    h5 class="text-primary font-weight-bold" Assignment Distribution
-                    p class="text-primary hover:text-white mb-4"  My score compares with other students.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                  div class='la-test bg-white col-sm-3 col-12 shadow p-4 mb-4 mr-5 mt-2 border' style="border-radius:6px;"
-                    h5 class="text-primary font-weight-bold" Current Ranking
-                    p class="text-primary hover:text-white mb-4"  My current standing in the class.
-                    .right_arrow.p-2.border-secondary.border.row.ml-0 style="width:12%; border-radius:10px;"
-                      <svg class="justify-content-center right_arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
+      .justify-content-center
+        .col-md-10.m-auto 
+          .d-flex.justify-content-between
+            h2 class="test font-weight-bold" Visualization and Score Dashboard
+            a href='/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/dashboard/logout' logout
+              <i class="fas fa-sign-out-alt mr-2 text-primary"></i>
+          div
+            ul class="nav nav-tabs" role="tablist" id="displayType"
+              li class="nav-item"
+                a class="nav-link active" data-toggle="tab" href="#dashboard"Visualization Report
+              li class="nav-item"
+                a class="nav-link" data-toggle="tab" href="#score_report" id="score"Score Report
+              li class="nav-item"
+            div class="tab-content"
+              div id="dashboard" class="tab-pane active"
+                / .shadow.m-auto.p-4
+                .d-flex.flex-md-row.flex-column 
+                  .d-flex.flex-column.section-border.mr-1.col-12.col-md-6
+                    h4 class="text-primary font-weight-bold my-4 mx-4" #{analytics_order[:category][0]}
+                    div class="d-flex flex-sm-row flex-column flex-sm-wrap"
+                      - analytics_order[:dashboard][0].each do |analytic|
+                        div class="LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border" style="border-radius:6px; cursor:pointer; min-height: 15vh;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
+                          h5 class="LA-title hover:text-white font-weight-bold" #{analytic[0]}
+                          p class="LA-description hover:text-white mb-4"  #{analytic[1]}
+                          <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
 
-include :teams_help_count
-include :participation_checklist
-include :assignment_achievements
+                  .d-flex.flex-column.section-border.ml-1.col-12.col-md-6
+                    h4 class="text-primary font-weight-bold my-4 mx-4" #{analytics_order[:category][1]}
+                    div class="d-flex flex-sm-row flex-column flex-sm-wrap"
+                      - analytics_order[:dashboard][1].each do |analytic|
+                        div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer; min-height: 15vh;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
+                          h5 class="LA-title font-weight-bold" #{analytic[0]}
+                          p class="LA-description hover:text-white mb-4"  #{analytic[1]}
+                          <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
+
+              div id="score_report" class="tab-pane fade"
+                == render :score_report, locals: { scores: scores, ta: ta, vis_report_object: vis_report_object, text_report_object: text_report_object, title: title }
+                  
+
+include :dashboard_modal
 
 javascript:
-  $('#btn-teams_help_count').on('click', function (e) {
-    $('#teams_help_count').modal('hide');
-    $('#modal_waiting').modal();
-  });
- $('#btn-participation_checklist').on('click', function (e) {
-    $('#participation_checklist').modal('hide');
-    $('#modal_waiting').modal();
-  });
- $('#btn-assignment_achievements').on('click', function (e) {
-    $('#assignment_achievements').modal('hide');
-    $('#modal_waiting').modal();
-  });
- 
+  $('#myTabs button').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+  })
+
+  function openModal(visual_report_id, spreadsheet_id, dashboard_type, title) {
+    $.ajax({
+      url: "/visual_report/" + visual_report_id + "/online/" + spreadsheet_id + "/dashboard/" + dashboard_type,
+      type: 'GET',
+      success: function(result) {
+        $('#content_data').html(result);
+        $('#modal-title').text(title)
+        $('#dashboard_modal').modal('show');
+      }
+    });
+  }

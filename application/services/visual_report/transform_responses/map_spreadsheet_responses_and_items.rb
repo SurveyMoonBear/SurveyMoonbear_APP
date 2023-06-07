@@ -30,7 +30,8 @@ module SurveyMoonbear
         input[:res_val] = get_range_val(input[:all_data], question_range)
 
         Success(input)
-      rescue StandardError
+      rescue StandardError => e
+        puts "log[error]: #{e.full_message}"
         Failure('Failed to read source spreadsheet first sheet data.')
       end
 
@@ -66,6 +67,7 @@ module SurveyMoonbear
                  input[:item_data].legend,
                  input[:item_data].self_marker,
                  input[:item_data].score_type,
+                 input[:item_data].params,
                  pair.to_h])
       rescue StandardError => e
         puts e
@@ -102,6 +104,8 @@ module SurveyMoonbear
           'column': alphabet_table[start_row[0]],
           'column_times': column_times,
           'row_times': row_times }
+      rescue StandardError => e
+        puts "log[error]: #{e.full_message}"
       end
 
       def get_range_val(all_data, case_range)

@@ -1,0 +1,8 @@
+- if @dashboard_result
+  div class="d-flex col-12 text-white font-weight-bold justify-content-between te py-1 px-3" 
+    p Name
+    p Times
+  - @dashboard_result.each_with_index do |obj, index|
+    li class="d-flex col-12 justify-content-between border border-secondary font-weight-bold text-primary"
+      p <span class="trophy-index">#{index+1}.</span> #{obj[0]}
+      p #{obj[1]}

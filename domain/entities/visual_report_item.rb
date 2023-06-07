@@ -15,6 +15,7 @@ module SurveyMoonbear
       attribute :legend, Strict::String.optional
       attribute :self_marker, Strict::String.optional
       attribute :score_type, Strict::String.optional
+      attribute :params, Strict::String.optional
     end
   end
 end
