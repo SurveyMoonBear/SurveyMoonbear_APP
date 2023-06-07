@@ -697,13 +697,14 @@ module SurveyMoonbear
           routing.post do
             redis = RedisCache.new(config)
             cache_key = "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"
-
+            
             # redis = RedisCache.new(config)
-            if redis.get("current_account_access_token_#{@current_account["email"]}").equal? nil
+            if @current_account["access_token"].equal? nil
               routing.redirect '/account/logout'
+
             end
 
-            access_token = redis.get("current_account_access_token_#{@current_account["email"]}")
+            access_token = @current_account["access_token"]
 
             update_visual_report = Service::UpdateVisualReport.new
                                                               .call(redis: redis,
