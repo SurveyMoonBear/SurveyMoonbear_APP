@@ -48,7 +48,7 @@ module SurveyMoonbear
                           .create_permission(input[:new_spreadsheet_id], 'reader', 'anyone')
         Success(input)
       rescue StandardError => e
-        put e
+        puts e
         Failure('Failed to create reader-anyone permission.')
       end
 
