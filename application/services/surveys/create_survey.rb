@@ -29,7 +29,7 @@ module SurveyMoonbear
 
       # input { config:, current_account:, title:, study_id: }
       def copy_sample_spreadsheet(input)
-        new_survey = CopySurvey.new.call(access_token: input[:current_account]['access_token'],
+        new_survey = CopySurvey.new.call(config: input[:config],
                                          current_account: input[:current_account],
                                          spreadsheet_id: input[:config].SAMPLE_FILE_ID,
                                          title: input[:title])
