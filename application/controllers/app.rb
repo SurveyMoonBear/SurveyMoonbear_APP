@@ -179,7 +179,7 @@ module SurveyMoonbear
 
         # GET survey/[survey_id]/start
         routing.get 'start' do
-          response = Service::StartSurvey.new.call(survey_id: survey_id, current_account: @current_account)
+          response = Service::StartSurvey.new.call(config: config, survey_id: survey_id, current_account: @current_account)
           flash[:error] = "#{response.failure} Please try again." if response.failure?
 
           routing.redirect '/survey_list'
