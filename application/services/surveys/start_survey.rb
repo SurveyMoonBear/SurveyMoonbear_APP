@@ -10,11 +10,22 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
+      step :refresh_access_token
       step :get_survey_from_database
       step :get_survey_from_spreadsheet
       step :store_survey_into_database_and_launch
 
       private
+
+      # input { config:, current_account:, title: }
+      def refresh_access_token(input)
+        input[:current_account]['access_token'] = Google::Auth.new(input[:config]).refresh_access_token
+
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to refresh  access token.')
+      end
 
       # input { survey_id:, current_account: }
       def get_survey_from_database(input)
