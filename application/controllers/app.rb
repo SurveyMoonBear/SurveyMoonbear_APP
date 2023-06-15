@@ -138,7 +138,8 @@ module SurveyMoonbear
         @current_account = SecureSession.new(session).get(:current_account)
 
         routing.post 'update_settings' do
-          Service::EditSurveyTitle.new.call(current_account: @current_account,
+          Service::EditSurveyTitle.new.call(config: config,
+                                            current_account: @current_account,
                                             survey_id: survey_id,
                                             new_title: routing.params['title'])
 
