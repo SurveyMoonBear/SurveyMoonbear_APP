@@ -242,6 +242,10 @@ javascript:
   function handleSliderEnd(event) {
     var type_name = $(this).prop('name');
     var input_name = type_name.substr(4);
+    var max = parseInt($(this).attr('max')); 
+    if(this.value<(max/2)){
+        alert("提醒:你這樣的習慣，如果一直維持的話，真的對身體不好喔 Notice: If you continue to maintain such habits, it's really not good for your body.");
+    };
 
     // Get the end time and calculate the duration
     try {
