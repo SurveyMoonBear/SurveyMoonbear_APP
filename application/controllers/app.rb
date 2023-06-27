@@ -939,8 +939,14 @@ module SurveyMoonbear
           # GET /studies/[study_id]/random
           routing.on 'random' do
             routing.get do
+              url_params = routing.params.to_h
               url = (Service::CreateRandomUrl.new.call(study_id: study_id).value!)[:survey_url]
               survey_url ="#{config.APP_URL}#{url}"
+              unless url_params.empty?
+                url_params.each do |key, value|
+                  survey_url += "?#{key}=#{value}"
+                end
+              end
               routing.redirect survey_url
             end
           end
