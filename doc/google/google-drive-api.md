@@ -5,10 +5,13 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 ### Step1: A GCP project with the API enabled
 
 1. [create GCP project](https://developers.google.com/workspace/guides/create-project#create_a_new_google_cloud_platform_gcp_project)
-2. [enable Google Drive API and Google Calendar API](https://developers.google.com/workspace/guides/create-project#enable-api)
-3. Button of "Enable APIs and Services" is hard to find 
+![](https://i.imgur.com/qiTpYxr.png) （Should accept the Service Rule first.）
 
+2. [enable Google Drive API, Google Sheets API and Google Calendar API](https://developers.google.com/workspace/guides/create-project#enable-api)
+3. Button of "Enable APIs and Services" is hard to find
 ![](https://i.imgur.com/TvlpLUG.png)
+4. Click on "Enable"(if  Enable is will show MANAGE)
+![](https://i.imgur.com/i2OCxWa.png)
 
 ### Step2: Create authorization credentials for a "Web application"
 
@@ -22,9 +25,16 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 ![](https://i.imgur.com/p32SJ7V.png)
 
 ### Step3: Add following three redirect URI in created authorization credentials
-* For creating a staging app: `https://<appname-staging>.herokuapp.com/account/login/google_callback`
-* For local development: `http://localhost:9090/account/login/google_callback`
-* For getting refresh token: `https://developers.google.com/oauthplayground`
+
+* For creating a staging app: 
+
+  `https://<appname-staging>.herokuapp.com/account/login/google_callback`
+* For local development: 
+  `http://localhost:9090/account/login/google_callback`
+
+  `http://localhost:9090/survey_list`
+* For getting refresh token: 
+  `https://developers.google.com/oauthplayground`
 
 ### Step4: Get application refresh token
 1. go to [oauth play ground](https://developers.google.com/oauthplayground)
