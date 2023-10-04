@@ -115,7 +115,7 @@ module SurveyMoonbear
           if new_survey.success?
             flash[:notice] = "#{new_survey.value!.title} is created!"
           else
-            flash[:error] = "Failed to create survey, please try again :("
+            flash[:error] = 'Failed to create survey, please try again :('
           end
 
           routing.redirect redirect_rout
@@ -180,7 +180,8 @@ module SurveyMoonbear
 
         # GET survey/[survey_id]/start
         routing.get 'start' do
-          response = Service::StartSurvey.new.call(config: config, survey_id: survey_id, current_account: @current_account)
+          response = Service::StartSurvey.new.call(config: config, survey_id: survey_id,
+                                                   current_account: @current_account)
           flash[:error] = "#{response.failure} Please try again." if response.failure?
 
           routing.redirect '/survey_list'
@@ -392,8 +393,11 @@ module SurveyMoonbear
           new_visual_report = Service::CreateVisualReport.new.call(config: config,
                                                                    current_account: @current_account,
                                                                    title: routing.params['title'])
-          new_visual_report.success? ? flash[:notice] = "#{new_visual_report.value!.title} is created!" :
-                                       flash[:error] = 'Failed to create visual report, please try again :('
+          if new_visual_report.success?
+            flash[:notice] = "#{new_visual_report.value!.title} is created!"
+          else
+            flash[:error] = 'Failed to create visual report, please try again :('
+          end
 
           routing.redirect '/analytics'
         end
@@ -406,7 +410,10 @@ module SurveyMoonbear
                                                                  spreadsheet_id: spreadsheet_id,
                                                                  title: routing.params['title'])
 
-          flash[:error] = "Copy failed: '#{new_visual_report.failure}' Please try again :(" if new_visual_report.failure?
+          if new_visual_report.failure?
+            flash[:error] =
+              "Copy failed: '#{new_visual_report.failure}' Please try again :("
+          end
 
           routing.redirect '/analytics'
         end
@@ -421,18 +428,18 @@ module SurveyMoonbear
           logged_in_account_res = Service::FindAuthenticatedGoogleAccount.new.call(config: config,
                                                                                    code: code,
                                                                                    login_type: 'report')
-            if logged_in_account_res.failure?
-              puts logged_in_account_res.failure
+          if logged_in_account_res.failure?
+            puts logged_in_account_res.failure
 
-              flash[:error] = 'Login failed. Please try again :('
-              routing.redirect '/'
-            else
-              logged_in_account = logged_in_account_res.value!.to_h
+            flash[:error] = 'Login failed. Please try again :('
+            routing.redirect '/'
+          else
+            logged_in_account = logged_in_account_res.value!.to_h
 
-              SecureSession.new(session).set(:report_account, logged_in_account)
+            SecureSession.new(session).set(:report_account, logged_in_account)
 
-              routing.redirect "#{redirect_route}?code=#{code}"
-            end
+            routing.redirect "#{redirect_route}?code=#{code}"
+          end
         end
       end
 
@@ -468,7 +475,9 @@ module SurveyMoonbear
 
           # visual_report/[visual_report_id]/online/[spreadsheet_id]/dashboard
           routing.on 'dashboard' do
-            routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard" unless @report_account
+            unless @report_account
+              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
+            end
 
             routing.is 'logout' do
               SecureSession.new(session).delete(:report_account)
@@ -480,7 +489,7 @@ module SurveyMoonbear
               puts "log[trace]: user:#{Digest::SHA256.hexdigest(@report_account['email'])}, dashboard_type: #{dashboard_type}"
               redis = RedisCache.new(config)
               categorize_score_type = redis.get("categorize_score_type_#{@report_account['email']}")
-              result = Service::GetDashboardData.new.call(redis:redis,
+              result = Service::GetDashboardData.new.call(redis: redis,
                                                           visual_report_id: visual_report_id,
                                                           dashboard_type: dashboard_type,
                                                           email: @report_account['email'],
@@ -488,7 +497,7 @@ module SurveyMoonbear
               @dashboard_result = result.value!
               view dashboard_type, layout: false, locals: { visual_report_id: visual_report_id,
                                                             spreadsheet_id: spreadsheet_id,
-                                                            dashboard_result: @dashboard_result}
+                                                            dashboard_result: @dashboard_result }
             end
             routing.get do
               code = routing.params['code']
@@ -515,7 +524,7 @@ module SurveyMoonbear
               text_responses_parse = JSON.parse(text_responses_result)
               text_report_object = text_responses_parse['scores']
 
-              score_type = ['score_st', 'score_pr', 'score_hw', 'score_qz', 'score_la']
+              score_type = %w[score_st score_pr score_hw score_qz score_la]
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
 
               sequence_result = Service::GetStudentSequence.new.call(redis: redis,
@@ -543,27 +552,29 @@ module SurveyMoonbear
               end
               vis_report_object = Views::PublicVisualReport.new(visual_report, responses.value!)
               analytics_order = result.value!
-              redis.delete("categorize_score_type_#{@report_account['email']}") if redis.get("categorize_score_type_#{@report_account['email']}")
+              if redis.get("categorize_score_type_#{@report_account['email']}")
+                redis.delete("categorize_score_type_#{@report_account['email']}")
+              end
               redis.set("categorize_score_type_#{@report_account['email']}", categorize_score_type)
 
-              scores = categorize_score_type.reject{|key, value| !score_type.include? key }
-              ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
+              scores = categorize_score_type.reject { |key, _value| !score_type.include? key }
+              ta = categorize_score_type.select { |key, _value| key == 'ta' }['ta'].first
               title = {}
 
               scores.each_key do |key|
                 title[key] = case key
                              when 'score_st'
-                              'Tutorial + Quiz (Total 2)'
+                               'Tutorial + Quiz (Total 2)'
                              when 'score_pr'
-                              'Peer Review (Total 2)'
+                               'Peer Review (Total 2)'
                              when 'score_hw'
-                              'Homework (Total 5)'
+                               'Homework (Total 5)'
                              when 'score_qz'
-                              'Quiz (Total 2)'
-                            when 'score_la'
-                              'LA'
+                               'Quiz (Total 2)'
+                             when 'score_la'
+                               'LA'
                              else
-                              'Others'
+                               'Others'
                              end
               end
 
@@ -574,7 +585,7 @@ module SurveyMoonbear
                                                                   title: title,
                                                                   scores: scores,
                                                                   ta: ta,
-                                                                  analytics_order: analytics_order}
+                                                                  analytics_order: analytics_order }
             end
           end
 
@@ -593,12 +604,15 @@ module SurveyMoonbear
 
             visual_report = Repository::For[Entity::VisualReport]
                             .find_id(visual_report_id)
-            view 'visual_report_identify', layout: false, locals: { google_sso_url: @google_sso_url, visual_report: visual_report }
+            view 'visual_report_identify', layout: false,
+                                           locals: { google_sso_url: @google_sso_url, visual_report: visual_report }
           end
 
           # customized visual report
           routing.on 'score' do
-            routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score" unless @report_account
+            unless @report_account
+              routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
+            end
 
             routing.is 'logout' do
               SecureSession.new(session).delete(:report_account)
@@ -622,13 +636,12 @@ module SurveyMoonbear
               #   routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
               # end
 
-
               # access_token = redis.get(report_account_system_access_key)
               access_token = Google::Auth.new(config).refresh_access_token
 
               sequence_result = Service::GetStudentSequence.new.call(redis: redis,
-                                                                      visual_report_id: visual_report_id,
-                                                                      email: @report_account['email'])
+                                                                     visual_report_id: visual_report_id,
+                                                                     email: @report_account['email'])
 
               if sequence_result.failure == 'Can not find your email'
                 flash[:error] = sequence_result.failure
@@ -641,7 +654,7 @@ module SurveyMoonbear
                                                                       config: config,
                                                                       code: code,
                                                                       access_token: access_token,
-                                                                      email: @report_account["email"])
+                                                                      email: @report_account['email'])
 
               text_responses = Service::GetTextReport.new.call(spreadsheet_id: spreadsheet_id,
                                                                visual_report_id: visual_report_id,
@@ -649,7 +662,7 @@ module SurveyMoonbear
                                                                config: config,
                                                                code: code,
                                                                access_token: access_token,
-                                                               email: @report_account["email"])
+                                                               email: @report_account['email'])
               if responses.failure? || text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/score"
               end
@@ -660,10 +673,10 @@ module SurveyMoonbear
               text_report_object = text_responses_parse['scores']
               # text_report_ta = text_responses_parse['ta']
 
-              score_type = ['score_st', 'score_pr', 'score_hw', 'score_qz', 'score_la']
+              score_type = %w[score_st score_pr score_hw score_qz score_la]
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
-              scores = categorize_score_type.reject{|key, value| !score_type.include? key }
-              ta = categorize_score_type.select{|key, value| key == 'ta' }['ta'].first
+              scores = categorize_score_type.reject { |key, _value| !score_type.include? key }
+              ta = categorize_score_type.select { |key, _value| key == 'ta' }['ta'].first
               title = {}
 
               scores.each_key do |key|
@@ -676,8 +689,8 @@ module SurveyMoonbear
                                'Homework (Total 5)'
                              when 'score_qz'
                                'Quiz (Total 2)'
-                              when 'score_la'
-                                'LA'
+                             when 'score_la'
+                               'LA'
                              else
                                'Others'
                              end
@@ -694,18 +707,15 @@ module SurveyMoonbear
             end
           end
 
-           # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
+          # POST visual_report/[visual_report_id]/online/[spreadsheet_id]
           routing.post do
             redis = RedisCache.new(config)
             cache_key = "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}"
-            
+
             # redis = RedisCache.new(config)
-            if @current_account["access_token"].equal? nil
-              routing.redirect '/account/logout'
+            routing.redirect '/account/logout' if @current_account['access_token'].nil?
 
-            end
-
-            access_token = @current_account["access_token"]
+            access_token = @current_account['access_token']
 
             update_visual_report = Service::UpdateVisualReport.new
                                                               .call(redis: redis,
@@ -762,7 +772,7 @@ module SurveyMoonbear
             end
 
             text_report_object = responses.value!
-            view 'text_report', layout: false, locals: { text_report_object: text_report_object}
+            view 'text_report', layout: false, locals: { text_report_object: text_report_object }
           end
         end
       end
@@ -941,7 +951,7 @@ module SurveyMoonbear
             routing.get do
               url_params = routing.params.to_h
               url = (Service::CreateRandomUrl.new.call(study_id: study_id).value!)[:survey_url]
-              survey_url ="#{config.APP_URL}#{url}"
+              survey_url = "#{config.APP_URL}#{url}"
               unless url_params.empty?
                 url_params.each do |key, value|
                   survey_url += "?#{key}=#{value}"
@@ -952,7 +962,7 @@ module SurveyMoonbear
           end
 
           # POST studies/[study_id]/download/[file_name]
-          routing.on 'download', String do |file_name|
+          routing.on 'download', String do |_file_name|
             routing.post do
               response['Content-Type'] = 'application/csv'
               params = routing.params
@@ -979,7 +989,6 @@ module SurveyMoonbear
             flash[:error] = 'Failed to delete the study. Please try again :(' if response.failure?
             routing.redirect '/studies', 303
           end
-          
 
           # GET /studies/[study_id]
           routing.get do

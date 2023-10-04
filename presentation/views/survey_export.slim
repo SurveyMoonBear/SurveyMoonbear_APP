@@ -58,11 +58,13 @@ html
                   ul class="pagination d-flex justify-content-between" 
                     li class="page-item disabled" id="page_pre"
                       a class="page-link" href="javascript:void(0)" onclick="pre_page()" aria-label="Previous"
+                        /  ZH used here
                         span aria-hidden="true" &larr; Previous (上一頁)
                         span class="sr-only" Previous 
                     
                     li class="page-item active" id="page_next"
                       a class="page-link" href="javascript:void(0)" onclick="next_page()" aria-label="Next"
+                        /  ZH used here
                         span aria-hidden="true" Next (下一頁) &rarr;
                         span class="sr-only" Next
 
@@ -94,6 +96,7 @@ javascript:
     
     // Append submit btn to last page
     if(i == #{{pages}}.length) {
+      //  ZH used here
       button_str = "<button type='submit' class='btn btn-primary float-right mb-4' id='btn-submit'>Submit (提交)</button>"
       $('#page_' + i).append(button_str);
     }
@@ -162,6 +165,7 @@ javascript:
       next_page_num = record[record.length-1]+1;
     } else {
       var str = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
+      // ZH used here
       str += 'Please answer all questions marked with a "*" before going to next page . 在進入下一頁之前，請回答所有標有 "*" 的問題';
       str += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
       str += '<span aria-hidden="true">&times;</span>';
