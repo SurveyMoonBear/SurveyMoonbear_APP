@@ -11,11 +11,21 @@ module SurveyMoonbear
       include Dry::Transaction
       include Dry::Monads
 
+      step :refresh_access_token
       step :get_survey_origin_id
       step :update_spreadsheet_title
       step :update_survey_title
 
       private
+
+      # input { config:, current_account:, title: }
+      def refresh_access_token(input)
+        input[:current_account]['access_token'] = Google::Auth.new(input[:config]).refresh_access_token
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to refresh GoogleSpreadsheetAPI access token in edit_survey_title')
+      end
 
       # input { current_account:, survey_id:, new_title: }
       def get_survey_origin_id(input)

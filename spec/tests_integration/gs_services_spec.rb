@@ -70,7 +70,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
     end
 
     it 'HAPPY: should get survey from spreadsheet' do
-      get_gs_survey_res = SurveyMoonbear::Service::GetSurveyFromSpreadsheet.new.call(spreadsheet_id: @survey.origin_id, 
+      get_gs_survey_res = SurveyMoonbear::Service::GetSurveyFromSpreadsheet.new.call(spreadsheet_id: @survey.origin_id,
                                                                                      access_token: ACCESS_TOKEN,
                                                                                      owner: CURRENT_ACCOUNT)
       _(get_gs_survey_res.success?).must_equal true
@@ -80,14 +80,14 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
     end
 
     it 'HAPPY: should be able to edit survey title' do
-      editted_survey_res = SurveyMoonbear::Service::EditSurveyTitle.new.call(current_account: CURRENT_ACCOUNT, 
-                                                                             survey_id: @survey.id, 
-                                                                             new_title: "New title")
+      editted_survey_res = SurveyMoonbear::Service::EditSurveyTitle.new.call(config: CONFIG, current_account: CURRENT_ACCOUNT,
+                                                                             survey_id: @survey.id,
+                                                                             new_title: 'New title')
       _(editted_survey_res.success?).must_equal true
     end
 
     it 'HAPPY: should start/close survey' do
-      started_survey_res = SurveyMoonbear::Service::StartSurvey.new.call(survey_id: @survey.id, 
+      started_survey_res = SurveyMoonbear::Service::StartSurvey.new.call(config: CONFIG, survey_id: @survey.id,
                                                                          current_account: CURRENT_ACCOUNT)
       _(started_survey_res.success?).must_equal true
       _(started_survey_res.value!.state).must_equal 'started'
@@ -102,8 +102,9 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
   describe 'After survey started: output surveys and handle responses' do
     before(:all) do
       VcrHelper.build_cassette('happy_output_responses')
-      survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG, current_account: CURRENT_ACCOUNT, title: 'Survey for Testing').value!
-      @started_survey = SurveyMoonbear::Service::StartSurvey.new.call(survey_id: survey.id,
+      survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG, current_account: CURRENT_ACCOUNT,
+                                                              title: 'Survey for Testing').value!
+      @started_survey = SurveyMoonbear::Service::StartSurvey.new.call(config: CONFIG, survey_id: survey.id,
                                                                       current_account: CURRENT_ACCOUNT).value!
     end
 
@@ -131,7 +132,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       end
 
       it 'HAPPY: should be able to transform spreadsheet items to html' do
-        trans_html_res = SurveyMoonbear::Service::TransformSheetsSurveyToHTML.new.call(survey_id: @started_survey.id, 
+        trans_html_res = SurveyMoonbear::Service::TransformSheetsSurveyToHTML.new.call(survey_id: @started_survey.id,
                                                                                        spreadsheet_id: @started_survey.origin_id,
                                                                                        access_token: CURRENT_ACCOUNT['access_token'],
                                                                                        current_account: CURRENT_ACCOUNT,
@@ -159,12 +160,17 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
 
       it 'HAPPY: should be able to store responses (worker)' do
         respondent_id = SecureRandom.uuid
-        response_hashes =  [{:respondent_id=>respondent_id, :page_index=>0, :item_order=>4, :response=>"myName", :item_data=>"{\"type\":\"Short answer\",\"name\":\"name\",\"description\":\"What's your name?\",\"required\":0,\"options\":null}", :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
-                            {:respondent_id=>respondent_id, :page_index=>0, :item_order=>6, :response=>"This is my self introduction", :item_data=>"{\"type\":\"Paragraph Answer\",\"name\":\"self_intro\",\"description\":\"Self Introduction\",\"required\":0,\"options\":null}", :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
-                            {:respondent_id=>respondent_id, :page_index=>0, :item_order=>7, :response=>"Facebook, Instagram, LINE", :item_data=>"{\"type\":\"Multiple choice with 'other' (checkbox)\",\"name\":\"social_website\",\"description\":\"Which social media you have used?\",\"required\":1,\"options\":\"Facebook,Instagram,Twitter,LINE,plurk,Google+,Snapchat\"}", :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
-                            {:respondent_id=>respondent_id, :page_index=>2, :item_order=>0, :response=>"Wed Mar 27 2019 09:38:06 GMT+0800 (台北標準時間)", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
-                            {:respondent_id=>respondent_id, :page_index=>2, :item_order=>1, :response=>"Wed Mar 27 2019 09:38:52 GMT+0800 (台北標準時間)", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}, 
-                            {:respondent_id=>respondent_id, :page_index=>2, :item_order=>2, :response=>"{}", :item_data=>nil, :survey_id=>@started_survey.id, :launch_id=>@started_survey.launch_id}]
+        response_hashes = [{ respondent_id: respondent_id, page_index: 0, item_order: 4, response: 'myName', item_data: "{\"type\":\"Short answer\",\"name\":\"name\",\"description\":\"What's your name?\",\"required\":0,\"options\":null}", survey_id: @started_survey.id, launch_id: @started_survey.launch_id },
+                           { respondent_id: respondent_id, page_index: 0, item_order: 6,
+                             response: 'This is my self introduction', item_data: '{"type":"Paragraph Answer","name":"self_intro","description":"Self Introduction","required":0,"options":null}', survey_id: @started_survey.id, launch_id: @started_survey.launch_id },
+                           { respondent_id: respondent_id, page_index: 0, item_order: 7,
+                             response: 'Facebook, Instagram, LINE', item_data: "{\"type\":\"Multiple choice with 'other' (checkbox)\",\"name\":\"social_website\",\"description\":\"Which social media you have used?\",\"required\":1,\"options\":\"Facebook,Instagram,Twitter,LINE,plurk,Google+,Snapchat\"}", survey_id: @started_survey.id, launch_id: @started_survey.launch_id },
+                           { respondent_id: respondent_id, page_index: 2, item_order: 0,
+                             response: 'Wed Mar 27 2019 09:38:06 GMT+0800 (台北標準時間)', item_data: nil, survey_id: @started_survey.id, launch_id: @started_survey.launch_id },
+                           { respondent_id: respondent_id, page_index: 2, item_order: 1,
+                             response: 'Wed Mar 27 2019 09:38:52 GMT+0800 (台北標準時間)', item_data: nil, survey_id: @started_survey.id, launch_id: @started_survey.launch_id },
+                           { respondent_id: respondent_id, page_index: 2, item_order: 2, response: '{}',
+                             item_data: nil, survey_id: @started_survey.id, launch_id: @started_survey.launch_id }]
         worker = Worker::StoreSurveyResponse.new
         success_msg = 'Storing survey response is completed'
         assert_output(/#{success_msg}/) { worker.perform(response_hashes) }

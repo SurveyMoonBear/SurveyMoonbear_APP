@@ -15,6 +15,7 @@ module SurveyMoonbear
       START_TIME_INDEX = 0
       END_TIME_INDEX = 1
       URL_PARAMS_INDEX = 2
+      NONRESPONSE_TYPE = ['Description', 'Section Title', 'Divider', 'Jump to page', 'Disable previous page'].freeze
 
       step :fetch_survey_items
       step :create_response_entities_arr
@@ -43,7 +44,7 @@ module SurveyMoonbear
         input[:pages].each do |page|
           page_index = page.index
           page.items.each do |item|
-            next if item.type == 'Description' || item.type == 'Section Title' || item.type == 'Divider' || item.type == 'Jump to page'
+            next if NONRESPONSE_TYPE.include?(item.type)
 
             new_response = create_response_entity(page_index,
                                                   item,
