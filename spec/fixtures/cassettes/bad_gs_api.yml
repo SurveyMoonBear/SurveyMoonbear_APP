@@ -14,117 +14,6 @@ http_interactions:
       Host:
       - sheets.googleapis.com
       User-Agent:
-      - http.rb/3.3.0
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Content-Type:
-      - application/json; charset=UTF-8
-      Date:
-      - Thu, 25 Apr 2019 04:23:56 GMT
-      Server:
-      - ESF
-      Cache-Control:
-      - private
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Frame-Options:
-      - SAMEORIGIN
-      Alt-Svc:
-      - quic=":443"; ma=2592000; v="46,44,43,39"
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-    body:
-      encoding: UTF-8
-      string: |
-        {
-          "error": {
-            "code": 404,
-            "message": "Requested entity was not found.",
-            "status": "NOT_FOUND"
-          }
-        }
-  recorded_at: Thu, 25 Apr 2019 04:23:56 GMT
-- request:
-    method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/invalid_spreadsheet_id
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Authorization:
-      - Bearer <ACCESS_TOKEN>
-      Connection:
-      - close
-      Host:
-      - sheets.googleapis.com
-      User-Agent:
-      - http.rb/4.4.1
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Content-Type:
-      - application/json; charset=UTF-8
-      Date:
-      - Fri, 29 Apr 2022 07:22:38 GMT
-      Server:
-      - ESF
-      Cache-Control:
-      - private
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |
-        {
-          "error": {
-            "code": 404,
-            "message": "Requested entity was not found.",
-            "status": "NOT_FOUND"
-          }
-        }
-  recorded_at: Fri, 29 Apr 2022 07:22:38 GMT
-- request:
-    method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/invalid_spreadsheet_id
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Authorization:
-      - Bearer <ACCESS_TOKEN>
-      Connection:
-      - close
-      Host:
-      - sheets.googleapis.com
-      User-Agent:
       - http.rb/5.0.4
   response:
     status:
@@ -138,7 +27,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Wed, 01 Jun 2022 07:31:15 GMT
+      - Wed, 11 Oct 2023 00:56:46 GMT
       Server:
       - ESF
       Cache-Control:
@@ -150,10 +39,11 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
+      X-L2-Request-Path:
+      - l2-managed-6
       Connection:
       - close
       Transfer-Encoding:
@@ -168,5 +58,5 @@ http_interactions:
             "status": "NOT_FOUND"
           }
         }
-  recorded_at: Wed, 01 Jun 2022 07:31:15 GMT
-recorded_with: VCR 6.0.0
+  recorded_at: Wed, 11 Oct 2023 00:56:46 GMT
+recorded_with: VCR 6.1.0

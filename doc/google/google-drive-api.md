@@ -5,29 +5,48 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 ### Step1: A GCP project with the API enabled
 
 1. [create GCP project](https://developers.google.com/workspace/guides/create-project#create_a_new_google_cloud_platform_gcp_project)
-2. [enable Google Drive API and Google Calendar API](https://developers.google.com/workspace/guides/create-project#enable-api)
-3. Button of "Enable APIs and Services" is hard to find 
-
+![](https://i.imgur.com/qiTpYxr.png) （Should accept the Service Rule when first time using This）
+2. [enable Google Drive API, Google Sheets API and Google Calendar API](https://developers.google.com/workspace/guides/create-project#enable-api)
+3. Button of "Enable APIs and Services" is hard to find
 ![](https://i.imgur.com/TvlpLUG.png)
+4. Click on "Enable"(if  Enable is will show MANAGE)
+![](https://i.imgur.com/i2OCxWa.png)
 
 ### Step2: Create authorization credentials for a "Web application"
 
 1. [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/create-credentials#configure_the_oauth_consent_screen)
+![](https://i.imgur.com/EIAiE6B.png)
+![](https://i.imgur.com/D4RKh2p.png)
+<img src = https://imgur.com/4aMKLxI.png width=50% height=50%>
+
 2. [Create a OAuth client ID credential](https://developers.google.com/workspace/guides/create-credentials#create_a_oauth_client_id_credential)
+![](https://i.imgur.com/Kh9upsX.png)
+
 3. The type of project/application's credential choose **[web application](https://developers.google.com/workspace/guides/create-credentials)**.
 
 ![](https://i.imgur.com/p32SJ7V.png)
 
 ### Step3: Add following three redirect URI in created authorization credentials
-* For creating a staging app: `https://<appname-staging>.herokuapp.com/account/login/google_callback`
-* For local development: `http://localhost:9090/account/login/google_callback`
-* For getting refresh token: `https://developers.google.com/oauthplayground`
+
+* For creating a staging app: 
+
+  `https://<appname-staging>.herokuapp.com/account/login/google_callback`
+* For local development: 
+  `http://localhost:9090/account/login/google_callback`
+
+  `http://localhost:9090/survey_list`
+* For getting refresh token: 
+  `https://developers.google.com/oauthplayground`
 
 ### Step4: Get application refresh token
-1. go to [oauth play groung](https://developers.google.com/oauthplayground)
+1. go to [oauth play ground](https://developers.google.com/oauthplayground)
 2. click setting and check the checkbox:Use your own Oauth credentials
 3. copy/paste the Client ID and Client secret from step2
 4. select the scopes we used on the left side (in application/controller/app.rb file line 36)
+<img src = https://imgur.com/jWnxFXz.png) width=50% height=50%>
+<img src = https://imgur.com/WQ8aJyY.png) width=50% height=50%>
+<img src = https://imgur.com/IorJOG2.png) width=50% height=50%>
+
 5. click the Authorize APIs
   ![image](https://user-images.githubusercontent.com/44396169/170173450-5d96396c-9e67-419b-af54-670a615e2dc9.png)
 6. It will turn back following screen
