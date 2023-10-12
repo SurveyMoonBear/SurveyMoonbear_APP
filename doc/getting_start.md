@@ -48,8 +48,8 @@ $ rbenv install 3.0.2
 
 4. Run DB migrations
 ```
-$ rake db:migrate
-$ RACK_ENV=test rake db:migrate
+$ bundle exec rake db:migrate
+$ RACK_ENV=test bundle exec rake db:migrate
 ```
 
 5. Run tests
@@ -65,12 +65,12 @@ $ rake run:dev
 ```
 $ brew tap heroku/brew && brew install heroku
 ```
-- If you have the problem about redis after login to your account, plz run these commands:
+- If you have the problem about redis after login to your account, please run these commands:
 ```
 $ brew install redis
 $ redis-server /usr/local/etc/redis.conf
 ```
-- If you fail to open your redis server, plz find the directory of redis.conf in your computer. It may be in the same place of your homebrew file.
+- If you fail to open your redis server, please find the directory of redis.conf in your computer. It may be in the same place of your homebrew file.
 
 > if it bumps into this problem 
 > `Error connecting to Redis on 127.0.0.1:6379 (Errno::ECONNREFUSED) (Redis::CannotConnectError)`,
