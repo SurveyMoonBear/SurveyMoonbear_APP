@@ -12,23 +12,24 @@ $ heroku pg:credentials:url HEROKU_POSTGRESQL_AQUA_URL
 
 ### Step3: Using pgAdmin GUI to connect remote server
 * Right click on **Servers** → **Create**→ **Server**
-![](https://i.imgur.com/Y224spx.png)
+![](images/pgAdmin-remote-connection-pgadmin4.png)
 
 * **General**: Name whatever you want
-![](https://i.imgur.com/kFpZDxT.png)
+![](images/pgAdmin-remote-connection-create-server.png)
 
 * **Connection**: Fill with credentials
-![](https://i.imgur.com/hRFToiA.png)
+![](images/pgAdmin-remote-connection-ssl.png)
 
 * **SSL**: set SSL mode to ‘Require’
 ![](https://i.imgur.com/YHoRlvx.png)
 
+
 * **Advance**: Restrict DBs to the DBs you care (or it will list tons of DBs that you don’t have permission)
-![](https://i.imgur.com/QehUtNq.png)
+![](images/pgAdmin-remote-connection-db.png)
 
 
 ## View/Edit data in pgAdmin
 
 Schemas-public-Tables: Right-click on the table
-![](https://i.imgur.com/meuPDcx.png)
+![](images/pgAdmin-remote-connection-edit-data.png)
 

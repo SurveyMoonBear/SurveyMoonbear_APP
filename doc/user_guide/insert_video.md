@@ -2,28 +2,29 @@
 ## Step1 - Copy Youtube embed link
 1. Click Share Button
 
-![](https://i.imgur.com/wYcDMXT.png)
+![](images/insert_video-share.png)
 
-2. Click Embed Button
+1. Click Embed Button
 
-![](https://i.imgur.com/767mfcE.png)
+![](images/insert_video-embed.png)
 
-3. Customize Your Video Setting
+1. Customize Your Video Setting
 
-![](https://i.imgur.com/58E65PB.png)
+![](images/insert_video-setting.png)
 
-4. Copy the iframe code
+1. Copy the iframe code
 
-![](https://i.imgur.com/LVwICE9.png)
+![](images/insert_video-iframe_code.png)
+
 
 ## Step2 - Paste iframe code to Sheets
 **Sheets**
 
-![](https://i.imgur.com/Hgn8t78.png)
+![](images/insert_video-iframe_to_sheet.png)
 
 **Result**
 
-![](https://i.imgur.com/jOmqWQG.png)
+![](images/insert_video-vedio_result.png)
 
 ## Optional - Customize iframe code
 **you can skip and use default**
