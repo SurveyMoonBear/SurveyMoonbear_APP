@@ -1,7 +1,7 @@
 # How to Insert an Image
 ## Step1 - Copy image address
 
-![](https://i.imgur.com/VyXYAEJ.png)
+![](images/insert_image-copy_image_address.png)
 
 ## Step2 - Copy this line and Paste to Sheet
 
@@ -15,8 +15,8 @@
 ```
 **Sheets**
 
-![](https://i.imgur.com/edSrXCh.png)
+![](images/insert_image-sheets.png)
 
 **Result**
 
-![](https://i.imgur.com/a9yYCaH.png)
+![](images/insert_image-result.png)
