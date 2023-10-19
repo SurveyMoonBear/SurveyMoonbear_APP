@@ -26,7 +26,7 @@
 * [Prototype Design Pattern](https://drive.google.com/file/d/1VCzd8p9vSyhY-vFI_tyg-KJhg5Oxs9kH/view?usp=sharing)
 * Data Schema 
 
-![](./images/infrastructuredata_schema.png)
+![](./images/infrastructuredata-data_schema.png)
 
 #### Queuing (AWS SQS)
 

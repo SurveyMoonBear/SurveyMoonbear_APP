@@ -65,7 +65,7 @@ Website Link: [SurveyMoonbear](https://moonbear.herokuapp.com)
 ### Multiple choice grid (VAS)
 ![](images/question_type-VAS.png)
 
-![](images/question_type-VAS-result.png)
+![](images/question_type-VAS_result.png)
 
 
 ## 3. Survey Logic

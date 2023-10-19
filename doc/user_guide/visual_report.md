@@ -17,7 +17,7 @@ It consists of one source sheet and multiple report page sheets.
 ![](images/visual_report-report_page.png)
 
 ### sources sheet
-![](images/visual_report-source-page.png)
+![](images/visual_report-source_page.png)
 #### source_type
 Two data sources are currently supported:
 1. Survey published by SurveyMoonbear

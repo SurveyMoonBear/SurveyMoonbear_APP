@@ -10,7 +10,7 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 2. Button of "Enable APIs and Services" is hard to find
 ![](images/google_drive_api-enable_api.png)
 1. Click on "Enable"(if  Enable is will show MANAGE)
-![](images/google_drive_api-enable-google-drive-api.png)
+![](images/google_drive_api-enable_google_drive_api.png)
 
 ### Step2: Create authorization credentials for a "Web application"
 
@@ -20,11 +20,10 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 ![](images/google_drive_api-oauth_internel.png)
 
 2. [Create a OAuth client ID credential](https://developers.google.com/workspace/guides/create-credentials#create_a_oauth_client_id_credential)
-![](https://i.imgur.com/Kh9upsX.png)
+![](images/google_drive_api-google_auth_credential.png)
 
-3. The type of project/application's credential choose **[web application](https://developers.google.com/workspace/guides/create-credentials)**.
-![](https://i.imgur.com/p32SJ7V.png)
-
+1. The type of project/application's credential choose **[web application](https://developers.google.com/workspace/guides/create-credentials)**.
+![](images/google_drive_api-application_type.png)
 ### Step3: Add following three redirect URI in created authorization credentials
 
 * For creating a staging app: 
@@ -44,8 +43,8 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 4. select the scopes we used on the left side (in application/controller/app.rb file line 36)
 
 ![](images/google_drive_api-google-oauth-api.png)
-![](images/google_drive_api-google_calendar-api.png)
-![](images/google_drive_api-googlesheet-api.png)
+![](images/google_drive_api-google_calendar_api.png)
+![](images/google_drive_api-googlesheet_api.png)
 
 1. click the Authorize APIs
   ![](images/google_drive_api-set_playdround.png)
@@ -73,9 +72,9 @@ SAMPLE_FILE_ID:
 1. [Install the Google Client Library](https://developers.google.com/drive/api/v3/quickstart/ruby?hl=en#step\_1\_install_the_google_client_library) `gem install google-api-client`
 2. [Set up the sample file](https://developers.google.com/drive/api/v3/quickstart/ruby?hl=en#step\_2\_set_up_the_sample) Create a file named quickstart.rb
 3. Download the `credentials.json` from GCP Platform _This file has fixed format. You cannot change it._ 
-4. `credentials.json` has your `google client ID` and `google client secret` ![](images/google_drive_api-client-secret.png)
+4. `credentials.json` has your `google client ID` and `google client secret` ![](images/google_drive_api-client_secret.png)
 5. Run the sample `ruby quickstart.rb`
-6. After typing `ruby quickstart.rb` and linking to the auth page, it would show a code. ==Just copy and paste it in terminal== which you're running. Then, it would write down the _token.yaml_ ![](images/google_drive_api-google-token.png)
+6. After typing `ruby quickstart.rb` and linking to the auth page, it would show a code. ==Just copy and paste it in terminal== which you're running. Then, it would write down the _token.yaml_ ![](images/google_drive_api-google_token.png)
 7. **`refresh_token`** is written in the file **`token.yaml`** only one time once it authorizes. **Keep this file** or you need to delete the authorizaion and try quickstart angain.
 
 #### [ARCHIVED] Change the "Scope" in quickstart.rb to get the right access of refresh_token
