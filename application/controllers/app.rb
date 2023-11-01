@@ -564,13 +564,17 @@ module SurveyMoonbear
               scores.each_key do |key|
                 title[key] = case key
                              when 'score_st'
-                               'Tutorial + Quiz (Total 2)'
+                               #  'Tutorial + Quiz (Total 2)'
+                               'Tutorial'
                              when 'score_pr'
-                               'Peer Review (Total 2)'
+                               #  'Peer Review (Total 2)'
+                               'Peer Review'
                              when 'score_hw'
-                               'Homework (Total 5)'
+                               #  'Homework (Total 5)'
+                               'Homework'
                              when 'score_qz'
-                               'Quiz (Total 2)'
+                               #  'Quiz (Total 2)'
+                               'Quiz'
                              when 'score_la'
                                'LA'
                              else
