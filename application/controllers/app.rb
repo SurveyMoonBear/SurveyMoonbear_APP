@@ -393,6 +393,7 @@ module SurveyMoonbear
           new_visual_report = Service::CreateVisualReport.new.call(config: config,
                                                                    current_account: @current_account,
                                                                    title: routing.params['title'])
+          puts new_visual_report
           if new_visual_report.success?
             flash[:notice] = "#{new_visual_report.value!.title} is created!"
           else
@@ -559,9 +560,9 @@ module SurveyMoonbear
               end
               redis.set("categorize_score_type_#{@report_account['email']}", categorize_score_type)
 
-              score = categorize_score_type
+              scores = categorize_score_type
               #scores = categorize_score_type.reject { |key, _value| !score_type.include? key }
-              ta = categorize_score_type.select { |key, _value| key == 'ta' }['ta'].first
+              # ta = categorize_score_type.select { |key, _value| key == 'ta' }['ta'].first
 
               title = score_type.zip(score_type).to_h
               # title = {}
@@ -593,7 +594,7 @@ module SurveyMoonbear
                                                                   text_report_object: text_report_object,
                                                                   title: title,
                                                                   scores: scores,
-                                                                  ta: ta,
+                                                                  # ta: ta,
                                                                   analytics_order: analytics_order }
             end
           end
