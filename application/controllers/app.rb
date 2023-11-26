@@ -524,7 +524,9 @@ module SurveyMoonbear
               text_responses_parse = JSON.parse(text_responses_result)
               text_report_object = text_responses_parse['scores']
 
-              score_type = %w[score_st score_pr score_hw score_qz score_la]
+              #score_type = %w[score_st score_pr score_hw score_qz score_la]
+              score_type = text_report_object.map { |i| i['score_type'] }.uniq
+
               categorize_score_type = text_report_object.group_by { |i| i['score_type'] }
 
               sequence_result = Service::GetStudentSequence.new.call(redis: redis,
@@ -557,30 +559,33 @@ module SurveyMoonbear
               end
               redis.set("categorize_score_type_#{@report_account['email']}", categorize_score_type)
 
-              scores = categorize_score_type.reject { |key, _value| !score_type.include? key }
+              score = categorize_score_type
+              #scores = categorize_score_type.reject { |key, _value| !score_type.include? key }
               ta = categorize_score_type.select { |key, _value| key == 'ta' }['ta'].first
-              title = {}
 
-              scores.each_key do |key|
-                title[key] = case key
-                             when 'score_st'
-                               #  'Tutorial + Quiz (Total 2)'
-                               'Tutorial'
-                             when 'score_pr'
-                               #  'Peer Review (Total 2)'
-                               'Peer Review'
-                             when 'score_hw'
-                               #  'Homework (Total 5)'
-                               'Homework'
-                             when 'score_qz'
-                               #  'Quiz (Total 2)'
-                               'Quiz'
-                             when 'score_la'
-                               'LA'
-                             else
-                               'Others'
-                             end
-              end
+              title = score_type.zip(score_type).to_h
+              # title = {}
+
+              # scores.each_key do |key|
+              #   title[key] = case key
+              #                when 'score_st'
+              #                  #  'Tutorial + Quiz (Total 2)'
+              #                  'Tutorial'
+              #                when 'score_pr'
+              #                  #  'Peer Review (Total 2)'
+              #                  'Peer Review'
+              #                when 'score_hw'
+              #                  #  'Homework (Total 5)'
+              #                  'Homework'
+              #                when 'score_qz'
+              #                  #  'Quiz (Total 2)'
+              #                  'Quiz'
+              #                when 'score_la'
+              #                  'LA'
+              #                else
+              #                  'Others'
+              #                end
+              # end
 
               view 'learning_analytics', layout: false, locals: { visual_report_id: visual_report_id,
                                                                   spreadsheet_id: spreadsheet_id,
