@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
     body:
       encoding: UTF-8
       string: ''
@@ -12,7 +12,7 @@ http_interactions:
       Connection:
       - close
       Host:
-      - www.googleapis.com
+      - oauth2.googleapis.com
       User-Agent:
       - http.rb/5.0.4
   response:
@@ -20,14 +20,14 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Date:
-      - Wed, 08 Jun 2022 09:23:38 GMT
       Pragma:
       - no-cache
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Wed, 11 Oct 2023 00:54:00 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
       Content-Type:
       - application/json; charset=utf-8
       Vary:
@@ -43,8 +43,7 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
       Connection:
@@ -57,11 +56,72 @@ http_interactions:
         {
           "access_token": "<ACCESS_TOKEN>",
           "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.profile",
+          "scope": "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.metadata openid https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.metadata.readonly",
           "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijc0ODNhMDg4ZDRmZmMwMDYwOWYwZTIyZjNjMjJkYTVmZTM5MDZjY2MiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0NzQ4ODY1MDM1NzgtY2diaDZydTR1bnYzY2s0dml1cDI0cm0wa3JiZzA2ZDAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0NzQ4ODY1MDM1NzgtY2diaDZydTR1bnYzY2s0dml1cDI0cm0wa3JiZzA2ZDAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTY3MjMwMjY0OTY5MDQwNTE5NzgiLCJlbWFpbCI6ImNoZWNraGlnaC5hcHBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJkYWVGSGlMeG9QRE53OWQzc2g1b093IiwiaWF0IjoxNjU0NjgwMjE4LCJleHAiOjE2NTQ2ODM4MTh9.JxVBeAkVQl4Z6EabnNITJhfLNUt6sDXpRc9uF4qv0hr0sslYK_HoI28mzjNP6JlXNKYoRXuGBnIcjIM1yJ5w6WQVm9TKwN0tloDdZBOZIqwbnO2tfqqh4HqBZSktmRGEd5ypGJfsmvn1T7GbvHeSkEAIiJOyyqeqQIScp7Nglz6-RA0f79MiAKfLnV-IzAlapsXDFLwQGzgDXkxSGH3gEPgIvJl1ZpWPp-5_7GtTeIqWqI_IV2XDtiM5KXnVd8fvLbgff4BpgL23Y9OAvVoEbJR28YSNeIkq1emksLWo-Z_ZJjpdNqgeHMvptRgaobgIiKPYzUqc4xP6zoq9VTYeOg"
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJsaVpwaUh3ZHA4RC1sZHpzLVpRQkdBIiwiaWF0IjoxNjk2OTg1NjQwLCJleHAiOjE2OTY5ODkyNDB9.v2bTt7SMFWzIGzFGeQ_ZDpAeWL-RoCjdYv1LDYxSeesa6fS5c2r7VGFjeBmdeFEO46DpFBxaIod2P_pmCLEPqgccGSBSmH1bE9ybzfiPd_OeY9zeS1fs9CGhALyxGjp5B2u6enFOlTObYO323ryU-Lcmgb5IIdVwrZVFtYkYnNgOfSpASFeXnvBheBF2JLunce_wsPUPAgVtIZhIJxeRDD2Vv95envT8udGWCM92Zj99lWCT8eTfvDgKhAkqs3D8NdH1kB7g_-p7AXwZ6mF79U0pxXtcGeoVsy9ti_u2OnFDkPSJf2uBABC9b6GtGsGu7JimXP6CRQ2Ofaf1vRK_3g"
         }
-  recorded_at: Wed, 08 Jun 2022 09:23:38 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:00 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Wed, 11 Oct 2023 00:54:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts openid https://www.googleapis.com/auth/drive.metadata https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive",
+          "token_type": "Bearer",
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJJN1Zla1dEUGpxUXZtOXFKckNnVVVBIiwiaWF0IjoxNjk2OTg1NjQwLCJleHAiOjE2OTY5ODkyNDB9.uTQg0S45O0iDndRLXXHMJNUaQsBR924ANm0YsISUv-RRvv0cfMOqYad-hqEqR_377jaKBs8-Q4yJ5LAf0mfANbR1ShuA6E47QwEtVjdUZ0eeHTLL6EUk9P03XJxXyjHsjsLhU9H1ng0wn5pcbcLuS4fos77Sq50N72pybOQuHXvuOA5GmilvXq-apuvGl8L-ZV2czU1NJr0RADl78F_U7LNpya6Ig5kBZlVTa7m4NJ0gZBQIhyEN8FItjCfoFLt7YEwY8RWUVwVSRtwgkMsEgbPUmA2eyp8RWG6F-0Spw0p_Oy2puAiJ_rx78786kfoR9VHigBlUUkUCs15M_qjzrw"
+        }
+  recorded_at: Wed, 11 Oct 2023 00:54:00 GMT
 - request:
     method: post
     uri: https://www.googleapis.com/drive/v3/files/<SAMPLE_FILE_ID>/copy?access_token=<ACCESS_TOKEN>
@@ -84,34 +144,30 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Wed, 11 Oct 2023 00:54:02 GMT
       Pragma:
       - no-cache
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
-      Date:
-      - Wed, 08 Jun 2022 09:23:40 GMT
-      Vary:
-      - Origin,Accept-Encoding
-      - X-Origin
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
       Content-Type:
       - application/json; charset=UTF-8
-      X-Content-Type-Options:
-      - nosniff
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
       X-Frame-Options:
       - SAMEORIGIN
-      Content-Security-Policy:
-      - frame-ancestors 'self'
-      X-Xss-Protection:
-      - 1; mode=block
-      Server:
-      - GSE
+      X-Content-Type-Options:
+      - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
+      Vary:
+      - Origin, X-Origin,Accept-Encoding
       Connection:
       - close
       Transfer-Encoding:
@@ -120,15 +176,15 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-         "kind": "drive#file",
-         "id": "1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees",
-         "name": "sample survey 的副本",
-         "mimeType": "application/vnd.google-apps.spreadsheet"
+          "kind": "drive#file",
+          "id": "1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o",
+          "name": "File Test 的副本",
+          "mimeType": "application/vnd.google-apps.spreadsheet"
         }
-  recorded_at: Wed, 08 Jun 2022 09:23:40 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:02 GMT
 - request:
     method: post
-    uri: https://www.googleapis.com/drive/v2/files/1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees/permissions?access_token=<ACCESS_TOKEN>&sendNotificationEmails=false
+    uri: https://www.googleapis.com/drive/v2/files/1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o/permissions?access_token=<ACCESS_TOKEN>&sendNotificationEmails=false
     body:
       encoding: UTF-8
       string: '{"role":"writer","type":"user","value":"moonbear.survey.test@gmail.com"}'
@@ -146,34 +202,30 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
       Pragma:
       - no-cache
+      Date:
+      - Wed, 11 Oct 2023 00:54:05 GMT
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
-      Date:
-      - Wed, 08 Jun 2022 09:23:42 GMT
-      Vary:
-      - Origin,Accept-Encoding
-      - X-Origin
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
       Content-Type:
       - application/json; charset=UTF-8
-      X-Content-Type-Options:
-      - nosniff
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
       X-Frame-Options:
       - SAMEORIGIN
-      Content-Security-Policy:
-      - frame-ancestors 'self'
-      X-Xss-Protection:
-      - 1; mode=block
-      Server:
-      - GSE
+      X-Content-Type-Options:
+      - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
+      Vary:
+      - Origin, X-Origin,Accept-Encoding
       Connection:
       - close
       Transfer-Encoding:
@@ -182,23 +234,23 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-         "kind": "drive#permission",
-         "etag": "\"E-gxjkIi4_7VC3TE32Fe3d8lTI4\"",
-         "id": "02675581687761162384",
-         "selfLink": "https://www.googleapis.com/drive/v2/files/1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees/permissions/02675581687761162384",
-         "name": "SurveyMoonbear Test",
-         "emailAddress": "moonbear.survey.test@gmail.com",
-         "domain": "gmail.com",
-         "role": "writer",
-         "type": "user",
-         "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
-         "deleted": false,
-         "pendingOwner": false
+          "kind": "drive#permission",
+          "etag": "\"ddzgwoLQ_oP1TGMTSnh9-qc7N44\"",
+          "id": "02675581687761162384",
+          "selfLink": "https://www.googleapis.com/drive/v2/files/1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o/permissions/02675581687761162384",
+          "name": "SurveyMoonbear Test",
+          "emailAddress": "moonbear.survey.test@gmail.com",
+          "domain": "gmail.com",
+          "role": "writer",
+          "type": "user",
+          "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+          "deleted": false,
+          "pendingOwner": false
         }
-  recorded_at: Wed, 08 Jun 2022 09:23:42 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:05 GMT
 - request:
     method: post
-    uri: https://www.googleapis.com/drive/v3/files/1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees/permissions
+    uri: https://www.googleapis.com/drive/v3/files/1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o/permissions
     body:
       encoding: UTF-8
       string: '{"role":"reader","type":"anyone"}'
@@ -218,34 +270,30 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
       Pragma:
       - no-cache
+      Date:
+      - Wed, 11 Oct 2023 00:54:06 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
-      Date:
-      - Wed, 08 Jun 2022 09:23:42 GMT
-      Vary:
-      - Origin,Accept-Encoding
-      - X-Origin
       Content-Type:
       - application/json; charset=UTF-8
-      X-Content-Type-Options:
-      - nosniff
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
       X-Frame-Options:
       - SAMEORIGIN
-      Content-Security-Policy:
-      - frame-ancestors 'self'
-      X-Xss-Protection:
-      - 1; mode=block
-      Server:
-      - GSE
+      X-Content-Type-Options:
+      - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
+      Vary:
+      - Origin, X-Origin,Accept-Encoding
       Connection:
       - close
       Transfer-Encoding:
@@ -254,20 +302,20 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-         "kind": "drive#permission",
-         "id": "anyoneWithLink",
-         "type": "anyone",
-         "role": "reader",
-         "allowFileDiscovery": false
+          "kind": "drive#permission",
+          "id": "anyoneWithLink",
+          "type": "anyone",
+          "role": "reader",
+          "allowFileDiscovery": false
         }
-  recorded_at: Wed, 08 Jun 2022 09:23:43 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:06 GMT
 - request:
     method: post
-    uri: https://sheets.googleapis.com/v4/spreadsheets/1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees:batchUpdate
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o:batchUpdate
     body:
       encoding: UTF-8
       string: '{"requests":[{"updateSpreadsheetProperties":{"properties":{"title":"Survey
-        for Testing Delete Services"},"fields":"title"}}]}'
+        for Testing Remove from Study"},"fields":"title"}}]}'
     headers:
       Authorization:
       - Bearer <ACCESS_TOKEN>
@@ -291,7 +339,7 @@ http_interactions:
       - Referer
       - X-Origin
       Date:
-      - Wed, 08 Jun 2022 09:23:43 GMT
+      - Wed, 11 Oct 2023 00:54:07 GMT
       Server:
       - ESF
       Cache-Control:
@@ -303,10 +351,11 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
+      X-L2-Request-Path:
+      - l2-managed-6
       Connection:
       - close
       Transfer-Encoding:
@@ -315,15 +364,15 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "spreadsheetId": "1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees",
+          "spreadsheetId": "1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o",
           "replies": [
             {}
           ]
         }
-  recorded_at: Wed, 08 Jun 2022 09:23:43 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:07 GMT
 - request:
     method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o
     body:
       encoding: UTF-8
       string: ''
@@ -348,7 +397,7 @@ http_interactions:
       - Referer
       - X-Origin
       Date:
-      - Wed, 08 Jun 2022 09:23:44 GMT
+      - Wed, 11 Oct 2023 00:54:07 GMT
       Server:
       - ESF
       Cache-Control:
@@ -360,10 +409,11 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
+      X-L2-Request-Path:
+      - l2-managed-6
       Connection:
       - close
       Transfer-Encoding:
@@ -372,12 +422,12 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "spreadsheetId": "1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees",
+          "spreadsheetId": "1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o",
           "properties": {
-            "title": "Survey for Testing Delete Services",
-            "locale": "zh_TW",
+            "title": "Survey for Testing Remove from Study",
+            "locale": "en_US",
             "autoRecalc": "ON_CHANGE",
-            "timeZone": "Asia/Shanghai",
+            "timeZone": "Asia/Hong_Kong",
             "defaultFormat": {
               "backgroundColor": {
                 "red": 1,
@@ -411,184 +461,143 @@ http_interactions:
                   "blue": 1
                 }
               }
+            },
+            "spreadsheetTheme": {
+              "primaryFontFamily": "Arial",
+              "themeColors": [
+                {
+                  "colorType": "TEXT",
+                  "color": {
+                    "rgbColor": {}
+                  }
+                },
+                {
+                  "colorType": "BACKGROUND",
+                  "color": {
+                    "rgbColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    }
+                  }
+                },
+                {
+                  "colorType": "ACCENT1",
+                  "color": {
+                    "rgbColor": {
+                      "red": 0.25882354,
+                      "green": 0.52156866,
+                      "blue": 0.95686275
+                    }
+                  }
+                },
+                {
+                  "colorType": "ACCENT2",
+                  "color": {
+                    "rgbColor": {
+                      "red": 0.91764706,
+                      "green": 0.2627451,
+                      "blue": 0.20784314
+                    }
+                  }
+                },
+                {
+                  "colorType": "ACCENT3",
+                  "color": {
+                    "rgbColor": {
+                      "red": 0.9843137,
+                      "green": 0.7372549,
+                      "blue": 0.015686275
+                    }
+                  }
+                },
+                {
+                  "colorType": "ACCENT4",
+                  "color": {
+                    "rgbColor": {
+                      "red": 0.20392157,
+                      "green": 0.65882355,
+                      "blue": 0.3254902
+                    }
+                  }
+                },
+                {
+                  "colorType": "ACCENT5",
+                  "color": {
+                    "rgbColor": {
+                      "red": 1,
+                      "green": 0.42745098,
+                      "blue": 0.003921569
+                    }
+                  }
+                },
+                {
+                  "colorType": "ACCENT6",
+                  "color": {
+                    "rgbColor": {
+                      "red": 0.27450982,
+                      "green": 0.7411765,
+                      "blue": 0.7764706
+                    }
+                  }
+                },
+                {
+                  "colorType": "LINK",
+                  "color": {
+                    "rgbColor": {
+                      "red": 0.06666667,
+                      "green": 0.33333334,
+                      "blue": 0.8
+                    }
+                  }
+                }
+              ]
             }
           },
           "sheets": [
             {
               "properties": {
-                "sheetId": 1041538561,
-                "title": "page1",
+                "sheetId": 0,
+                "title": "sources",
                 "index": 0,
                 "sheetType": "GRID",
                 "gridProperties": {
-                  "rowCount": 999,
+                  "rowCount": 1000,
                   "columnCount": 26
                 }
-              },
-              "conditionalFormats": [
-                {
-                  "ranges": [
-                    {
-                      "sheetId": 1041538561,
-                      "startRowIndex": 1,
-                      "endRowIndex": 12,
-                      "startColumnIndex": 1,
-                      "endColumnIndex": 2
-                    },
-                    {
-                      "sheetId": 1041538561,
-                      "startRowIndex": 12,
-                      "endRowIndex": 16,
-                      "startColumnIndex": 1,
-                      "endColumnIndex": 2
-                    }
-                  ],
-                  "booleanRule": {
-                    "condition": {
-                      "type": "CUSTOM_FORMULA",
-                      "values": [
-                        {
-                          "userEnteredValue": "=REGEXMATCH(B2, \"\\W\")"
-                        }
-                      ]
-                    },
-                    "format": {
-                      "backgroundColor": {
-                        "red": 0.95686275,
-                        "green": 0.78039217,
-                        "blue": 0.7647059
-                      },
-                      "backgroundColorStyle": {
-                        "rgbColor": {
-                          "red": 0.95686275,
-                          "green": 0.78039217,
-                          "blue": 0.7647059
-                        }
-                      }
-                    }
-                  }
-                }
-              ]
+              }
             },
             {
               "properties": {
-                "sheetId": 314856148,
-                "title": "page2",
+                "sheetId": 598916406,
+                "title": "report page1",
                 "index": 1,
                 "sheetType": "GRID",
                 "gridProperties": {
-                  "rowCount": 998,
+                  "rowCount": 1000,
                   "columnCount": 26
                 }
-              },
-              "conditionalFormats": [
-                {
-                  "ranges": [
-                    {
-                      "sheetId": 314856148,
-                      "startRowIndex": 1,
-                      "endRowIndex": 11,
-                      "startColumnIndex": 1,
-                      "endColumnIndex": 2
-                    },
-                    {
-                      "sheetId": 314856148,
-                      "startRowIndex": 11,
-                      "endRowIndex": 15,
-                      "startColumnIndex": 1,
-                      "endColumnIndex": 2
-                    }
-                  ],
-                  "booleanRule": {
-                    "condition": {
-                      "type": "CUSTOM_FORMULA",
-                      "values": [
-                        {
-                          "userEnteredValue": "=REGEXMATCH(B2, \"\\W\")"
-                        }
-                      ]
-                    },
-                    "format": {
-                      "backgroundColor": {
-                        "red": 0.95686275,
-                        "green": 0.78039217,
-                        "blue": 0.7647059
-                      },
-                      "backgroundColorStyle": {
-                        "rgbColor": {
-                          "red": 0.95686275,
-                          "green": 0.78039217,
-                          "blue": 0.7647059
-                        }
-                      }
-                    }
-                  }
-                }
-              ]
+              }
             },
             {
               "properties": {
-                "sheetId": 275970921,
-                "title": "page3",
+                "sheetId": 250039485,
+                "title": "report page2",
                 "index": 2,
                 "sheetType": "GRID",
                 "gridProperties": {
                   "rowCount": 1000,
                   "columnCount": 26
                 }
-              },
-              "conditionalFormats": [
-                {
-                  "ranges": [
-                    {
-                      "sheetId": 275970921,
-                      "startRowIndex": 1,
-                      "endRowIndex": 11,
-                      "startColumnIndex": 1,
-                      "endColumnIndex": 2
-                    },
-                    {
-                      "sheetId": 275970921,
-                      "startRowIndex": 11,
-                      "endRowIndex": 15,
-                      "startColumnIndex": 1,
-                      "endColumnIndex": 2
-                    }
-                  ],
-                  "booleanRule": {
-                    "condition": {
-                      "type": "CUSTOM_FORMULA",
-                      "values": [
-                        {
-                          "userEnteredValue": "=REGEXMATCH(B2, \"\\W\")"
-                        }
-                      ]
-                    },
-                    "format": {
-                      "backgroundColor": {
-                        "red": 0.95686275,
-                        "green": 0.78039217,
-                        "blue": 0.7647059
-                      },
-                      "backgroundColorStyle": {
-                        "rgbColor": {
-                          "red": 0.95686275,
-                          "green": 0.78039217,
-                          "blue": 0.7647059
-                        }
-                      }
-                    }
-                  }
-                }
-              ]
+              }
             }
           ],
-          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees/edit"
+          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o/edit?ouid=105382949518225717789"
         }
-  recorded_at: Wed, 08 Jun 2022 09:23:44 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:07 GMT
 - request:
     method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees/values/page1
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o/values/sources
     body:
       encoding: UTF-8
       string: ''
@@ -613,7 +622,7 @@ http_interactions:
       - Referer
       - X-Origin
       Date:
-      - Wed, 08 Jun 2022 09:23:44 GMT
+      - Wed, 11 Oct 2023 00:54:07 GMT
       Server:
       - ESF
       Cache-Control:
@@ -625,10 +634,11 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
+      X-L2-Request-Path:
+      - l2-managed-6
       Connection:
       - close
       Transfer-Encoding:
@@ -637,92 +647,31 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "range": "page1!A1:Z999",
+          "range": "sources!A1:Z1000",
           "majorDimension": "ROWS",
           "values": [
             [
-              "Type",
-              "Name (should be unique)",
-              "Description",
-              "Required?(1:Yes, 0:No)",
-              "Options",
-              "Flow logic"
+              "source_type",
+              "source_name",
+              "source_id",
+              "case_id (cell range of spreadsheet e.g., C1:C5）"
             ],
             [
-              "Description",
-              "survey_description",
-              "Hi, everyone. This is a sample survey."
+              "surveymoonbear",
+              "",
+              "source1"
             ],
             [
-              "Divider"
-            ],
-            [
-              "Section Title",
-              "title1",
-              "Personal Information"
-            ],
-            [
-              "Short answer",
-              "username",
-              "What's your name?",
-              "0"
-            ],
-            [
-              "Multiple choice (radio button)",
-              "age_num",
-              "How old are you?",
-              "1",
-              "10~20,21~25,26~30,31~35,36~40",
-              "2,3,3,3,3"
-            ],
-            [
-              "Paragraph Answer",
-              "self_intro",
-              "Self Introduction",
-              "0"
-            ],
-            [
-              "Multiple choice with 'other' (checkbox)",
-              "social_website",
-              "Which social media you have used?",
-              "1",
-              "Facebook,Instagram,Twitter,LINE,plurk,Google+,Snapchat"
-            ],
-            [
-              "Section Title",
-              "title2",
-              "Rating Scale"
-            ],
-            [
-              "Multiple choice grid (radio button)",
-              "frequency",
-              "I usually use social media.",
-              "1",
-              "strongly disagree,disagree,neutral,agree,strongly agree"
-            ],
-            [
-              "Multiple choice grid (radio button)",
-              "safisfaction",
-              "I'm satisfied with using social media.",
-              "1",
-              "strongly disagree,disagree,neutral,agree,strongly agree"
-            ],
-            [
-              "Multiple choice grid (radio button)",
-              "needs",
-              "I can't live without social media.",
-              "1",
-              "strongly disagree,disagree,neutral,agree,strongly agree"
-            ],
-            [
-              "Jump to page"
+              "spreadsheet",
+              "please enter a google spreadsheet link",
+              "source2"
             ]
           ]
         }
-  recorded_at: Wed, 08 Jun 2022 09:23:44 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:08 GMT
 - request:
     method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees/values/page2
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o/values/report%20page1
     body:
       encoding: UTF-8
       string: ''
@@ -747,7 +696,7 @@ http_interactions:
       - Referer
       - X-Origin
       Date:
-      - Wed, 08 Jun 2022 09:23:45 GMT
+      - Wed, 11 Oct 2023 00:54:08 GMT
       Server:
       - ESF
       Cache-Control:
@@ -759,10 +708,11 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
+      X-L2-Request-Path:
+      - l2-managed-6
       Connection:
       - close
       Transfer-Encoding:
@@ -771,33 +721,35 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "range": "page2!A1:Z998",
+          "range": "'report page1'!A1:Z1000",
           "majorDimension": "ROWS",
           "values": [
             [
-              "Type",
-              "Name",
-              "Description",
-              "Required?(1:Yes, 0:No)",
-              "Options",
-              "Flow logic"
+              "Graph Title",
+              "Data source (source_id)",
+              "question name_id / spreadsheet cell range",
+              "chart type",
+              "legend"
             ],
             [
-              "Section Title",
-              "survey_title_2",
-              "Hi {{username}}, this is a sample for survey page 2 "
+              "source from moonbear",
+              "source1",
+              "please enter question's name_id",
+              "bar",
+              "yes"
             ],
             [
-              "Description",
-              "survey_desc_2",
-              "(username is an embedded variable)"
+              "source from spreadsheet",
+              "source2",
+              "M3:M141",
+              "histogram"
             ]
           ]
         }
-  recorded_at: Wed, 08 Jun 2022 09:23:45 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:08 GMT
 - request:
     method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees/values/page3
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o/values/report%20page2
     body:
       encoding: UTF-8
       string: ''
@@ -822,7 +774,7 @@ http_interactions:
       - Referer
       - X-Origin
       Date:
-      - Wed, 08 Jun 2022 09:23:45 GMT
+      - Wed, 11 Oct 2023 00:54:08 GMT
       Server:
       - ESF
       Cache-Control:
@@ -834,10 +786,11 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
+      X-L2-Request-Path:
+      - l2-managed-6
       Connection:
       - close
       Transfer-Encoding:
@@ -846,28 +799,28 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "range": "page3!A1:Z1000",
+          "range": "'report page2'!A1:Z1000",
           "majorDimension": "ROWS",
           "values": [
             [
-              "Type",
-              "Name",
-              "Description",
-              "Required?(1:Yes, 0:No)",
-              "Options",
-              "Flow logic"
+              "Graph Title",
+              "Data source (source_id)",
+              "question name_id / spreadsheet cell range",
+              "chart type",
+              "legend"
             ],
             [
-              "Description",
-              "survey_description_3",
-              "This is a sample for survey page 3"
+              "this is page 2",
+              "source1",
+              "please enter question's name_id",
+              "bar"
             ]
           ]
         }
-  recorded_at: Wed, 08 Jun 2022 09:23:45 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:08 GMT
 - request:
     method: post
-    uri: https://www.googleapis.com/oauth2/v4/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
     body:
       encoding: UTF-8
       string: ''
@@ -877,7 +830,7 @@ http_interactions:
       Connection:
       - close
       Host:
-      - www.googleapis.com
+      - oauth2.googleapis.com
       User-Agent:
       - http.rb/5.0.4
   response:
@@ -887,12 +840,12 @@ http_interactions:
     headers:
       Pragma:
       - no-cache
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
       Date:
-      - Wed, 08 Jun 2022 09:23:46 GMT
+      - Wed, 11 Oct 2023 00:54:08 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
       Content-Type:
       - application/json; charset=utf-8
       Vary:
@@ -908,8 +861,7 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Accept-Ranges:
       - none
       Connection:
@@ -922,14 +874,14 @@ http_interactions:
         {
           "access_token": "<ACCESS_TOKEN>",
           "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/spreadsheets openid https://www.googleapis.com/auth/drive",
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.appdata openid https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive.metadata",
           "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijc0ODNhMDg4ZDRmZmMwMDYwOWYwZTIyZjNjMjJkYTVmZTM5MDZjY2MiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0NzQ4ODY1MDM1NzgtY2diaDZydTR1bnYzY2s0dml1cDI0cm0wa3JiZzA2ZDAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0NzQ4ODY1MDM1NzgtY2diaDZydTR1bnYzY2s0dml1cDI0cm0wa3JiZzA2ZDAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTY3MjMwMjY0OTY5MDQwNTE5NzgiLCJlbWFpbCI6ImNoZWNraGlnaC5hcHBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJTd3hNUzZJcl9QQkJjS3Nlb0ZEOXdBIiwiaWF0IjoxNjU0NjgwMjI2LCJleHAiOjE2NTQ2ODM4MjZ9.c30EuxsXz4xPQ1LgCL-N68QP-bb3cIZHDdpS7eSixTl5hp9yO9-zLpMCEx86NvhndySwsk_V8uw5otzDkNm59DCk666Hkm19yxIZcG-wXvULWvb_FA7drRfngw5Z8LjEBoahIRa8-0ZpeRLt5Mt49kR1hTAyD9pUbhxvBzBwUZcPe2G-rLFDJB9rmK6Un59N3_slhFDIA-O6iu2M4ARDPQFY5DPy3lgkPtklQ5Vlbs63a55i3YDST9MAIep_DswbdIcB1D21YOxY1l3Yj4ivGicpVJzZjr-20xadQ9E09gUk4AkrcA4iG0cfFJ9bp3uLY51Pxrg-XYAEwfdSmlXvDQ"
+          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJCc2hmTTFJbG1ZWEoyRjhlb1hJdzNBIiwiaWF0IjoxNjk2OTg1NjQ4LCJleHAiOjE2OTY5ODkyNDh9.IxKbVEW_y6tCul3ezmfQdSgIT9YTTMk1UGFD9lLg5v_oBvAlhIkBHWPbOe0s8rhGzPrkCP4XGflCywNnkx9ph7yAg64FanafvslGDKvyPnfYLRAWGZAIQQ-VmOvck-jDIZ4bM7Tj3fmyfgWm1-NnUj6Ei1TJDxpqAY0rOOTDYRQOg3uun53uNhR0ukI6ZFN57pPRjQg5HQ34UqIlLQiSjc50ka03b9yUE0UuY36Tt2Cff1ycR5c3laY142UV7VIIWSCd9uuDQKBa7ijhj7grmIIGVpUhVYRiFFN95FTNcTUGe51npKXPLHIvofcYDTiHdwbtSD54Cji70s5Z0UeVtw"
         }
-  recorded_at: Wed, 08 Jun 2022 09:23:46 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:08 GMT
 - request:
     method: delete
-    uri: https://www.googleapis.com/drive/v2/files/1_SF8iAdQ2lck-kXWuqgo2TJzZWs9kH71jJ5BBbo3ees
+    uri: https://www.googleapis.com/drive/v2/files/1CeJ6LQmfurT5nH0vA52sBSOSx6x6WnSsMflEha1AD3o
     body:
       encoding: UTF-8
       string: ''
@@ -949,16 +901,16 @@ http_interactions:
     headers:
       Etag:
       - '"vyGp6PvFo4RvsFtPoIWeCReyIC8"'
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
       Date:
-      - Wed, 08 Jun 2022 09:23:46 GMT
+      - Wed, 11 Oct 2023 00:54:09 GMT
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Vary:
       - Origin, X-Origin
       Pragma:
       - no-cache
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
       Content-Type:
       - text/html
       Server:
@@ -972,12 +924,11 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
-        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Connection:
       - close
     body:
       encoding: ASCII-8BIT
       string: ''
-  recorded_at: Wed, 08 Jun 2022 09:23:47 GMT
+  recorded_at: Wed, 11 Oct 2023 00:54:09 GMT
 recorded_with: VCR 6.1.0

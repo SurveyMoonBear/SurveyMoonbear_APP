@@ -1,7 +1,7 @@
 # Run the tests
 1. Migrate test.db
 ```
-RACK_ENV = test rake db:migrate
+RACK_ENV=test bundle exec rake db:migrate
 ```
 2. Run tests
 
