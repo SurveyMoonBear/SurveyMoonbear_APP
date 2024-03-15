@@ -488,6 +488,7 @@ module SurveyMoonbear
 
             routing.get String do |dashboard_type|
               puts "log[trace]: user:#{Digest::SHA256.hexdigest(@report_account['email'])}, dashboard_type: #{dashboard_type}"
+
               redis = RedisCache.new(config)
               categorize_score_type = redis.get("categorize_score_type_#{@report_account['email']}")
               result = Service::GetDashboardData.new.call(redis: redis,
@@ -501,6 +502,8 @@ module SurveyMoonbear
                                                             dashboard_result: @dashboard_result }
             end
             routing.get do
+              puts "log[trace]: user:#{Digest::SHA256.hexdigest(@report_account['email'])}, dashboard_type: score_report"
+
               code = routing.params['code']
               visual_report = Repository::For[Entity::VisualReport]
                               .find_id(visual_report_id)
@@ -516,7 +519,9 @@ module SurveyMoonbear
                                                                config: config,
                                                                code: code,
                                                                access_token: access_token,
-                                                               email: @report_account['email'])
+                                                               email: @report_account['email']
+                                                              #  ta:ta
+                                                              )
               if text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
               end
@@ -687,7 +692,8 @@ module SurveyMoonbear
                                                              text_report_object: text_report_object,
                                                              title: title,
                                                              scores: scores,
-                                                             ta: ta }
+                                                            #  ta: ta
+                                                          }
             end
           end
 
