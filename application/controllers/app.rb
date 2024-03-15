@@ -520,7 +520,6 @@ module SurveyMoonbear
                                                                code: code,
                                                                access_token: access_token,
                                                                email: @report_account['email']
-                                                              #  ta:ta
                                                               )
               if text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
@@ -692,8 +691,7 @@ module SurveyMoonbear
                                                              text_report_object: text_report_object,
                                                              title: title,
                                                              scores: scores,
-                                                            #  ta: ta
-                                                          }
+                                                            }
             end
           end
 
