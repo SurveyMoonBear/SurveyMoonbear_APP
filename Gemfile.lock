@@ -150,6 +150,9 @@ GEM
     http-cookie (1.0.5)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     httpclient (2.8.3)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
@@ -175,6 +178,7 @@ GEM
     minitest-rg (5.2.0)
       minitest (~> 5.0)
     multi_json (1.15.0)
+    multi_xml (0.6.0)
     nio4r (2.5.8)
     nokogiri (1.13.6-arm64-darwin)
       racc (~> 1.4)
@@ -303,6 +307,7 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.7.0)
+    zlib (3.1.0)
 
 PLATFORMS
   arm64-darwin-20
@@ -325,6 +330,7 @@ DEPENDENCIES
   google-api-client
   hirb
   http
+  httparty
   minitest
   minitest-hooks
   minitest-rg
@@ -357,6 +363,7 @@ DEPENDENCIES
   sqlite3
   vcr
   webmock
+  zlib
 
 RUBY VERSION
    ruby 3.0.2p107

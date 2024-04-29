@@ -9,6 +9,8 @@ require 'json'
 require 'csv'
 require 'digest'
 
+require 'fileutils'
+
 module SurveyMoonbear
   # rubocop: disable Metrics/ClassLength
   # rubocop: disable Metrics/BlockLength
@@ -371,6 +373,34 @@ module SurveyMoonbear
       routing.on 'analytics' do
         @current_account = SecureSession.new(session).get(:current_account)
 
+        # routing.redirect '/' unless @current_account
+
+        # GET /analytics/download_logs
+        routing.is 'download_logs' do
+          routing.get do
+            puts 'Accessing /analytics/download_logs...'
+
+            file_path = routing.params['file']
+            puts "Received file request for: #{file_path}"
+
+            result = Service::GetLogFileDownload.new.call(file_path)
+
+            if result.failure?
+              response.status = 500
+              response.write({ error: "Log processing failed." }.to_json)
+            else
+              full_path = File.join('application/public', file_path)
+              response['Content-Type'] = 'application/octet-stream'
+              response['Content-Disposition'] = "attachment; filename=\"#{File.basename(file_path)}\""
+              response.write(File.read(full_path))
+
+              folder_path = File.join(__dir__, "../public")
+              FileUtils.remove_dir(folder_path)
+              puts "Folder #{folder_path} has been deleted."
+            end
+          end
+        end
+
         # GET /analytics
         routing.get do
           routing.redirect '/' unless @current_account
@@ -417,6 +447,24 @@ module SurveyMoonbear
           end
 
           routing.redirect '/analytics'
+        end
+
+        # POST /analytics/logs to start log processing
+        routing.post 'logs', String do |visual_report_title|
+          if @current_account
+            result = Service::GetDashboardLog.new.call(visual_report_title)
+            if result.failure?
+              response.status = 500
+              response.write({error: "Log processing failed."}.to_json)
+            else
+              response.status = 200
+              file_path = "public/processed_logs_#{visual_report_title}.csv"
+              response.write({download_url: File.basename(file_path)}.to_json)
+            end
+          else
+            response.status = 403
+            response.write({error: "Unauthorized access."}.to_json)
+          end
         end
       end
 
@@ -502,7 +550,7 @@ module SurveyMoonbear
                                                             dashboard_result: @dashboard_result }
             end
             routing.get do
-              puts "log[trace]: user:#{Digest::SHA256.hexdigest(@report_account['email'])}, dashboard_type: score_report"
+              puts "log[trace]: user:#{Digest::SHA256.hexdigest(@report_account['email'])}, dashboard_type: score_report, dashbord_id: #{visual_report_id}"
 
               code = routing.params['code']
               visual_report = Repository::For[Entity::VisualReport]

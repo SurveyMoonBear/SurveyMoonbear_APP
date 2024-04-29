@@ -34,9 +34,14 @@ gem 'pony'
 gem 'redis'
 gem 'redis-rack'
 
+gem 'httparty'
+gem 'zlib'
+
+
 # Diagnostic
 gem 'pry'
 gem 'rack-test'
+
 
 # Database related
 gem 'hirb'
