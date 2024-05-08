@@ -450,9 +450,9 @@ module SurveyMoonbear
         end
 
         # POST /analytics/logs to start log processing
-        routing.post 'logs', String do |visual_report_title|
+        routing.post 'logs', String, String do |visual_report_title, visual_report_id|
           if @current_account
-            result = Service::GetDashboardLog.new.call(visual_report_title)
+            result = Service::GetDashboardLog.new.call(visual_report_title, visual_report_id)
             if result.failure?
               response.status = 500
               response.write({error: "Log processing failed."}.to_json)

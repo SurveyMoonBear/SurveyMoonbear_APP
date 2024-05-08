@@ -60,7 +60,7 @@ div class="mb-3"
                   <i class="fas fa-redo"></i> &nbsp;Update
                 button {
                   class="btn btn-outline-info mr-1 mt-1"
-                  onclick="processAndDownloadLogs('#{visual_report.title}')"
+                  onclick="processAndDownloadLogs('#{visual_report.title}', '#{visual_report.id}')"
                 }
                   <i class="fas fa-download"></i> &nbsp;Download Logs
               div class="row d-flex"
@@ -178,11 +178,11 @@ javascript:
     });
   }
 
-  function processAndDownloadLogs(visualReportTitle) {
+  function processAndDownloadLogs(visualReportTitle, visualReportId) {
     $('#modal_waiting').modal('show');
 
     $.ajax({
-        url: "/analytics/logs/" + visualReportTitle,
+        url: "/analytics/logs/" + visualReportTitle + "/" + visualReportId,
         type: 'POST',
         dataType: 'json',
         success: function(result) {

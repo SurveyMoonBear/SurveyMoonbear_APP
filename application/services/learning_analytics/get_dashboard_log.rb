@@ -16,8 +16,9 @@ module SurveyMoonbear
     step :fetch_and_process_archives
     step :combine_user_rows_into_csv
 
-    def call(visual_report_title)
+    def call(visual_report_title, visual_report_id)
         @visual_report_title = visual_report_title
+        @visual_report_id = visual_report_id
         @folder_path = File.join(__dir__, "../../public")
         ensure_directory
         @token = App.config.PAPERTRAIL_TOKEN
@@ -91,7 +92,8 @@ module SurveyMoonbear
     def process_tsv_file(tsv_path)
         CSV.open("#{tsv_path}_user_rows.csv", 'w', col_sep: "\t") do |csv|
             File.foreach(tsv_path) do |line|
-                csv << [line] if line.include?("user:")
+                # csv << [line] if line.include?("user:")
+                csv << [line] if line.include?("dashbord_id: #{@visual_report_id}")
             end
         end
     end
