@@ -92,7 +92,29 @@ javascript:
     // Append page-html to page-div
     current_page_str = "<div class='d-flex justify-content-end'><p>page " + i + "/" + #{{pages}}.length + "</p></div>";
     $('#page_' + i).append(current_page_str);
-    $('#page_' + i).append(page);
+    // add url_params to page
+    let param_str="";
+    let param_obj=#{{url_params}};
+    // function to convert url object to string
+    for(let key in param_obj){
+      if(param_str===""){
+        param_str += "?"+ key + "=" + param_obj[key] ;
+      }
+      else{
+         param_str += "&" + key + "=" + param_obj[key] ;
+      }
+     
+    }
+    // function to replace url_params in anything that has ((url_params))
+    let modifiy_page = page.map((item)=>{
+    if(item.includes('((url_params))')){
+        return item.replace('((url_params))',param_str);
+      }else{
+        return item;
+      }
+    });
+
+    $('#page_' + i).append(modifiy_page);
     
     // Append submit btn to last page
     if(i == #{{pages}}.length) {
@@ -138,7 +160,8 @@ javascript:
         $(selector).each(function() {
           var setVar = this.id.split(variableType)[0];
           var inputValue = $('input[name=' + setVar + ']').val() || $('textarea[name=' + setVar + ']').val();
-          $(this).html(inputValue);
+          // $(this).html(inputValue);
+          $(this).replaceWith(inputValue);
         });
       }
 
