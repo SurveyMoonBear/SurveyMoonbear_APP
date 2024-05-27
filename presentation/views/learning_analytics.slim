@@ -47,36 +47,36 @@ html
               <i class="fas fa-sign-out-alt mr-2 text-primary"></i>
           div
             ul class="nav nav-tabs" role="tablist" id="displayType"
-              / li class="nav-item"
-              /   a class="nav-link active" data-toggle="tab" href="#dashboard"Visualization Report
+              li class="nav-item"
+                a class="nav-link active" data-toggle="tab" href="#dashboard"Visualization Report
               li class="nav-item"
                 a class="nav-link" data-toggle="tab" href="#score_report" id="score"Score Report
               li class="nav-item"
             div class="tab-content"
-              include :score_report
-              / div id="dashboard" class="tab-pane active"
-              /   / .shadow.m-auto.p-4
-              /   .d-flex.flex-md-row.flex-column 
-              /     .d-flex.flex-column.section-border.mr-1.col-12.col-md-6
-              /       h4 class="text-primary font-weight-bold my-4 mx-4" #{analytics_order[:category][0]}
-              /       div class="d-flex flex-sm-row flex-column flex-sm-wrap"
-              /         - analytics_order[:dashboard][0].each do |analytic|
-              /           div class="LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border" style="border-radius:6px; cursor:pointer; min-height: 15vh;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
-              /             h5 class="LA-title hover:text-white font-weight-bold" #{analytic[0]}
-              /             p class="LA-description hover:text-white mb-4"  #{analytic[1]}
-              /             <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
+              / include :score_report
+              div id="dashboard" class="tab-pane active"
+                / .shadow.m-auto.p-4
+                .d-flex.flex-md-row.flex-column 
+                  .d-flex.flex-column.section-border.mr-1.col-12.col-md-6
+                    / h4 class="text-primary font-weight-bold my-4 mx-4" #{analytics_order[:category][0]}
+                    div class="d-flex flex-sm-row flex-column flex-sm-wrap"
+                      - analytics_order[:dashboard][0].each do |analytic|
+                        div class="LA-card mx-auto col-sm-10 col-12 shadow p-4 my-4 border" style="border-radius:6px; cursor:pointer; min-height: 30vh;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
+                          h5 class="LA-title hover:text-white font-weight-bold" #{analytic[0]}
+                          p class="LA-description hover:text-white mb-4"  #{analytic[1]}
+                          <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
 
-              /     .d-flex.flex-column.section-border.ml-1.col-12.col-md-6
-              /       h4 class="text-primary font-weight-bold my-4 mx-4" #{analytics_order[:category][1]}
-              /       div class="d-flex flex-sm-row flex-column flex-sm-wrap"
-              /         - analytics_order[:dashboard][1].each do |analytic|
-              /           div class='LA-card mx-auto col-sm-5 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer; min-height: 15vh;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
-              /             h5 class="LA-title font-weight-bold" #{analytic[0]}
-              /             p class="LA-description hover:text-white mb-4"  #{analytic[1]}
-              /             <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
+                  .d-flex.flex-column.section-border.ml-1.col-12.col-md-6
+                    / h4 class="text-primary font-weight-bold my-4 mx-4" #{analytics_order[:category][1]}
+                    div class="d-flex flex-sm-row flex-column flex-sm-wrap"
+                      - analytics_order[:dashboard][1].each do |analytic|
+                        div class='LA-card mx-auto col-sm-10 col-12 shadow p-4 my-4 border' style="border-radius:6px; cursor:pointer; min-height: 30vh;" data-toggle="modal" onclick="openModal('#{visual_report_id}', '#{spreadsheet_id}', '#{analytic[2]}', '#{analytic[3]}')"
+                          h5 class="LA-title font-weight-bold" #{analytic[0]}
+                          p class="LA-description hover:text-white mb-4"  #{analytic[1]}
+                          <i class="border border-secondary rounded fas fa-arrow-right p-2 LA-icons" style="border-radius: 6px;"></i>
 
-              / div id="score_report" class="tab-pane fade"
-              /   == render :score_report, locals: { scores: scores, ta: ta, vis_report_object: vis_report_object, text_report_object: text_report_object, title: title }
+              div id="score_report" class="tab-pane fade"
+                == render :score_report, locals: { scores: scores, vis_report_object: vis_report_object, text_report_object: text_report_object, title: title }
                   
 
 include :dashboard_modal

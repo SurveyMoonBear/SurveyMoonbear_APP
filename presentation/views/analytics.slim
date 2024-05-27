@@ -58,6 +58,11 @@ div class="mb-3"
                   onclick="updateVisualReport('#{visual_report.id}', '#{visual_report.origin_id}')"
                 } 
                   <i class="fas fa-redo"></i> &nbsp;Update
+                button {
+                  class="btn btn-outline-info mr-1 mt-1"
+                  onclick="processAndDownloadLogs('#{visual_report.title}', '#{visual_report.id}')"
+                }
+                  <i class="fas fa-download"></i> &nbsp;Download Logs
               div class="row d-flex"
                 div class="mb-3 pl-3"
                   div class="input-group"
@@ -172,6 +177,34 @@ javascript:
       }
     });
   }
+
+  function processAndDownloadLogs(visualReportTitle, visualReportId) {
+    $('#modal_waiting').modal('show');
+
+    $.ajax({
+        url: "/analytics/logs/" + visualReportTitle + "/" + visualReportId,
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+          $('#modal_waiting').modal('hide');
+          if (result.download_url) {
+            downloadProcessedLogs(result.download_url);
+          } else {
+            alert("No download URL provided. Please check the server response.");
+          }
+        },
+        error: function(xhr) {
+            $('#modal_waiting').modal('hide');
+            alert("Error processing logs: " + xhr.responseText);
+        }
+    });
+  }
+
+  function downloadProcessedLogs(fileName) {
+    window.location.href = "/analytics/download_logs?file=" + encodeURIComponent(fileName);
+  }
+
+
 
   $('#btn-create').on('click', function (e) {
     $('#modal_create_visual_report').modal('hide');
