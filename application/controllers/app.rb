@@ -615,6 +615,11 @@ module SurveyMoonbear
 
               title = score_type.zip(score_type).to_h
 
+              keys_to_remove = ["achievement", "discuss", "discuss_leaderboard"]
+              keys_to_remove.each { |key| scores.delete(key) }
+              keys_to_remove.each { |key| title.delete(key) }
+
+
               view 'learning_analytics', layout: false, locals: { visual_report_id: visual_report_id,
                                                                   spreadsheet_id: spreadsheet_id,
                                                                   vis_report_object: vis_report_object,
