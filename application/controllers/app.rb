@@ -548,7 +548,7 @@ module SurveyMoonbear
                                                             dashboard_result: @dashboard_result }
             end
             routing.get do
-              puts "log[trace]: user:#{Digest::SHA256.hexdigest(@report_account['email'])}, dashboard_type: score_report, dashbord_id: #{visual_report_id}"
+              puts "log[trace]: user:#{Digest::SHA256.hexdigest(@report_account['email'])}, dashboard_type: score_report, dashboard_id: #{visual_report_id}"
 
               code = routing.params['code']
               visual_report = Repository::For[Entity::VisualReport]
