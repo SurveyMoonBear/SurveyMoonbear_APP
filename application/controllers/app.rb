@@ -8,7 +8,6 @@ require 'google/api_client/client_secrets'
 require 'json'
 require 'csv'
 require 'digest'
-
 require 'fileutils'
 
 module SurveyMoonbear
@@ -387,16 +386,15 @@ module SurveyMoonbear
 
             if result.failure?
               response.status = 500
-              response.write({ error: "Log processing failed." }.to_json)
+              response.write({ error: 'Log processing failed.' }.to_json)
             else
               full_path = File.join('application/public', file_path)
               response['Content-Type'] = 'application/octet-stream'
               response['Content-Disposition'] = "attachment; filename=\"#{File.basename(file_path)}\""
               response.write(File.read(full_path))
 
-              folder_path = File.join(__dir__, "../public")
+              folder_path = File.join(__dir__, '../public')
               FileUtils.remove_dir(folder_path)
-              puts "Folder #{folder_path} has been deleted."
             end
           end
         end
@@ -455,15 +453,15 @@ module SurveyMoonbear
             result = Service::GetDashboardLog.new.call(visual_report_title, visual_report_id)
             if result.failure?
               response.status = 500
-              response.write({error: "Log processing failed."}.to_json)
+              response.write({ error: 'Log processing failed.' }.to_json)
             else
               response.status = 200
               file_path = "public/processed_logs_#{visual_report_title}.csv"
-              response.write({download_url: File.basename(file_path)}.to_json)
+              response.write({ download_url: File.basename(file_path) }.to_json)
             end
           else
             response.status = 403
-            response.write({error: "Unauthorized access."}.to_json)
+            response.write({ error: 'Unauthorized access.' }.to_json)
           end
         end
       end
@@ -567,8 +565,7 @@ module SurveyMoonbear
                                                                config: config,
                                                                code: code,
                                                                access_token: access_token,
-                                                               email: @report_account['email']
-                                                              )
+                                                               email: @report_account['email'])
               if text_responses.failure?
                 routing.redirect "#{config.APP_URL}/visual_report/#{visual_report_id}/online/#{spreadsheet_id}/identify/dashboard"
               end
@@ -743,8 +740,7 @@ module SurveyMoonbear
                                                              visual_report: visual_report,
                                                              text_report_object: text_report_object,
                                                              title: title,
-                                                             scores: scores,
-                                                            }
+                                                             scores: scores }
             end
           end
 

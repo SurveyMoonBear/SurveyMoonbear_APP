@@ -11,9 +11,9 @@ gem 'figaro'
 gem 'puma'
 gem 'rack-attack'
 gem 'rack-flash3'
+gem 'rake'
 gem 'roda'
 gem 'slim'
-gem 'rake'
 
 # Services
 gem 'dry-transaction'
@@ -37,11 +37,9 @@ gem 'redis-rack'
 gem 'httparty'
 gem 'zlib'
 
-
 # Diagnostic
 gem 'pry'
 gem 'rack-test'
-
 
 # Database related
 gem 'hirb'
