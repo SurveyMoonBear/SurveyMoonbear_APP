@@ -323,13 +323,8 @@ javascript:
   });
 
   $('#form').on('submit', function(e) {
-
+    e.preventDefault();
     $('input[name=moonbear_end_time]').val(new Date());
-    $('#btn-submit').prop('disabled', true);
-    $('<input />').attr('type', 'hidden')
-                  .attr('name', "moonbear_url_params")
-                  .attr('value', JSON.stringify(#{{url_params}}))
-                  .appendTo('#form');
 
     var flag = true;
     $('input[name=moonbear_end_time]').val(new Date());
@@ -342,8 +337,10 @@ javascript:
         flag = true;
       }
     });
+
+
     
-    if (flag == false) {
+    if (flag === false) {
       window.scrollTo(0, 0);
       var str = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
       str += 'Please answer all questions marked with a "*" before submitting.';
@@ -353,7 +350,47 @@ javascript:
       str += '</div>';
       $('#div-alert').html(str);
     }
+
+    if (flag === true) {
+      let form_data_obj = Array.from(e.target.elements).reduce((init, item) => {
+        if (item.name) {
+          init[item.name] = item.value;
+        }
+        return init;
+      }, {});
+      if (Object.keys(#{{url_params}}).length !== 0){
+        form_data_obj['moonbear_url_params'] = JSON.stringify(#{{url_params}});
+      }
+     let redirect_to_outside=document.getElementById('url_link');
+     if(redirect_to_outside){
+        console.log('Redirecting to:',redirect_to_outside.value);
+
+        let response = fetch(e.target.action, {
+          method: e.target.method,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form_data_obj),
+          redirect: "manual",
+        });
+        window.location.href=redirect_to_outside.value;
+
+      }
+      else{
+        let response = fetch(e.target.action, {
+          method: e.target.method,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form_data_obj),
+          redirect: "follow",
+        }); 
+        window.location.href=window.location.href.split('#page')[0]+'/submit';
+      }
+      flag=false;
+    }
     return flag;
+
   });
 
   /* Survey document init with start time */

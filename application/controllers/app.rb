@@ -272,7 +272,7 @@ module SurveyMoonbear
               Service::StoreResponses.new.call(survey_id: survey_id,
                                                launch_id: launch_id,
                                                respondent_id: respondent['respondent_id'],
-                                               responses: routing.params,
+                                               responses: JSON.parse(routing.body.read),
                                                config: config)
 
               surveys_started.reject! do |survey_started|
