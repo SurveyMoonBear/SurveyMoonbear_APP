@@ -227,7 +227,7 @@ javascript:
     var checkbox_answers_str = joinCheckboxAnswersWithComma(type_name);
 
     var input_name = type_name.substr(9, type_name.length);
-    $('input[name='+input_name+']').val(checkbox_answers_str);
+    $('input[name=' + $.escapeSelector(input_name) + ']').val(checkbox_answers_str);
   }
 
   function joinCheckboxAnswersWithComma(type_name) {
@@ -249,7 +249,7 @@ javascript:
 
   function updateRadioHiddenInput(type_name, value) {
     var input_name = type_name.substr(6, type_name.length);
-     $('input[name='+input_name+']').val(value);
+    $('input[name=' + $.escapeSelector(input_name) + ']').val(value);
   }
 
   // Function to handle the start of slider interaction
@@ -385,7 +385,9 @@ javascript:
           body: JSON.stringify(form_data_obj),
           redirect: "follow",
         }); 
-        window.location.href=window.location.href.split('#page')[0]+'/submit';
+        let location=window.location.href.split('#page')[0];
+        location = location.split('?')[0];
+        window.location.href=location+'/submit';
       }
       flag=false;
     }
