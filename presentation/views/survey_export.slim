@@ -322,7 +322,7 @@ javascript:
     }
   });
 
-  $('#form').on('submit', function(e) {
+  $('#form').on('submit', async function(e) {
     e.preventDefault();
     $('input[name=moonbear_end_time]').val(new Date());
 
@@ -365,7 +365,7 @@ javascript:
      if(redirect_to_outside){
         console.log('Redirecting to:',redirect_to_outside.value);
 
-        let response = fetch(e.target.action, {
+        let response = await fetch(e.target.action, {
           method: e.target.method,
           headers: {
             'Content-Type': 'application/json',
@@ -377,7 +377,7 @@ javascript:
 
       }
       else{
-        let response = fetch(e.target.action, {
+        let response = await fetch(e.target.action, {
           method: e.target.method,
           headers: {
             'Content-Type': 'application/json',
