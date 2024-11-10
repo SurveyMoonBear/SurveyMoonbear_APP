@@ -126,7 +126,7 @@ module SurveyMoonbear
           res_hash[:survey_id] = input[:survey_id]
           res_hash[:launch_id] = input[:launch_id]
           res_hash.delete(:id) # id was used for creating entities
-          res_hash
+          res_hash.to_h
         end
 
         input[:responses_hash] = responses_hash
@@ -138,7 +138,12 @@ module SurveyMoonbear
 
       # input { ..., responses_hash }
       def send_to_responses_storing_queues(input)
-        Worker::StoreSurveyResponse.perform_async(input[:responses_hash])
+        # print('input:', input)
+        input_object = input[:responses_hash].map do |response_entity|
+          response_entity.transform_keys(&:to_s)
+        end
+
+        Worker::StoreSurveyResponse.perform_async(input_object)
         Success(nil)
       rescue StandardError => e
         puts e
