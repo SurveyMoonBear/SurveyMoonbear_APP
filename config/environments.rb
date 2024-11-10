@@ -67,11 +67,16 @@ module SurveyMoonbear
 
     configure :production do
       use Rack::Session::Redis,
-          expire_after: A_DAY, redis_server: App.config.REDIS_URL
+          expire_after: A_DAY,
+          redis_server: {
+            url: ENV['REDIS_URL'],
+            ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+          }
       use Rack::Cache,
           verbose: true,
           metastore: config.REDIS_URL + config.REDIS_RACK_CACHE_METASTORE,
-          entitystore: config.REDIS_URL + config.REDIS_RACK_CACHE_ENTITYTORE
+          entitystore: config.REDIS_URL + config.REDIS_RACK_CACHE_ENTITYTORE,
+          ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
 
       sidekiq_redis_configuration = {
         url: config.REDISCLOUD_SIDEKIQ_QUEUES_URL,
