@@ -399,6 +399,7 @@ DEPENDENCIES
   rack-attack
   rack-cache
   rack-flash3
+  rack-session
   rack-ssl-enforcer
   rack-test
   rake

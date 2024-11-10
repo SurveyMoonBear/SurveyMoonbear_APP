@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative './init'
+require 'rack/session/cookie'
 require 'rack/attack'
 require 'sidekiq'
 require 'sidekiq/web'

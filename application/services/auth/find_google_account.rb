@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'dry/monads/all'
 require 'dry/transaction'
 require 'http'
 
