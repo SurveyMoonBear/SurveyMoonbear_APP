@@ -8,7 +8,7 @@ class RedisCache
   def initialize(config)
     @redis = Redis.new(
       url: config.REDISCLOUD_VISUALREPORTS_URLL,
-      ssl_params: { ca_file: '/path/to/your/ca-certificate.crt' }
+      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
     )
   end
 
