@@ -42,7 +42,10 @@ namespace :redis do
   app = SurveyMoonbear::App
 
   namespace :visual_report do
-    redis = Redis.new(url: app.config.REDISCLOUD_VISUALREPORTS_URL)
+    redis = Redis.new(
+      url: app.config.REDISCLOUD_VISUALREPORTS_URL,
+      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+    )
 
     desc 'Get visual report cache from redis'
     task :keys do

@@ -41,11 +41,13 @@ module SurveyMoonbear
       ENV['DATABASE_URL'] = 'sqlite://' + config.DB_FILENAME
 
       use Rack::Session::Pool,
-          expire_after: A_DAY
+          expire_after: A_DAY,
+          ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
       use Rack::Cache,
           verbose: true,
           metastore: 'file:_cache/rack/meta',
-          entitystore: 'file:_cache/rack/body'
+          entitystore: 'file:_cache/rack/body',
+          ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
 
       sidekiq_redis_configuration = {
         url: config.REDISCLOUD_SIDEKIQ_QUEUES_URL,
