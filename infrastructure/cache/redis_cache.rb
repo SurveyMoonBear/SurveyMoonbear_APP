@@ -7,7 +7,10 @@ module SurveyMoonbear
     # Redis client utility
     class Client
       def initialize(config)
-        @redis = Redis.new(url: config.REDISCLOUD_URL)
+        @redis = Redis.new(
+          url: config.REDISCLOUD_URL,
+          ssl_params: { ca_file: '/path/to/your/ca-certificate.crt' }
+        )
       end
 
       def keys

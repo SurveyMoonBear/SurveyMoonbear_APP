@@ -6,7 +6,10 @@ require_relative 'secure_message'
 # store value on redis
 class RedisCache
   def initialize(config)
-    @redis = Redis.new(url: config.REDISCLOUD_VISUALREPORTS_URL)
+    @redis = Redis.new(
+      url: config.REDISCLOUD_VISUALREPORTS_URLL,
+      ssl_params: { ca_file: '/path/to/your/ca-certificate.crt' }
+    )
   end
 
   # Only set the key if it does not already exist.

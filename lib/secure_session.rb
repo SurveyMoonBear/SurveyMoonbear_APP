@@ -26,7 +26,10 @@ class SecureSession
   end
 
   def self.wipe_redis_sessions
-    redis = Redis.new(url: @config.REDIS_URL)
+    redis = Redis.new(
+      url: @config.REDIS_URLL,
+      ssl_params: { ca_file: '/path/to/your/ca-certificate.crt' }
+    )
     redis.keys.each { |session_id| redis.del session_id }
   end
 
