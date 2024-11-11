@@ -97,6 +97,7 @@ module Worker
     sidekiq_options queue: :survey_response_queue
 
     def perform(response_hashes)
+      puts "Received response hashes for storing: #{response_hashes.inspect}"
       store_responses(response_hashes)
       puts 'Storing survey response is completed'
     rescue StandardError => e
@@ -108,12 +109,16 @@ module Worker
     private
 
     def store_responses(response_hashes)
+      puts "Attempting to store responses: #{response_hashes.inspect}"
+
       if ENV['RACK_ENV'] == 'production'
         App.DB[:responses].multi_insert(response_hashes)
+        puts 'Responses successfully stored in production environment'
       else # For SQLite
         App.DB.run('PRAGMA foreign_keys = OFF')
         App.DB[:responses].multi_insert(response_hashes)
         App.DB.run('PRAGMA foreign_keys = ON')
+        puts 'Responses successfully stored in development environment'
       end
     end
   end

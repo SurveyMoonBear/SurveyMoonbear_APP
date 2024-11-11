@@ -119,7 +119,6 @@ module SurveyMoonbear
         Failure('Failed to add url params into items array.')
       end
 
-      # input { ... }
       def add_data_to_all_entities_for_storing(input)
         responses_hash = input[:response_entities_arr].map do |response_entity|
           res_hash = response_entity.to_h
@@ -144,6 +143,7 @@ module SurveyMoonbear
         end
 
         Worker::StoreSurveyResponse.perform_async(input_object)
+        puts "Responses sent to the storing queue: #{input_object.inspect}"
         Success(nil)
       rescue StandardError => e
         puts e

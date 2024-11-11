@@ -815,4 +815,427 @@ http_interactions:
          }
         }
   recorded_at: Wed, 11 Oct 2023 00:56:45 GMT
-recorded_with: VCR 6.1.0
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Pragma:
+      - no-cache
+      Date:
+      - Mon, 11 Nov 2024 15:44:38 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 11 Nov 2024 15:44:38 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: '{"id":"<CALENDAR_ID>"}'
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=utf-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Length:
+      - '165'
+      Date:
+      - Mon, 11 Nov 2024 15:44:38 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json; charset=UTF-8
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "error": {
+          "errors": [
+           {
+            "domain": "global",
+            "reason": "notFound",
+            "message": "Not Found"
+           }
+          ],
+          "code": 404,
+          "message": "Not Found"
+         }
+        }
+  recorded_at: Mon, 11 Nov 2024 15:44:38 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 11 Nov 2024 15:44:38 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 11 Nov 2024 15:44:38 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Mon, 11 Nov 2024 15:44:38 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 11 Nov 2024 15:44:38 GMT
+- request:
+    method: get
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '3145'
+      Date:
+      - Mon, 11 Nov 2024 15:44:39 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Expires:
+      - Mon, 11 Nov 2024 15:44:39 GMT
+      Cache-Control:
+      - private, max-age=0, must-revalidate, no-transform
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+         "kind": "calendar#calendarList",
+         "etag": "\"p32oft1sejna8i0o\"",
+         "nextSyncToken": "CLD-h46d1IkDEhhqZXJyeS5ob0Bpc3MubnRodS5lZHUudHc=",
+         "items": [
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1686667557027000\"",
+           "id": "zh.taiwan#holiday@group.v.calendar.google.com",
+           "summary": "台湾节假日",
+           "description": "台湾节假日",
+           "timeZone": "Asia/Taipei",
+           "colorId": "8",
+           "backgroundColor": "#16a765",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "reader",
+           "defaultReminders": [],
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          },
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1700205505155000\"",
+           "id": "addressbook#contacts@group.v.calendar.google.com",
+           "summary": "Birthdays",
+           "description": "Displays birthdays, anniversaries, and other event dates of people in Google Contacts.",
+           "timeZone": "Asia/Taipei",
+           "colorId": "13",
+           "backgroundColor": "#92e1c0",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "reader",
+           "defaultReminders": [],
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          },
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1700205506653000\"",
+           "id": "en.taiwan#holiday@group.v.calendar.google.com",
+           "summary": "Holidays in Taiwan",
+           "description": "Holidays and Observances in Taiwan",
+           "timeZone": "Asia/Taipei",
+           "colorId": "8",
+           "backgroundColor": "#16a765",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "reader",
+           "defaultReminders": [],
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          },
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1700494515072000\"",
+           "id": "jerry.ho@iss.nthu.edu.tw",
+           "summary": "jerry.ho@iss.nthu.edu.tw",
+           "timeZone": "Asia/Taipei",
+           "colorId": "23",
+           "backgroundColor": "#cd74e6",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "owner",
+           "defaultReminders": [
+            {
+             "method": "popup",
+             "minutes": 30
+            }
+           ],
+           "notificationSettings": {
+            "notifications": [
+             {
+              "type": "eventCreation",
+              "method": "email"
+             },
+             {
+              "type": "eventChange",
+              "method": "email"
+             },
+             {
+              "type": "eventCancellation",
+              "method": "email"
+             },
+             {
+              "type": "eventResponse",
+              "method": "email"
+             }
+            ]
+           },
+           "primary": true,
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          },
+          {
+           "kind": "calendar#calendarListEntry",
+           "etag": "\"1711940184047000\"",
+           "id": "c_f09ec5907a85cd3c665cde301e54bb127be3c52eb2d9ffdabb3a5ca04d01035a@group.calendar.google.com",
+           "summary": "阿斷嫁女心",
+           "timeZone": "Asia/Taipei",
+           "colorId": "5",
+           "backgroundColor": "#ff7537",
+           "foregroundColor": "#000000",
+           "selected": true,
+           "accessRole": "owner",
+           "defaultReminders": [],
+           "conferenceProperties": {
+            "allowedConferenceSolutionTypes": [
+             "hangoutsMeet"
+            ]
+           }
+          }
+         ]
+        }
+  recorded_at: Mon, 11 Nov 2024 15:44:39 GMT
+recorded_with: VCR 6.3.1

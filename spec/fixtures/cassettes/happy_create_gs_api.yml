@@ -931,4 +931,421 @@ http_interactions:
       encoding: ASCII-8BIT
       string: ''
   recorded_at: Wed, 11 Oct 2023 00:56:26 GMT
-recorded_with: VCR 6.1.0
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Pragma:
+      - no-cache
+      Date:
+      - Mon, 11 Nov 2024 15:44:32 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 11 Nov 2024 15:44:33 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Date:
+      - Mon, 11 Nov 2024 15:44:33 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 11 Nov 2024 15:44:33 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/drive/v3/files/<SAMPLE_FILE_ID>/copy?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: "{}"
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=utf-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Www-Authenticate:
+      - Bearer realm="https://accounts.google.com/", error="insufficient_scope", scope="https://www.googleapis.com/auth/drive
+        https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.appfolder
+        https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.resource
+        https://www.googleapis.com/auth/drive.photos.readonly"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 11 Nov 2024 15:44:33 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Vary:
+      - Accept-Encoding
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "code": 403,
+            "message": "Request had insufficient authentication scopes.",
+            "errors": [
+              {
+                "message": "Insufficient Permission",
+                "domain": "global",
+                "reason": "insufficientPermissions"
+              }
+            ],
+            "status": "PERMISSION_DENIED",
+            "details": [
+              {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "ACCESS_TOKEN_SCOPE_INSUFFICIENT",
+                "domain": "googleapis.com",
+                "metadata": {
+                  "service": "drive.googleapis.com",
+                  "method": "google.apps.drive.v3.DriveFiles.Copy"
+                }
+              }
+            ]
+          }
+        }
+  recorded_at: Mon, 11 Nov 2024 15:44:33 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/drive/v2/files//permissions?access_token=<ACCESS_TOKEN>&sendNotificationEmails=false
+    body:
+      encoding: UTF-8
+      string: '{"role":"writer","type":"user","value":"moonbear.survey.test@gmail.com"}'
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=utf-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Www-Authenticate:
+      - Bearer realm="https://accounts.google.com/", error="insufficient_scope", scope="https://www.googleapis.com/auth/docs
+        https://docs.google.com/feeds/ https://docs.google.com/feeds http://docs.google.com/feeds/
+        https://docs.googleusercontent.com https://docs.googleusercontent.com/ https://docs.googleusercontent.com/feeds/download
+        https://docs.googleusercontent.com/feeds/download/ https://docs.googleusercontent.com/feeds/
+        http://docs.google.com/feeds http://docs.googleusercontent.com/ https://docs.google.com/feeds/default/private/full
+        https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file
+        https://www.googleapis.com/auth/drive.resource"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 11 Nov 2024 15:44:34 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Vary:
+      - Accept-Encoding
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "code": 403,
+            "message": "Request had insufficient authentication scopes.",
+            "errors": [
+              {
+                "message": "Insufficient Permission",
+                "domain": "global",
+                "reason": "insufficientPermissions"
+              }
+            ],
+            "status": "PERMISSION_DENIED",
+            "details": [
+              {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "ACCESS_TOKEN_SCOPE_INSUFFICIENT",
+                "domain": "googleapis.com",
+                "metadata": {
+                  "service": "drive.googleapis.com",
+                  "method": "google.apps.drive.v2.DrivePermissions.Insert"
+                }
+              }
+            ]
+          }
+        }
+  recorded_at: Mon, 11 Nov 2024 15:44:34 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/drive/v3/files//permissions
+    body:
+      encoding: UTF-8
+      string: '{"role":"reader","type":"anyone"}'
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=utf-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Www-Authenticate:
+      - Bearer realm="https://accounts.google.com/", error="insufficient_scope", scope="https://www.googleapis.com/auth/drive
+        https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.resource"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 11 Nov 2024 15:44:34 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Vary:
+      - Accept-Encoding
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "code": 403,
+            "message": "Request had insufficient authentication scopes.",
+            "errors": [
+              {
+                "message": "Insufficient Permission",
+                "domain": "global",
+                "reason": "insufficientPermissions"
+              }
+            ],
+            "status": "PERMISSION_DENIED",
+            "details": [
+              {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "ACCESS_TOKEN_SCOPE_INSUFFICIENT",
+                "domain": "googleapis.com",
+                "metadata": {
+                  "method": "google.apps.drive.v3.DrivePermissions.Create",
+                  "service": "drive.googleapis.com"
+                }
+              }
+            ]
+          }
+        }
+  recorded_at: Mon, 11 Nov 2024 15:44:34 GMT
+- request:
+    method: post
+    uri: https://sheets.googleapis.com/v4/spreadsheets/:batchUpdate
+    body:
+      encoding: UTF-8
+      string: '{"requests":[{"updateSpreadsheetProperties":{"properties":{"title":"Survey
+        for Testing Create Services"},"fields":"title"}}]}'
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=utf-8
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Mon, 11 Nov 2024 15:44:35 GMT
+      Content-Type:
+      - text/html; charset=UTF-8
+      Server:
+      - ESF
+      Content-Length:
+      - '1589'
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      X-L2-Request-Path:
+      - l2-managed-6
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        <!DOCTYPE html>
+        <html lang=en>
+          <meta charset=utf-8>
+          <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+          <title>Error 404 (Not Found)!!1</title>
+          <style>
+            *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+          </style>
+          <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+          <p><b>404.</b> <ins>That’s an error.</ins>
+          <p>The requested URL <code>/v4/spreadsheets/:batchUpdate</code> was not found on this server.  <ins>That’s all we know.</ins>
+  recorded_at: Mon, 11 Nov 2024 15:44:35 GMT
+recorded_with: VCR 6.3.1
