@@ -71,7 +71,7 @@ module SurveyMoonbear
       use Rack::Session::Redis,
           expire_after: A_DAY,
           redis_server: {
-            url: ENV['REDIS_URL'],
+            url: config.REDIS_URL,
             ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
           }
       use Rack::Cache,
@@ -81,8 +81,7 @@ module SurveyMoonbear
           ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
 
       sidekiq_redis_configuration = {
-        url: config.REDISCLOUD_SIDEKIQ_QUEUES_URL,
-        ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+        url: config.REDISCLOUD_SIDEKIQ_QUEUES_URL
       }.freeze
 
       Sidekiq.configure_server do |s_config|
