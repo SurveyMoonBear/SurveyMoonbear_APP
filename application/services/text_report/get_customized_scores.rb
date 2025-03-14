@@ -98,8 +98,18 @@ module SurveyMoonbear
         input[:all_graphs].each do |page, graphs|
           graphs.each_with_index do |graph, idx|
             begin
-              # scores.append({ 'Title' => graph[1], 'Score' => graph[8][input[:case_id]] })
-              scores.append({ title: graph[1], score: graph[10][input[:case_id]], score_type: graph[8], all_scores: graph[10], params: graph[9], all_name: input[:all_name], student_id: input[:case_id]})
+              student_score = graph[10][input[:case_id]]
+              next if (student_score.nil? || student_score.to_s.strip.empty?) && graph[8] != 'discuss'
+
+              scores.append({
+                title: graph[1],
+                score: student_score,
+                score_type: graph[8],
+                all_scores: graph[10],
+                params: graph[9],
+                all_name: input[:all_name],
+                student_id: input[:case_id]
+              })
             rescue StandardError => e
             end
           end
