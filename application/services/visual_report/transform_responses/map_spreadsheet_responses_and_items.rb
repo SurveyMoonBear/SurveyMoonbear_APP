@@ -76,7 +76,7 @@ module SurveyMoonbear
 
       def transfom_sheet_val(values_arr)
         values_arr.map do |val|
-          if val.nil? || val.empty?
+          if val.nil?
             '0'
           else
             val
