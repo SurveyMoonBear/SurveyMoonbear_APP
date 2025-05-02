@@ -4,27 +4,35 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
 
 ### Step1: A GCP project with the API enabled
 
-1. [create GCP project](https://developers.google.com/workspace/guides/create-project#create_a_new_google_cloud_platform_gcp_project)
+1. [Create GCP project](https://developers.google.com/workspace/guides/create-project#create_a_new_google_cloud_platform_gcp_project)
 ![](images/google_drive_api-create_GCP.png) （Should accept the Service Rule when first time using This）
-1. [enable Google Drive API, Google Sheets API and Google Calendar API](https://developers.google.com/workspace/guides/create-project#enable-api)
-2. Button of "Enable APIs and Services" is hard to find
+1. [Enable Google Drive API, Google Sheets API and Google Calendar API](https://developers.google.com/workspace/guides/create-project#enable-api)
+2. Button of 【Enable APIs and Services】 is hard to find
 ![](images/google_drive_api-enable_api.png)
-1. Click on "Enable"(if  Enable is will show MANAGE)
+1. Click on 【Enable】(if  Enable is will show MANAGE)
 ![](images/google_drive_api-enable_google_drive_api.png)
 
 ### Step2: Create authorization credentials for a "Web application"
 
-1. [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/create-credentials#configure_the_oauth_consent_screen)
-![](images/google_drive_api-oauth_consent_screen.png)
+1. Go to the homepage of the project you just created and click 【API & Service 】button or 【Menu】menu >【APIs & Services】 >【OAuth consent screen】or【Menu】menu >【APIs & Services】 >【OAuth consent screen】
+![](images/google_cloud_project_homepage.png)
 ![](images/google_drive_api-oauth_sidebar.png)
-![](images/google_drive_api-oauth_internel.png)
+![](images/google_cloud_project_homepag_select_OAuth_consent_screen.png)
+2. Please follow the instructions to fill in the application information and contact information, etc. Please note that the user type needs to select External.
+![](images/google_cloud_project_homepag_select_usertype.png)
+3. Go to the homepage of the project you just created and click 【API & Service 】button or 【Menu】menu >【APIs & Services】 >【Credentials】
+![](images/google_cloud_project_homepage.png)
+![](images/google_cloud_project_homepag_select_api_service_OAuth_consent_screen.png.png)
+![](images/google_cloud_project_homepag_select_credentials.png)
 
-2. [Create a OAuth client ID credential](https://developers.google.com/workspace/guides/create-credentials#create_a_oauth_client_id_credential)
-![](images/google_drive_api-google_auth_credential.png)
+4. Click 【+ Create credentials】> 【OAuth client ID】
+![](images/google_cloud_project_create_credential.png)
 
-1. The type of project/application's credential choose **[web application](https://developers.google.com/workspace/guides/create-credentials)**.
+5. The type of project/application's credential choose **[web application](https://developers.google.com/workspace/guides/create-credentials)**.
 ![](images/google_drive_api-application_type.png)
+
 ### Step3: Add following three redirect URI in created authorization credentials
+![](images/google_cloud_project_add_redirect_url.png)
 
 * For creating a staging app: 
 
@@ -37,23 +45,21 @@ It uses `google-api-client` package which is [deprecated](https://github.com/goo
   `https://developers.google.com/oauthplayground`
 
 ### Step4: Get application refresh token
-1. go to [oauth play ground](https://developers.google.com/oauthplayground)
-2. click setting and check the checkbox:Use your own Oauth credentials
-3. copy/paste the Client ID and Client secret from step2
-4. select the scopes we used on the left side (in application/controller/app.rb file line 36)
-
+1. Go to [oauth play ground](https://developers.google.com/oauthplayground)
+2. Click setting and check the checkbox:Use your own Oauth credentials
+3. Copy and paste the Client ID and Client secret from step2
+4. Select the scopes we used on the left side (in application/controller/app.rb file line 36)
 ![](images/google_drive_api-google-oauth-api.png)
 ![](images/google_drive_api-google_calendar_api.png)
 ![](images/google_drive_api-googlesheet_api.png)
-
-1. click the Authorize APIs
+5. Click the Authorize APIs
   ![](images/google_drive_api-set_playdround.png)
-1. It will turn back following screen
-2. Click Exchange authorization code for tokens and you will see the refresh token
+6. Turn back following screen
+7. Click 【Exchange authorization code for tokens】button and you will get the refresh token
 ![](images/google_drive_api-oauth_plaground.png)
 
 ### Step5: get sample file ID
-1. Copy sample file from SurveyMoonbear to your develop google account
+1. Click on the link to go to the example file ([link](https://docs.google.com/spreadsheets/d/1PExD1IKCzSxGXfyKxRiUPTxoTet1HxZLFoM76oBA4Fk/edit?gid=0#gid=0)) and copy sample file from SurveyMoonbear to your develop google account
 2. Find the fileID you want to copy (It would return the id in terminal when the quickstart finish. Or find the fileID in the url) 
   ![](images/google_drive_api-spreadsheet_id.png)
 
