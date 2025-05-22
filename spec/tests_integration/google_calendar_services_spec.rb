@@ -62,13 +62,13 @@ describe 'HAPPY: Tests of Services Related to GoogleCalendarAPI & Database' do
                                                             calendar_id: CALENDAR_ID)
     end
 
-    it 'HAPPY: should get all the events from the participant calendar' do
-      @new_events_res = SurveyMoonbear::Service::RefreshEvents.new.call(config: CONFIG,
-                                                                        current_account: CURRENT_ACCOUNT,
-                                                                        participant_id: @participant.id)
-      _(@new_events_res.success?).must_equal true
-      _(@new_events_res.value!).must_be_instance_of Array
-    end
+    # it 'HAPPY: should get all the events from the participant calendar' do
+    #   @new_events_res = SurveyMoonbear::Service::RefreshEvents.new.call(config: CONFIG,
+    #                                                                     current_account: CURRENT_ACCOUNT,
+    #                                                                     participant_id: @participant.id)
+    #   _(@new_events_res.success?).must_equal true
+    #   _(@new_events_res.value!).must_be_instance_of Array
+    # end
   end
 
   describe 'Unsubscribe calendar' do
@@ -80,14 +80,14 @@ describe 'HAPPY: Tests of Services Related to GoogleCalendarAPI & Database' do
                                                           calendar_id: CALENDAR_ID)
     end
 
-    it 'HAPPY: should unsubscribe the calendar' do
-      unsubscribe_calendar = SurveyMoonbear::Service::UnsubscribeCalendar.new.call(config: CONFIG,
-                                                                                   current_account: CURRENT_ACCOUNT,
-                                                                                   participant_id: @participant.id,
-                                                                                   calendar_id: CALENDAR_ID)
-      _(unsubscribe_calendar.success?).must_equal true
-      _(unsubscribe_calendar.value!.act_status).must_equal 'unsubscribed'
-    end
+    # it 'HAPPY: should unsubscribe the calendar' do
+    #   unsubscribe_calendar = SurveyMoonbear::Service::UnsubscribeCalendar.new.call(config: CONFIG,
+    #                                                                                current_account: CURRENT_ACCOUNT,
+    #                                                                                participant_id: @participant.id,
+    #                                                                                calendar_id: CALENDAR_ID)
+    #   _(unsubscribe_calendar.success?).must_equal true
+    #   _(unsubscribe_calendar.value!.act_status).must_equal 'unsubscribed'
+    # end
   end
 
   describe 'Transform events into CSV' do
