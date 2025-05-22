@@ -4,7 +4,7 @@ http_interactions:
     method: post
     uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Accept:
@@ -14,20 +14,20 @@ http_interactions:
       Host:
       - oauth2.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
       message: OK
     headers:
       Date:
-      - Wed, 11 Oct 2023 00:54:48 GMT
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
+      - Mon, 19 May 2025 12:42:27 GMT
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
       Content-Type:
       - application/json; charset=utf-8
       Vary:
@@ -56,11 +56,10 @@ http_interactions:
         {
           "access_token": "<ACCESS_TOKEN>",
           "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.metadata openid https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive",
-          "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJxT1ZNSmtoTkFFUDFpeFFEYW1ucndRIiwiaWF0IjoxNjk2OTg1Njg4LCJleHAiOjE2OTY5ODkyODh9.Q0kIuXZigL6dfDMGWxv-pnUakrtvDg033DRuEotHd5JBr55Pi3O8_pSLAkutupDgBNT9D5_k1UCMrQdtEMWJiBc_dqMfshUFL_LDHUgDrU_5OzWFIh3dQESgDJEUjuEnzGtCy8UJVZId6z2n3wwslNOKnIcGLhy4-z3vnrBzmeZD86jch36BDVOg11xSKiiMvFvz6yH64gIPGnZeXxnIjNp3GYXnf7QLF6pcUjiOIRNAUAZpYrff-aEXjImJMiDZEfVdoG0DlxGhswoyVaH_meQqWD4eNQeaVC2FywXVh6dK7b9xx_p6j9stz_DxqJD22rTQYX5QrOp_k1nR3t6uMQ"
+          "scope": "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive",
+          "token_type": "Bearer"
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:48 GMT
+  recorded_at: Mon, 19 May 2025 12:42:27 GMT
 - request:
     method: post
     uri: https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=<ACCESS_TOKEN>
@@ -73,32 +72,24 @@ http_interactions:
       Connection:
       - close
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json; charset=utf-8
       Host:
       - www.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 403
       message: Forbidden
     headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Pragma:
-      - no-cache
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Wed, 11 Oct 2023 00:54:49 GMT
-      Content-Length:
-      - '297'
-      Vary:
-      - Origin
-      - Referer
-      - X-Origin
+      - Mon, 19 May 2025 12:42:28 GMT
       Server:
       - ESF
       X-Xss-Protection:
@@ -109,30 +100,66 @@ http_interactions:
       - nosniff
       Alt-Svc:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-14
       Connection:
       - close
+      Transfer-Encoding:
+      - chunked
     body:
       encoding: UTF-8
       string: |
         {
-         "error": {
-          "errors": [
-           {
-            "domain": "calendar",
-            "reason": "cannotChangeOwnPrimarySubscription",
-            "message": "Cannot change your subscription to your own primary calendar."
-           }
-          ],
-          "code": 403,
-          "message": "Cannot change your subscription to your own primary calendar."
-         }
+          "error": {
+            "code": 403,
+            "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+            "errors": [
+              {
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+                "domain": "usageLimits",
+                "reason": "accessNotConfigured",
+                "extendedHelp": "https://console.developers.google.com"
+              }
+            ],
+            "status": "PERMISSION_DENIED",
+            "details": [
+              {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "SERVICE_DISABLED",
+                "domain": "googleapis.com",
+                "metadata": {
+                  "serviceTitle": "Google Calendar API",
+                  "consumer": "projects/240177806548",
+                  "service": "calendar-json.googleapis.com",
+                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548",
+                  "containerInfo": "240177806548"
+                }
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+                "locale": "en-US",
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.Help",
+                "links": [
+                  {
+                    "description": "Google developers console API activation",
+                    "url": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
+                  }
+                ]
+              }
+            ]
+          }
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:49 GMT
+  recorded_at: Mon, 19 May 2025 12:42:28 GMT
 - request:
     method: post
     uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Accept:
@@ -142,20 +169,20 @@ http_interactions:
       Host:
       - oauth2.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
       message: OK
     headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Date:
-      - Wed, 11 Oct 2023 00:54:49 GMT
-      Pragma:
-      - no-cache
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Date:
+      - Mon, 19 May 2025 12:42:28 GMT
       Content-Type:
       - application/json; charset=utf-8
       Vary:
@@ -184,16 +211,15 @@ http_interactions:
         {
           "access_token": "<ACCESS_TOKEN>",
           "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive openid https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.metadata",
-          "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiIycTFMREp1SEtRaHg1aEJTYkwtalFBIiwiaWF0IjoxNjk2OTg1Njg5LCJleHAiOjE2OTY5ODkyODl9.TxD2m8Waa87w-LMVJx1tkbE-udmzokrUYyl3TmevvABiA-OHdfElQU0cxMkNAG2wAVWrhGZaPfNToP2so40mKA7TZt34i-2C93o4AIkRYgjCO-4gK556vp_O4aFoUYbVmR_hx9H0K6DxVndq4ybQXL-y60ZLusxF-W_FgqDFaQxBEsP-_wNPdQKfSawu4kxH2lcVmAstuAlY8gPaPlpgvu5ntl4Rr14OMsNzxu09Hlo4yNkmCBiUbFy9HHdHceEhnnfj2vh4EUUz-rT4YZwNNEfNHz9YnSEb2pPLvvCGG-8ljjMNtN8WWVz3gyEIONVxqXKnro3f-e8g59w-G1m-Ag"
+          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer"
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:49 GMT
+  recorded_at: Mon, 19 May 2025 12:42:28 GMT
 - request:
     method: post
     uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Accept:
@@ -203,20 +229,20 @@ http_interactions:
       Host:
       - oauth2.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
       message: OK
     headers:
-      Date:
-      - Wed, 11 Oct 2023 00:54:49 GMT
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Pragma:
-      - no-cache
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Mon, 19 May 2025 12:42:28 GMT
+      Pragma:
+      - no-cache
       Content-Type:
       - application/json; charset=utf-8
       Vary:
@@ -245,16 +271,15 @@ http_interactions:
         {
           "access_token": "<ACCESS_TOKEN>",
           "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts openid https://www.googleapis.com/auth/drive.metadata",
-          "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJyYjRwX2xSdlFVcDdLdVJrQjdHV1RnIiwiaWF0IjoxNjk2OTg1Njg5LCJleHAiOjE2OTY5ODkyODl9.hCwhBcW2b7cLBZI-3GlTjy8vMpXuiLWmTQq1BV-nqg3fb3Rm3-txMg6mwzn7-uSxeihNX_a8KhAr-48XLsoYgRIDjnyJYsSmIPOstp85uEvaSKqHDnJdvMuKEoMc4Ea1F3ImOLOi9xWD_OwnMdhV_HPSggVoOPBh4nSoNj5W36nd0IUGo9epYy4v8P9mRK4AfPmYOk4-5YiZfXFi93jeohw3fcQmcE10e2L6skmAWu578VSr4zozLMSQRi9L_OELRPaQBB29aZiIR_u4cvuYq_Cj7m5qa7pnsbryEGfxdnmgapkFSuGjNmMkLoXwlNNhnLjY--kOq9K40KjfRnIZ7w"
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar",
+          "token_type": "Bearer"
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:49 GMT
+  recorded_at: Mon, 19 May 2025 12:42:28 GMT
 - request:
     method: get
     uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Authorization:
@@ -264,871 +289,20 @@ http_interactions:
       Host:
       - www.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Content-Length:
-      - '2635'
-      Content-Type:
-      - application/json; charset=UTF-8
-      Date:
-      - Wed, 11 Oct 2023 00:54:50 GMT
-      Expires:
-      - Wed, 11 Oct 2023 00:54:50 GMT
-      Cache-Control:
-      - private, max-age=0, must-revalidate, no-transform
-      Vary:
-      - Origin
-      - Referer
-      - X-Origin
-      Server:
-      - ESF
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Connection:
-      - close
-    body:
-      encoding: UTF-8
-      string: |
-        {
-         "kind": "calendar#calendarList",
-         "etag": "\"p32c9jom0kvf820o\"",
-         "nextSyncToken": "CJiZ4sCn3oEDEhl0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3",
-         "items": [
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1670932759696000\"",
-           "id": "<CALENDAR_ID>",
-           "summary": "<CALENDAR_ID>",
-           "timeZone": "Asia/Taipei",
-           "colorId": "14",
-           "backgroundColor": "#9fe1e7",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "owner",
-           "defaultReminders": [
-            {
-             "method": "popup",
-             "minutes": 10
-            }
-           ],
-           "notificationSettings": {
-            "notifications": [
-             {
-              "type": "eventCreation",
-              "method": "email"
-             },
-             {
-              "type": "eventChange",
-              "method": "email"
-             },
-             {
-              "type": "eventCancellation",
-              "method": "email"
-             },
-             {
-              "type": "eventResponse",
-              "method": "email"
-             }
-            ]
-           },
-           "primary": true,
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          },
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1670932761130000\"",
-           "id": "zh-tw.taiwan#holiday@group.v.calendar.google.com",
-           "summary": "台灣的節慶假日",
-           "description": "台灣假日節慶",
-           "timeZone": "Asia/Taipei",
-           "colorId": "8",
-           "backgroundColor": "#16a765",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "reader",
-           "defaultReminders": [],
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          },
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1670932763255000\"",
-           "id": "addressbook#contacts@group.v.calendar.google.com",
-           "summary": "生日",
-           "description": "顯示 Google 聯絡人中的聯絡人生日、週年紀念日和其他活動日期。",
-           "timeZone": "Asia/Taipei",
-           "colorId": "13",
-           "backgroundColor": "#92e1c0",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "reader",
-           "defaultReminders": [],
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          },
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1681395829465000\"",
-           "id": "c_d022c46bbdadb36959c52d95e1a7365d4efaa54b921c3417e603e2a97778df0f@group.calendar.google.com",
-           "summary": "研方-松亞小組",
-           "timeZone": "Asia/Taipei",
-           "colorId": "2",
-           "backgroundColor": "#d06b64",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "owner",
-           "defaultReminders": [],
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          }
-         ]
-        }
-  recorded_at: Wed, 11 Oct 2023 00:54:50 GMT
-- request:
-    method: post
-    uri: https://www.googleapis.com/calendar/v3/freeBusy
-    body:
-      encoding: UTF-8
-      string: '{"timeMin":"2022-05-01T00:00:00+08:00","timeMax":"2022-05-31T23:59:59+08:00","timeZone":"Asia/Taipei","items":[{"id":"<CALENDAR_ID>"}]}'
-    headers:
-      Authorization:
-      - Bearer <ACCESS_TOKEN>
-      Connection:
-      - close
-      Content-Type:
-      - application/json; charset=UTF-8
-      Host:
-      - www.googleapis.com
-      User-Agent:
-      - http.rb/5.0.4
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 11 Oct 2023 00:54:50 GMT
-      Pragma:
-      - no-cache
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Length:
-      - '184'
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Content-Type:
-      - application/json; charset=UTF-8
-      Vary:
-      - Origin
-      - Referer
-      - X-Origin
-      Server:
-      - ESF
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Connection:
-      - close
-    body:
-      encoding: UTF-8
-      string: |
-        {
-         "kind": "calendar#freeBusy",
-         "timeMin": "2022-04-30T16:00:00.000Z",
-         "timeMax": "2022-05-31T15:59:59.000Z",
-         "calendars": {
-          "<CALENDAR_ID>": {
-           "busy": []
-          }
-         }
-        }
-  recorded_at: Wed, 11 Oct 2023 00:54:51 GMT
-- request:
-    method: post
-    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Accept:
-      - application/json
-      Connection:
-      - close
-      Host:
-      - oauth2.googleapis.com
-      User-Agent:
-      - http.rb/5.0.4
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Date:
-      - Wed, 11 Oct 2023 00:54:51 GMT
-      Pragma:
-      - no-cache
-      Content-Type:
-      - application/json; charset=utf-8
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Server:
-      - scaffolding on HTTPServer2
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "access_token": "<ACCESS_TOKEN>",
-          "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.metadata https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts openid https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file",
-          "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiI1N3ZJazR0WHVjajM1QWNTV292ZFhnIiwiaWF0IjoxNjk2OTg1NjkxLCJleHAiOjE2OTY5ODkyOTF9.GH8p34LhwYGhREzGm6YV_4p38aHvNl0Vf6brDLj3o_vl6NjBOnhaojne81mdE-beiwXYx7Z16rEZEtkMRc8ke-Rl4T1E8Sh8-c_FNGyZ-wFxJ6YUHsfqGoWQe-l5dZuZsWlyvoeGF2yJ7-iFLoEURldLqsYJVKtatoC30JtgYLaLc1SqNreWgbYWzN2kNEFtO9D9JSJNP-ZLzWyn-oge2i8tR74xH1hk90HpqgQCw5sjuQRS5RsPg-Zl5aYfvK5v8KIFHwL-7GjxL9_B8tsmiDI9v_sJ1PeWdZjmm9ywvm6iTN0Xy2lVkbQKsMB8e-N-C9icjgwS9sKKLNhXrUsLHQ"
-        }
-  recorded_at: Wed, 11 Oct 2023 00:54:51 GMT
-- request:
-    method: post
-    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Accept:
-      - application/json
-      Connection:
-      - close
-      Host:
-      - oauth2.googleapis.com
-      User-Agent:
-      - http.rb/5.0.4
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 11 Oct 2023 00:54:51 GMT
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Pragma:
-      - no-cache
-      Content-Type:
-      - application/json; charset=utf-8
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Server:
-      - scaffolding on HTTPServer2
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "access_token": "<ACCESS_TOKEN>",
-          "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive openid https://www.googleapis.com/auth/drive.metadata https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.metadata.readonly",
-          "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJRWXVXd3ViYmFMZDlXZlJ0N2RyQjhnIiwiaWF0IjoxNjk2OTg1NjkxLCJleHAiOjE2OTY5ODkyOTF9.yh0mRlyYBtKUbjLtdDDNdCy0kzH22lIuod2hStBnNE3Z507zGBwErAZCYTihyP1-zjdl90ahB9FElukk5Cl0-HeK69XCQWKyOv01Fr9WW29uN4229Ryn2p-WXdnhwNFa0D8ngTV3kWr6umN43OVrKP-YRFfjGYKQqDXqsyNkCOHRmcwpLoflpl0Gfm50Lrx2hiinCvAW_vQFWQZMKxWFNTsf3_MwPGhteyiLOEk1swXxwcuorI7lQ6PVyKDW-pewmCe4xCwn2rgs5RDJwYRHEZRGYOWOuGeq_NLdKtgTYCecKsQB6wcKYgNmWZHYZe_Vg5_UUpGnFir8a8mXdYYTIQ"
-        }
-  recorded_at: Wed, 11 Oct 2023 00:54:51 GMT
-- request:
-    method: get
-    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Authorization:
-      - Bearer <ACCESS_TOKEN>
-      Connection:
-      - close
-      Host:
-      - www.googleapis.com
-      User-Agent:
-      - http.rb/5.0.4
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Content-Length:
-      - '2635'
-      Content-Type:
-      - application/json; charset=UTF-8
-      Date:
-      - Wed, 11 Oct 2023 00:54:52 GMT
-      Cache-Control:
-      - private, max-age=0, must-revalidate, no-transform
-      Expires:
-      - Wed, 11 Oct 2023 00:54:52 GMT
-      Vary:
-      - Origin
-      - Referer
-      - X-Origin
-      Server:
-      - ESF
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Connection:
-      - close
-    body:
-      encoding: UTF-8
-      string: |
-        {
-         "kind": "calendar#calendarList",
-         "etag": "\"p32c9jom0kvf820o\"",
-         "nextSyncToken": "CJiZ4sCn3oEDEhl0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3",
-         "items": [
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1670932759696000\"",
-           "id": "<CALENDAR_ID>",
-           "summary": "<CALENDAR_ID>",
-           "timeZone": "Asia/Taipei",
-           "colorId": "14",
-           "backgroundColor": "#9fe1e7",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "owner",
-           "defaultReminders": [
-            {
-             "method": "popup",
-             "minutes": 10
-            }
-           ],
-           "notificationSettings": {
-            "notifications": [
-             {
-              "type": "eventCreation",
-              "method": "email"
-             },
-             {
-              "type": "eventChange",
-              "method": "email"
-             },
-             {
-              "type": "eventCancellation",
-              "method": "email"
-             },
-             {
-              "type": "eventResponse",
-              "method": "email"
-             }
-            ]
-           },
-           "primary": true,
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          },
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1670932761130000\"",
-           "id": "zh-tw.taiwan#holiday@group.v.calendar.google.com",
-           "summary": "台灣的節慶假日",
-           "description": "台灣假日節慶",
-           "timeZone": "Asia/Taipei",
-           "colorId": "8",
-           "backgroundColor": "#16a765",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "reader",
-           "defaultReminders": [],
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          },
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1670932763255000\"",
-           "id": "addressbook#contacts@group.v.calendar.google.com",
-           "summary": "生日",
-           "description": "顯示 Google 聯絡人中的聯絡人生日、週年紀念日和其他活動日期。",
-           "timeZone": "Asia/Taipei",
-           "colorId": "13",
-           "backgroundColor": "#92e1c0",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "reader",
-           "defaultReminders": [],
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          },
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1681395829465000\"",
-           "id": "c_d022c46bbdadb36959c52d95e1a7365d4efaa54b921c3417e603e2a97778df0f@group.calendar.google.com",
-           "summary": "研方-松亞小組",
-           "timeZone": "Asia/Taipei",
-           "colorId": "2",
-           "backgroundColor": "#d06b64",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "owner",
-           "defaultReminders": [],
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          }
-         ]
-        }
-  recorded_at: Wed, 11 Oct 2023 00:54:52 GMT
-- request:
-    method: post
-    uri: https://www.googleapis.com/calendar/v3/freeBusy
-    body:
-      encoding: UTF-8
-      string: '{"timeMin":"2022-05-01T00:00:00+08:00","timeMax":"2022-05-31T23:59:59+08:00","timeZone":"Asia/Taipei","items":[{"id":"<CALENDAR_ID>"}]}'
-    headers:
-      Authorization:
-      - Bearer <ACCESS_TOKEN>
-      Connection:
-      - close
-      Content-Type:
-      - application/json; charset=UTF-8
-      Host:
-      - www.googleapis.com
-      User-Agent:
-      - http.rb/5.0.4
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 11 Oct 2023 00:54:53 GMT
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Content-Type:
-      - application/json; charset=UTF-8
-      Pragma:
-      - no-cache
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Length:
-      - '184'
-      Vary:
-      - Origin
-      - Referer
-      - X-Origin
-      Server:
-      - ESF
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Connection:
-      - close
-    body:
-      encoding: UTF-8
-      string: |
-        {
-         "kind": "calendar#freeBusy",
-         "timeMin": "2022-04-30T16:00:00.000Z",
-         "timeMax": "2022-05-31T15:59:59.000Z",
-         "calendars": {
-          "<CALENDAR_ID>": {
-           "busy": []
-          }
-         }
-        }
-  recorded_at: Wed, 11 Oct 2023 00:54:53 GMT
-- request:
-    method: post
-    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Accept:
-      - application/json
-      Connection:
-      - close
-      Host:
-      - oauth2.googleapis.com
-      User-Agent:
-      - http.rb/5.0.4
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Pragma:
-      - no-cache
-      Date:
-      - Wed, 11 Oct 2023 00:54:53 GMT
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Server:
-      - scaffolding on HTTPServer2
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "access_token": "<ACCESS_TOKEN>",
-          "expires_in": 3599,
-          "scope": "openid https://www.googleapis.com/auth/drive.metadata https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive",
-          "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJtcEY3N3c5TFdWRGllUUJyYmxWbmdnIiwiaWF0IjoxNjk2OTg1NjkzLCJleHAiOjE2OTY5ODkyOTN9.BLqbO91bjulOjEiTnVIGnjuDzzNZDrpexWeuZIm1Ma2taSIMUg69y_i64T19OEZVC-gsyGuv4UGq2RknhWdqdqmCM18E-njW6ZdM0NodrZiQHKaWFX90PnWSkIfoxoK1s_d7Sx_A-_nQPOmUhxLLZdhnl0RxKNh6mH85WGzMRtZ1qURwsNVVxI8HWGDD-gj7try_ycW79guWeTohbs2Zlkb9vITaDAA5I1ilV5Fz0kASFGi7mFp67P0xcnf9mAbarJWIeYcDIqt1CEyFeT4mE-3ewLUl56lBt02R7r1Udgues2rPt7J4PBEa6Z0eWdVxH3St0FKsRH3ZF-9qKu6xCg"
-        }
-  recorded_at: Wed, 11 Oct 2023 00:54:53 GMT
-- request:
-    method: post
-    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Accept:
-      - application/json
-      Connection:
-      - close
-      Host:
-      - oauth2.googleapis.com
-      User-Agent:
-      - http.rb/5.0.4
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 11 Oct 2023 00:54:53 GMT
-      Pragma:
-      - no-cache
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Type:
-      - application/json; charset=utf-8
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Server:
-      - scaffolding on HTTPServer2
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "access_token": "<ACCESS_TOKEN>",
-          "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts https://www.googleapis.com/auth/drive.metadata https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.appdata openid",
-          "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJ4TmpVUnIwRzJlWjhocmx2cUQ5dU5RIiwiaWF0IjoxNjk2OTg1NjkzLCJleHAiOjE2OTY5ODkyOTN9.uvJ5kYIPEEDl_Pg1ISFOAbl2rhkB1b7DcBVtUXIpAQzFzCMcvf-gwbTLTrbIXSROWoYxCNwBh28jCydkCjCd7PtfSPGVl85wpkP7J1K9mW3FtQfU_Hjg82C1S4O10wimXzzrK6hERP_jzNv7rFzYlBnGVBxBSZPnEOvW2r6JQ0KYZGdOj411Ce_Yw4Gn-te6dXa3m-tw8Pxy2AU7Je8GEMerDEpw10He5MsoRNlnM7ZoBHsG8M3XjVfB_Lw8wwhhGcKmHklyLAdpOsFsdDsxM8SJfxrmm5woblX_o2olhSOpQzxOUdfHGZ186Zxe7QIosdgzSOCr-tZpPP_6649JlQ"
-        }
-  recorded_at: Wed, 11 Oct 2023 00:54:53 GMT
-- request:
-    method: get
-    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Authorization:
-      - Bearer <ACCESS_TOKEN>
-      Connection:
-      - close
-      Host:
-      - www.googleapis.com
-      User-Agent:
-      - http.rb/5.0.4
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - private, max-age=0, must-revalidate, no-transform
-      Date:
-      - Wed, 11 Oct 2023 00:54:54 GMT
-      Content-Type:
-      - application/json; charset=UTF-8
-      Content-Length:
-      - '2635'
-      Expires:
-      - Wed, 11 Oct 2023 00:54:54 GMT
-      Vary:
-      - Origin
-      - Referer
-      - X-Origin
-      Server:
-      - ESF
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Connection:
-      - close
-    body:
-      encoding: UTF-8
-      string: |
-        {
-         "kind": "calendar#calendarList",
-         "etag": "\"p32c9jom0kvf820o\"",
-         "nextSyncToken": "CJiZ4sCn3oEDEhl0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3",
-         "items": [
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1670932759696000\"",
-           "id": "<CALENDAR_ID>",
-           "summary": "<CALENDAR_ID>",
-           "timeZone": "Asia/Taipei",
-           "colorId": "14",
-           "backgroundColor": "#9fe1e7",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "owner",
-           "defaultReminders": [
-            {
-             "method": "popup",
-             "minutes": 10
-            }
-           ],
-           "notificationSettings": {
-            "notifications": [
-             {
-              "type": "eventCreation",
-              "method": "email"
-             },
-             {
-              "type": "eventChange",
-              "method": "email"
-             },
-             {
-              "type": "eventCancellation",
-              "method": "email"
-             },
-             {
-              "type": "eventResponse",
-              "method": "email"
-             }
-            ]
-           },
-           "primary": true,
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          },
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1670932761130000\"",
-           "id": "zh-tw.taiwan#holiday@group.v.calendar.google.com",
-           "summary": "台灣的節慶假日",
-           "description": "台灣假日節慶",
-           "timeZone": "Asia/Taipei",
-           "colorId": "8",
-           "backgroundColor": "#16a765",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "reader",
-           "defaultReminders": [],
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          },
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1670932763255000\"",
-           "id": "addressbook#contacts@group.v.calendar.google.com",
-           "summary": "生日",
-           "description": "顯示 Google 聯絡人中的聯絡人生日、週年紀念日和其他活動日期。",
-           "timeZone": "Asia/Taipei",
-           "colorId": "13",
-           "backgroundColor": "#92e1c0",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "reader",
-           "defaultReminders": [],
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          },
-          {
-           "kind": "calendar#calendarListEntry",
-           "etag": "\"1681395829465000\"",
-           "id": "c_d022c46bbdadb36959c52d95e1a7365d4efaa54b921c3417e603e2a97778df0f@group.calendar.google.com",
-           "summary": "研方-松亞小組",
-           "timeZone": "Asia/Taipei",
-           "colorId": "2",
-           "backgroundColor": "#d06b64",
-           "foregroundColor": "#000000",
-           "selected": true,
-           "accessRole": "owner",
-           "defaultReminders": [],
-           "conferenceProperties": {
-            "allowedConferenceSolutionTypes": [
-             "hangoutsMeet"
-            ]
-           }
-          }
-         ]
-        }
-  recorded_at: Wed, 11 Oct 2023 00:54:54 GMT
-- request:
-    method: delete
-    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList/<CALENDAR_ID>
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Authorization:
-      - Bearer <ACCESS_TOKEN>
-      Connection:
-      - close
-      Host:
-      - www.googleapis.com
-      User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 403
       message: Forbidden
     headers:
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Pragma:
-      - no-cache
-      Date:
-      - Wed, 11 Oct 2023 00:54:55 GMT
-      Content-Type:
-      - application/json; charset=UTF-8
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Length:
-      - '297'
       Vary:
-      - Origin
+      - Origin,Accept-Encoding
       - Referer
       - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 19 May 2025 12:42:28 GMT
       Server:
       - ESF
       X-Xss-Protection:
@@ -1139,23 +313,698 @@ http_interactions:
       - nosniff
       Alt-Svc:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-14
       Connection:
       - close
+      Transfer-Encoding:
+      - chunked
     body:
       encoding: UTF-8
       string: |
         {
-         "error": {
-          "errors": [
-           {
-            "domain": "calendar",
-            "reason": "cannotChangeOwnPrimarySubscription",
-            "message": "Cannot change your subscription to your own primary calendar."
-           }
-          ],
-          "code": 403,
-          "message": "Cannot change your subscription to your own primary calendar."
-         }
+          "error": {
+            "code": 403,
+            "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+            "errors": [
+              {
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+                "domain": "usageLimits",
+                "reason": "accessNotConfigured",
+                "extendedHelp": "https://console.developers.google.com"
+              }
+            ],
+            "status": "PERMISSION_DENIED",
+            "details": [
+              {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "SERVICE_DISABLED",
+                "domain": "googleapis.com",
+                "metadata": {
+                  "consumer": "projects/240177806548",
+                  "serviceTitle": "Google Calendar API",
+                  "containerInfo": "240177806548",
+                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548",
+                  "service": "calendar-json.googleapis.com"
+                }
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+                "locale": "en-US",
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.Help",
+                "links": [
+                  {
+                    "description": "Google developers console API activation",
+                    "url": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
+                  }
+                ]
+              }
+            ]
+          }
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:55 GMT
-recorded_with: VCR 6.1.0
+  recorded_at: Mon, 19 May 2025 12:42:28 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2025 12:42:29 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.file",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 19 May 2025 12:42:28 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Mon, 19 May 2025 12:42:29 GMT
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 19 May 2025 12:42:29 GMT
+- request:
+    method: get
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 19 May 2025 12:42:29 GMT
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-14
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "code": 403,
+            "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+            "errors": [
+              {
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+                "domain": "usageLimits",
+                "reason": "accessNotConfigured",
+                "extendedHelp": "https://console.developers.google.com"
+              }
+            ],
+            "status": "PERMISSION_DENIED",
+            "details": [
+              {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "SERVICE_DISABLED",
+                "domain": "googleapis.com",
+                "metadata": {
+                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548",
+                  "serviceTitle": "Google Calendar API",
+                  "containerInfo": "240177806548",
+                  "service": "calendar-json.googleapis.com",
+                  "consumer": "projects/240177806548"
+                }
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+                "locale": "en-US",
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.Help",
+                "links": [
+                  {
+                    "description": "Google developers console API activation",
+                    "url": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+  recorded_at: Mon, 19 May 2025 12:42:29 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Mon, 19 May 2025 12:42:29 GMT
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 19 May 2025 12:42:29 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Mon, 19 May 2025 12:42:29 GMT
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.file",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 19 May 2025 12:42:29 GMT
+- request:
+    method: get
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 19 May 2025 12:42:30 GMT
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-14
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "code": 403,
+            "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+            "errors": [
+              {
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+                "domain": "usageLimits",
+                "reason": "accessNotConfigured",
+                "extendedHelp": "https://console.developers.google.com"
+              }
+            ],
+            "status": "PERMISSION_DENIED",
+            "details": [
+              {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "SERVICE_DISABLED",
+                "domain": "googleapis.com",
+                "metadata": {
+                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548",
+                  "serviceTitle": "Google Calendar API",
+                  "containerInfo": "240177806548",
+                  "consumer": "projects/240177806548",
+                  "service": "calendar-json.googleapis.com"
+                }
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+                "locale": "en-US",
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.Help",
+                "links": [
+                  {
+                    "description": "Google developers console API activation",
+                    "url": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+  recorded_at: Mon, 19 May 2025 12:42:29 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Pragma:
+      - no-cache
+      Date:
+      - Mon, 19 May 2025 12:42:30 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 19 May 2025 12:42:30 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2025 12:42:30 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive",
+          "token_type": "Bearer"
+        }
+  recorded_at: Mon, 19 May 2025 12:42:30 GMT
+- request:
+    method: get
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 19 May 2025 12:42:30 GMT
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-14
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "code": 403,
+            "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+            "errors": [
+              {
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+                "domain": "usageLimits",
+                "reason": "accessNotConfigured",
+                "extendedHelp": "https://console.developers.google.com"
+              }
+            ],
+            "status": "PERMISSION_DENIED",
+            "details": [
+              {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "SERVICE_DISABLED",
+                "domain": "googleapis.com",
+                "metadata": {
+                  "containerInfo": "240177806548",
+                  "serviceTitle": "Google Calendar API",
+                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548",
+                  "consumer": "projects/240177806548",
+                  "service": "calendar-json.googleapis.com"
+                }
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+                "locale": "en-US",
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.Help",
+                "links": [
+                  {
+                    "description": "Google developers console API activation",
+                    "url": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+  recorded_at: Mon, 19 May 2025 12:42:30 GMT
+recorded_with: VCR 6.3.1

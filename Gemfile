@@ -82,3 +82,5 @@ end
 group :production do
   gem 'pg'
 end
+
+gem "aws-sdk-sqs", "~> 1.51"

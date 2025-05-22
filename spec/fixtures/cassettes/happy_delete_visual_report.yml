@@ -4,7 +4,7 @@ http_interactions:
     method: post
     uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Accept:
@@ -14,16 +14,16 @@ http_interactions:
       Host:
       - oauth2.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
       message: OK
     headers:
-      Date:
-      - Wed, 11 Oct 2023 00:54:23 GMT
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Mon, 19 May 2025 12:40:29 GMT
       Pragma:
       - no-cache
       Expires:
@@ -56,14 +56,13 @@ http_interactions:
         {
           "access_token": "<ACCESS_TOKEN>",
           "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.metadata https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file openid",
-          "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJic1hoRm1xOUZkUWd2UnpDUTU2WXdBIiwiaWF0IjoxNjk2OTg1NjYzLCJleHAiOjE2OTY5ODkyNjN9.cP4ygPP7bNO5U6LZc3YXrHZUbMT21Pgc7Ms7zn8rVf8dWLTyKFpqy8fRnC1nrkY_RgcLayni96GTSjAzqu2i8Kme7CTk_67zC3bmxQR1KCqkZsFVJTrZs7RKajEpF8nwE0SeeTv_64r3dG2EKTCc9e2-e3HOALIO6Sf_6wMqMprAUAWhwnSDxm9CiAzC7aHvPOOvVG0-xyN5TcIikL38CVdDWBdm_dMOpl7jqe_q9QGvTAgsnbQobHlPtJdxKlDJWPTJXUsWQKINyA1nXKWVLxz3UrMdcPMt9djkzEiWyo8LmvdYJnZqAFNmbPxjc2OZzaJioOgoZP2zUzMclTGctw"
+          "scope": "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive",
+          "token_type": "Bearer"
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:23 GMT
+  recorded_at: Mon, 19 May 2025 12:40:29 GMT
 - request:
     method: post
-    uri: https://www.googleapis.com/drive/v3/files/<SAMPLE_FILE_ID>/copy?access_token=<ACCESS_TOKEN>
+    uri: https://www.googleapis.com/drive/v3/files/<VIZ_SAMPLE_FILE_ID>/copy?access_token=<ACCESS_TOKEN>
     body:
       encoding: UTF-8
       string: "{}"
@@ -73,11 +72,11 @@ http_interactions:
       Connection:
       - close
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json; charset=utf-8
       Host:
       - www.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
@@ -85,10 +84,10 @@ http_interactions:
     headers:
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
-      Date:
-      - Wed, 11 Oct 2023 00:54:25 GMT
       Pragma:
       - no-cache
+      Date:
+      - Mon, 19 May 2025 12:40:31 GMT
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Type:
@@ -116,14 +115,14 @@ http_interactions:
       string: |
         {
           "kind": "drive#file",
-          "id": "19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw",
-          "name": "File Test 的副本",
+          "id": "17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg",
+          "name": "Copy of d 的副本 的副本",
           "mimeType": "application/vnd.google-apps.spreadsheet"
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:25 GMT
+  recorded_at: Mon, 19 May 2025 12:40:31 GMT
 - request:
     method: post
-    uri: https://www.googleapis.com/drive/v2/files/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw/permissions?access_token=<ACCESS_TOKEN>&sendNotificationEmails=false
+    uri: https://www.googleapis.com/drive/v2/files/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg/permissions?access_token=<ACCESS_TOKEN>&sendNotificationEmails=false
     body:
       encoding: UTF-8
       string: '{"role":"writer","type":"user","value":"moonbear.survey.test@gmail.com"}'
@@ -131,24 +130,24 @@ http_interactions:
       Connection:
       - close
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json; charset=utf-8
       Host:
       - www.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
       message: OK
     headers:
-      Date:
-      - Wed, 11 Oct 2023 00:54:44 GMT
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Pragma:
-      - no-cache
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Mon, 19 May 2025 12:40:34 GMT
       Content-Type:
       - application/json; charset=UTF-8
       Server:
@@ -174,22 +173,22 @@ http_interactions:
       string: |
         {
           "kind": "drive#permission",
-          "etag": "\"l1wuJAsMaYoE-uIo5WJ81QOqGBE\"",
+          "etag": "\"VX-uKZs619ILB_H2aYtGgu56fv0\"",
           "id": "02675581687761162384",
-          "selfLink": "https://www.googleapis.com/drive/v2/files/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw/permissions/02675581687761162384",
-          "name": "SurveyMoonbear Test",
+          "selfLink": "https://www.googleapis.com/drive/v2/files/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg/permissions/02675581687761162384",
+          "name": "moonbear.survey.test",
           "emailAddress": "moonbear.survey.test@gmail.com",
           "domain": "gmail.com",
           "role": "writer",
           "type": "user",
-          "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+          "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjVojYYXOIh7oHSi17c3f56CJY-UECxxyHTFCerO9j9rzOBrAg=s64",
           "deleted": false,
           "pendingOwner": false
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:44 GMT
+  recorded_at: Mon, 19 May 2025 12:40:34 GMT
 - request:
     method: post
-    uri: https://www.googleapis.com/drive/v3/files/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw/permissions
+    uri: https://www.googleapis.com/drive/v3/files/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg/permissions
     body:
       encoding: UTF-8
       string: '{"role":"reader","type":"anyone"}'
@@ -199,24 +198,24 @@ http_interactions:
       Connection:
       - close
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json; charset=utf-8
       Host:
       - www.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Pragma:
+      - no-cache
       Date:
-      - Wed, 11 Oct 2023 00:54:45 GMT
+      - Mon, 19 May 2025 12:40:35 GMT
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
-      Pragma:
-      - no-cache
       Content-Type:
       - application/json; charset=UTF-8
       Server:
@@ -247,10 +246,10 @@ http_interactions:
           "role": "reader",
           "allowFileDiscovery": false
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:45 GMT
+  recorded_at: Mon, 19 May 2025 12:40:35 GMT
 - request:
     method: post
-    uri: https://sheets.googleapis.com/v4/spreadsheets/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw:batchUpdate
+    uri: https://sheets.googleapis.com/v4/spreadsheets/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg:batchUpdate
     body:
       encoding: UTF-8
       string: '{"requests":[{"updateSpreadsheetProperties":{"properties":{"title":"Visual
@@ -261,11 +260,11 @@ http_interactions:
       Connection:
       - close
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json; charset=utf-8
       Host:
       - sheets.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
@@ -278,11 +277,9 @@ http_interactions:
       - Referer
       - X-Origin
       Date:
-      - Wed, 11 Oct 2023 00:54:45 GMT
+      - Mon, 19 May 2025 12:40:36 GMT
       Server:
       - ESF
-      Cache-Control:
-      - private
       X-Xss-Protection:
       - '0'
       X-Frame-Options:
@@ -303,17 +300,17 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "spreadsheetId": "19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw",
+          "spreadsheetId": "17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg",
           "replies": [
             {}
           ]
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:46 GMT
+  recorded_at: Mon, 19 May 2025 12:40:36 GMT
 - request:
     method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw
+    uri: https://sheets.googleapis.com/v4/spreadsheets/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Authorization:
@@ -323,7 +320,7 @@ http_interactions:
       Host:
       - sheets.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
@@ -336,11 +333,9 @@ http_interactions:
       - Referer
       - X-Origin
       Date:
-      - Wed, 11 Oct 2023 00:54:46 GMT
+      - Mon, 19 May 2025 12:40:36 GMT
       Server:
       - ESF
-      Cache-Control:
-      - private
       X-Xss-Protection:
       - '0'
       X-Frame-Options:
@@ -361,7 +356,7 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "spreadsheetId": "19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw",
+          "spreadsheetId": "17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg",
           "properties": {
             "title": "Visual Report for Testing Delete Services",
             "locale": "en_US",
@@ -531,14 +526,14 @@ http_interactions:
               }
             }
           ],
-          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw/edit?ouid=105382949518225717789"
+          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg/edit?ouid=104414667506454296402"
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:46 GMT
+  recorded_at: Mon, 19 May 2025 12:40:36 GMT
 - request:
     method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw/values/sources
+    uri: https://sheets.googleapis.com/v4/spreadsheets/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg/values/sources
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Authorization:
@@ -548,7 +543,7 @@ http_interactions:
       Host:
       - sheets.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
@@ -561,11 +556,9 @@ http_interactions:
       - Referer
       - X-Origin
       Date:
-      - Wed, 11 Oct 2023 00:54:46 GMT
+      - Mon, 19 May 2025 12:40:36 GMT
       Server:
       - ESF
-      Cache-Control:
-      - private
       X-Xss-Protection:
       - '0'
       X-Frame-Options:
@@ -607,12 +600,12 @@ http_interactions:
             ]
           ]
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:46 GMT
+  recorded_at: Mon, 19 May 2025 12:40:36 GMT
 - request:
     method: get
-    uri: https://sheets.googleapis.com/v4/spreadsheets/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw
+    uri: https://sheets.googleapis.com/v4/spreadsheets/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Authorization:
@@ -622,7 +615,7 @@ http_interactions:
       Host:
       - sheets.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
@@ -635,11 +628,9 @@ http_interactions:
       - Referer
       - X-Origin
       Date:
-      - Wed, 11 Oct 2023 00:54:47 GMT
+      - Mon, 19 May 2025 12:40:37 GMT
       Server:
       - ESF
-      Cache-Control:
-      - private
       X-Xss-Protection:
       - '0'
       X-Frame-Options:
@@ -660,7 +651,7 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "spreadsheetId": "19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw",
+          "spreadsheetId": "17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg",
           "properties": {
             "title": "Visual Report for Testing Delete Services",
             "locale": "en_US",
@@ -830,12 +821,12 @@ http_interactions:
               }
             }
           ],
-          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw/edit?ouid=105382949518225717789"
+          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg/edit?ouid=104414667506454296402"
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:47 GMT
+  recorded_at: Mon, 19 May 2025 12:40:37 GMT
 - request:
     method: post
-    uri: https://sheets.googleapis.com/v4/spreadsheets/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw:batchUpdate
+    uri: https://sheets.googleapis.com/v4/spreadsheets/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg:batchUpdate
     body:
       encoding: UTF-8
       string: '{"requests":[{"setDataValidation":{"range":{"sheetId":0,"startRowIndex":1,"endRowIndex":2,"startColumnIndex":1,"endColumnIndex":2},"rule":{"condition":{"type":"ONE_OF_LIST","values":[]},"showCustomUi":true,"strict":false}}}]}'
@@ -845,11 +836,11 @@ http_interactions:
       Connection:
       - close
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json; charset=utf-8
       Host:
       - sheets.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
@@ -862,11 +853,9 @@ http_interactions:
       - Referer
       - X-Origin
       Date:
-      - Wed, 11 Oct 2023 00:54:47 GMT
+      - Mon, 19 May 2025 12:40:37 GMT
       Server:
       - ESF
-      Cache-Control:
-      - private
       X-Xss-Protection:
       - '0'
       X-Frame-Options:
@@ -887,17 +876,17 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "spreadsheetId": "19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw",
+          "spreadsheetId": "17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg",
           "replies": [
             {}
           ]
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:47 GMT
+  recorded_at: Mon, 19 May 2025 12:40:37 GMT
 - request:
     method: post
     uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Accept:
@@ -907,20 +896,20 @@ http_interactions:
       Host:
       - oauth2.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Date:
+      - Mon, 19 May 2025 12:40:37 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
-      Date:
-      - Wed, 11 Oct 2023 00:54:47 GMT
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
       Content-Type:
       - application/json; charset=utf-8
       Vary:
@@ -949,16 +938,15 @@ http_interactions:
         {
           "access_token": "<ACCESS_TOKEN>",
           "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive.readonly openid https://www.googleapis.com/auth/drive.photos.readonly https://www.googleapis.com/auth/drive.scripts https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive.metadata https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file",
-          "token_type": "Bearer",
-          "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM2MjYzZDA5NzQ1YjUwMzJlNTdmYTZlMWQwNDFiNzdhNTQwNjZkYmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDM3NzU2OTkyOTExLXNlM29ucGpvMG1hODVtMjZsZmYycG9jMHJ2bzg4bnZwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAzNzc1Njk5MjkxMS1zZTNvbnBqbzBtYTg1bTI2bGZmMnBvYzBydm84OG52cC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTM4Mjk0OTUxODIyNTcxNzc4OSIsImhkIjoiaXNzLm50aHUuZWR1LnR3IiwiZW1haWwiOiJ0YXlsb3Iud3VAaXNzLm50aHUuZWR1LnR3IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJnTHhuOHc2aVJXSkszdjR0LVhXVXJ3IiwiaWF0IjoxNjk2OTg1Njg3LCJleHAiOjE2OTY5ODkyODd9.0OA3vdPQ6P6usfxk74xeE6nYZ44mRljK4SXPZI8l9luCMk0RLflvmRsPSCUdwo45VuBxCVbiApuQFcMYPKmd0YoXAhj7_AYsvV_M0nEYXCPurDdDHcPuq_aMOb6KFmpgkp64HgCZ6QmOjCkyHDouTgjBvrUAkHOsImNhmgt6l_Gx2Kq5jH920EyfjOKSWObvxhRkFM7EqwN2QiljsdCXuEa7QGRr4aZ2nZoY2UIOQQP_VGClL2KMndeJ4DfTllUq0Dn4Li2L3MpohKwM4uXYvj7_XoaTsnfXCLRxyfhNVf4OagLbcE8_2FgIP4edlC_1E7vvTIo0udq0O92PHdLehg"
+          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer"
         }
-  recorded_at: Wed, 11 Oct 2023 00:54:47 GMT
+  recorded_at: Mon, 19 May 2025 12:40:37 GMT
 - request:
     method: delete
-    uri: https://www.googleapis.com/drive/v2/files/19sgoXfwH1AvqMlcqpN6wjFjjuOyJCERQQzC5Qw3ckGw
+    uri: https://www.googleapis.com/drive/v2/files/17m01yQYkFLOmGLRJgxVehlffkdjpwRXK3Iq1sU-clMg
     body:
-      encoding: UTF-8
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Authorization:
@@ -968,7 +956,7 @@ http_interactions:
       Host:
       - www.googleapis.com
       User-Agent:
-      - http.rb/5.0.4
+      - http.rb/5.2.0
   response:
     status:
       code: 204
@@ -976,14 +964,14 @@ http_interactions:
     headers:
       Etag:
       - '"vyGp6PvFo4RvsFtPoIWeCReyIC8"'
-      Pragma:
-      - no-cache
       Date:
-      - Wed, 11 Oct 2023 00:54:48 GMT
+      - Mon, 19 May 2025 12:40:38 GMT
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
       Vary:
       - Origin, X-Origin
       Content-Type:
@@ -1005,5 +993,5 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: ''
-  recorded_at: Wed, 11 Oct 2023 00:54:48 GMT
-recorded_with: VCR 6.1.0
+  recorded_at: Mon, 19 May 2025 12:40:38 GMT
+recorded_with: VCR 6.3.1
