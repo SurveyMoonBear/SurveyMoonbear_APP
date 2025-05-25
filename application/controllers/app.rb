@@ -101,10 +101,17 @@ module SurveyMoonbear
         routing.get do
           routing.redirect '/' unless @current_account
 
-          surveys = Repository::For[Entity::Survey]
-                    .find_owner(@current_account['id'])
+          # surveys = Repository::For[Entity::Survey]
+          #           .find_owner(@current_account['id'])
+          result = Service::ListSurveys.new.call(account_id: @current_account['id'])
 
-          view 'survey_list', locals: { surveys: surveys, config: config }
+          if result.success?
+            surveys = result.value!
+            survey_views = surveys.map { |s| Views::Survey.new(s) }
+            view 'survey_list', locals: { surveys: surveys, config: config }
+          else
+            flash[:error] = result.failure
+          end
         end
 
         routing.post 'create' do
