@@ -107,7 +107,6 @@ module SurveyMoonbear
 
           if result.success?
             surveys = result.value!
-            survey_views = surveys.map { |s| Views::Survey.new(s) }
             view 'survey_list', locals: { surveys: surveys, config: config }
           else
             flash[:error] = result.failure

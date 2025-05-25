@@ -8,7 +8,9 @@ module SurveyMoonbear
                   join_table: :accounts_surveys,
                   left_key: :owner_id,
                   right_key: :survey_id
-                  
+     many_to_one :owner,
+                  class: :'SurveyMoonbear::Database::AccountOrm',
+                  key: :owner_id
       one_to_many :survey_collaborations,
                   class: :'SurveyMoonbear::Database::AccountSurveysOrm',
                   key: :survey_id

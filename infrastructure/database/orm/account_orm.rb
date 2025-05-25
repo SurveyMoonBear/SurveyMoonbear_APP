@@ -11,8 +11,8 @@ module SurveyMoonbear
                    right_key: :survey_id,
                    order: :created_at
       one_to_many :survey_collaborations,
-        class: :'SurveyMoonbear::Database::AccountSurveysOrm',
-        key: :owner_id
+                    class: :'SurveyMoonbear::Database::AccountSurveysOrm',
+                    key: :owner_id
 
       one_to_many :owned_surveys,
                   class: :'SurveyMoonbear::Database::SurveyOrm',

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'accounts'
+require_relative 'account_surveys'
 require_relative 'surveys'
 require_relative 'pages'
 require_relative 'items'
@@ -12,3 +13,4 @@ require_relative 'participants'
 require_relative 'notifications'
 require_relative 'events'
 require_relative 'for'
+
