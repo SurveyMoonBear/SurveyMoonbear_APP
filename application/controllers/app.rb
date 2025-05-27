@@ -99,17 +99,25 @@ module SurveyMoonbear
 
         # GET /survey_list
         routing.get do
-          routing.redirect '/' unless @current_account
+          unless @current_account
+            flash[:error] = 'Please login in First!'
+            routing.redirect '/'
+          end
 
-          # surveys = Repository::For[Entity::Survey]
-          #           .find_owner(@current_account['id'])
-          result = Service::ListSurveys.new.call(account_id: @current_account['id'])
+          begin
+            result = Service::ListSurveys.new.call(account_id: @current_account['id'])
 
-          if result.success?
-            surveys = result.value!
-            view 'survey_list', locals: { surveys: surveys, config: config }
-          else
-            flash[:error] = result.failure
+            if result.success?
+              surveys = result.value!
+              view 'survey_list', locals: { surveys: surveys, config: config }
+            else
+              flash[:error] = result.failure
+              routing.redirect '/'
+            end
+          rescue StandardError => e
+            puts "SURVEY LIST ERROR: #{e.inspect}"
+            flash[:error] = 'Please try again later :('
+            routing.redirect '/'
           end
         end
 
