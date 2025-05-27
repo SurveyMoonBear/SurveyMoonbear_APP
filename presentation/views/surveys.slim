@@ -14,6 +14,13 @@
           }
             i class="fas fa-cog"
           button {
+              class="btn btn-outline-dark border-0 ml-2 d-inline-flex align-middle"
+              data-toggle="modal"
+              data-target="#modal_share_collaborator"
+              data-survey_id="#{survey.id}"
+            }
+            i class="fas fa-user-plus"
+          button {
             class="btn btn-outline-dark border-0 ml-auto d-inline-flex align-middle"
             data-toggle="dropdown"
           }
@@ -99,6 +106,7 @@ include :modal_copy_survey
 include :modal_survey_settings
 include :modal_survey_editor
 include :modal_responses_download
+include :modal_share_collaborator
 
 javascript:
   $("input[type='text']").on("click", function () {
@@ -179,3 +187,31 @@ javascript:
     });
   }
 
+  $('#modal_share_collaborator').on('show.bs.modal', function (e) {
+    const button = $(e.relatedTarget);
+    const surveyId = button.data('survey_id');
+    $('#share-survey-id').val(surveyId);
+
+    const list = $('#collaborators-list');
+    list.html('<li class="text-muted">Loading...</li>');
+
+    $.get(`/survey/${surveyId}/collaborators`, function (data) {
+      list.empty();
+      data.collaborators.forEach(user => {
+        list.append(`<li>${user.username} (${user.email})</li>`);
+      });
+    });
+  });
+
+  $('#share-collab-form').on('submit', function (e) {
+    e.preventDefault();
+    const surveyId = $('#share-survey-id').val();
+    const email = $(this).find('input[name="email"]').val();
+
+    $.post(`/survey/${surveyId}/add_collaborator`, { email: email }, function (result) {
+      alert(result.message);
+      $('#modal_share_collaborator').modal('hide');
+    }).fail(function (xhr) {
+      alert(xhr.responseJSON?.message || 'Failed to add collaborator');
+    });
+  });
