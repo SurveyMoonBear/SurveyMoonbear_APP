@@ -55,7 +55,6 @@ module SurveyMoonbear
 
       
       def link_owner_to_survey(input)
-        binding.irb
         account_survey = Entity::AccountSurvey.new(
           owner_id: input[:current_account]['id'],
           survey_id: input[:survey].id,

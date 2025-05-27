@@ -15,6 +15,11 @@ module SurveyMoonbear
         db_record = Database::AccountOrm.first(id: id)
         rebuild_entity(db_record)
       end
+      
+      def self.find_email(email)
+        db_record = Database::AccountOrm.first(email: email)
+        rebuild_entity(db_record)
+      end
 
       def self.find_or_create(entity)
         find_entity(entity) || create_from(entity)

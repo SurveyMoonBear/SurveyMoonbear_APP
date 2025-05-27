@@ -22,6 +22,18 @@ module SurveyMoonbear
         end
       end
 
+
+      def self.find_accessible(owner_id)
+        db_account = Database::AccountOrm.first(id: owner_id)
+        return [] unless db_account
+
+        owned = db_account.owned_surveys
+        collaborated = db_account.participated_surveys
+        all = (owned + collaborated).uniq(&:id)
+
+        rebuild_many(all)
+      end
+
       def self.find_alone(owner_id)
         db_records = Database::SurveyOrm.where(owner_id: owner_id, study_id: nil).all
 

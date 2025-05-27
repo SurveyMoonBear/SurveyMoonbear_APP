@@ -172,6 +172,27 @@ module SurveyMoonbear
           routing.redirect '/survey_list'
         end
 
+        # POST /survey/:id/add_collaborator
+        routing.post 'add_collaborator' do
+          result  = Service::AddCollaborator.new.call(
+            account: @current_account,
+            survey_id: survey_id,
+            collaborator_email: routing.params['email']
+          )
+
+          if result .failure?
+            response['Content-Type'] = 'application/json'
+            routing.halt 400, { message: result .failure }.to_json
+          else
+            response['Content-Type'] = 'application/json'
+            routing.halt 200, { message: result .value! }.to_json
+          end
+          routing.redirect '/survey_list'
+          
+        end
+
+
+
         # GET /survey/[survey_id]/preview/[spreadsheet_id]
         routing.on 'preview', String do |spreadsheet_id|
           routing.get do
