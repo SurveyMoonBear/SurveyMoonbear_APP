@@ -136,6 +136,8 @@ module SurveyMoonbear
 
       def self.delete_from(id)
         db_survey = Database::SurveyOrm.where(id: id).first
+        Database::AccountSurveysOrm.where(survey_id: id).delete
+
         db_survey.pages.each do |page|
           page.items.each(&:delete)
           page.delete

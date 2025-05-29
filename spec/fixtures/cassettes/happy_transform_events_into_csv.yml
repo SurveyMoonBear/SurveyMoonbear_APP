@@ -20,442 +20,14 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Date:
-      - Mon, 19 May 2025 12:42:31 GMT
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Pragma:
-      - no-cache
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Type:
-      - application/json; charset=utf-8
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Server:
-      - scaffolding on HTTPServer2
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "access_token": "<ACCESS_TOKEN>",
-          "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive",
-          "token_type": "Bearer"
-        }
-  recorded_at: Mon, 19 May 2025 12:42:30 GMT
-- request:
-    method: post
-    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=<ACCESS_TOKEN>
-    body:
-      encoding: UTF-8
-      string: '{"id":"<CALENDAR_ID>"}'
-    headers:
-      Authorization:
-      - Bearer <ACCESS_TOKEN>
-      Connection:
-      - close
-      Content-Type:
-      - application/json; charset=utf-8
-      Host:
-      - www.googleapis.com
-      User-Agent:
-      - http.rb/5.2.0
-  response:
-    status:
-      code: 403
-      message: Forbidden
-    headers:
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Content-Type:
-      - application/json; charset=UTF-8
-      Date:
-      - Mon, 19 May 2025 12:42:31 GMT
-      Server:
-      - ESF
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      X-L2-Request-Path:
-      - l2-managed-14
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |
-        {
-          "error": {
-            "code": 403,
-            "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
-            "errors": [
-              {
-                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
-                "domain": "usageLimits",
-                "reason": "accessNotConfigured",
-                "extendedHelp": "https://console.developers.google.com"
-              }
-            ],
-            "status": "PERMISSION_DENIED",
-            "details": [
-              {
-                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
-                "reason": "SERVICE_DISABLED",
-                "domain": "googleapis.com",
-                "metadata": {
-                  "containerInfo": "240177806548",
-                  "serviceTitle": "Google Calendar API",
-                  "service": "calendar-json.googleapis.com",
-                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548",
-                  "consumer": "projects/240177806548"
-                }
-              },
-              {
-                "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
-                "locale": "en-US",
-                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."
-              },
-              {
-                "@type": "type.googleapis.com/google.rpc.Help",
-                "links": [
-                  {
-                    "description": "Google developers console API activation",
-                    "url": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
-                  }
-                ]
-              }
-            ]
-          }
-        }
-  recorded_at: Mon, 19 May 2025 12:42:31 GMT
-- request:
-    method: post
-    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Accept:
-      - application/json
-      Connection:
-      - close
-      Host:
-      - oauth2.googleapis.com
-      User-Agent:
-      - http.rb/5.2.0
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Date:
-      - Mon, 19 May 2025 12:42:31 GMT
-      Pragma:
-      - no-cache
-      Content-Type:
-      - application/json; charset=utf-8
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Server:
-      - scaffolding on HTTPServer2
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "access_token": "<ACCESS_TOKEN>",
-          "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets",
-          "token_type": "Bearer"
-        }
-  recorded_at: Mon, 19 May 2025 12:42:31 GMT
-- request:
-    method: post
-    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Accept:
-      - application/json
-      Connection:
-      - close
-      Host:
-      - oauth2.googleapis.com
-      User-Agent:
-      - http.rb/5.2.0
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Date:
-      - Mon, 19 May 2025 12:42:31 GMT
-      Pragma:
-      - no-cache
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Type:
-      - application/json; charset=utf-8
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Server:
-      - scaffolding on HTTPServer2
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "access_token": "<ACCESS_TOKEN>",
-          "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets",
-          "token_type": "Bearer"
-        }
-  recorded_at: Mon, 19 May 2025 12:42:31 GMT
-- request:
-    method: get
-    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Authorization:
-      - Bearer <ACCESS_TOKEN>
-      Connection:
-      - close
-      Host:
-      - www.googleapis.com
-      User-Agent:
-      - http.rb/5.2.0
-  response:
-    status:
-      code: 403
-      message: Forbidden
-    headers:
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Content-Type:
-      - application/json; charset=UTF-8
-      Date:
-      - Mon, 19 May 2025 12:42:31 GMT
-      Server:
-      - ESF
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      X-L2-Request-Path:
-      - l2-managed-14
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |
-        {
-          "error": {
-            "code": 403,
-            "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
-            "errors": [
-              {
-                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
-                "domain": "usageLimits",
-                "reason": "accessNotConfigured",
-                "extendedHelp": "https://console.developers.google.com"
-              }
-            ],
-            "status": "PERMISSION_DENIED",
-            "details": [
-              {
-                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
-                "reason": "SERVICE_DISABLED",
-                "domain": "googleapis.com",
-                "metadata": {
-                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548",
-                  "containerInfo": "240177806548",
-                  "consumer": "projects/240177806548",
-                  "serviceTitle": "Google Calendar API",
-                  "service": "calendar-json.googleapis.com"
-                }
-              },
-              {
-                "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
-                "locale": "en-US",
-                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."
-              },
-              {
-                "@type": "type.googleapis.com/google.rpc.Help",
-                "links": [
-                  {
-                    "description": "Google developers console API activation",
-                    "url": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
-                  }
-                ]
-              }
-            ]
-          }
-        }
-  recorded_at: Mon, 19 May 2025 12:42:31 GMT
-- request:
-    method: post
-    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Accept:
-      - application/json
-      Connection:
-      - close
-      Host:
-      - oauth2.googleapis.com
-      User-Agent:
-      - http.rb/5.2.0
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Pragma:
-      - no-cache
-      Date:
-      - Mon, 19 May 2025 12:42:32 GMT
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Server:
-      - scaffolding on HTTPServer2
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "access_token": "<ACCESS_TOKEN>",
-          "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
-          "token_type": "Bearer"
-        }
-  recorded_at: Mon, 19 May 2025 12:42:31 GMT
-- request:
-    method: post
-    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Accept:
-      - application/json
-      Connection:
-      - close
-      Host:
-      - oauth2.googleapis.com
-      User-Agent:
-      - http.rb/5.2.0
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
-      Date:
-      - Mon, 19 May 2025 12:42:32 GMT
       Pragma:
       - no-cache
+      Date:
+      - Tue, 27 May 2025 10:06:10 GMT
       Content-Type:
       - application/json; charset=utf-8
       Vary:
@@ -487,18 +59,20 @@ http_interactions:
           "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive",
           "token_type": "Bearer"
         }
-  recorded_at: Mon, 19 May 2025 12:42:32 GMT
+  recorded_at: Tue, 27 May 2025 10:06:10 GMT
 - request:
-    method: get
-    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
+    method: post
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=<ACCESS_TOKEN>
     body:
-      encoding: ASCII-8BIT
-      string: ''
+      encoding: UTF-8
+      string: '{"id":"<CALENDAR_ID>"}'
     headers:
       Authorization:
       - Bearer <ACCESS_TOKEN>
       Connection:
       - close
+      Content-Type:
+      - application/json; charset=utf-8
       Host:
       - www.googleapis.com
       User-Agent:
@@ -515,7 +89,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Mon, 19 May 2025 12:42:32 GMT
+      - Tue, 27 May 2025 10:06:10 GMT
       Server:
       - ESF
       X-Xss-Protection:
@@ -556,11 +130,11 @@ http_interactions:
                 "reason": "SERVICE_DISABLED",
                 "domain": "googleapis.com",
                 "metadata": {
+                  "serviceTitle": "Google Calendar API",
+                  "containerInfo": "240177806548",
                   "consumer": "projects/240177806548",
                   "service": "calendar-json.googleapis.com",
-                  "containerInfo": "240177806548",
-                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548",
-                  "serviceTitle": "Google Calendar API"
+                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
                 }
               },
               {
@@ -580,7 +154,7 @@ http_interactions:
             ]
           }
         }
-  recorded_at: Mon, 19 May 2025 12:42:32 GMT
+  recorded_at: Tue, 27 May 2025 10:06:10 GMT
 - request:
     method: post
     uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
@@ -601,14 +175,500 @@ http_interactions:
       code: 200
       message: OK
     headers:
+      Pragma:
+      - no-cache
+      Date:
+      - Tue, 27 May 2025 10:06:11 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar",
+          "token_type": "Bearer"
+        }
+  recorded_at: Tue, 27 May 2025 10:06:10 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Tue, 27 May 2025 10:06:11 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets",
+          "token_type": "Bearer"
+        }
+  recorded_at: Tue, 27 May 2025 10:06:10 GMT
+- request:
+    method: get
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Tue, 27 May 2025 10:06:11 GMT
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-14
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "code": 403,
+            "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+            "errors": [
+              {
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+                "domain": "usageLimits",
+                "reason": "accessNotConfigured",
+                "extendedHelp": "https://console.developers.google.com"
+              }
+            ],
+            "status": "PERMISSION_DENIED",
+            "details": [
+              {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "SERVICE_DISABLED",
+                "domain": "googleapis.com",
+                "metadata": {
+                  "service": "calendar-json.googleapis.com",
+                  "consumer": "projects/240177806548",
+                  "containerInfo": "240177806548",
+                  "serviceTitle": "Google Calendar API",
+                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
+                }
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+                "locale": "en-US",
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.Help",
+                "links": [
+                  {
+                    "description": "Google developers console API activation",
+                    "url": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+  recorded_at: Tue, 27 May 2025 10:06:11 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 27 May 2025 10:06:11 GMT
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar",
+          "token_type": "Bearer"
+        }
+  recorded_at: Tue, 27 May 2025 10:06:11 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Tue, 27 May 2025 10:06:12 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/calendar",
+          "token_type": "Bearer"
+        }
+  recorded_at: Tue, 27 May 2025 10:06:11 GMT
+- request:
+    method: get
+    uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Tue, 27 May 2025 10:06:12 GMT
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-14
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "code": 403,
+            "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+            "errors": [
+              {
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+                "domain": "usageLimits",
+                "reason": "accessNotConfigured",
+                "extendedHelp": "https://console.developers.google.com"
+              }
+            ],
+            "status": "PERMISSION_DENIED",
+            "details": [
+              {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "SERVICE_DISABLED",
+                "domain": "googleapis.com",
+                "metadata": {
+                  "serviceTitle": "Google Calendar API",
+                  "containerInfo": "240177806548",
+                  "consumer": "projects/240177806548",
+                  "service": "calendar-json.googleapis.com",
+                  "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
+                }
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+                "locale": "en-US",
+                "message": "Google Calendar API has not been used in project 240177806548 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry."
+              },
+              {
+                "@type": "type.googleapis.com/google.rpc.Help",
+                "links": [
+                  {
+                    "description": "Google developers console API activation",
+                    "url": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+  recorded_at: Tue, 27 May 2025 10:06:12 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
       Pragma:
       - no-cache
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Date:
-      - Mon, 19 May 2025 12:42:32 GMT
+      - Tue, 27 May 2025 10:06:12 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file",
+          "token_type": "Bearer"
+        }
+  recorded_at: Tue, 27 May 2025 10:06:12 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 27 May 2025 10:06:12 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
       Content-Type:
       - application/json; charset=utf-8
       Vary:
@@ -640,67 +700,7 @@ http_interactions:
           "scope": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets",
           "token_type": "Bearer"
         }
-  recorded_at: Mon, 19 May 2025 12:42:32 GMT
-- request:
-    method: post
-    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Accept:
-      - application/json
-      Connection:
-      - close
-      Host:
-      - oauth2.googleapis.com
-      User-Agent:
-      - http.rb/5.2.0
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Expires:
-      - Mon, 01 Jan 1990 00:00:00 GMT
-      Date:
-      - Mon, 19 May 2025 12:42:32 GMT
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Pragma:
-      - no-cache
-      Content-Type:
-      - application/json; charset=utf-8
-      Vary:
-      - Origin,Accept-Encoding
-      - Referer
-      - X-Origin
-      Server:
-      - scaffolding on HTTPServer2
-      X-Xss-Protection:
-      - '0'
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Content-Type-Options:
-      - nosniff
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Accept-Ranges:
-      - none
-      Connection:
-      - close
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "access_token": "<ACCESS_TOKEN>",
-          "expires_in": 3599,
-          "scope": "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets",
-          "token_type": "Bearer"
-        }
-  recorded_at: Mon, 19 May 2025 12:42:32 GMT
+  recorded_at: Tue, 27 May 2025 10:06:12 GMT
 - request:
     method: get
     uri: https://www.googleapis.com/calendar/v3/users/me/calendarList
@@ -728,7 +728,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Mon, 19 May 2025 12:42:33 GMT
+      - Tue, 27 May 2025 10:06:13 GMT
       Server:
       - ESF
       X-Xss-Protection:
@@ -769,11 +769,11 @@ http_interactions:
                 "reason": "SERVICE_DISABLED",
                 "domain": "googleapis.com",
                 "metadata": {
-                  "service": "calendar-json.googleapis.com",
-                  "serviceTitle": "Google Calendar API",
                   "activationUrl": "https://console.developers.google.com/apis/api/calendar-json.googleapis.com/overview?project=240177806548",
                   "containerInfo": "240177806548",
-                  "consumer": "projects/240177806548"
+                  "service": "calendar-json.googleapis.com",
+                  "consumer": "projects/240177806548",
+                  "serviceTitle": "Google Calendar API"
                 }
               },
               {
@@ -793,5 +793,5 @@ http_interactions:
             ]
           }
         }
-  recorded_at: Mon, 19 May 2025 12:42:32 GMT
+  recorded_at: Tue, 27 May 2025 10:06:12 GMT
 recorded_with: VCR 6.3.1
