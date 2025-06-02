@@ -129,9 +129,18 @@ javascript:
         url: "/survey/" + survey_id,
         type: 'DELETE',
         success: function(result) {
-          alert(survey_title + ' has been deleted!');
+          alert(result.message);
           location.reload();
-        }
+        },
+      error: function(xhr) {
+        $('#modal_waiting').modal('hide'); 
+        let msg = 'Failed to delete survey';
+        try {
+          const res = JSON.parse(xhr.responseText);
+          if (res.message) msg = res.message;
+        } catch (_) {}
+        alert(msg); 
+      }
       });
     }
   }

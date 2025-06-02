@@ -8,6 +8,7 @@ module SurveyMoonbear
       def call(account_id:)
         surveys = Repository::Surveys.find_accessible(account_id)
 
+
         Success(surveys || [])
       rescue StandardError => e
         puts "LIST SURVEYS ERROR: #{e.message}"

@@ -9,13 +9,30 @@ module SurveyMoonbear
     class DeleteSurvey
       include Dry::Transaction
       include Dry::Monads
-
+      step :verify_ownership
       step :refresh_access_token
       step :remove_from_study
       step :delete_record_in_database
       step :delete_spreadsheet
 
       private
+
+      def verify_ownership(input)
+        survey = Repository::For[Entity::Survey].find_id(input[:survey_id])
+        if survey.nil?
+          return Failure('Survey not found.')
+        end
+
+        if survey.owner.id != input[:account]['id']
+          return Failure('You are not the owner of this survey.')
+        end
+
+        input[:survey] = survey
+        Success(input)
+      rescue StandardError => e
+        puts e
+        Failure('Failed to verify ownership of the survey.')
+      end
 
       # input { config:, survey_id: }
       def refresh_access_token(input)

@@ -234,11 +234,21 @@ module SurveyMoonbear
 
         # DELETE survey/[survey_id]
         routing.delete do
-          response = Service::DeleteSurvey.new.call(config: config, survey_id: survey_id)
+          # response = Service::DeleteSurvey.new.call(config: config, survey_id: survey_id)
+          response  = Service::DeleteSurvey.new.call(
+            account: @current_account,
+            config: config,
+            survey_id: survey_id
+          )
+          if response.success?
+            routing.response['Content-Type'] = 'application/json'
+            { message: 'Survey deleted successfully' }.to_json
+          else
+            routing.response['Content-Type'] = 'application/json'
+            routing.halt 400, { message: response.failure }.to_json
+          end
 
-          flash[:error] = 'Failed to delete the survey. Please try again :(' if response.failure?
-
-          routing.redirect '/survey_list', 303
+          
         end
 
         routing.on 'responses_detail' do
