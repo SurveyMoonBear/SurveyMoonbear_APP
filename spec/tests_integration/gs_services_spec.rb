@@ -28,10 +28,12 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       @new_survey_res = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG,
                                                                        current_account: CURRENT_ACCOUNT,
                                                                        title: 'Survey for Testing Create Services')
+
       _(@new_survey_res.success?).must_equal true
       _(@new_survey_res.value!.owner.username).must_equal 'SurveyMoonbear Test'
       _(@new_survey_res.value!.pages).wont_be :empty?
       _(@new_survey_res.value!.pages[0].items).wont_be :empty?
+
     end
   end
 
@@ -41,12 +43,23 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       @survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG,
                                                                current_account: CURRENT_ACCOUNT,
                                                                title: 'Survey for Testing Delete Services').value!
+       CURRENT_ACCOUNT['id'] = @survey.owner.id
+
     end
 
     it 'HAPPY: should delete the survey in both db and spreadsheet' do
-      deleted_survey_res = SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @survey.id)
-      _(deleted_survey_res.success?).must_equal true
-      _(deleted_survey_res.value!.id).must_equal @survey.id
+
+
+        deleted_survey_res = SurveyMoonbear::Service::DeleteSurvey.new.call(
+          config: CONFIG,
+          survey_id: @survey.id,
+          account: CURRENT_ACCOUNT
+        )
+
+
+
+        _(deleted_survey_res.success?).must_equal true
+        _(deleted_survey_res.value!.id).must_equal @survey.id
     end
   end
 
