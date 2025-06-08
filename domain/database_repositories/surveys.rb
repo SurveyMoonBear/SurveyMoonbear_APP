@@ -23,11 +23,17 @@ module SurveyMoonbear
       end
 
 
-      def self.find_accessible(owner_id)
-          account_survey_rows = Database::AccountSurveysOrm.where(owner_id: owner_id).all
-          survey_ids = account_survey_rows.map(&:survey_id).uniq
+      def self.find_accessible_with_roles(owner_id)
+          links = Database::AccountSurveysOrm.where(owner_id: owner_id).all
+          survey_ids = links.map(&:survey_id).uniq
           db_surveys = Database::SurveyOrm.where(id: survey_ids).all
-          rebuild_many(db_surveys)
+
+          surveys = rebuild_many(db_surveys)
+
+          surveys.map do |survey|
+            role = links.find { |l| l.survey_id == survey.id }&.role
+            { survey: survey, role: role }
+          end
       end
 
       def self.find_alone(owner_id)
