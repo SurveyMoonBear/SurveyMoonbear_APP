@@ -19,13 +19,12 @@ module SurveyMoonbear
 
       def verify_ownership(input)
         survey = Repository::For[Entity::Survey].find_id(input[:survey_id])
-        if survey.nil?
-          return Failure('Survey not found.')
-        end
-
-        if survey.owner.id != input[:account]['id']
-          return Failure('You are not the owner of this survey.')
-        end
+        return Failure('Survey not found.') if survey.nil?
+        account_data = input[:account] 
+        account = Repository::Accounts.find_id(account_data['id'])
+        role    = Repository::AccountSurveys.find_role(account.id, survey.id)
+        policy = SurveysPolicy.new(account, survey, role)
+        return Failure('You are not the owner of this survey.') unless policy.can_delete?
 
         input[:survey] = survey
         Success(input)

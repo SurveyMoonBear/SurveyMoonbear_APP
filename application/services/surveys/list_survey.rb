@@ -11,14 +11,14 @@ module SurveyMoonbear
         account = Repository::Accounts.find_id(account_id)
         survey_infos = Repository::Surveys.find_accessible_with_roles(account_id)
         result = survey_infos.map do |info|
-            survey = info[:survey]
-            role = info[:role]
-            policy = SurveysPolicy.new(account, survey, role)
-            Views::SurveyView.new(
-              survey.to_h.merge(
-                role: role,
-                policy: policy.summary
-              ))
+          survey = info[:survey]
+          role = info[:role]
+          policy = SurveysPolicy.new(account, survey, role)
+          {
+              survey: survey,
+              role: role,
+              policy_summary: policy.summary
+          }
         end
         Success(result)
       rescue StandardError => e

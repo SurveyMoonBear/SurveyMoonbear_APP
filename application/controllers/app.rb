@@ -106,10 +106,16 @@ module SurveyMoonbear
 
           begin
             result = Service::ListSurveys.new.call(account_id: @current_account['id'])
-
             if result.success?
-              surveys = result.value!
-              view 'survey_list', locals: { surveys: surveys, config: config }
+              surveys = result.value!.map do |data|
+               Views::SurveyView.new(
+                  survey: data[:survey],
+                  role: data[:role],
+                  policy: data[:policy_summary]
+                )
+                
+              end
+               view 'survey_list', locals: { surveys: surveys, config: config }
             else
               flash[:error] = result.failure
               routing.redirect '/'
@@ -180,11 +186,10 @@ module SurveyMoonbear
             collaborator_email: routing.params['email']
           )
 
+          response['Content-Type'] = 'application/json'
           if result .failure?
-            response['Content-Type'] = 'application/json'
             routing.halt 400, { message: result .failure }.to_json
           else
-            response['Content-Type'] = 'application/json'
             routing.halt 200, { message: result .value! }.to_json
           end
           routing.redirect '/survey_list'
@@ -240,15 +245,13 @@ module SurveyMoonbear
             config: config,
             survey_id: survey_id
           )
+          routing.response['Content-Type'] = 'application/json'
           if response.success?
-            routing.response['Content-Type'] = 'application/json'
             { message: 'Survey deleted successfully' }.to_json
           else
-            routing.response['Content-Type'] = 'application/json'
             routing.halt 400, { message: response.failure }.to_json
           end
 
-          
         end
 
         routing.on 'responses_detail' do

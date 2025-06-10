@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'dry/monads'
+require_relative '../../policies/survey_policy'
+
 
 module SurveyMoonbear
   module Service
@@ -16,19 +18,21 @@ module SurveyMoonbear
       end
 
       def call(account:, survey_id:, collaborator_email:)
-        survey = Repository::For[Entity::Survey].find_id(survey_id)
-        raise NotFoundError unless survey
+        
+        raise NotFoundError unless survey = Repository::Surveys.find_id(survey_id)
+        account = Repository::Accounts.find_id(account['id'])
+        role    = Repository::AccountSurveys.find_role(account.id, survey.id)
+        policy = SurveysPolicy.new(account, survey, role)
 
-        unless survey.owner.id == account['id']
-          raise ForbiddenError
-        end
+        raise ForbiddenError unless policy.can_add_collaborators?
 
-        collaborator = Repository::For[Entity::Account].find_email(collaborator_email)
+        collaborator = Repository::Accounts.find_email(collaborator_email)
         raise NotFoundError unless collaborator
 
-        existing = Repository::For[Entity::AccountSurvey]
-                     .find(owner_id: collaborator.id, survey_id: survey_id)
-        return Failure('Already a collaborator') if existing
+        collaborator_role = Repository::AccountSurveys.find_role(collaborator.id, survey_id)
+
+        policy_for_collaborator = SurveysPolicy.new(collaborator, survey, collaborator_role)
+        return Failure('Already a collaborator')  unless  policy_for_collaborator.can_collaborate?
 
         new_relation = Entity::AccountSurvey.new(
           owner_id: collaborator.id,
@@ -38,7 +42,7 @@ module SurveyMoonbear
           updated_at: Time.now
         )
 
-        Repository::For[Entity::AccountSurvey].create(new_relation)
+        Repository::AccountSurveys.create(new_relation)
 
         Success("#{collaborator.username} was added as collaborator.")
       rescue ForbiddenError, NotFoundError => e
