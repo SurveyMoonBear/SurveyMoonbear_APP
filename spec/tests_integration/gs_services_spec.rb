@@ -3,18 +3,18 @@
 require_relative './../spec_helper'
 require_relative './../../workers/workers'
 
-describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
-  # Execute before/after each 'describe'
-  before(:all) do
-    VcrHelper.setup_vcr
-    VcrHelper.configure_vcr_for_gs
-  end
+  describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
+    # Execute before/after each 'describe'
+    before(:all) do
+      VcrHelper.setup_vcr
+      VcrHelper.configure_vcr_for_gs
+    end
 
-  after(:all) do
-    DatabaseHelper.wipe_database
-    VcrHelper.eject_vcr
+    after(:all) do
+      DatabaseHelper.wipe_database
+      VcrHelper.eject_vcr
+    end
   end
-
   describe 'Copy & Create survey' do
     before do
       VcrHelper.build_cassette('happy_create_gs_api')
@@ -22,6 +22,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
 
     after do
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @new_survey_res.value!.id)
+      VcrHelper.eject_vcr
     end
 
     it 'HAPPY: should copy sample and create survey with provided title' do
@@ -45,6 +46,9 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
                                                                title: 'Survey for Testing Delete Services').value!
        CURRENT_ACCOUNT['id'] = @survey.owner.id
 
+    end
+    after do
+      VcrHelper.eject_vcr
     end
 
     it 'HAPPY: should delete the survey in both db and spreadsheet' do
@@ -73,6 +77,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
 
     after(:all) do
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @survey.id)
+      
     end
 
     it 'HAPPY: should get survey from database' do
@@ -123,6 +128,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
 
     after(:all) do
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @started_survey.id)
+      VcrHelper.eject_vcr
     end
 
     describe 'Tranform DB/Sheets Survey to Html' do
@@ -196,5 +202,61 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
         _(transform_csv_res.value!).must_be_instance_of String
       end
     end
+
+    
+    describe 'Add collaborator' do
+    before do
+      VcrHelper.build_cassette('happy_add_collaborator')
+
+      result = SurveyMoonbear::Service::CreateSurvey.new.call(
+        config: CONFIG,
+        current_account: CURRENT_ACCOUNT,
+        title: 'Survey for collaborator test'
+      )
+      raise result.failure unless result.success?
+      @survey = result.value!
+      CURRENT_ACCOUNT['id'] = @survey.owner.id
+    end
+
+    after do
+      SurveyMoonbear::Service::DeleteSurvey.new.call(
+        config: CONFIG,
+        survey_id: @survey.id
+      )
+      VcrHelper.eject_vcr
+    end
+
+  it 'HAPPY: should add a collaborator successfully' do
+    collaborator = SurveyMoonbear::Repository::Accounts.find_email('someone@example.com')
+    unless collaborator
+      # create fake account if doesn't exist
+
+      collaborator = SurveyMoonbear::Repository::Accounts.find_or_create(
+        SurveyMoonbear::Entity::Account.new(
+          id: nil,
+          username: 'Collaborator',
+          email: 'someone@example.com',
+          access_token: 'token',
+          refresh_token: 'refresh'
+        )
+      )
+    end
+    
+    result = SurveyMoonbear::Service::AddCollaborator.new.call(
+      account: CURRENT_ACCOUNT,
+      survey_id: @survey.id,
+      collaborator_email: 'someone@example.com'
+    )
+    
+    _(result.success?).must_equal true
+    _(result.value!).must_include 'was added as collaborator'
+    
+
   end
-end
+
+    end
+
+
+
+  end
+
