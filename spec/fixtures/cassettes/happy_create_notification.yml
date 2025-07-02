@@ -6478,4 +6478,1802 @@ http_interactions:
           </ResponseMetadata>
         </DeleteTopicResponse>
   recorded_at: Wed, 11 Jun 2025 07:28:47 GMT
-recorded_with: VCR 6.1.0
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=CreateTopic&Name=38d0702b-2ed4-4c38-897d-a8b9180db9f0&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T014955Z
+      X-Amz-Content-Sha256:
+      - f410e9344b84c18a84409fa2bb7104d3485355ea267a4b6a91435e4f2cb72d43
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=b3b8f73b2fee40bf8d3ff37bce1b93d9f04d1b1d6a7b3a776df98b1703f07e73
+      Content-Length:
+      - '79'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - b92f7f9f-09f5-5c40-bab5-1f419b763bd6
+      Date:
+      - Wed, 02 Jul 2025 01:49:55 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '348'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <CreateTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <CreateTopicResult>
+            <TopicArn><AWS_TOPIC_ARN></TopicArn>
+          </CreateTopicResult>
+          <ResponseMetadata>
+            <RequestId>b92f7f9f-09f5-5c40-bab5-1f419b763bd6</RequestId>
+          </ResponseMetadata>
+        </CreateTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 01:49:56 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Wed, 02 Jul 2025 01:49:56 GMT
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.file",
+          "token_type": "Bearer"
+        }
+  recorded_at: Wed, 02 Jul 2025 01:49:56 GMT
+- request:
+    method: post
+    uri: https://oauth2.googleapis.com/token?client_id=<GOOGLE_CLIENT_ID>&client_secret=<GOOGLE_CLIENT_SECRET>&grant_type=refresh_token&refresh_token=<REFRESH_TOKEN>
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - oauth2.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Wed, 02 Jul 2025 01:49:57 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "access_token": "<ACCESS_TOKEN>",
+          "expires_in": 3599,
+          "scope": "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
+          "token_type": "Bearer"
+        }
+  recorded_at: Wed, 02 Jul 2025 01:49:57 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/drive/v3/files/<SAMPLE_FILE_ID>/copy?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: "{}"
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=utf-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Wed, 02 Jul 2025 01:50:00 GMT
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Vary:
+      - Origin, X-Origin,Accept-Encoding
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "kind": "drive#file",
+          "id": "1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw",
+          "name": "sample_s 的副本",
+          "mimeType": "application/vnd.google-apps.spreadsheet"
+        }
+  recorded_at: Wed, 02 Jul 2025 01:50:00 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/drive/v2/files/1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw/permissions?access_token=<ACCESS_TOKEN>&sendNotificationEmails=false
+    body:
+      encoding: UTF-8
+      string: '{"role":"writer","type":"user","value":"moonbear.survey.test@gmail.com"}'
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=utf-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Jul 2025 01:50:03 GMT
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Vary:
+      - Origin, X-Origin,Accept-Encoding
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "kind": "drive#permission",
+          "etag": "\"f3maWSueezGKVUiwkOdRst_rQOE\"",
+          "id": "02675581687761162384",
+          "selfLink": "https://www.googleapis.com/drive/v2/files/1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw/permissions/02675581687761162384",
+          "name": "moonbear.survey.test",
+          "emailAddress": "moonbear.survey.test@gmail.com",
+          "domain": "gmail.com",
+          "role": "writer",
+          "type": "user",
+          "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjVojYYXOIh7oHSi17c3f56CJY-UECxxyHTFCerO9j9rzOBrAg=s64",
+          "deleted": false,
+          "pendingOwner": false
+        }
+  recorded_at: Wed, 02 Jul 2025 01:50:03 GMT
+- request:
+    method: post
+    uri: https://www.googleapis.com/drive/v3/files/1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw/permissions
+    body:
+      encoding: UTF-8
+      string: '{"role":"reader","type":"anyone"}'
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=utf-8
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Jul 2025 01:50:04 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Vary:
+      - Origin, X-Origin,Accept-Encoding
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "kind": "drive#permission",
+          "id": "anyoneWithLink",
+          "type": "anyone",
+          "role": "reader",
+          "allowFileDiscovery": false
+        }
+  recorded_at: Wed, 02 Jul 2025 01:50:05 GMT
+- request:
+    method: post
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw:batchUpdate
+    body:
+      encoding: UTF-8
+      string: '{"requests":[{"updateSpreadsheetProperties":{"properties":{"title":"Survey
+        for Testing Create Notification"},"fields":"title"}}]}'
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Content-Type:
+      - application/json; charset=utf-8
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Wed, 02 Jul 2025 01:50:06 GMT
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-6
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "spreadsheetId": "1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw",
+          "replies": [
+            {}
+          ]
+        }
+  recorded_at: Wed, 02 Jul 2025 01:50:06 GMT
+- request:
+    method: get
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Wed, 02 Jul 2025 01:50:07 GMT
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-6
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "spreadsheetId": "1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw",
+          "properties": {
+            "title": "Survey for Testing Create Notification",
+            "locale": "zh_TW",
+            "autoRecalc": "ON_CHANGE",
+            "timeZone": "Asia/Shanghai",
+            "defaultFormat": {
+              "backgroundColor": {
+                "red": 1,
+                "green": 1,
+                "blue": 1
+              },
+              "padding": {
+                "top": 2,
+                "right": 3,
+                "bottom": 2,
+                "left": 3
+              },
+              "verticalAlignment": "BOTTOM",
+              "wrapStrategy": "OVERFLOW_CELL",
+              "textFormat": {
+                "foregroundColor": {},
+                "fontFamily": "arial,sans,sans-serif",
+                "fontSize": 10,
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "foregroundColorStyle": {
+                  "rgbColor": {}
+                }
+              },
+              "backgroundColorStyle": {
+                "rgbColor": {
+                  "red": 1,
+                  "green": 1,
+                  "blue": 1
+                }
+              }
+            }
+          },
+          "sheets": [
+            {
+              "properties": {
+                "sheetId": 1041538561,
+                "title": "page1",
+                "index": 0,
+                "sheetType": "GRID",
+                "gridProperties": {
+                  "rowCount": 999,
+                  "columnCount": 26
+                }
+              },
+              "conditionalFormats": [
+                {
+                  "ranges": [
+                    {
+                      "sheetId": 1041538561,
+                      "startRowIndex": 1,
+                      "endRowIndex": 12,
+                      "startColumnIndex": 1,
+                      "endColumnIndex": 2
+                    },
+                    {
+                      "sheetId": 1041538561,
+                      "startRowIndex": 12,
+                      "endRowIndex": 16,
+                      "startColumnIndex": 1,
+                      "endColumnIndex": 2
+                    }
+                  ],
+                  "booleanRule": {
+                    "condition": {
+                      "type": "CUSTOM_FORMULA",
+                      "values": [
+                        {
+                          "userEnteredValue": "=REGEXMATCH(B2, \"\\W\")"
+                        }
+                      ]
+                    },
+                    "format": {
+                      "backgroundColor": {
+                        "red": 0.95686275,
+                        "green": 0.78039217,
+                        "blue": 0.7647059
+                      },
+                      "backgroundColorStyle": {
+                        "rgbColor": {
+                          "red": 0.95686275,
+                          "green": 0.78039217,
+                          "blue": 0.7647059
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "properties": {
+                "sheetId": 314856148,
+                "title": "page2",
+                "index": 1,
+                "sheetType": "GRID",
+                "gridProperties": {
+                  "rowCount": 998,
+                  "columnCount": 26
+                }
+              },
+              "conditionalFormats": [
+                {
+                  "ranges": [
+                    {
+                      "sheetId": 314856148,
+                      "startRowIndex": 1,
+                      "endRowIndex": 11,
+                      "startColumnIndex": 1,
+                      "endColumnIndex": 2
+                    },
+                    {
+                      "sheetId": 314856148,
+                      "startRowIndex": 11,
+                      "endRowIndex": 15,
+                      "startColumnIndex": 1,
+                      "endColumnIndex": 2
+                    }
+                  ],
+                  "booleanRule": {
+                    "condition": {
+                      "type": "CUSTOM_FORMULA",
+                      "values": [
+                        {
+                          "userEnteredValue": "=REGEXMATCH(B2, \"\\W\")"
+                        }
+                      ]
+                    },
+                    "format": {
+                      "backgroundColor": {
+                        "red": 0.95686275,
+                        "green": 0.78039217,
+                        "blue": 0.7647059
+                      },
+                      "backgroundColorStyle": {
+                        "rgbColor": {
+                          "red": 0.95686275,
+                          "green": 0.78039217,
+                          "blue": 0.7647059
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "properties": {
+                "sheetId": 1197290712,
+                "title": "page3",
+                "index": 2,
+                "sheetType": "GRID",
+                "gridProperties": {
+                  "rowCount": 1000,
+                  "columnCount": 26
+                }
+              }
+            }
+          ],
+          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw/edit?ouid=104414667506454296402"
+        }
+  recorded_at: Wed, 02 Jul 2025 01:50:07 GMT
+- request:
+    method: get
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw/values/page1
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Wed, 02 Jul 2025 01:50:08 GMT
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-6
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "range": "page1!A1:Z999",
+          "majorDimension": "ROWS",
+          "values": [
+            [
+              "Type",
+              "Name (should be unique)",
+              "Description",
+              "Required?(1:Yes, 0:No)",
+              "Options",
+              "Flow logic"
+            ],
+            [
+              "Description",
+              "survey_description",
+              "Hi, everyone. This is a sample survey."
+            ],
+            [
+              "Divider"
+            ],
+            [
+              "Section Title",
+              "title1",
+              "Personal Information"
+            ],
+            [
+              "Short answer",
+              "username",
+              "What's your name?",
+              "0"
+            ],
+            [
+              "Multiple choice (radio button)",
+              "age_num",
+              "How old are you?",
+              "1",
+              "10~20,21~25,26~30,31~35,36~40",
+              "2,3,3,3,3"
+            ],
+            [
+              "Paragraph Answer",
+              "self_intro",
+              "Self Introduction",
+              "0"
+            ],
+            [
+              "Multiple choice with 'other' (checkbox)",
+              "social_website",
+              "Which social media you have used?",
+              "1",
+              "Facebook,Instagram,Twitter,LINE,plurk,Google+,Snapchat"
+            ],
+            [
+              "Section Title",
+              "title2",
+              "Rating Scale"
+            ],
+            [
+              "Multiple choice grid (radio button)",
+              "frequency",
+              "I usually use social media.",
+              "1",
+              "strongly disagree,disagree,neutral,agree,strongly agree"
+            ],
+            [
+              "Multiple choice grid (radio button)",
+              "safisfaction",
+              "I'm satisfied with using social media.",
+              "1",
+              "strongly disagree,disagree,neutral,agree,strongly agree"
+            ],
+            [
+              "Multiple choice grid (radio button)",
+              "needs",
+              "I can't live without social media.",
+              "1",
+              "strongly disagree,disagree,neutral,agree,strongly agree"
+            ],
+            [
+              "Jump to page"
+            ]
+          ]
+        }
+  recorded_at: Wed, 02 Jul 2025 01:50:08 GMT
+- request:
+    method: get
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw/values/page2
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Wed, 02 Jul 2025 01:50:08 GMT
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-6
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "range": "page2!A1:Z998",
+          "majorDimension": "ROWS",
+          "values": [
+            [
+              "Type",
+              "Name",
+              "Description",
+              "Required?(1:Yes, 0:No)",
+              "Options",
+              "Flow logic"
+            ],
+            [
+              "Section Title",
+              "survey_title_2",
+              "Hi {{username}}, this is a sample for survey page 2 "
+            ],
+            [
+              "Description",
+              "survey_desc_2",
+              "(username is an embedded variable)"
+            ]
+          ]
+        }
+  recorded_at: Wed, 02 Jul 2025 01:50:09 GMT
+- request:
+    method: get
+    uri: https://sheets.googleapis.com/v4/spreadsheets/1dlNtLfPmOAx08zj1IxKbw4nunZqBDaHv3j0xJVJQCYw/values/page3
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - sheets.googleapis.com
+      User-Agent:
+      - http.rb/5.2.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin,Accept-Encoding
+      - Referer
+      - X-Origin
+      Date:
+      - Wed, 02 Jul 2025 01:50:09 GMT
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      X-L2-Request-Path:
+      - l2-managed-6
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "range": "page3!A1:Z1000",
+          "majorDimension": "ROWS",
+          "values": [
+            [
+              "Type",
+              "Name",
+              "Description",
+              "Required?(1:Yes, 0:No)",
+              "Options",
+              "Flow logic"
+            ],
+            [
+              "Description",
+              "survey_description_3",
+              "This is a sample for survey page 3"
+            ]
+          ]
+        }
+  recorded_at: Wed, 02 Jul 2025 01:50:10 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=ListSubscriptionsByTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T015010Z
+      X-Amz-Content-Sha256:
+      - 17829b0cd1294c1b3777d790b10a30f17d346598ca4e79eef3bd66621c2b011f
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=c0c9cecddeda29c58c594ff6c3584d6efa1b42497deee1a1173374412fb987ff
+      Content-Length:
+      - '146'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - d451e61f-ec5d-5c27-a866-86c17ecf42f6
+      Date:
+      - Wed, 02 Jul 2025 01:50:10 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '319'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <ListSubscriptionsByTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ListSubscriptionsByTopicResult>
+            <Subscriptions/>
+          </ListSubscriptionsByTopicResult>
+          <ResponseMetadata>
+            <RequestId>d451e61f-ec5d-5c27-a866-86c17ecf42f6</RequestId>
+          </ResponseMetadata>
+        </ListSubscriptionsByTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 01:50:10 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=DeleteTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T015010Z
+      X-Amz-Content-Sha256:
+      - 04b275e94069c59b7ca06312e91d5df30f90d1afb7d471500e6979d9f804a925
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=663d86781ab699e208397d69f5cba8e1b02185b35da945541efec0061264f1b6
+      Content-Length:
+      - '133'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - '080d9d31-7e33-50e7-8688-fdefeca1be36'
+      Date:
+      - Wed, 02 Jul 2025 01:50:10 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '201'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <DeleteTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ResponseMetadata>
+            <RequestId>080d9d31-7e33-50e7-8688-fdefeca1be36</RequestId>
+          </ResponseMetadata>
+        </DeleteTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 01:50:10 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=CreateTopic&Name=c3b04367-ebbe-4aee-a727-d0b03f89edb2&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T031523Z
+      X-Amz-Content-Sha256:
+      - def033c06262436fdf994a3b789a193943cec1102419c0549f6815043c06d798
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=7c3c5a5fd1c17f40af410b4f77f70f6452c86bf726906f99b501f44cb98e2004
+      Content-Length:
+      - '79'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 2099f6fd-16a6-5897-b58a-9623b02a77c6
+      Date:
+      - Wed, 02 Jul 2025 03:15:24 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '348'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <CreateTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <CreateTopicResult>
+            <TopicArn><AWS_TOPIC_ARN></TopicArn>
+          </CreateTopicResult>
+          <ResponseMetadata>
+            <RequestId>2099f6fd-16a6-5897-b58a-9623b02a77c6</RequestId>
+          </ResponseMetadata>
+        </CreateTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:15:25 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=ListSubscriptionsByTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T031527Z
+      X-Amz-Content-Sha256:
+      - 9703552514abc85b4fa06a04baea5b432f1c8b4978e5aa6d221b7c71424bdbf9
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=4cac6e48763719677ee7f6b718d9ec94e6379c59bab2a2f558c761e2c42f8292
+      Content-Length:
+      - '146'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 84ff4c7d-01e1-513c-a23b-2ca3a76e6e6d
+      Date:
+      - Wed, 02 Jul 2025 03:15:27 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '319'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <ListSubscriptionsByTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ListSubscriptionsByTopicResult>
+            <Subscriptions/>
+          </ListSubscriptionsByTopicResult>
+          <ResponseMetadata>
+            <RequestId>84ff4c7d-01e1-513c-a23b-2ca3a76e6e6d</RequestId>
+          </ResponseMetadata>
+        </ListSubscriptionsByTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:15:27 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=DeleteTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T031527Z
+      X-Amz-Content-Sha256:
+      - cb8b30efdafbdf1fd0f9187cdfc8aa8c7a57896d42c9d1875951bd77ccf6666a
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=38e81d08492afdbf94f861f0fdc1d3efae5c9ce119a7c07301d50ed1a0c9cc99
+      Content-Length:
+      - '133'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - c2bc022c-bb78-59f8-8f77-62f21df7a6a9
+      Date:
+      - Wed, 02 Jul 2025 03:15:27 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '201'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <DeleteTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ResponseMetadata>
+            <RequestId>c2bc022c-bb78-59f8-8f77-62f21df7a6a9</RequestId>
+          </ResponseMetadata>
+        </DeleteTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:15:27 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=CreateTopic&Name=9565de87-25db-4236-bae7-b65b75481c98&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T032716Z
+      X-Amz-Content-Sha256:
+      - 155f867ab73a5535f1faee227810315813465471db1933542d6ea4d21a56eaf5
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=cd17f16c77b80c1544645ec57a761b2086926d5f231a7e5530f1c1b5e9354682
+      Content-Length:
+      - '79'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - '091639bf-8d3b-5606-9b9f-5961246eac48'
+      Date:
+      - Wed, 02 Jul 2025 03:27:17 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '348'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <CreateTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <CreateTopicResult>
+            <TopicArn><AWS_TOPIC_ARN></TopicArn>
+          </CreateTopicResult>
+          <ResponseMetadata>
+            <RequestId>091639bf-8d3b-5606-9b9f-5961246eac48</RequestId>
+          </ResponseMetadata>
+        </CreateTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:27:17 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=ListSubscriptionsByTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T032719Z
+      X-Amz-Content-Sha256:
+      - 01b31e7c9cdd4c5df1641c7337418e078d75048fd53b377bc8301af7e31dab70
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=d5b6accf794a28058479d1b4cd627a3f67523831cc05b1d522a1fdad1704a3fa
+      Content-Length:
+      - '146'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 3e665aa5-5620-53a1-82e8-3a7bff7739ef
+      Date:
+      - Wed, 02 Jul 2025 03:27:19 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '319'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <ListSubscriptionsByTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ListSubscriptionsByTopicResult>
+            <Subscriptions/>
+          </ListSubscriptionsByTopicResult>
+          <ResponseMetadata>
+            <RequestId>3e665aa5-5620-53a1-82e8-3a7bff7739ef</RequestId>
+          </ResponseMetadata>
+        </ListSubscriptionsByTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:27:19 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=DeleteTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T032719Z
+      X-Amz-Content-Sha256:
+      - 404be3297350b419971e723d9a53ae41c31e8ac48a63067a54f9bb190906fa81
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=92c14e4e82ecd6ab7b6fa84f038862129796a6a0ca495e3ae3078cac36bc4117
+      Content-Length:
+      - '133'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 0543a85c-1179-518b-9bc4-c882b82efbc5
+      Date:
+      - Wed, 02 Jul 2025 03:27:19 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '201'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <DeleteTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ResponseMetadata>
+            <RequestId>0543a85c-1179-518b-9bc4-c882b82efbc5</RequestId>
+          </ResponseMetadata>
+        </DeleteTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:27:19 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=CreateTopic&Name=a5c9543f-c414-43aa-8d26-69818df44a92&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T034218Z
+      X-Amz-Content-Sha256:
+      - 1cb23fd6eb7b4a1eb211ccb523c6a4ed22742f7a15a19515649726ead977732e
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=482e33900629c544ae217b972db31342501f33d2a105d1e54e2f95951ecfd9a7
+      Content-Length:
+      - '79'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 6d1b280e-1c82-5dc3-b3a4-48d0b058e983
+      Date:
+      - Wed, 02 Jul 2025 03:42:18 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '348'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <CreateTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <CreateTopicResult>
+            <TopicArn><AWS_TOPIC_ARN></TopicArn>
+          </CreateTopicResult>
+          <ResponseMetadata>
+            <RequestId>6d1b280e-1c82-5dc3-b3a4-48d0b058e983</RequestId>
+          </ResponseMetadata>
+        </CreateTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:42:19 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=ListSubscriptionsByTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T034220Z
+      X-Amz-Content-Sha256:
+      - 05ed8d9477e94b1aeb96bc62581b14cea08e21506ad6ba7bebe1442e2e3ed56e
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=ca8aaecd5c4b7ca825e8d69195f8f144e25d4455688057c954f08792e0b8ef0b
+      Content-Length:
+      - '146'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 352b7ff6-c34a-51e4-b3cb-1f286f96f5a4
+      Date:
+      - Wed, 02 Jul 2025 03:42:20 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '319'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <ListSubscriptionsByTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ListSubscriptionsByTopicResult>
+            <Subscriptions/>
+          </ListSubscriptionsByTopicResult>
+          <ResponseMetadata>
+            <RequestId>352b7ff6-c34a-51e4-b3cb-1f286f96f5a4</RequestId>
+          </ResponseMetadata>
+        </ListSubscriptionsByTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:42:20 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=DeleteTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T034220Z
+      X-Amz-Content-Sha256:
+      - f1ea0c9804beea828d16221b1ef1c2d0ba132ac5f3678b374c0f837030be4614
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=f9d626f73fcbd7771dfbc9a25b006f477ba802185db2e95af73c6f1f8a73ddc2
+      Content-Length:
+      - '133'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 57428579-b815-5c9e-8bea-e5a714c9c8de
+      Date:
+      - Wed, 02 Jul 2025 03:42:20 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '201'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <DeleteTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ResponseMetadata>
+            <RequestId>57428579-b815-5c9e-8bea-e5a714c9c8de</RequestId>
+          </ResponseMetadata>
+        </DeleteTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:42:20 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=CreateTopic&Name=fd5c6fff-dcba-4775-b318-1e5af6f4b7a2&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T035030Z
+      X-Amz-Content-Sha256:
+      - 99fac159ec6656151012fae94f4d03f6dc4748e396d098c5e1448d0e63d86b1f
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=12b01093c18b32a90a6e7b19c5c481477309964d27385c06a59c6553570314fe
+      Content-Length:
+      - '79'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - e91c7ca8-31ee-5a8f-8a4a-1c769f28e655
+      Date:
+      - Wed, 02 Jul 2025 03:50:30 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '348'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <CreateTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <CreateTopicResult>
+            <TopicArn><AWS_TOPIC_ARN></TopicArn>
+          </CreateTopicResult>
+          <ResponseMetadata>
+            <RequestId>e91c7ca8-31ee-5a8f-8a4a-1c769f28e655</RequestId>
+          </ResponseMetadata>
+        </CreateTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:50:30 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=ListSubscriptionsByTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T035032Z
+      X-Amz-Content-Sha256:
+      - 20326d4dcb7ece2b4d307cad92c197dfcd6c329ba44aec7b98ab212743644099
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=ce61cd7c0b8469c57642627a7e69b5352ec2686715789c3f93bb8ad5399836e9
+      Content-Length:
+      - '146'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 4bd2e6f3-d8ec-5819-9436-862d762434c3
+      Date:
+      - Wed, 02 Jul 2025 03:50:32 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '319'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <ListSubscriptionsByTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ListSubscriptionsByTopicResult>
+            <Subscriptions/>
+          </ListSubscriptionsByTopicResult>
+          <ResponseMetadata>
+            <RequestId>4bd2e6f3-d8ec-5819-9436-862d762434c3</RequestId>
+          </ResponseMetadata>
+        </ListSubscriptionsByTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:50:32 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=DeleteTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T035032Z
+      X-Amz-Content-Sha256:
+      - f34b76e26d6911e66d2252aec82fd8ac8b14e82b9cd610771ffd9e96527d3d6d
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=7a81ab7dd6419763a15e9793da3a3dc5e883cc496d53c49aef020d2b134c33a6
+      Content-Length:
+      - '133'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 11e41d54-3e76-5e21-bf8f-7d8a90be02fb
+      Date:
+      - Wed, 02 Jul 2025 03:50:32 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '201'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <DeleteTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ResponseMetadata>
+            <RequestId>11e41d54-3e76-5e21-bf8f-7d8a90be02fb</RequestId>
+          </ResponseMetadata>
+        </DeleteTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:50:32 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=CreateTopic&Name=bae4584d-a3a9-4fac-88e0-50a1e58e31d5&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T035645Z
+      X-Amz-Content-Sha256:
+      - cdd03dcb4d693b662afae46e8dd5df8bb43fbec7c87dcdb29bc41d660923bb5f
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=ff668a7d10909f5eee971566de29858a307c10b14ff0e1ef09d375311d61a19a
+      Content-Length:
+      - '79'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 5351b4c6-902f-55a1-a5b2-d4182012caf8
+      Date:
+      - Wed, 02 Jul 2025 03:56:45 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '348'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <CreateTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <CreateTopicResult>
+            <TopicArn><AWS_TOPIC_ARN></TopicArn>
+          </CreateTopicResult>
+          <ResponseMetadata>
+            <RequestId>5351b4c6-902f-55a1-a5b2-d4182012caf8</RequestId>
+          </ResponseMetadata>
+        </CreateTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:56:45 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=ListSubscriptionsByTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T035647Z
+      X-Amz-Content-Sha256:
+      - c97537e8f0ba423f034257b6eae00766a4e3d611678de847586f6d1ab03a99e7
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=a62f737a97ee4ed307c021dc3697b2b74c75e494d20c8bdbb577459e507b6347
+      Content-Length:
+      - '146'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - 6b05d4a7-4d0e-525c-9e73-b479fd317d05
+      Date:
+      - Wed, 02 Jul 2025 03:56:47 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '319'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <ListSubscriptionsByTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ListSubscriptionsByTopicResult>
+            <Subscriptions/>
+          </ListSubscriptionsByTopicResult>
+          <ResponseMetadata>
+            <RequestId>6b05d4a7-4d0e-525c-9e73-b479fd317d05</RequestId>
+          </ResponseMetadata>
+        </ListSubscriptionsByTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:56:47 GMT
+- request:
+    method: post
+    uri: https://sns.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=DeleteTopic&TopicArn=<AWS_TOPIC_ARN>&Version=2010-03-31
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.131.1 ruby/3.3.5 x86_64-linux aws-sdk-sns/1.53.0
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Host:
+      - sns.ap-northeast-1.amazonaws.com
+      X-Amz-Date:
+      - 20250702T035647Z
+      X-Amz-Content-Sha256:
+      - c6d097b00a65cf9ef2126c8e829a93bb28ab1fea52bb750424fd77b9c82a7bf9
+      Authorization:
+      - AWS4-HMAC-SHA256 <ACCESS_TOKEN> SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date,
+        Signature=778f4ee9f5706e26ef17271e070707900c4deacd52f9334782270c11ae76ee03
+      Content-Length:
+      - '133'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amzn-Requestid:
+      - '08776bfc-cfc9-5644-9cab-0b227ff6291d'
+      Date:
+      - Wed, 02 Jul 2025 03:56:47 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '201'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |
+        <DeleteTopicResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
+          <ResponseMetadata>
+            <RequestId>08776bfc-cfc9-5644-9cab-0b227ff6291d</RequestId>
+          </ResponseMetadata>
+        </DeleteTopicResponse>
+  recorded_at: Wed, 02 Jul 2025 03:56:47 GMT
+recorded_with: VCR 6.3.1
