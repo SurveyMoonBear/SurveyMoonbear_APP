@@ -4,7 +4,6 @@ module SurveyMoonbear
   module Repository
     For = {
       Entity::Account => Accounts,
-      Entity::AccountSurvey => AccountSurveys,
       Entity::Survey  => Surveys,
       Entity::Launch  => Launches,
       Entity::VisualReport => VisualReports,

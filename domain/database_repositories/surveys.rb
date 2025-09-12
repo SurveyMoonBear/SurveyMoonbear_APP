@@ -23,17 +23,26 @@ module SurveyMoonbear
       end
 
 
-      def self.find_accessible_with_roles(owner_id)
-          links = Database::AccountSurveysOrm.where(owner_id: owner_id).all
-          survey_ids = links.map(&:survey_id).uniq
-          db_surveys = Database::SurveyOrm.where(id: survey_ids).all
+      def self.find_accessible_with_roles(user_id)
+        owned_surveys = Database::SurveyOrm.where(owner_id: user_id).all
 
-          surveys = rebuild_many(db_surveys)
+        codesigner_survey_ids = Database::SurveyOrm.db[:accounts_surveys]
+                                            .where(codesigner_id: user_id)
+                                            .map(:survey_id)
 
-          surveys.map do |survey|
-            role = links.find { |l| l.survey_id == survey.id }&.role
-            { survey: survey, role: role }
+        codesigner_surveys = Database::SurveyOrm.where(id: codesigner_survey_ids).all
+  
+        all_surveys = (owned_surveys + codesigner_surveys).uniq
+        surveys = rebuild_many(all_surveys)
+        
+        surveys.map do |survey|
+          if survey.owner.id == user_id
+            { survey: survey, role: 'owner' }
+          else
+            role = codesigner_links.find { |l| l.survey_id == survey.id }&.role
+            { survey: survey, role: role || 'codesigner' }
           end
+        end
       end
 
       def self.find_alone(owner_id)
@@ -138,7 +147,6 @@ module SurveyMoonbear
 
       def self.delete_from(id)
         db_survey = Database::SurveyOrm.where(id: id).first
-        Database::AccountSurveysOrm.where(survey_id: id).delete
 
         db_survey.pages.each do |page|
           page.items.each(&:delete)

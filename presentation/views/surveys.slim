@@ -9,7 +9,7 @@
           button.btn.btn-outline-dark.border-0.ml-2.d-inline-flex.align-middle data-toggle="modal" data-target="#modal_survey_settings" data-survey_id=survey.id data-survey_title=survey.title
             i.fas.fa-cog
 
-          - if survey.can_add_collaborators?
+          - if survey.can_add_codesigners?
             button.btn.btn-outline-dark.border-0.ml-2.d-inline-flex.align-middle data-toggle="modal" data-target="#modal_share_collaborator" data-survey_id=survey.id
               i.fas.fa-user-plus
 

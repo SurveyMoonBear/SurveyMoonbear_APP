@@ -35,13 +35,7 @@ module SurveyMoonbear
       def self.rebuild_entity(db_record)
         return nil unless db_record
 
-        Entity::AccountSurvey.new(
-          owner_id: db_record.owner_id,
-          survey_id: db_record.survey_id,
-          role: db_record.role,
-          created_at: db_record.created_at,
-          updated_at: db_record.updated_at
-        )
+
       end
     end
   end

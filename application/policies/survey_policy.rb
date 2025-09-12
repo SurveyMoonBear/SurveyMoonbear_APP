@@ -17,25 +17,24 @@ module SurveyMoonbear
       account_is_owner?
     end
 
-    def can_add_collaborators?
+    def can_add_codesigners?
       account_is_owner?
     end
 
-    def can_remove_collaborators?
+    def can_remove_codesigner?
       account_is_owner?
     end
 
-    def can_collaborate?
-      not(account_is_owner? or account_is_collaborator?)
+    def can_codesigner?
+      not(account_is_owner? or account_is_codesigner?)
     end
 
     def summary
       {
         can_view: can_view?,
         can_delete: can_delete?,
-        can_add_collaborators: can_add_collaborators?,
-        can_remove_collaborators: can_remove_collaborators?,
-        can_collaborate: can_collaborate?
+        can_add_codesigners: can_add_codesigners?,
+        can_remove_codesigner: can_remove_codesigner?,
       }
     end
 
@@ -45,8 +44,8 @@ module SurveyMoonbear
       @role ? @role == 'owner' : (@survey.owner.id == @account.id)
     end
 
-    def account_is_collaborator?
-      @role ? @role == 'collaborator' : false 
+    def account_is_codesigner?
+      @role ? @role == 'codesigner' : false
 
     end
   end

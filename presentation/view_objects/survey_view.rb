@@ -44,12 +44,12 @@ module Views
       @policy[:can_view]
     end
 
-    def can_add_collaborators?
-       @policy[:can_add_collaborators]
+    def can_add_codesigners?
+       @policy[:can_add_codesigners]
     end
 
-    def can_remove_collaborators?
-        @policy[:can_remove_collaborators]
+    def can_remove_codesigner?
+        @policy[:can_remove_codesigner]
     end
 
     # URL
@@ -82,8 +82,8 @@ module Views
         role: role,
         can_delete: can_delete?,
         can_view: can_view?,
-        can_add_collaborators: can_add_collaborators?,
-        can_remove_collaborators: can_remove_collaborators?,
+        can_add_codesigners: can_add_codesigners?,
+        can_remove_codesigner: can_remove_codesigner?,
         preview_url: preview_url,
         spreadsheet_url: spreadsheet_url,
         launch_url: launch_url

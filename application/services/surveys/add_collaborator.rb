@@ -49,7 +49,7 @@ module SurveyMoonbear
       def authorize_add!(account, survey)
         role   = Repository::AccountSurveys.find_role(account.id, survey.id)
         policy = SurveysPolicy.new(account, survey, role)
-        raise ForbiddenError unless policy.can_add_collaborators?
+        raise ForbiddenError unless policy.can_add_codesigners?
       end
 
       def find_collaborator!(email)

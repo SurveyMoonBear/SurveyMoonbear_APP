@@ -81,8 +81,9 @@ module SurveyMoonbear
                                          .load(input[:new_spreadsheet_id], input[:current_account])
         survey = Repository::For[new_survey.class].find_or_create(new_survey)
         Success(survey)
-      rescue
-        Failure('Failed to store the new survey into database.')
+      rescue StandardError => e
+        puts "DEBUG: Error in store_into_database: #{e.class} - #{e.message}"
+        Failure("Failed to store the new survey into database: #{e.message}")
       end
     end
   end

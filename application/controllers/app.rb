@@ -133,6 +133,7 @@ module SurveyMoonbear
                                                       title: routing.params['title'],
                                                       study_id: routing.params['study_id'])
           redirect_rout = routing.params['rerout']
+          # binding.irb
           if new_survey.success?
             flash[:notice] = "#{new_survey.value!.title} is created!"
           else

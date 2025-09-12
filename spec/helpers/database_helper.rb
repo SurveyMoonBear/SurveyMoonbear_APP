@@ -5,7 +5,6 @@ class DatabaseHelper
   def self.wipe_database
     SurveyMoonbear::App.DB.run('PRAGMA foreign_keys = OFF')
     SurveyMoonbear::Database::AccountOrm.map(&:destroy)
-    SurveyMoonbear::Database::AccountSurveysOrm.map(&:destroy)
     SurveyMoonbear::Database::StudyOrm.map(&:destroy)
     SurveyMoonbear::Database::ParticipantOrm.map(&:destroy)
     SurveyMoonbear::Database::NotificationOrm.map(&:destroy)
