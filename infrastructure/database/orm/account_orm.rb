@@ -43,6 +43,10 @@ module SurveyMoonbear
       def refresh_token
         SecureDB.decrypt(refresh_token_secure)
       end
+
+      def surveys
+        owned_surveys.all + codesigned_surveys.all
+      end
     end
   end
 end
