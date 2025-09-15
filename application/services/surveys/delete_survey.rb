@@ -22,7 +22,7 @@ module SurveyMoonbear
         return Failure('Survey not found.') if survey.nil?
         account_data = input[:account] 
         account = Repository::Accounts.find_id(account_data['id'])
-        role    = Repository::AccountSurveys.find_role(account.id, survey.id)
+        role    = Repository::Surveys.find_role(account.id, survey.id)
         policy = SurveysPolicy.new(account, survey, role)
         return Failure('You are not the owner of this survey.') unless policy.can_delete?
 
@@ -54,6 +54,9 @@ module SurveyMoonbear
 
       # input { ..., access_token }
       def delete_record_in_database(input)
+        Database::SurveyOrm.db[:accounts_surveys]
+                     .where(survey_id: input[:survey_id])
+                     .delete
         input[:deleted_survey] = Repository::For[Entity::Survey].delete_from(input[:survey_id])
         Success(input)
       rescue StandardError => e

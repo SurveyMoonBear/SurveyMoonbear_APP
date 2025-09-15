@@ -133,9 +133,12 @@ module SurveyMoonbear
                                                       title: routing.params['title'],
                                                       study_id: routing.params['study_id'])
           redirect_rout = routing.params['rerout']
-          # binding.irb
+          binding.irb
           if new_survey.success?
-            flash[:notice] = "#{new_survey.value!.title} is created!"
+              survey_data = new_survey.value!
+              title = survey_data[:title] || survey_data['title'] || 'Survey'
+              binding.irb
+              flash[:notice] = "#{title} is created!"
           else
             flash[:error] = 'Failed to create survey, please try again :('
           end
