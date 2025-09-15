@@ -10,7 +10,7 @@ module SurveyMoonbear
     end
 
     def can_view?
-      account_is_owner? || account_is_collaborator?
+      account_is_owner? || account_is_codesigner?
     end
 
     def can_delete?

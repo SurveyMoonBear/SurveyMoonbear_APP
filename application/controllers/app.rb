@@ -181,12 +181,12 @@ module SurveyMoonbear
 
         # POST /survey/:id/add_collaborator
         routing.post 'add_collaborator' do
-          result  = Service::AddCollaborator.new.call(
+          result  = Service::AddCodesigner.new.call(
             account: @current_account,
             survey_id: survey_id,
-            collaborator_email: routing.params['email']
+            codesigner_email: routing.params['email']
           )
-
+          binding.irb
           response['Content-Type'] = 'application/json'
           if result .failure?
             routing.halt 400, { message: result .failure }.to_json

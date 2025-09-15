@@ -39,12 +39,35 @@ module SurveyMoonbear
           if survey.owner.id == user_id
             { survey: survey, role: 'owner' }
           else
-            role = codesigner_links.find { |l| l.survey_id == survey.id }&.role
-            { survey: survey, role: role || 'codesigner' }
+            { survey: survey, role: 'codesigner' }
           end
         end
       end
 
+      def self.find_role(account_id, survey_id)
+        survey = Database::SurveyOrm.where(id: survey_id, owner_id: account_id).first
+        return 'owner' if survey
+
+        relation = Database::SurveyOrm.db[:accounts_surveys]
+                                    .where(codesigner_id: account_id, survey_id: survey_id)
+                                    .first
+        return 'codesigner' if relation
+
+        nil
+      end
+      def self.add_codesigner(account_id, survey_id)
+        Database::SurveyOrm.db[:accounts_surveys].insert(
+          codesigner_id: account_id,
+          survey_id: survey_id,
+          created_at: Time.now,
+          updated_at: Time.now
+        )
+      end
+      def self.remove_codesigner(account_id, survey_id)
+        Database::SurveyOrm.db[:accounts_surveys]
+                         .where(codesigner_id: account_id, survey_id: survey_id)
+                         .delete
+      end
       def self.find_alone(owner_id)
         db_records = Database::SurveyOrm.where(owner_id: owner_id, study_id: nil).all
 
