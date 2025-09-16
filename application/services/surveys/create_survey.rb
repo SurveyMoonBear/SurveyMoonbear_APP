@@ -53,27 +53,6 @@ module SurveyMoonbear
         Failure('Failed to add related study in to survey.')
       end
 
-      
-      # def link_owner_to_survey(input)
-      #   existing = Repository::AccountSurveys.find(
-      #     owner_id: input[:survey].owner.id,
-      #     survey_id: input[:survey].id
-      #   )
-
-      #   return Success(input[:survey]) if existing
-      #   account_survey = Entity::AccountSurvey.new(
-      #     owner_id: input[:survey].owner.id,
-      #     survey_id: input[:survey].id,
-      #     role: 'owner',
-      #     created_at: Time.now,
-      #     updated_at: Time.now
-      #   )
-      #   Repository::For[Entity::AccountSurvey].create(account_survey)
-      #   Success(input[:survey])
-      # rescue StandardError => e
-      #   puts e
-      #   Failure('Failed to associate owner account with survey.')
-      # end
     end
   end
 end

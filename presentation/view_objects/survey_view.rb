@@ -4,10 +4,11 @@
 module Views
   # View for a survey hash
   class SurveyView
-    def initialize(survey:, role:, policy:)
+    def initialize(survey:, role:, policy:, designers_info: nil)
       @survey = survey
       @role = role
       @policy = policy
+      @designers_info = designers_info
     end
 
 
@@ -34,8 +35,12 @@ module Views
     def role
       @role
     end
+    
+    def designers_info
+      @designers_info
+    end
 
-    # 權限
+    # authority
     def can_delete?
       @policy[:can_delete]
     end
@@ -51,6 +56,7 @@ module Views
     def can_remove_codesigner?
         @policy[:can_remove_codesigner]
     end
+    
 
     # URL
     def preview_url
@@ -86,7 +92,8 @@ module Views
         can_remove_codesigner: can_remove_codesigner?,
         preview_url: preview_url,
         spreadsheet_url: spreadsheet_url,
-        launch_url: launch_url
+        launch_url: launch_url,
+        designers_info: designers_info
       }
     end
     private

@@ -106,12 +106,14 @@ module SurveyMoonbear
 
           begin
             result = Service::ListSurveys.new.call(account_id: @current_account['id'])
+            # binding.irb
             if result.success?
               surveys = result.value!.map do |data|
                Views::SurveyView.new(
                   survey: data[:survey],
                   role: data[:role],
-                  policy: data[:policy_summary]
+                  policy: data[:policy_summary],
+                  designers_info: data[:designers_info]
                 )
                 
               end
@@ -133,11 +135,9 @@ module SurveyMoonbear
                                                       title: routing.params['title'],
                                                       study_id: routing.params['study_id'])
           redirect_rout = routing.params['rerout']
-          binding.irb
           if new_survey.success?
               survey_data = new_survey.value!
               title = survey_data[:title] || survey_data['title'] || 'Survey'
-              binding.irb
               flash[:notice] = "#{title} is created!"
           else
             flash[:error] = 'Failed to create survey, please try again :('
@@ -189,7 +189,6 @@ module SurveyMoonbear
             survey_id: survey_id,
             codesigner_email: routing.params['email']
           )
-          binding.irb
           response['Content-Type'] = 'application/json'
           if result .failure?
             routing.halt 400, { message: result .failure }.to_json
@@ -197,7 +196,6 @@ module SurveyMoonbear
             routing.halt 200, { message: result .value! }.to_json
           end
           routing.redirect '/survey_list'
-          
         end
 
 
