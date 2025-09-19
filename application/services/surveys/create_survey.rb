@@ -14,7 +14,7 @@ module SurveyMoonbear
       step :refresh_access_token
       step :copy_sample_spreadsheet
       step :store_belongs_study
-      # step :link_owner_to_survey
+      step :return_survey
 
       private
 
@@ -51,6 +51,11 @@ module SurveyMoonbear
       rescue StandardError => e
         puts e
         Failure('Failed to add related study in to survey.')
+      end
+
+      # input { ..., survey: }
+      def return_survey(input)
+        Success(input[:survey])
       end
 
     end

@@ -13,6 +13,7 @@ module SurveyMoonbear
       step :get_survey_from_database
       step :change_survey_state
       step :change_launch_state
+      step :return_closed_survey
 
       private
 
@@ -41,11 +42,18 @@ module SurveyMoonbear
       def change_launch_state(input)
         db_launch = Repository::For[Entity::Launch].find_id(input[:db_survey].launch_id)
         updated_launch = Repository::For[db_launch.class].update_state(db_launch)
-
-        Success(updated_launch)
+        input[:updated_launch] = updated_launch
+        Success(input)
       rescue StandardError => e
         puts e
         Failure('Failed to change launch state to closed.')
+      end
+
+      # input { ..., db_survey: }
+      def return_closed_survey(input)
+        # Return the updated survey with closed state
+        closed_survey = Repository::For[Entity::Survey].find_id(input[:db_survey].id)
+        Success(closed_survey)
       end
     end
   end
