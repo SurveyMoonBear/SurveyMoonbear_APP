@@ -313,7 +313,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"requests":[{"updateSpreadsheetProperties":{"properties":{"title":"Survey
-        for collaborator test"},"fields":"title"}}]}'
+        for codesigner test"},"fields":"title"}}]}'
     headers:
       Authorization:
       - Bearer <ACCESS_TOKEN>
@@ -418,7 +418,7 @@ http_interactions:
         {
           "spreadsheetId": "14aV4CkH9gN0mPk41QAqNd4u5-Q_AHPkEuVnrNFe5SkM",
           "properties": {
-            "title": "Survey for collaborator test",
+            "title": "Survey for codesigner test",
             "locale": "zh_TW",
             "autoRecalc": "ON_CHANGE",
             "timeZone": "Asia/Shanghai",

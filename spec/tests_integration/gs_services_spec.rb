@@ -204,56 +204,53 @@ require_relative './../../workers/workers'
     end
 
     
-    describe 'Add collaborator' do
-    before do
-      VcrHelper.build_cassette('happy_add_collaborator')
+    describe 'Add codesigner' do
+      before(:all) do
+        VcrHelper.build_cassette('happy_add_codesigner')
 
-      result = SurveyMoonbear::Service::CreateSurvey.new.call(
-        config: CONFIG,
-        current_account: CURRENT_ACCOUNT,
-        title: 'Survey for collaborator test'
-      )
-      raise result.failure unless result.success?
-      @survey = result.value!
-      CURRENT_ACCOUNT['id'] = @survey.owner.id
-    end
-
-    after do
-      SurveyMoonbear::Service::DeleteSurvey.new.call(
-        config: CONFIG,
-        survey_id: @survey.id
-      )
-      VcrHelper.eject_vcr
-    end
-
-  it 'HAPPY: should add a collaborator successfully' do
-    collaborator = SurveyMoonbear::Repository::Accounts.find_email('someone@example.com')
-    unless collaborator
-      # create fake account if doesn't exist
-
-      collaborator = SurveyMoonbear::Repository::Accounts.find_or_create(
-        SurveyMoonbear::Entity::Account.new(
-          id: nil,
-          username: 'Collaborator',
-          email: 'someone@example.com',
-          access_token: 'token',
-          refresh_token: 'refresh'
+        result = SurveyMoonbear::Service::CreateSurvey.new.call(
+          config: CONFIG,
+          current_account: CURRENT_ACCOUNT,
+          title: 'Survey for codesigner test'
         )
-      )
-    end
-    
-    result = SurveyMoonbear::Service::AddCollaborator.new.call(
-      account: CURRENT_ACCOUNT,
-      survey_id: @survey.id,
-      collaborator_email: 'someone@example.com'
-    )
-    
-    _(result.success?).must_equal true
-    _(result.value!).must_include 'was added as collaborator'
-    
+        raise result.failure unless result.success?
+        @survey = result.value!
+        CURRENT_ACCOUNT['id'] = @survey.owner.id
+      end
 
-  end
+      after(:all) do
+        SurveyMoonbear::Service::DeleteSurvey.new.call(
+          config: CONFIG,
+          survey_id: @survey.id,
+          account: CURRENT_ACCOUNT
+        )
+        VcrHelper.eject_vcr
+      end
 
+      it 'HAPPY: should add a codesigner successfully' do
+        codesigner = SurveyMoonbear::Repository::Accounts.find_email('someone@example.com')
+        unless codesigner
+          # create fake account if doesn't exist
+          codesigner = SurveyMoonbear::Repository::Accounts.find_or_create(
+            SurveyMoonbear::Entity::Account.new(
+              id: nil,
+              username: 'codesigner',
+              email: 'someone@example.com',
+              access_token: 'token',
+              refresh_token: 'refresh'
+            )
+          )
+        end
+        
+        result = SurveyMoonbear::Service::AddCodesigner.new.call(
+          account: CURRENT_ACCOUNT,
+          survey_id: @survey.id,
+          codesigner_email: 'someone@example.com'
+        )
+        
+        _(result.success?).must_equal true
+        _(result.value!).must_include 'was added as codesigner'
+      end
     end
 
 
