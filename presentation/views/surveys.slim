@@ -10,7 +10,7 @@
             i.fas.fa-cog
 
           - if survey.can_add_codesigners?
-            button.btn.btn-outline-dark.border-0.ml-2.d-inline-flex.align-middle data-toggle="modal" data-target="#modal_share_collaborator" data-survey_id=survey.id
+            button.btn.btn-outline-dark.border-0.ml-2.d-inline-flex.align-middle data-toggle="modal" data-target="#modal_share_codesigner" data-survey_id=survey.id data-designers-info=(survey.designers_info.to_json.gsub('"','&quot;') if survey.designers_info)
               i.fas.fa-user-plus
 
           button.btn.btn-outline-dark.border-0.ml-auto.d-inline-flex.align-middle data-toggle="dropdown"
@@ -81,7 +81,7 @@ include :modal_copy_survey
 include :modal_survey_settings
 include :modal_survey_editor
 include :modal_responses_download
-include :modal_add_collaborator
+include :modal_add_codesigner
 
 javascript:
   $("input[type='text']").on("click", function () {
@@ -170,36 +170,3 @@ javascript:
       }
     });
   }
-
-  $('#modal_share_collaborator').on('show.bs.modal', function (e) {
-    const button = $(e.relatedTarget);
-    const surveyId = button.data('survey_id');
-    $('#share-survey-id').val(surveyId);
-
-    const list = $('#collaborators-list');
-    list.html('<li class="text-muted">Loading...</li>');
-
-    $.get(`/survey/${surveyId}/collaborators`, function (data) {
-      list.empty();
-      data.collaborators.forEach(user => {
-        list.append(`<li>${user.username} (${user.email})</li>`);
-      });
-    });
-  });
-
-  $('#share-collab-form').on('submit', function (e) {
-    e.preventDefault();
-    const surveyId = $('#share-survey-id').val();
-    const email = $(this).find('input[name="email"]').val();
-
-  $.post(`/survey/${surveyId}/add_collaborator`, { email: email }, function (result) {
-    alert(result.message);
-  }).fail(function (xhr) {
-    let msg = 'Failed to add collaborator';
-    try {
-      const res = JSON.parse(xhr.responseText);
-      if (res.message) msg = res.message;
-    } catch (_) {}
-    alert(msg);
-  });
-  });

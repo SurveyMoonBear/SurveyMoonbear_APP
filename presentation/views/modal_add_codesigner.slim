@@ -1,0 +1,104 @@
+div.modal.fade id="modal_share_codesigner" tabindex="-1" role="dialog"
+  div.modal-dialog.modal-dialog-centered role="document"
+    div.modal-content
+      div.modal-header
+        h5.modal-title Share Survey with codesigner
+        button.close type="button" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" ×
+      div.modal-body
+        form#share-collab-form
+          input#share-survey-id type="hidden" name="survey_id"
+          div.form-group
+            label Enter user email to share with:
+            input.form-control name="email" type="email" required=true
+          button.btn.btn-primary.mt-2 type="submit" Add Codesigner
+        hr
+        p.text-muted.mt-3 Current codesigner:
+        ul#codesigner-list
+          li.loading Loading...
+      div.modal-footer
+        button.btn.btn-secondary type="button" data-dismiss="modal" Close
+
+javascript:
+  $('#modal_share_codesigner').on('show.bs.modal', function (e) {
+    const button = $(e.relatedTarget);
+    const surveyId = button.data('survey_id');
+    $('#share-survey-id').val(surveyId);
+
+
+    let designersInfo = button.data('designersInfo'); 
+    console.log('jQuery data designersInfo:', designersInfo);
+    
+    if (typeof designersInfo === 'string') {
+      try {
+        designersInfo = JSON.parse(designersInfo.replace(/&quot;/g, '"'));
+        console.log('Parsed from jQuery data:', designersInfo);
+      } catch (err) {
+        console.error('Failed to parse jQuery data:', err);
+        designersInfo = null;
+      }
+    }
+
+    if (!designersInfo) {
+      const raw = button.attr('data-designers-info');
+      console.log('Raw data-designers-info attribute:', raw);
+      if (raw) {
+        try { 
+          designersInfo = JSON.parse(raw.replace(/&quot;/g, '"')); 
+          console.log('Parsed designersInfo:', designersInfo);
+        } catch (err) { 
+          console.error('Failed to parse designers info:', err);
+          designersInfo = null; 
+        }
+      }
+    }
+
+    const list = $('#codesigner-list');
+    list.empty();
+
+    if (designersInfo && (designersInfo.owner || (designersInfo.codesigners && designersInfo.codesigners.length))) {
+      if (designersInfo.owner) {
+        list.append(`<li><strong>Owner:</strong> ${designersInfo.owner.username} <small class="text-muted">(${designersInfo.owner.email})</small></li>`);
+      }
+      
+      if (designersInfo.codesigners && designersInfo.codesigners.length > 0) {
+        designersInfo.codesigners.forEach(user => {
+          list.append(`<li><strong>Codesigner:</strong> ${user.username} <small class="text-muted">(${user.email})</small></li>`);
+        });
+      } else if (designersInfo.owner) {
+        list.append('<li class="text-muted"><em>No codesigners yet</em></li>');
+      }
+    } else {
+      // fallback to AJAX
+      list.html('<li class="text-muted">Loading...</li>');
+      $.get(`/survey/${surveyId}/codesigner`, function (data) {
+        list.empty();
+        if (data && data.codesigner && data.codesigner.length > 0) {
+          data.codesigner.forEach(user => {
+            list.append(`<li>${user.username} <small class="text-muted">(${user.email})</small></li>`);
+          });
+        } else {
+          list.append('<li class="text-muted"><em>No codesigner found</em></li>');
+        }
+      }).fail(function () {
+        list.html('<li class="text-danger">Failed to load codesigner</li>');
+      });
+    }
+  });
+
+  $('#share-collab-form').on('submit', function (e) {
+    e.preventDefault();
+    const surveyId = $('#share-survey-id').val();
+    const email = $(this).find('input[name="email"]').val();
+
+    $.post(`/survey/${surveyId}/add_codesigner`, { email: email }, function (result) {
+      alert(result.message);
+    }).fail(function (xhr) {
+      let msg = 'Failed to add codesigner';
+      try {
+        const res = JSON.parse(xhr.responseText);
+        if (res.message) msg = res.message;
+      } catch (_) {}
+      alert(msg);
+    });
+  });

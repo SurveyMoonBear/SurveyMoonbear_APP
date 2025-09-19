@@ -106,7 +106,6 @@ module SurveyMoonbear
 
           begin
             result = Service::ListSurveys.new.call(account_id: @current_account['id'])
-            # binding.irb
             if result.success?
               surveys = result.value!.map do |data|
                Views::SurveyView.new(
@@ -182,8 +181,8 @@ module SurveyMoonbear
           routing.redirect '/survey_list'
         end
 
-        # POST /survey/:id/add_collaborator
-        routing.post 'add_collaborator' do
+        # POST /survey/:id/add_codesigner
+        routing.post 'add_codesigner' do
           result  = Service::AddCodesigner.new.call(
             account: @current_account,
             survey_id: survey_id,

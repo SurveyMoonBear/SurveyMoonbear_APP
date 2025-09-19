@@ -16,14 +16,12 @@ module SurveyMoonbear
           role = info[:role]
           policy = SurveysPolicy.new(account, survey, role)
           survey_orm = Database::SurveyOrm[survey.id]
-          # binding.irb
-          # puts survey_orm.inspect
-          # puts survey_orm.designers_info
+          designers_info = survey_orm.designers_info
           {
               survey: survey,
               role: role,
               policy_summary: policy.summary,
-              designers_info: survey_orm.designers_info
+              designers_info: designers_info
           }
         end
         Success(result)
