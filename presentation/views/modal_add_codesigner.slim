@@ -14,8 +14,17 @@ div.modal.fade id="modal_share_codesigner" tabindex="-1" role="dialog"
           button.btn.btn-primary.mt-2 type="submit" Add Codesigner
         hr
         p.text-muted.mt-3 Current codesigner:
-        ul#codesigner-list
-          li.loading Loading...
+        .table-responsive
+          table.table.table-sm#codesigner-table
+            thead
+              tr
+                th Role
+                th Name
+                th Email
+                th Action
+            tbody#codesigner-list
+              tr
+                td colspan="4" class="text-center text-muted" Loading...
       div.modal-footer
         button.btn.btn-secondary type="button" data-dismiss="modal" Close
 
@@ -57,31 +66,78 @@ javascript:
     list.empty();
 
     if (designersInfo && (designersInfo.owner || (designersInfo.codesigners && designersInfo.codesigners.length))) {
+      // 顯示 owner
       if (designersInfo.owner) {
-        list.append(`<li><strong>Owner:</strong> ${designersInfo.owner.username} <small class="text-muted">(${designersInfo.owner.email})</small></li>`);
+        list.append(`
+          <tr>
+            <td><strong>Owner</strong></td>
+            <td>${designersInfo.owner.username}</td>
+            <td><small class="text-muted">${designersInfo.owner.email}</small></td>
+            <td><span class="text-muted">-</span></td>
+          </tr>
+        `);
       }
       
+      // 顯示 codesigners
       if (designersInfo.codesigners && designersInfo.codesigners.length > 0) {
         designersInfo.codesigners.forEach(user => {
-          list.append(`<li><strong>Codesigner:</strong> ${user.username} <small class="text-muted">(${user.email})</small></li>`);
+          list.append(`
+            <tr>
+              <td><strong>Codesigner</strong></td>
+              <td>${user.username}</td>
+              <td><small class="text-muted">${user.email}</small></td>
+              <td>
+                <button class="btn btn-sm btn-outline-danger delete-codesigner" 
+                        data-user-id="${user.id}" 
+                        data-username="${user.username}">
+                  <i class="fas fa-trash"></i> Remove
+                </button>
+              </td>
+            </tr>
+          `);
         });
       } else if (designersInfo.owner) {
-        list.append('<li class="text-muted"><em>No codesigners yet</em></li>');
+        list.append(`
+          <tr>
+            <td colspan="4" class="text-center text-muted">
+              <em>No codesigners yet</em>
+            </td>
+          </tr>
+        `);
       }
     } else {
       // fallback to AJAX
-      list.html('<li class="text-muted">Loading...</li>');
+      list.html('<tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>');
       $.get(`/survey/${surveyId}/codesigner`, function (data) {
         list.empty();
         if (data && data.codesigner && data.codesigner.length > 0) {
           data.codesigner.forEach(user => {
-            list.append(`<li>${user.username} <small class="text-muted">(${user.email})</small></li>`);
+            list.append(`
+              <tr>
+                <td><strong>Codesigner</strong></td>
+                <td>${user.username}</td>
+                <td><small class="text-muted">${user.email}</small></td>
+                <td>
+                  <button class="btn btn-sm btn-outline-danger delete-codesigner" 
+                          data-user-id="${user.id}" 
+                          data-username="${user.username}">
+                    <i class="fas fa-trash"></i> Remove
+                  </button>
+                </td>
+              </tr>
+            `);
           });
         } else {
-          list.append('<li class="text-muted"><em>No codesigner found</em></li>');
+          list.append(`
+            <tr>
+              <td colspan="4" class="text-center text-muted">
+                <em>No codesigner found</em>
+              </td>
+            </tr>
+          `);
         }
       }).fail(function () {
-        list.html('<li class="text-danger">Failed to load codesigner</li>');
+        list.html('<tr><td colspan="4" class="text-center text-danger">Failed to load codesigner</td></tr>');
       });
     }
   });
@@ -93,6 +149,9 @@ javascript:
 
     $.post(`/survey/${surveyId}/add_codesigner`, { email: email }, function (result) {
       alert(result.message);
+      // 重新載入 modal 內容
+      $('#modal_share_codesigner').modal('hide');
+      $('#modal_share_codesigner').modal('show');
     }).fail(function (xhr) {
       let msg = 'Failed to add codesigner';
       try {
@@ -101,4 +160,43 @@ javascript:
       } catch (_) {}
       alert(msg);
     });
+  });
+
+  // 處理 delete codesigner 按鈕點擊
+  $(document).on('click', '.delete-codesigner', function (e) {
+    e.preventDefault();
+    const button = $(this);
+    const userId = button.data('user-id');
+    const username = button.data('username');
+    const surveyId = $('#share-survey-id').val();
+
+    if (confirm(`Are you sure you want to remove ${username} as codesigner?`)) {
+      $.post(`/survey/${surveyId}/remove_codesigner`, { user_id: userId }, function (result) {
+        alert(result.message);
+        // 移除該行
+        button.closest('tr').remove();
+        
+        // 如果沒有 codesigners 了，顯示空狀態
+        const remainingCodesigners = $('#codesigner-list tr').filter(':has(.delete-codesigner)');
+        if (remainingCodesigners.length === 0) {
+          const hasOwner = $('#codesigner-list tr:contains("Owner")').length > 0;
+          if (hasOwner) {
+            $('#codesigner-list').append(`
+              <tr>
+                <td colspan="4" class="text-center text-muted">
+                  <em>No codesigners yet</em>
+                </td>
+              </tr>
+            `);
+          }
+        }
+      }).fail(function (xhr) {
+        let msg = 'Failed to remove codesigner';
+        try {
+          const res = JSON.parse(xhr.responseText);
+          if (res.message) msg = res.message;
+        } catch (_) {}
+        alert(msg);
+      });
+    }
   });
