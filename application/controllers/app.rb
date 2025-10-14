@@ -108,15 +108,14 @@ module SurveyMoonbear
             result = Service::ListSurveys.new.call(account_id: @current_account['id'])
             if result.success?
               surveys = result.value!.map do |data|
-               Views::SurveyView.new(
+                Views::SurveyView.new(
                   survey: data[:survey],
                   role: data[:role],
                   policy: data[:policy_summary],
                   designers_info: data[:designers_info]
                 )
-                
               end
-               view 'survey_list', locals: { surveys: surveys, config: config }
+              view 'survey_list', locals: { surveys: surveys, config: config }
             else
               flash[:error] = result.failure
               routing.redirect '/'
@@ -135,9 +134,9 @@ module SurveyMoonbear
                                                       study_id: routing.params['study_id'])
           redirect_rout = routing.params['rerout']
           if new_survey.success?
-              survey_data = new_survey.value!
-              title = survey_data[:title] || survey_data['title'] || 'Survey'
-              flash[:notice] = "#{title} is created!"
+            survey_data = new_survey.value!
+            title = survey_data[:title] || survey_data['title'] || 'Survey'
+            flash[:notice] = "#{title} is created!"
           else
             flash[:error] = 'Failed to create survey, please try again :('
           end
@@ -183,21 +182,34 @@ module SurveyMoonbear
 
         # POST /survey/:id/add_codesigner
         routing.post 'add_codesigner' do
-          result  = Service::AddCodesigner.new.call(
+          result = Service::AddCodesigner.new.call(
             account: @current_account,
             survey_id: survey_id,
             codesigner_email: routing.params['email']
           )
           response['Content-Type'] = 'application/json'
-          if result .failure?
-            routing.halt 400, { message: result .failure }.to_json
+          if result.failure?
+            routing.halt 400, { message: result.failure }.to_json
           else
-            routing.halt 200, { message: result .value! }.to_json
+            routing.halt 200, { message: result.value! }.to_json
           end
           routing.redirect '/survey_list'
         end
 
-
+        # POST /survey/:id/remove_codesigner
+        routing.post 'remove_codesigner' do
+          result = Service::RemoveCodesigner.new.call(
+            account: @current_account,
+            survey_id: survey_id,
+            codesigner_id: routing.params['user_id']
+          )
+          response['Content-Type'] = 'application/json'
+          if result.failure?
+            routing.halt 400, { message: result.failure }.to_json
+          else
+            routing.halt 200, { message: result.value! }.to_json
+          end
+        end
 
         # GET /survey/[survey_id]/preview/[spreadsheet_id]
         routing.on 'preview', String do |spreadsheet_id|

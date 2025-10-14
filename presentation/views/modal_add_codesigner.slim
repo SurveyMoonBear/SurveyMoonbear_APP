@@ -66,7 +66,7 @@ javascript:
     list.empty();
 
     if (designersInfo && (designersInfo.owner || (designersInfo.codesigners && designersInfo.codesigners.length))) {
-      // 顯示 owner
+      // show owner info
       if (designersInfo.owner) {
         list.append(`
           <tr>
@@ -78,7 +78,7 @@ javascript:
         `);
       }
       
-      // 顯示 codesigners
+      // show codesigners info
       if (designersInfo.codesigners && designersInfo.codesigners.length > 0) {
         designersInfo.codesigners.forEach(user => {
           list.append(`
@@ -149,7 +149,6 @@ javascript:
 
     $.post(`/survey/${surveyId}/add_codesigner`, { email: email }, function (result) {
       alert(result.message);
-      // 重新載入 modal 內容
       $('#modal_share_codesigner').modal('hide');
       $('#modal_share_codesigner').modal('show');
     }).fail(function (xhr) {
@@ -162,7 +161,6 @@ javascript:
     });
   });
 
-  // 處理 delete codesigner 按鈕點擊
   $(document).on('click', '.delete-codesigner', function (e) {
     e.preventDefault();
     const button = $(this);
@@ -173,10 +171,8 @@ javascript:
     if (confirm(`Are you sure you want to remove ${username} as codesigner?`)) {
       $.post(`/survey/${surveyId}/remove_codesigner`, { user_id: userId }, function (result) {
         alert(result.message);
-        // 移除該行
         button.closest('tr').remove();
         
-        // 如果沒有 codesigners 了，顯示空狀態
         const remainingCodesigners = $('#codesigner-list tr').filter(':has(.delete-codesigner)');
         if (remainingCodesigners.length === 0) {
           const hasOwner = $('#codesigner-list tr:contains("Owner")').length > 0;
