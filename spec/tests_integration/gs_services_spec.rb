@@ -77,7 +77,7 @@ require_relative './../../workers/workers'
 
     after(:all) do
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @survey.id)
-      
+      VcrHelper.eject_vcr
     end
 
     it 'HAPPY: should get survey from database' do
@@ -122,6 +122,7 @@ require_relative './../../workers/workers'
       VcrHelper.build_cassette('happy_output_responses')
       survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG, current_account: CURRENT_ACCOUNT,
                                                               title: 'Survey for Testing').value!
+      CURRENT_ACCOUNT['id'] = survey.owner.id
       @started_survey = SurveyMoonbear::Service::StartSurvey.new.call(config: CONFIG, survey_id: survey.id,
                                                                       current_account: CURRENT_ACCOUNT).value!
     end
@@ -129,6 +130,7 @@ require_relative './../../workers/workers'
     after(:all) do
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @started_survey.id)
       VcrHelper.eject_vcr
+      CURRENT_ACCOUNT.delete('id')
     end
 
     describe 'Tranform DB/Sheets Survey to Html' do
@@ -205,25 +207,6 @@ require_relative './../../workers/workers'
 
     
     describe 'Add codesigner and grant Google Spreadsheet editor permission' do
-      before(:all) do
-        VcrHelper.build_cassette('happy_add_codesigner')
-        @survey = SurveyMoonbear::Service::CreateSurvey.new.call(
-          config: CONFIG,
-          current_account: CURRENT_ACCOUNT,
-          title: 'Survey for codesigner test'
-        ).value!
-        CURRENT_ACCOUNT['id'] = @survey.owner.id
-      end
-
-      after(:all) do
-        SurveyMoonbear::Service::DeleteSurvey.new.call(
-          config: CONFIG,
-          survey_id: @survey.id,
-          account: CURRENT_ACCOUNT
-        )
-        VcrHelper.eject_vcr
-      end
-
       it 'HAPPY: should add a codesigner and grant Google Spreadsheet editor permission' do
         # Ensure codesigner account exists
         codesigner = SurveyMoonbear::Repository::Accounts.find_email('someone@example.com')
@@ -241,7 +224,7 @@ require_relative './../../workers/workers'
 
         add_codesigner_res = SurveyMoonbear::Service::AddCodesigner.new.call(
           account: CURRENT_ACCOUNT,
-          survey_id: @survey.id,
+          survey_id: @started_survey.id,
           codesigner_email: 'someone@example.com'
         )
 
@@ -251,19 +234,11 @@ require_relative './../../workers/workers'
     end
 
     describe 'Remove codesigner and revoke Google Spreadsheet editor permission' do
-      before(:all) do
-        VcrHelper.build_cassette('happy_remove_codesigner')
-        @survey = SurveyMoonbear::Service::CreateSurvey.new.call(
-          config: CONFIG,
-          current_account: CURRENT_ACCOUNT,
-          title: 'Survey for remove codesigner test'
-        ).value!
-        CURRENT_ACCOUNT['id'] = @survey.owner.id
-
+      it 'HAPPY: should remove a codesigner and revoke Google Spreadsheet editor permission' do
         # Create and add codesigner first
-        @codesigner = SurveyMoonbear::Repository::Accounts.find_email('someone@example.com')
-        unless @codesigner
-          @codesigner = SurveyMoonbear::Repository::Accounts.find_or_create(
+        codesigner = SurveyMoonbear::Repository::Accounts.find_email('someone@example.com')
+        unless codesigner
+          codesigner = SurveyMoonbear::Repository::Accounts.find_or_create(
             SurveyMoonbear::Entity::Account.new(
               id: nil,
               username: 'codesigner',
@@ -276,25 +251,15 @@ require_relative './../../workers/workers'
 
         SurveyMoonbear::Service::AddCodesigner.new.call(
           account: CURRENT_ACCOUNT,
-          survey_id: @survey.id,
+          survey_id: @started_survey.id,
           codesigner_email: 'someone@example.com'
         )
-      end
 
-      after(:all) do
-        SurveyMoonbear::Service::DeleteSurvey.new.call(
-          config: CONFIG,
-          survey_id: @survey.id,
-          account: CURRENT_ACCOUNT
-        )
-        VcrHelper.eject_vcr
-      end
-
-      it 'HAPPY: should remove a codesigner and revoke Google Spreadsheet editor permission' do
+        # Now remove the codesigner
         remove_codesigner_res = SurveyMoonbear::Service::RemoveCodesigner.new.call(
           account: CURRENT_ACCOUNT,
-          survey_id: @survey.id,
-          codesigner_id: @codesigner.id
+          survey_id: @started_survey.id,
+          codesigner_id: codesigner.id
         )
 
         _(remove_codesigner_res.success?).must_equal true

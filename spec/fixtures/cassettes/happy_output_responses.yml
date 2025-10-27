@@ -2836,4 +2836,67 @@ http_interactions:
           ]
         }
   recorded_at: Wed, 02 Jul 2025 01:51:47 GMT
-recorded_with: VCR 6.3.1
+- request:
+    method: get
+    uri: https://www.googleapis.com/drive/v2/files/1uQR5knDlumrFGJCeV_PU13IG_5SNee45S7c2PBKBmkI/permissions?access_token=<ACCESS_TOKEN>
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Expires:
+      - Mon, 27 Oct 2025 09:32:35 GMT
+      Cache-Control:
+      - private, max-age=0
+      Date:
+      - Mon, 27 Oct 2025 09:32:35 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - ESF
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Accept-Ranges:
+      - none
+      Vary:
+      - Origin, X-Origin,Accept-Encoding
+      Connection:
+      - close
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "code": 404,
+            "message": "File not found: 1uQR5knDlumrFGJCeV_PU13IG_5SNee45S7c2PBKBmkI",
+            "errors": [
+              {
+                "message": "File not found: 1uQR5knDlumrFGJCeV_PU13IG_5SNee45S7c2PBKBmkI",
+                "domain": "global",
+                "reason": "notFound",
+                "location": "file",
+                "locationType": "other"
+              }
+            ]
+          }
+        }
+  recorded_at: Mon, 27 Oct 2025 09:32:35 GMT
+recorded_with: VCR 6.1.0
