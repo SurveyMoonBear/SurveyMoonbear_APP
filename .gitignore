@@ -6,3 +6,4 @@ _*
 coverage
 _cache/
 .DS_Store
+.claude
