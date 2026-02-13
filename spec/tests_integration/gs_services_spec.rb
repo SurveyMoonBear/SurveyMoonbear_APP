@@ -3,18 +3,18 @@
 require_relative './../spec_helper'
 require_relative './../../workers/workers'
 
-describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
-  # Execute before/after each 'describe'
-  before(:all) do
-    VcrHelper.setup_vcr
-    VcrHelper.configure_vcr_for_gs
-  end
+  describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' do
+    # Execute before/after each 'describe'
+    before(:all) do
+      VcrHelper.setup_vcr
+      VcrHelper.configure_vcr_for_gs
+    end
 
-  after(:all) do
-    DatabaseHelper.wipe_database
-    VcrHelper.eject_vcr
+    after(:all) do
+      DatabaseHelper.wipe_database
+      VcrHelper.eject_vcr
+    end
   end
-
   describe 'Copy & Create survey' do
     before do
       VcrHelper.build_cassette('happy_create_gs_api')
@@ -22,16 +22,19 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
 
     after do
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @new_survey_res.value!.id)
+      VcrHelper.eject_vcr
     end
 
     it 'HAPPY: should copy sample and create survey with provided title' do
       @new_survey_res = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG,
                                                                        current_account: CURRENT_ACCOUNT,
                                                                        title: 'Survey for Testing Create Services')
+
       _(@new_survey_res.success?).must_equal true
       _(@new_survey_res.value!.owner.username).must_equal 'SurveyMoonbear Test'
       _(@new_survey_res.value!.pages).wont_be :empty?
       _(@new_survey_res.value!.pages[0].items).wont_be :empty?
+
     end
   end
 
@@ -41,12 +44,26 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       @survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG,
                                                                current_account: CURRENT_ACCOUNT,
                                                                title: 'Survey for Testing Delete Services').value!
+       CURRENT_ACCOUNT['id'] = @survey.owner.id
+
+    end
+    after do
+      VcrHelper.eject_vcr
     end
 
     it 'HAPPY: should delete the survey in both db and spreadsheet' do
-      deleted_survey_res = SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @survey.id)
-      _(deleted_survey_res.success?).must_equal true
-      _(deleted_survey_res.value!.id).must_equal @survey.id
+
+
+        deleted_survey_res = SurveyMoonbear::Service::DeleteSurvey.new.call(
+          config: CONFIG,
+          survey_id: @survey.id,
+          account: CURRENT_ACCOUNT
+        )
+
+
+
+        _(deleted_survey_res.success?).must_equal true
+        _(deleted_survey_res.value!.id).must_equal @survey.id
     end
   end
 
@@ -60,6 +77,7 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
 
     after(:all) do
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @survey.id)
+      VcrHelper.eject_vcr
     end
 
     it 'HAPPY: should get survey from database' do
@@ -104,12 +122,15 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
       VcrHelper.build_cassette('happy_output_responses')
       survey = SurveyMoonbear::Service::CreateSurvey.new.call(config: CONFIG, current_account: CURRENT_ACCOUNT,
                                                               title: 'Survey for Testing').value!
+      CURRENT_ACCOUNT['id'] = survey.owner.id
       @started_survey = SurveyMoonbear::Service::StartSurvey.new.call(config: CONFIG, survey_id: survey.id,
                                                                       current_account: CURRENT_ACCOUNT).value!
     end
 
     after(:all) do
       SurveyMoonbear::Service::DeleteSurvey.new.call(config: CONFIG, survey_id: @started_survey.id)
+      VcrHelper.eject_vcr
+      CURRENT_ACCOUNT.delete('id')
     end
 
     describe 'Tranform DB/Sheets Survey to Html' do
@@ -183,5 +204,70 @@ describe 'HAPPY: Tests of Services Related to GoogleSpreadsheetAPI & Database' d
         _(transform_csv_res.value!).must_be_instance_of String
       end
     end
+
+    
+    describe 'Add codesigner and grant Google Spreadsheet editor permission' do
+      it 'HAPPY: should add a codesigner and grant Google Spreadsheet editor permission' do
+        # Ensure codesigner account exists
+        codesigner = SurveyMoonbear::Repository::Accounts.find_email('someone@example.com')
+        unless codesigner
+          codesigner = SurveyMoonbear::Repository::Accounts.find_or_create(
+            SurveyMoonbear::Entity::Account.new(
+              id: nil,
+              username: 'codesigner',
+              email: 'someone@example.com',
+              access_token: 'token',
+              refresh_token: 'refresh'
+            )
+          )
+        end
+
+        add_codesigner_res = SurveyMoonbear::Service::AddCodesigner.new.call(
+          account: CURRENT_ACCOUNT,
+          survey_id: @started_survey.id,
+          codesigner_email: 'someone@example.com'
+        )
+
+        _(add_codesigner_res.success?).must_equal true
+        _(add_codesigner_res.value!).must_include 'was added as codesigner'
+      end
+    end
+
+    describe 'Remove codesigner and revoke Google Spreadsheet editor permission' do
+      it 'HAPPY: should remove a codesigner and revoke Google Spreadsheet editor permission' do
+        # Create and add codesigner first
+        codesigner = SurveyMoonbear::Repository::Accounts.find_email('someone@example.com')
+        unless codesigner
+          codesigner = SurveyMoonbear::Repository::Accounts.find_or_create(
+            SurveyMoonbear::Entity::Account.new(
+              id: nil,
+              username: 'codesigner',
+              email: 'someone@example.com',
+              access_token: 'token',
+              refresh_token: 'refresh'
+            )
+          )
+        end
+
+        SurveyMoonbear::Service::AddCodesigner.new.call(
+          account: CURRENT_ACCOUNT,
+          survey_id: @started_survey.id,
+          codesigner_email: 'someone@example.com'
+        )
+
+        # Now remove the codesigner
+        remove_codesigner_res = SurveyMoonbear::Service::RemoveCodesigner.new.call(
+          account: CURRENT_ACCOUNT,
+          survey_id: @started_survey.id,
+          codesigner_id: codesigner.id
+        )
+
+        _(remove_codesigner_res.success?).must_equal true
+        _(remove_codesigner_res.value!).must_include 'was removed as codesigner'
+      end
+    end
+
+
+
   end
-end
+

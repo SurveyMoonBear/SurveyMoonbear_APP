@@ -34,7 +34,7 @@ CURRENT_ACCOUNT = {
   'username' => 'SurveyMoonbear Test'.freeze,
   'access_token' => ACCESS_TOKEN,
   'refresh_token' => REFRESH_TOKEN
-}
+}.dup
 
 STUDY_WITHOUT_NOTIFY_PARAMS = {
   'title' => 'test study without notify title',

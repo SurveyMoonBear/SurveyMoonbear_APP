@@ -11,22 +11,22 @@ class GoogleSpreadsheet
 
   def create_empty_spreadsheet(gs_title)
     response = HTTP.post("#{@spreadsheet_url}?access_token=#{@access_token}",
-                          json: { properties: { title: gs_title } })
+                         json: { properties: { title: gs_title } })
                    .parse
 
-    { spreadsheet_id: response['spreadsheetId'], 
-      title: response['properties']['title'], 
+    { spreadsheet_id: response['spreadsheetId'],
+      title: response['properties']['title'],
       sheets: response['sheets'] }
   end
 
   # Add a single sample sheet page copy to destination spreadsheet (the default first sheet's sheet_id=0)
   def copy_sheet_to(origin_spreadsheet_id, sheet_id, destination_spreadsheet_id)
     response = HTTP.post("#{@spreadsheet_url}/#{origin_spreadsheet_id}/sheets/#{sheet_id}:copyTo&access_token=#{@access_token}",
-                          json: { destinationSpreadsheetId: destination_spreadsheet_id })
+                         json: { destinationSpreadsheetId: destination_spreadsheet_id })
                    .parse
 
-    { created_sheet_id: response['sheetId'], 
-      sheet_title: response['title'], 
+    { created_sheet_id: response['sheetId'],
+      sheet_title: response['title'],
       sheet_index: response['index'] }
   end
 
@@ -34,8 +34,8 @@ class GoogleSpreadsheet
     response = HTTP.get("#{@spreadsheet_url}/#{spreadsheet_id}&access_token=#{@access_token}")
                    .parse
 
-    { spreadsheet_id: response['spreadsheetId'], 
-      title: response['properties']['title'], 
+    { spreadsheet_id: response['spreadsheetId'],
+      title: response['properties']['title'],
       sheets: response['sheets'] }
   end
 
@@ -52,9 +52,11 @@ class GoogleSpreadsheet
     response = HTTP.get("#{@drive_url}?q=#{query_string}&access_token=#{@access_token}")
                    .parse
 
-    response['items'].map { |item| { id: item['id'], 
-                                     title: item['title'], 
-                                     owner: item['ownerNames'][0] } }
+    response['items'].map do |item|
+      { id: item['id'],
+        title: item['title'],
+        owner: item['ownerNames'][0] }
+    end
   end
 
   def delete_spreadsheet(spreadsheet_id)
@@ -72,5 +74,40 @@ class GoogleSpreadsheet
     { id: response['id'],
       user_name: response['name'],
       emailAddress: response['emailAddress'] }
+  end
+
+  def list_permissions(spreadsheet_id)
+    # Try without fields parameter first to get all available fields
+    url = "#{@drive_url}/#{spreadsheet_id}/permissions?access_token=#{@access_token}"
+    response = HTTP.get(url)
+    parsed_response = response.parse
+
+    permissions = parsed_response['items'] || parsed_response['permissions'] || []
+
+
+    permissions
+  end
+
+  def remove_editor(spreadsheet_id, user_email)
+    all_permissions = list_permissions(spreadsheet_id)
+
+    # Try different field names that Google Drive API v2 might use
+    target_permission = all_permissions.find do |p|
+      p['emailAddress'] == user_email ||
+        p['name'] == user_email ||
+        p['value'] == user_email 
+    end
+
+
+    return { status: 'not_found', message: "Permission for #{user_email} not found." } unless target_permission
+
+    permission_id = target_permission['id']
+    response = HTTP.delete("#{@drive_url}/#{spreadsheet_id}/permissions/#{permission_id}?access_token=#{@access_token}")
+
+    if response.code == 204
+      { status: 'success', removed_permission_id: permission_id }
+    else
+      { status: 'error', code: response.code, body: response.parse }
+    end
   end
 end

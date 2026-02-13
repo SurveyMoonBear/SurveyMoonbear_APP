@@ -14,6 +14,7 @@ module SurveyMoonbear
       step :refresh_access_token
       step :copy_sample_spreadsheet
       step :store_belongs_study
+      step :return_survey
 
       private
 
@@ -46,11 +47,17 @@ module SurveyMoonbear
         unless input[:study_id].nil?
           Repository::For[Entity::Study].add_survey(input[:study_id], input[:survey].id)
         end
-        Success(input[:survey])
+        Success(input)
       rescue StandardError => e
         puts e
         Failure('Failed to add related study in to survey.')
       end
+
+      # input { ..., survey: }
+      def return_survey(input)
+        Success(input[:survey])
+      end
+
     end
   end
 end

@@ -1,0 +1,55 @@
+---
+http_interactions:
+- request:
+    method: delete
+    uri: https://www.googleapis.com/drive/v2/files/1uQR5knDlumrFGJCeV_PU13IG_5SNee45S7c2PBKBmkI
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Authorization:
+      - Bearer <ACCESS_TOKEN>
+      Connection:
+      - close
+      Host:
+      - www.googleapis.com
+      User-Agent:
+      - http.rb/5.0.4
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Etag:
+      - '"vyGp6PvFo4RvsFtPoIWeCReyIC8"'
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Vary:
+      - Origin, X-Origin
+      Date:
+      - Fri, 19 Sep 2025 11:08:19 GMT
+      Pragma:
+      - no-cache
+      Content-Type:
+      - text/html
+      Server:
+      - ESF
+      Content-Length:
+      - '0'
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+  recorded_at: Fri, 19 Sep 2025 11:08:19 GMT
+recorded_with: VCR 6.1.0

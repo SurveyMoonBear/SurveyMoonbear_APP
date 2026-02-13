@@ -4,9 +4,14 @@ module SurveyMoonbear
   module Database
     # Object Relational Mapper for Repo Entities
     class SurveyOrm < Sequel::Model(:surveys)
-      many_to_one :owner,
-                  class: :'SurveyMoonbear::Database::AccountOrm'
-
+     many_to_many :codesigners,
+                  class: :'SurveyMoonbear::Database::AccountOrm',
+                  join_table: :accounts_surveys,
+                  left_key: :survey_id,
+                  right_key: :codesigner_id
+     many_to_one :owner,
+                  class: :'SurveyMoonbear::Database::AccountOrm',
+                  key: :owner_id
       one_to_many :pages,
                   class: :'SurveyMoonbear::Database::PageOrm',
                   key: :survey_id,
@@ -24,6 +29,23 @@ module SurveyMoonbear
 
       plugin :uuid, field: :id
       plugin :timestamps
+
+      def designers_info
+        {
+          owner: {
+            id: owner.id,
+            username: owner.username,
+            email: owner.email
+          },
+          codesigners: codesigners.map do |codesigner|
+            {
+              id: codesigner.id,
+              username: codesigner.username,
+              email: codesigner.email
+            }
+          end
+        }
+      end
     end
   end
 end

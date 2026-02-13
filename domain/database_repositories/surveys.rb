@@ -22,6 +22,52 @@ module SurveyMoonbear
         end
       end
 
+
+      def self.find_accessible_with_roles(user_id)
+        owned_surveys = Database::SurveyOrm.where(owner_id: user_id).all
+
+        codesigner_survey_ids = Database::SurveyOrm.db[:accounts_surveys]
+                                            .where(codesigner_id: user_id)
+                                            .map(:survey_id)
+
+        codesigner_surveys = Database::SurveyOrm.where(id: codesigner_survey_ids).all
+  
+        all_surveys = (owned_surveys + codesigner_surveys).uniq
+        surveys = rebuild_many(all_surveys)
+        
+        surveys.map do |survey|
+          if survey.owner.id == user_id
+            { survey: survey, role: 'owner' }
+          else
+            { survey: survey, role: 'codesigner' }
+          end
+        end
+      end
+
+      def self.find_role(account_id, survey_id)
+        survey = Database::SurveyOrm.where(id: survey_id, owner_id: account_id).first
+        return 'owner' if survey
+
+        relation = Database::SurveyOrm.db[:accounts_surveys]
+                                    .where(codesigner_id: account_id, survey_id: survey_id)
+                                    .first
+        return 'codesigner' if relation
+
+        nil
+      end
+      def self.add_codesigner(account_id, survey_id)
+        Database::SurveyOrm.db[:accounts_surveys].insert(
+          codesigner_id: account_id,
+          survey_id: survey_id,
+          created_at: Time.now,
+          updated_at: Time.now
+        )
+      end
+      def self.remove_codesigner(account_id, survey_id)
+        Database::SurveyOrm.db[:accounts_surveys]
+                         .where(codesigner_id: account_id, survey_id: survey_id)
+                         .delete
+      end
       def self.find_alone(owner_id)
         db_records = Database::SurveyOrm.where(owner_id: owner_id, study_id: nil).all
 
@@ -124,6 +170,7 @@ module SurveyMoonbear
 
       def self.delete_from(id)
         db_survey = Database::SurveyOrm.where(id: id).first
+
         db_survey.pages.each do |page|
           page.items.each(&:delete)
           page.delete

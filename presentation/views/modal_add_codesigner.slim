@@ -1,0 +1,198 @@
+div.modal.fade id="modal_share_codesigner" tabindex="-1" role="dialog"
+  div.modal-dialog.modal-dialog-centered role="document"
+    div.modal-content
+      div.modal-header
+        h5.modal-title Share Survey with codesigner
+        button.close type="button" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" ×
+      div.modal-body
+        form#share-collab-form
+          input#share-survey-id type="hidden" name="survey_id"
+          div.form-group
+            label Enter user email to share with:
+            input.form-control name="email" type="email" required=true
+          button.btn.btn-primary.mt-2 type="submit" Add Codesigner
+        hr
+        p.text-muted.mt-3 Current codesigner:
+        .table-responsive
+          table.table.table-sm#codesigner-table
+            thead
+              tr
+                th Role
+                th Name
+                th Email
+                th Action
+            tbody#codesigner-list
+              tr
+                td colspan="4" class="text-center text-muted" Loading...
+      div.modal-footer
+        button.btn.btn-secondary type="button" data-dismiss="modal" Close
+
+javascript:
+  $('#modal_share_codesigner').on('show.bs.modal', function (e) {
+    const button = $(e.relatedTarget);
+    const surveyId = button.data('survey_id');
+    $('#share-survey-id').val(surveyId);
+
+
+    let designersInfo = button.data('designersInfo'); 
+    console.log('jQuery data designersInfo:', designersInfo);
+    
+    if (typeof designersInfo === 'string') {
+      try {
+        designersInfo = JSON.parse(designersInfo.replace(/&quot;/g, '"'));
+        console.log('Parsed from jQuery data:', designersInfo);
+      } catch (err) {
+        console.error('Failed to parse jQuery data:', err);
+        designersInfo = null;
+      }
+    }
+
+    if (!designersInfo) {
+      const raw = button.attr('data-designers-info');
+      console.log('Raw data-designers-info attribute:', raw);
+      if (raw) {
+        try { 
+          designersInfo = JSON.parse(raw.replace(/&quot;/g, '"')); 
+          console.log('Parsed designersInfo:', designersInfo);
+        } catch (err) { 
+          console.error('Failed to parse designers info:', err);
+          designersInfo = null; 
+        }
+      }
+    }
+
+    const list = $('#codesigner-list');
+    list.empty();
+
+    if (designersInfo && (designersInfo.owner || (designersInfo.codesigners && designersInfo.codesigners.length))) {
+      // show owner info
+      if (designersInfo.owner) {
+        list.append(`
+          <tr>
+            <td><strong>Owner</strong></td>
+            <td>${designersInfo.owner.username}</td>
+            <td><small class="text-muted">${designersInfo.owner.email}</small></td>
+            <td><span class="text-muted">-</span></td>
+          </tr>
+        `);
+      }
+      
+      // show codesigners info
+      if (designersInfo.codesigners && designersInfo.codesigners.length > 0) {
+        designersInfo.codesigners.forEach(user => {
+          list.append(`
+            <tr>
+              <td><strong>Codesigner</strong></td>
+              <td>${user.username}</td>
+              <td><small class="text-muted">${user.email}</small></td>
+              <td>
+                <button class="btn btn-sm btn-outline-danger delete-codesigner" 
+                        data-user-id="${user.id}" 
+                        data-username="${user.username}">
+                  <i class="fas fa-trash"></i> Remove
+                </button>
+              </td>
+            </tr>
+          `);
+        });
+      } else if (designersInfo.owner) {
+        list.append(`
+          <tr>
+            <td colspan="4" class="text-center text-muted">
+              <em>No codesigners yet</em>
+            </td>
+          </tr>
+        `);
+      }
+    } else {
+      // fallback to AJAX
+      list.html('<tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>');
+      $.get(`/survey/${surveyId}/codesigner`, function (data) {
+        list.empty();
+        if (data && data.codesigner && data.codesigner.length > 0) {
+          data.codesigner.forEach(user => {
+            list.append(`
+              <tr>
+                <td><strong>Codesigner</strong></td>
+                <td>${user.username}</td>
+                <td><small class="text-muted">${user.email}</small></td>
+                <td>
+                  <button class="btn btn-sm btn-outline-danger delete-codesigner" 
+                          data-user-id="${user.id}" 
+                          data-username="${user.username}">
+                    <i class="fas fa-trash"></i> Remove
+                  </button>
+                </td>
+              </tr>
+            `);
+          });
+        } else {
+          list.append(`
+            <tr>
+              <td colspan="4" class="text-center text-muted">
+                <em>No codesigner found</em>
+              </td>
+            </tr>
+          `);
+        }
+      }).fail(function () {
+        list.html('<tr><td colspan="4" class="text-center text-danger">Failed to load codesigner</td></tr>');
+      });
+    }
+  });
+
+  $('#share-collab-form').on('submit', function (e) {
+    e.preventDefault();
+    const surveyId = $('#share-survey-id').val();
+    const email = $(this).find('input[name="email"]').val();
+
+    $.post(`/survey/${surveyId}/add_codesigner`, { email: email }, function (result) {
+      alert(result.message);
+      $('#modal_share_codesigner').modal('hide');
+      $('#modal_share_codesigner').modal('show');
+    }).fail(function (xhr) {
+      let msg = 'Failed to add codesigner';
+      try {
+        const res = JSON.parse(xhr.responseText);
+        if (res.message) msg = res.message;
+      } catch (_) {}
+      alert(msg);
+    });
+  });
+
+  $(document).on('click', '.delete-codesigner', function (e) {
+    e.preventDefault();
+    const button = $(this);
+    const userId = button.data('user-id');
+    const username = button.data('username');
+    const surveyId = $('#share-survey-id').val();
+
+    if (confirm(`Are you sure you want to remove ${username} as codesigner?`)) {
+      $.post(`/survey/${surveyId}/remove_codesigner`, { user_id: userId }, function (result) {
+        alert(result.message);
+        button.closest('tr').remove();
+        
+        const remainingCodesigners = $('#codesigner-list tr').filter(':has(.delete-codesigner)');
+        if (remainingCodesigners.length === 0) {
+          const hasOwner = $('#codesigner-list tr:contains("Owner")').length > 0;
+          if (hasOwner) {
+            $('#codesigner-list').append(`
+              <tr>
+                <td colspan="4" class="text-center text-muted">
+                  <em>No codesigners yet</em>
+                </td>
+              </tr>
+            `);
+          }
+        }
+      }).fail(function (xhr) {
+        let msg = 'Failed to remove codesigner';
+        try {
+          const res = JSON.parse(xhr.responseText);
+          if (res.message) msg = res.message;
+        } catch (_) {}
+        alert(msg);
+      });
+    }
+  });

@@ -4,6 +4,14 @@ module SurveyMoonbear
   module Database
     # Object Relational Mapper for Repo Entities
     class AccountOrm < Sequel::Model(:accounts)
+      many_to_many :codesigned_surveys,
+                   class: :'SurveyMoonbear::Database::SurveyOrm',
+                   join_table: :accounts_surveys,
+                   left_key: :codesigner_id,
+                   right_key: :survey_id,
+                   order: :created_at
+
+
       one_to_many :owned_surveys,
                   class: :'SurveyMoonbear::Database::SurveyOrm',
                   key: :owner_id
@@ -34,6 +42,10 @@ module SurveyMoonbear
 
       def refresh_token
         SecureDB.decrypt(refresh_token_secure)
+      end
+
+      def surveys
+        owned_surveys.all + codesigned_surveys.all
       end
     end
   end
