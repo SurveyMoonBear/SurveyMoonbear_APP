@@ -2,6 +2,7 @@
 
 require 'dry/transaction'
 require 'http'
+require 'dry/monads/all'
 
 module SurveyMoonbear
   module Service
